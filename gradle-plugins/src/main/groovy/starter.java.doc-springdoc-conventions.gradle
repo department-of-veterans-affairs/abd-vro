@@ -4,7 +4,7 @@
 
 plugins {
     id "org.springframework.boot"
-    id "com.github.johnrengelman.processes"
+    // id "com.github.johnrengelman.processes"
     id "org.springdoc.openapi-gradle-plugin"
 }
 

@@ -1,0 +1,20 @@
+# This file sets environment variables that enables pinning a version for specific containers
+# overriding the variables set in image_vars.src.
+#
+# These versions are used as image tags for:
+# - image publishing to GHCR (see .github/actions/publish-images/action.yml)
+# - Helm chart deployments to LHDI (see helm/deploy.sh)
+
+# These versions are treated specially because we don't modify the base image
+: ${RABBITMQ_VER:=3}
+: ${REDIS_VER:=7}
+
+# Mon Jun 26 12:59:02 CDT 2023
+# apigateway_VER="v3.1.0"
+# app_VER="v3.1.0"
+# postgres_VER="v3.1.0"
+# dbinit_VER="v3.1.0"
+# console_VER="v3.1.0"
+# svcbgsapi_VER="v3.1.0"
+# svclighthouseapi_VER="v3.1.0"
+# ccapp_VER="v3.1.0"

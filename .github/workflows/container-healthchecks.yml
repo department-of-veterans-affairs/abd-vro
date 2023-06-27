@@ -1,0 +1,48 @@
+name: "Container Health Checks"
+
+on:
+  # Allow manual triggering
+  workflow_dispatch:
+
+  # Trigger when called by another GitHub Action
+  workflow_call:
+
+concurrency:
+  group: containerHealthChecks-${{ github.ref }}
+
+env:
+  LH_ACCESS_CLIENT_ID: ${{ secrets.LH_ACCESS_CLIENT_ID }}
+  LH_PRIVATE_KEY: ${{ secrets.LH_PRIVATE_KEY }}
+  SLACK_EXCEPTION_WEBHOOK: "http://mock-slack:20100/slack-messages"
+
+jobs:
+  container-healthcheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+
+      - name: "Docker build"
+        uses: ./.github/actions/build-images
+
+      - name: "Create platform containers with healthchecks"
+        run: |
+          source scripts/setenv.sh
+          export -p | sed 's/declare -x //'
+          COMPOSE_PROFILES="gateway" ./gradlew :dockerComposeUp
+
+      - name: "Create app containers with healthchecks"
+        shell: bash
+        run: |
+          COMPOSE_PROFILES="svc" ./gradlew :app:dockerComposeUp
+
+      - name: "Create domain-cc containers with healthchecks"
+        shell: bash
+        run: |
+          ./gradlew :domain-cc:dockerComposeUp
+
+      - name: "Clean shutdown of all containers"
+        shell: bash
+        run: |
+          COMPOSE_PROFILES="all" ./gradlew dockerComposeDown

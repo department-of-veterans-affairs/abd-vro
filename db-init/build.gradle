@@ -3,7 +3,7 @@
  */
 
 plugins {
-  id 'org.flywaydb.flyway'
+  id 'org.flywaydb.flyway' version '9.20.0'
   id 'local.java.container-conventions'
   id 'starter.java.build-utils-property-conventions'
 }

@@ -12,7 +12,7 @@ plugins {
 }
 
 jacoco {
-  toolVersion = jacoco_tool_version
+  toolVersion = "0.8.10"
   reportsDirectory = file("$buildDir/jacoco")
 }
 

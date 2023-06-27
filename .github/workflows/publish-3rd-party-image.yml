@@ -1,4 +1,5 @@
 name: "5. (Internal) Publish 3rd-party image"
+run-name: "Publish image: ${{inputs.target_image_name}} ${{inputs.image_tag}}"
 
 # SecRel will not sign images outside the scope of the repository that's calling SecRel,
 # so the image must exist in abd-vro-internal for SecRel to sign the images (required for sandbox and prod environments).

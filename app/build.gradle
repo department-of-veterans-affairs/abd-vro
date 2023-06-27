@@ -1,5 +1,6 @@
 plugins {
   id 'local.std.java.application-conventions'
+  id 'local.docker-compose-convention'
 }
 
 ext {
@@ -79,7 +80,7 @@ afterEvaluate {
   }
 
   tasks.named('dockerComposeDown') {
-    dependsOn ':mocks:dockerComposeDown'
+    //dependsOn ':mocks:dockerComposeDown'
     dependsOn ':domain-xample:dockerComposeDown'
   }
 }

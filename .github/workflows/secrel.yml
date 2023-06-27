@@ -1,4 +1,5 @@
 name: "2. (Internal) SecRel workflow"
+run-name: "SecRel ${{inputs.image_prefix}} (${{github.ref_name}}) ${{github.event.head_commit.message}}"
 
 on:
   # Trigger on every code push to main and develop branches
@@ -9,11 +10,14 @@ on:
   release:
     types: [ "created" ]
 
+  pull_request:
+    branches: [ develop ]
+
   # Allow manual runs
   workflow_dispatch:
     inputs:
       image_prefix:
-        description: 'Image prefix for the chosen branch. Choose `dev_` for deploys to dev and qa environments.'
+        description: 'Image prefix for the chosen branch. Choose `(no prefix)` to create non-dev images.'
         required: true
         default: 'dev_'
         type: choice
@@ -38,7 +42,8 @@ env:
 jobs:
   publish-to-ghcr:
     # only run for the internal repo, where the images are published
-    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal' &&
+      ((github.event_name == pull_request && startsWith(github.head_ref, 'dependabot/') || github.event_name != pull_request)
     outputs:
       vro-images: ${{ steps.publish-images.outputs.images_list }}
       slack-response-ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
@@ -70,7 +75,8 @@ jobs:
                        ;;
             release-*|v*.*.*) # if git tag reflects a release, then publish non-dev images
                        IMG_PREFIX=""
-                       IMG_TAG="${{ github.ref_name }}"
+                       # A blank IMG_TAG value will cause image_versions.src to be used
+                       IMG_TAG=""
                        ;;
             develop)   RUN_GRADLE_TESTS=false
                        ;;

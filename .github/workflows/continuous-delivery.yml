@@ -11,29 +11,27 @@ on:
 
 jobs:
   deploy-vro-app:
-    # only run in one of the repos
-    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
-    name: "Deploy vro-app to ${{ inputs.target_env }}"
     uses: ./.github/workflows/update-deployment.yml
     with:
       target_env: dev
       helm_chart: vro-app
       image_tag: latest
     secrets: inherit
-  deploy-vro-svcs:
-    # only run in one of the repos
-    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
-    name: "Deploy vro-svcs to ${{ inputs.target_env }}"
+  deploy-vro-svc-bgs-api:
     uses: ./.github/workflows/update-deployment.yml
     with:
       target_env: dev
-      helm_chart: vro-svcs
+      helm_chart: svc-bgs-api
+      image_tag: latest
+    secrets: inherit
+  deploy-vro-svc-lighthouse-api:
+    uses: ./.github/workflows/update-deployment.yml
+    with:
+      target_env: dev
+      helm_chart: svc-lighthouse-api
       image_tag: latest
     secrets: inherit
   deploy-domain-cc:
-    # only run in one of the repos
-    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
-    name: "Deploy vro-svcs to ${{ inputs.target_env }}"
     uses: ./.github/workflows/update-deployment.yml
     with:
       target_env: dev

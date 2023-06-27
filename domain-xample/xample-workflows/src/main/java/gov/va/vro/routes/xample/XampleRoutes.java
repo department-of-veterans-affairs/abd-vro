@@ -45,9 +45,10 @@ public class XampleRoutes extends EndpointRouteBuilder {
 
   void configurePostResourceRoute() {
     from("direct:saveToDb")
-        .process(
-            new FunctionProcessor<SomeDtoModel, ClaimEntity>(
-                SomeDtoModel.class, model -> dbHelper.saveToDb(model)));
+        .log("Saving to DB is disabled since the DB schema has been reset after RRD removal");
+    //    .process(
+    //        new FunctionProcessor<SomeDtoModel, ClaimEntity>(
+    //            SomeDtoModel.class, model -> dbHelper.saveToDb(model)));
 
     var setStatusReceived =
         new FunctionProcessor<SomeDtoModel, SomeDtoModel>(
