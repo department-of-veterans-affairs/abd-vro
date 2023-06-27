@@ -79,5 +79,5 @@ cp ./fastapi.json ../../app/src/main/java/gov/va/vro/config
 ## Docker Stuff
 ### Build the image
 ```
-./gradlew :domain-cc:cc-app:docker
+./gradlew :domain-cc:dockerComposeUp
 ```

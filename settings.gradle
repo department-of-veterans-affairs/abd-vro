@@ -50,5 +50,4 @@ include ':domain-xample:xample-workflows'
 include ':domain-xample:svc-xample-j'
 include ':domain-xample:svc-hoppy-usage'
 
-include ':domain-cc:cc-api-controller'
 include ':domain-cc:cc-app'
