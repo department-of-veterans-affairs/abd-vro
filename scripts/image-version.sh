@@ -29,11 +29,11 @@ pinnedImages(){
 }
 comparePinnedImages(){
   local IMG_VER=$(getVarValue "${PREFIX}" _VER)
-  # release versions are tagged on non-dev images only -- see secrel.yml
+  # Release versions are tagged on non-dev images only (see secrel.yml) so no image `dev_` image prefix is needed
   local IMG_NAME=$(getVarValue "${PREFIX}" _IMG)
   local GHCR_PATH="ghcr.io/department-of-veterans-affairs/abd-vro-internal/${IMG_NAME}"
   local GRADLE_IMG_NAME=$(getVarValue "${PREFIX}" _GRADLE_IMG)
-  >&2 docker pull "${GHCR_PATH}:${IMG_VER}"
+  # >&2 docker pull "${GHCR_PATH}:${IMG_VER}"
   >&2 echo "  Comparing local ${GRADLE_IMG_NAME} vs GHCR's ${IMG_NAME}:$IMG_VER"
   container-diff diff --type=history --type=size --json \
     "daemon://${GRADLE_IMG_NAME}" \
