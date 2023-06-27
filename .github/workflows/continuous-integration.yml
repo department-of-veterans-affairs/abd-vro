@@ -22,3 +22,7 @@ jobs:
   container-healthchecks:
     uses: ./.github/workflows/container-healthchecks.yml
     secrets: inherit
+
+  xample-domain:
+    uses: ./.github/workflows/xample-integration-test.yml
+    secrets: inherit

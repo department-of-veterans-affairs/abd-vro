@@ -1,10 +1,10 @@
-name: "Container Health Checks"
+name: "CI: Container Health Checks"
 
 on:
   # Allow manual triggering
   workflow_dispatch:
 
-  # Trigger when called by another GitHub Action
+  # Allow being called by another GitHub Action
   workflow_call:
 
 concurrency:
@@ -43,6 +43,7 @@ jobs:
           ./gradlew :domain-cc:dockerComposeUp
 
       - name: "Clean shutdown of all containers"
+        if: always()
         shell: bash
         run: |
           COMPOSE_PROFILES="all" ./gradlew dockerComposeDown
