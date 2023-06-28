@@ -3,7 +3,7 @@ import time
 
 import hoppy
 
-print(f"Imported hoppy with default RabbitMQ config {hoppy.config.RABBITMQ_CONFIG}", flush=True)
+print(f"Imported hoppy with default RabbitMQ config", flush=True)
 
 
 class ServiceUnavailableError(hoppy.ServiceError):
