@@ -51,7 +51,7 @@ public class XampleRoutes extends EndpointRouteBuilder {
     //            SomeDtoModel.class, model -> dbHelper.saveToDb(model)));
 
     var setStatusReceived =
-        new FunctionProcessor<SomeDtoModel, SomeDtoModel>(
+        FunctionProcessor.<SomeDtoModel, SomeDtoModel>fromFunction(
             SomeDtoModel.class, model -> model.status(StatusValue.RECEIVED));
 
     // This route looks long due to the code comments but it's not doing much:
@@ -144,7 +144,7 @@ public class XampleRoutes extends EndpointRouteBuilder {
 
   void configureRouteToServiceA() {
     var setStatusDone =
-        new FunctionProcessor<SomeDtoModel, SomeDtoModel>(
+        FunctionProcessor.<SomeDtoModel, SomeDtoModel>fromFunction(
             SomeDtoModel.class, model -> model.status(StatusValue.DONE));
 
     from(SERVICE_A_ENDPOINT)

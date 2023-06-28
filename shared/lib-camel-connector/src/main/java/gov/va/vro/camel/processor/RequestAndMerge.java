@@ -68,12 +68,12 @@ public class RequestAndMerge<I, REQ, RESP> implements Processor {
 
   /** When using this, no automatic conversion is done with the input message body. */
   public static <I, REQ, RESP> RequestAndMerge<I, REQ, RESP> build(
-      String requestUri, Function<I, REQ> prepareRequest, BiFunction<I, RESP, I> mergeResponse, ProcessorUtils processorUtils) {
+      String requestUri, Function<I, REQ> prepareRequest, BiFunction<I, RESP, I> mergeResponse) {
     return RequestAndMerge.<I, REQ, RESP>builder()
         .requestUri(requestUri)
         .prepareRequest(prepareRequest)
         .mergeResponse(mergeResponse)
-        .processorUtils(processorUtils)
+        .processorUtils(new ProcessorUtils())
         .build();
   }
 

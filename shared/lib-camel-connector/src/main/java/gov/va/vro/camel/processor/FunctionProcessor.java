@@ -3,6 +3,7 @@ package gov.va.vro.camel.processor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -56,9 +57,15 @@ public class FunctionProcessor<I, O> implements Processor {
   ProcessorUtils processorUtils;
 
   /** When using this, no automatic conversion is done with the input message body. */
-  public static <I, O> FunctionProcessor<I, O> fromFunction(Function<I, O> function, ProcessorUtils processorUtils) {
+  public static <I, O> FunctionProcessor<I, O> fromFunction(Function<I, O> function) {
     return FunctionProcessor.<I, O>builder().function(function)
-            .processorUtils(processorUtils).build();
+            .processorUtils(new ProcessorUtils()).build();
+  }
+
+  public static <I, O> FunctionProcessor<I, O> fromFunction(Class<I> inputBodyClass, Function<I, O> function) {
+    return FunctionProcessor.<I, O>builder().function(function)
+            .inputBodyClass(inputBodyClass)
+            .processorUtils(new ProcessorUtils()).build();
   }
 
   @Override
