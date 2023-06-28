@@ -46,7 +46,7 @@ import java.util.function.Function;
 @SuperBuilder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class FunctionProcessor<I, O> implements Processor {
+public class FunctionProcessor<I, O>  extends VroCamelProcessor implements Processor{
   // The expected input type. If null, no automatic conversion is done
   @Builder.Default Class<I> inputBodyClass = null;
 
@@ -60,10 +60,10 @@ public class FunctionProcessor<I, O> implements Processor {
 
   @Override
   public void process(Exchange exchange) {
-    I input = ProcessorUtils.getInputBody(exchange, inputBodyClass);
+    I input = getInputBody(exchange, inputBodyClass);
     // In case of ClassCastException here, did you set inputBodyClass?
     O result = function.apply(input);
 
-    ProcessorUtils.conditionallySetOutputBody(exchange, result);
+    conditionallySetOutputBody(exchange, result);
   }
 }

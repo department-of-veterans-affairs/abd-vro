@@ -37,6 +37,7 @@ public class DefaultOauthSecuritySchemeProvider implements CustomSecuritySchemeP
    *
    * @return created SecurityScheme object
    */
+  @Override
   public SecurityScheme create() {
 
     Scopes scopes = new Scopes();
@@ -55,6 +56,7 @@ public class DefaultOauthSecuritySchemeProvider implements CustomSecuritySchemeP
    *
    * @return name of the SecurityScheme configuration object
    */
+  @Override
   public String getName() {
     return "oauth2";
   }

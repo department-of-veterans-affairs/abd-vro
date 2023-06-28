@@ -41,7 +41,7 @@ import java.util.function.Function;
 // see https://github.com/projectlombok/lombok/issues/2524#issuecomment-662838468
 @SuperBuilder(toBuilder = true)
 @AllArgsConstructor
-public class RequestAndMerge<I, REQ, RESP> implements Processor {
+public class RequestAndMerge<I, REQ, RESP> extends VroCamelProcessor implements Processor {
   ProducerTemplate producer;
 
   public static <I, REQ, RESP> RequestAndMergeBuilder<I, REQ, RESP, ?, ?> factory(
@@ -75,12 +75,12 @@ public class RequestAndMerge<I, REQ, RESP> implements Processor {
   }
 
   public void process(Exchange exchange) {
-    I input = ProcessorUtils.getInputBody(exchange, inputBodyClass);
+    I input = getInputBody(exchange, inputBodyClass);
     REQ request = prepareRequest.apply(input);
     RESP response = makeRequest(request, exchange.getMessage().getHeaders());
     I mergedBody = mergeResponse.apply(input, response);
 
-    ProcessorUtils.conditionallySetOutputBody(exchange, mergedBody);
+    conditionallySetOutputBody(exchange, mergedBody);
   }
 
   @SuppressWarnings("unchecked")
