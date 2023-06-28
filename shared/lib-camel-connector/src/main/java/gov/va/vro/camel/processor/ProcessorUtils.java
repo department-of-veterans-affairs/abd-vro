@@ -1,14 +1,11 @@
 package gov.va.vro.camel.processor;
 
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 import org.apache.camel.Exchange;
 
 import java.util.Optional;
 
-@SuperBuilder(toBuilder = true)
-@NoArgsConstructor
-abstract class VroCamelProcessor {
+final class ProcessorUtils {
 
   @SuppressWarnings("unchecked")
   <I> I getInputBody(Exchange exchange, Class<I> inputBodyClass) {
@@ -21,7 +18,7 @@ abstract class VroCamelProcessor {
     switch (exchange.getPattern()) {
       case InOut -> exchange.getMessage().setBody(body);
       case InOptionalOut -> {
-        if (body == null || (body instanceof Optional && ((Optional) body).isEmpty())) break;
+        if (body == null || (body instanceof Optional && ((Optional<?>) body).isEmpty())) break;
         exchange.getMessage().setBody(body);
       }
       default -> {}

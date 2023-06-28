@@ -46,24 +46,27 @@ import java.util.function.Function;
 @SuperBuilder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class FunctionProcessor<I, O>  extends VroCamelProcessor implements Processor {
+public class FunctionProcessor<I, O> implements Processor {
   // The expected input type. If null, no automatic conversion is done
   @Builder.Default Class<I> inputBodyClass = null;
 
   // The operation to apply to the input message body
   Function<I, O> function;
 
+  ProcessorUtils processorUtils;
+
   /** When using this, no automatic conversion is done with the input message body. */
-  public static <I, O> FunctionProcessor<I, O> fromFunction(Function<I, O> function) {
-    return FunctionProcessor.<I, O>builder().function(function).build();
+  public static <I, O> FunctionProcessor<I, O> fromFunction(Function<I, O> function, ProcessorUtils processorUtils) {
+    return FunctionProcessor.<I, O>builder().function(function)
+            .processorUtils(processorUtils).build();
   }
 
   @Override
   public void process(Exchange exchange) {
-    I input = getInputBody(exchange, inputBodyClass);
+    I input = processorUtils.getInputBody(exchange, inputBodyClass);
     // In case of ClassCastException here, did you set inputBodyClass?
     O result = function.apply(input);
 
-    conditionallySetOutputBody(exchange, result);
+    processorUtils.conditionallySetOutputBody(exchange, result);
   }
 }

@@ -41,7 +41,7 @@ import java.util.function.Function;
 // see https://github.com/projectlombok/lombok/issues/2524#issuecomment-662838468
 @SuperBuilder(toBuilder = true)
 @AllArgsConstructor
-public class RequestAndMerge<I, REQ, RESP> extends VroCamelProcessor implements Processor {
+public class RequestAndMerge<I, REQ, RESP> implements Processor {
   ProducerTemplate producer;
 
   public static <I, REQ, RESP> RequestAndMergeBuilder<I, REQ, RESP, ?, ?> factory(
@@ -64,23 +64,26 @@ public class RequestAndMerge<I, REQ, RESP> extends VroCamelProcessor implements 
   // default is to ignore the response
   @Builder.Default BiFunction<I, RESP, I> mergeResponse = (input, response) -> input;
 
+  ProcessorUtils processorUtils;
+
   /** When using this, no automatic conversion is done with the input message body. */
   public static <I, REQ, RESP> RequestAndMerge<I, REQ, RESP> build(
-      String requestUri, Function<I, REQ> prepareRequest, BiFunction<I, RESP, I> mergeResponse) {
+      String requestUri, Function<I, REQ> prepareRequest, BiFunction<I, RESP, I> mergeResponse, ProcessorUtils processorUtils) {
     return RequestAndMerge.<I, REQ, RESP>builder()
         .requestUri(requestUri)
         .prepareRequest(prepareRequest)
         .mergeResponse(mergeResponse)
+        .processorUtils(processorUtils)
         .build();
   }
 
   public void process(Exchange exchange) {
-    I input = getInputBody(exchange, inputBodyClass);
+    I input = processorUtils.getInputBody(exchange, inputBodyClass);
     REQ request = prepareRequest.apply(input);
     RESP response = makeRequest(request, exchange.getMessage().getHeaders());
     I mergedBody = mergeResponse.apply(input, response);
 
-    conditionallySetOutputBody(exchange, mergedBody);
+    processorUtils.conditionallySetOutputBody(exchange, mergedBody);
   }
 
   @SuppressWarnings("unchecked")
