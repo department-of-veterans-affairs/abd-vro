@@ -1,9 +1,13 @@
 package gov.va.vro.camel.processor;
 
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.apache.camel.Exchange;
 
 import java.util.Optional;
 
+@SuperBuilder(toBuilder = true)
+@NoArgsConstructor
 abstract class VroCamelProcessor {
 
   @SuppressWarnings("unchecked")
