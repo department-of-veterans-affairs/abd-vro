@@ -114,8 +114,7 @@ helm upgrade "$RELEASE_NAME" "helm/$HELM_CHART" -n "${NAMESPACE}" \
   --install --reset-values \
   --set-string "global.imageTag=${IMAGE_TAG}" \
   --set-string "global.commitSha=${GITHUB_SHA}" \
-  ${HELM_ARGS} \
-  "
+  ${HELM_ARGS}
 set +x
 
 k8sInfo(){
@@ -131,4 +130,4 @@ k8sInfo(){
   kubectl -n "${NAMESPACE}" get services
   kubectl -n "${NAMESPACE}" get events
 }
-[ "$K8SINFO" == "true" ] && k8sInfo
+[ "${K8S_INFO}" == "true" ] && k8sInfo
