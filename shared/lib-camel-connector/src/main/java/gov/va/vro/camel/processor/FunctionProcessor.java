@@ -46,7 +46,7 @@ import java.util.function.Function;
 @SuperBuilder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class FunctionProcessor<I, O>  extends VroCamelProcessor implements Processor{
+public class FunctionProcessor<I, O>  extends VroCamelProcessor implements Processor {
   // The expected input type. If null, no automatic conversion is done
   @Builder.Default Class<I> inputBodyClass = null;
 
