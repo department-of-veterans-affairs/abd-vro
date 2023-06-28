@@ -29,7 +29,7 @@ public interface XampleResource {
   @Operation(
       summary = "Create Xample Resource",
       description =
-          "Generates a Xample Resource for a specific payload."
+          "Generates a Xample Resource for a specific payload. "
               + "The created resource will be available using the GET endpoint.")
   @ApiResponses(
       value = {
