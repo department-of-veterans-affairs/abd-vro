@@ -17,11 +17,10 @@ public class XampleJavaMicroservice {
       // To test an error response, throw exception if resourceId is not an integer
       Integer.parseInt(model.getResourceId());
       model.status(StatusValue.DONE);
-      model.setStatusCode(200);
+      model.getHeader().setStatusCode(200);
     } catch (Throwable t) {
       log.error("Simulated error: "+t);
-      model.setStatusCode(417);
-      model.setStatusMessage(t.toString());
+      model.header(417, t.toString());
     }
     return model;
   }

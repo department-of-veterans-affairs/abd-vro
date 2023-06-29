@@ -58,8 +58,8 @@ public class XampleControllerTest {
             .resourceId("320")
             .diagnosticCode("A")
             .status(StatusValue.ERROR.name())
-            .statusMessage("Some Exception was thrown")
-            .build();
+            .build()
+            .header(500, "Some Exception was thrown");
     mockCamelEntryResult(camelResult);
 
     var controller = new XampleController(camelEntry, resourceMapper);
@@ -137,8 +137,8 @@ public class XampleControllerTest {
             .resourceId("320")
             .diagnosticCode("A")
             .status(StatusValue.ERROR.name())
-            .statusMessage("Some Exception was thrown")
-            .build();
+            .build()
+            .header(500, "Some Exception was thrown");
     mockCamelEntryResult(camelResult);
 
     var controller = new XampleController(camelEntry, resourceMapper);

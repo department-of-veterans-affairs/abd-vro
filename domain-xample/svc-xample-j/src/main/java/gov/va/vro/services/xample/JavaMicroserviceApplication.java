@@ -82,10 +82,8 @@ public class JavaMicroserviceApplication {
         log.info("Oh no!", exception);
 
         if (message != null && message.getHeaders().getReplyChannel()!=null){
-          var errorModel=SomeDtoModel.builder().resourceId("").diagnosticCode("")
-                             .statusCode(500)
-                             .statusMessage(exception.toString())
-              .build();
+          var errorModel=SomeDtoModel.builder().resourceId("").diagnosticCode("").build();
+          errorModel.header(500, exception.toString());
 
           return errorModel;
         }
