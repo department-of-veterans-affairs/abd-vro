@@ -63,12 +63,14 @@ public class XampleJavaMicroserviceTest {
   @Autowired
   private ObjectMapper objectMapper;
 
+  // Can also send a plain JSON String without any RabbitTemplate auto-conversion of the msg body
   @Test
-  void sendMessageToGetJson() throws IOException {
-    Message message = rabbitTemplate.getMessageConverter().toMessage(request, new MessageProperties());
+  void sendJsonMessageGetJsonResponse() throws IOException {
+    var requestJsonStringAsBytes = objectMapper.writeValueAsBytes(request);
+    Message message = new Message(requestJsonStringAsBytes);
     Message responseMsg = rabbitTemplate.sendAndReceive(exchangeName, routingKey, message);
-    var json = new String(responseMsg.getBody());
-    SomeDtoModel response = objectMapper.reader().readValue(json, SomeDtoModel.class);
+    String jsonResponse = new String(responseMsg.getBody());
+    SomeDtoModel response = objectMapper.readValue(jsonResponse, SomeDtoModel.class);
 
     assertEquals(request.getResourceId(), response.getResourceId());
     assertEquals(request.getDiagnosticCode(), response.getDiagnosticCode());
