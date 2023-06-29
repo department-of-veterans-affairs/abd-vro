@@ -2,14 +2,12 @@ package gov.va.vro;
 
 import gov.va.vro.propmodel.Info;
 import gov.va.vro.propmodel.OpenApiProperties;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.servers.Server;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -33,7 +31,8 @@ public class OpenApiConfiguration {
             .map(server -> new Server().description(server.getDescription()).url(server.getUrl()))
             .collect(Collectors.toList());
 
-    OpenAPI config =  new OpenAPI()
+    OpenAPI config =
+        new OpenAPI()
             .info(
                 new io.swagger.v3.oas.models.info.Info()
                     .title(info.getTitle())

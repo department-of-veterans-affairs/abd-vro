@@ -9,7 +9,6 @@ import gov.va.vro.camel.ToRabbitMqRouteHelper;
 import gov.va.vro.camel.processor.FunctionProcessor;
 import gov.va.vro.model.xample.SomeDtoModel;
 import gov.va.vro.model.xample.StatusValue;
-import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.services.xample.ServiceB;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

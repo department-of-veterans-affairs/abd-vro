@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 @RequiredArgsConstructor
 class HomePageController {
-    final HomePageModel homePageModel;
+  final HomePageModel homePageModel;
 
-    @GetMapping("/")
-    String index(final Model model) {
-        model.addAttribute("model", homePageModel);
-        return "index";
-    }
+  @GetMapping("/")
+  String index(final Model model) {
+    model.addAttribute("model", homePageModel);
+    return "index";
+  }
 }
