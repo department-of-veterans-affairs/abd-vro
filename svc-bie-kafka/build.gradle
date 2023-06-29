@@ -1,25 +1,25 @@
 plugins {
-    id 'java'
-    id "io.freefair.lombok"
-    id 'local.java.container-spring-conventions'
-    id 'local.std.java.library-spring-conventions'
+  id 'java'
+  id "io.freefair.lombok"
+  id 'local.java.container-spring-conventions'
+  id 'local.std.java.library-spring-conventions'
 }
 
 ext {
-    jacocoExclude = ['**/*Application.*']
+  jacocoExclude = ['**/*Application.*']
 }
 
 dependencies {
 
-    // RabbitMQ
-    implementation 'org.springframework.boot:spring-boot-starter-amqp'
-    implementation 'org.springframework.kafka:spring-kafka'
+  // RabbitMQ
+  implementation 'org.springframework.boot:spring-boot-starter-amqp'
+  implementation 'org.springframework.kafka:spring-kafka'
 
-    // Provides endpoint for healthcheck
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+  // Provides endpoint for healthcheck
+  implementation 'org.springframework.boot:spring-boot-starter-web'
+  implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-    //testImplementation 'org.slf4j:slf4j-simple:2.0.7'
-    testImplementation 'org.springframework.amqp:spring-rabbit-test'
-    testImplementation 'org.springframework.kafka:spring-kafka-test'
+  //testImplementation 'org.slf4j:slf4j-simple:2.0.7'
+  testImplementation 'org.springframework.amqp:spring-rabbit-test'
+  testImplementation 'org.springframework.kafka:spring-kafka-test'
 }

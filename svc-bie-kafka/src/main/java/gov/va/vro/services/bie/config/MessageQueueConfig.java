@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Configuration
 public class MessageQueueConfig {
 
-    public static final boolean DURABLE = true;
+    private static final boolean DURABLE = true;
     private static final boolean AUTO_DELETE = false;
 
     @Bean

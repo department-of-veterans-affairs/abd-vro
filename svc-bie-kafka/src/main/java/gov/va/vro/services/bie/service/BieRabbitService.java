@@ -13,7 +13,6 @@ public class BieRabbitService implements AmqpTopicSender {
 
     private final RabbitTemplate rabbitTemplate;
 
-
     public BieRabbitService(final RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
     }
