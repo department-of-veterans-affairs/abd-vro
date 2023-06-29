@@ -38,16 +38,16 @@ public class XampleJavaMicroserviceTest {
   private RabbitAdmin rabbitAdmin;
 
   @BeforeEach
-  void setUp() {
+  private void setUp() {
     rabbitAdmin.purgeQueue(queueName, true);
   }
 
   @AfterEach
-  void tearDown() {
+  private void tearDown() {
     rabbitAdmin.purgeQueue(queueName, true);
   }
 
-  SomeDtoModel request = SomeDtoModel.builder().resourceId("320").diagnosticCode("B").build();
+  private final SomeDtoModel request = SomeDtoModel.builder().resourceId("320").diagnosticCode("B").build();
 
   @Test
   void sendDtoMessage() {
