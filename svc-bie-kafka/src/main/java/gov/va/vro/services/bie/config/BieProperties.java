@@ -14,10 +14,9 @@ import java.util.Map;
 public class BieProperties {
 
   /**
-   * Map of entries where the key is a kafka topic pattern (regex) to which this app will subscribe.
-   * This pattern will be prepended and appended with wildcards to allow for any prefix or suffix in
-   * the kafka topic name. The value is the corresponding RabbitMQ exchange/queue upon which the
-   * payload will be put. These values are separated by a colon ":" character.
+   * Map of entries where the keys are the kafka topics to which this app will subscribe. The value
+   * is the corresponding RabbitMQ exchange/queue upon which the payload will be put. These values
+   * are separated by a colon ":" character.
    */
   private Map<String, String> topicMap;
 }

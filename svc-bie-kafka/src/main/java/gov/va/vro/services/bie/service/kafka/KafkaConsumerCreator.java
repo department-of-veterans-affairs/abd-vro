@@ -1,7 +1,7 @@
 package gov.va.vro.services.bie.service.kafka;
 
 import gov.va.vro.services.bie.config.BieProperties;
-import gov.va.vro.services.bie.service.AmqpTopicSender;
+import gov.va.vro.services.bie.service.AmqpMessageSender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.listener.AbstractMessageListenerContainer;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
@@ -25,19 +24,18 @@ public class KafkaConsumerCreator {
 
   public KafkaConsumerCreator(
       final ConsumerFactory<?, ?> consumerFactory,
-      final AmqpTopicSender amqpTopicSender,
+      final AmqpMessageSender amqpMessageSender,
       final BieProperties bieProperties) {
-    setUpListeners(consumerFactory, amqpTopicSender, bieProperties.getTopicMap());
+    setUpListeners(consumerFactory, amqpMessageSender, bieProperties.getTopicMap());
   }
 
   private void setUpListeners(
       final ConsumerFactory<?, ?> consumerFactory,
-      final AmqpTopicSender amqpTopicSender,
+      final AmqpMessageSender amqpMessageSender,
       final Map<String, String> topicMap) {
     topicMap.forEach(
-        (kafkaTopicPattern, amqpExchange) -> {
-          final Pattern topicPattern = Pattern.compile(".*" + kafkaTopicPattern + ".*");
-          final ContainerProperties containerProps = new ContainerProperties(topicPattern);
+        (kafkaTopic, amqpExchange) -> {
+          final ContainerProperties containerProps = new ContainerProperties(kafkaTopic);
           containerProps.setAckMode(ContainerProperties.AckMode.RECORD);
           containerProps.setMessageListener(
               (MessageListener<Integer, String>)
@@ -46,7 +44,7 @@ public class KafkaConsumerCreator {
                         "event=messageReceivedFromKafka topic={} msg={}",
                         data.topic(),
                         data.value());
-                    amqpTopicSender.send(amqpExchange, data.topic(), data.value());
+                    amqpMessageSender.send(amqpExchange, data.topic(), data.value());
                   });
           listeners.add(new KafkaMessageListenerContainer<>(consumerFactory, containerProps));
         });

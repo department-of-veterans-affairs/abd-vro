@@ -2,7 +2,7 @@ package gov.va.vro.services.bie.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import gov.va.vro.services.bie.service.AmqpTopicSender;
+import gov.va.vro.services.bie.service.AmqpMessageSender;
 import gov.va.vro.services.bie.service.kafka.KafkaConsumerCreator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,13 +12,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.core.ConsumerFactory;
 
 import java.util.Map;
-import java.util.regex.Pattern;
 
 @ExtendWith(MockitoExtension.class)
 class KafkaConsumerCreatorTest {
 
   @Mock private ConsumerFactory<?, ?> consumerFactory;
-  @Mock private AmqpTopicSender amqpTopicSender;
+  @Mock private AmqpMessageSender amqpMessageSender;
 
   private BieProperties bieProperties;
   private KafkaConsumerCreator kafkaConsumerCreator;
@@ -35,7 +34,7 @@ class KafkaConsumerCreatorTest {
 
     // When
     kafkaConsumerCreator =
-        new KafkaConsumerCreator(consumerFactory, amqpTopicSender, bieProperties);
+        new KafkaConsumerCreator(consumerFactory, amqpMessageSender, bieProperties);
 
     // Then
     assertThat(kafkaConsumerCreator.getListeners()).isEmpty();
@@ -48,13 +47,14 @@ class KafkaConsumerCreatorTest {
 
     // When
     kafkaConsumerCreator =
-        new KafkaConsumerCreator(consumerFactory, amqpTopicSender, bieProperties);
+        new KafkaConsumerCreator(consumerFactory, amqpMessageSender, bieProperties);
 
     // Then
     assertThat(kafkaConsumerCreator.getListeners()).hasSize(1);
-    Pattern topicPattern =
-        kafkaConsumerCreator.getListeners().get(0).getContainerProperties().getTopicPattern();
-    assertThat(topicPattern).isNotNull();
-    assertThat(topicPattern.pattern()).contains(".*kafkaTopic.*");
+
+    final String[] topics =
+        kafkaConsumerCreator.getListeners().get(0).getContainerProperties().getTopics();
+    assertThat(topics).isNotNull();
+    assertThat(topics).contains("kafkaTopic");
   }
 }

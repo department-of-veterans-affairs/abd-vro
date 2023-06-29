@@ -1,7 +1,6 @@
 package gov.va.vro.services.bie.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,12 +15,9 @@ import lombok.extern.jackson.Jacksonized;
 @ToString
 public class BieMessagePayload {
 
-  @JsonProperty("topic")
   private String topic;
 
-  @JsonProperty("notifiedAt")
   private String notifiedAt;
 
-  @JsonProperty("event")
   private String event;
 }

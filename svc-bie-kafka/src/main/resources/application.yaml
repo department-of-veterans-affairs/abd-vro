@@ -15,20 +15,18 @@ spring:
 ## Specify bie properties
 bie:
   topic-map:
-    # Map of entries where the key is a kafka topic pattern (regex) to which this app will subscribe. This pattern will
-    # be prepended and appended with wildcards to allow for any prefix or suffix in the kafka topic name. The value is
-    # the corresponding RabbitMQ exchange/queue upon which the payload will be put. These values are separated by a
-    # colon ":" character.
-    CONTENTION_ASSOCIATED: bie-events-contention-associated
-    CONTENTION_UPDATED: bie-events-contention-updated
-    CONTENTION_CLASSIFIED: bie-events-contention-classified
-    CONTENTION_COMPLETED: bie-events-contention-completed
-    CONTENTION_DELETED: bie-events-contention-deleted
+    # Map of entries where the keys are the kafka topics to which this app will subscribe. The value is the corresponding
+    # RabbitMQ exchange/queue upon which the payload will be put. These values are separated by a colon ":" character.
+    TST_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02: bie-events-contention-associated
+    TST_CONTENTION_BIE_CONTENTION_UPDATED_V02: bie-events-contention-updated
+    TST_CONTENTION_BIE_CONTENTION_CLASSIFIED: bie-events-contention-classified
+    TST_CONTENTION_BIE_CONTENTION_COMPLETED: bie-events-contention-completed
+    TST_CONTENTION_BIE_CONTENTION_DELETED: bie-events-contention-deleted
 
 ## Actuator for health check
 management:
   server:
-    port: 10011
+    port: 10301
   endpoint:
     health:
       show-details: always
