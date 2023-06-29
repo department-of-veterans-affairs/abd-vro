@@ -8,6 +8,7 @@ plugins {
 
     id 'starter.java.deps-open-tracing-common-conventions'
     id 'starter.java.publish-jar-conventions'
+    id 'starter.java.lint-spotless-java-conventions'
 
     id 'replacement-for-starter.bom'
 }

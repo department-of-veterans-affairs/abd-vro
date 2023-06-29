@@ -62,6 +62,15 @@ services:
     networks:
       - vro_intranet
 
+  svc-hoppy-usage:
+    profiles: [ "all","hoppy" ]
+    image: va/abd_vro-svc-hoppy-usage:latest
+    <<: [ *common-sde-security, *common-security-opt ]
+    environment:
+      <<: [ *rabbitmq-placeholder-vars, *common-vars ]
+    networks:
+      - vro_intranet
+
   svc-bie-kafka:
     profiles: ["all","kafka"]
     image: va/abd_vro-svc-bie-kafka:latest
@@ -70,6 +79,5 @@ services:
       <<: [*rabbitmq-client-vars, *rabbitmq-placeholder-vars]
       BIE_KAFKA_PLACEHOLDERS_BROKERS: mock-bie-kafka:9092
       BIE_KAFKA_PLACEHOLDERS_GROUP_ID: vro-bie-group
-
     networks:
       - vro_intranet

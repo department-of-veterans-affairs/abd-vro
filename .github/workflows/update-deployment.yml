@@ -71,15 +71,21 @@ on:
         - 7
         - (disable)
       postgres:
-        description: 'Enable DB'
+        description: 'Postgres DB image tag'
         required: true
-        type: boolean
-        default: true
+        default: latest
+        type: choice
+        options:
+        - latest
+        - (disable)
       console:
-        description: 'Enable VRO Console'
+        description: 'VRO Console image tag'
         required: true
-        type: boolean
-        default: false
+        default: "(disable)"
+        type: choice
+        options:
+        - latest
+        - (disable)
 
   # Allow other workflows to call this one
   workflow_call:
@@ -113,12 +119,12 @@ on:
         default: "latest"
       postgres:
         required: false
-        type: boolean
-        default: true
+        type: string
+        default: "latest"
       console:
         required: false
-        type: boolean
-        default: false
+        type: string
+        default: "(disable)"
 
 env:
   # Id for the #benefits-vro-devops Slack channel
@@ -167,13 +173,10 @@ jobs:
             echo '```' >> $GITHUB_STEP_SUMMARY
 
             # HELM_VALUES=$(helm get values ${{ env.RELEASE_NAME }} --all -n va-abd-rrd-${{ inputs.target_env }} -o json)
-            # echo "helm_values=$HELM_VALUES" >> $GITHUB_OUTPUT
             # Show values with an `enabled` key
             # echo $HELM_VALUES | jq '. | with_entries(select(.value.enabled!=null))'
           else
             echo "No existing Helm release; creating a new Helm release: ${{ env.RELEASE_NAME }}"
-            # Set helm_values so that subsequent steps that access it don't fail
-            # echo 'helm_values={ "postgres": { "enabled": false } }' >> $GITHUB_OUTPUT
           fi
 
       - name: "Checkout source code"
@@ -202,10 +205,10 @@ jobs:
 
           export RABBITMQ_VER=${{ inputs.rabbitmq }}
           export REDIS_VER=${{ inputs.redis }}
-          export ENABLE_POSTGRES=${{ inputs.postgres }}
-          export ENABLE_CONSOLE=${{ inputs.console }}
+          export postgres_VER=${{ inputs.postgres }}
+          export console_VER=${{ inputs.console }}
 
-          export K8SINFO=true
+          export K8S_INFO=true
           export WAIT_TIMEOUT=10m
           helm/deploy.sh "${{inputs.target_env}}" "${{inputs.helm_chart}}" "${{inputs.image_tag}}"
           echo "::endgroup::"

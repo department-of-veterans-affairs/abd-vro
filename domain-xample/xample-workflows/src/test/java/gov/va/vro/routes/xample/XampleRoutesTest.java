@@ -160,7 +160,7 @@ public class XampleRoutesTest extends CamelTestSupport {
     var response = template.requestBody(STARTING_URI, someDtoModel, SomeDtoModel.class);
     assertEquals(someDtoModel.getResourceId(), response.getResourceId());
     assertEquals(StatusValue.ERROR.name(), response.getStatus());
-    assertTrue(response.getStatusMessage().contains(errorMsg));
+    assertTrue(response.getHeader().getStatusMessage().contains(errorMsg));
 
     assertMockEndpointsSatisfied();
   }

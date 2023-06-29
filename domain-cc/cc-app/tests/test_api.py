@@ -46,3 +46,14 @@ def test_unmapped_diagnostic_code(client: TestClient):
     response = client.post("/classifier", json=json_post_dict)
     assert response.status_code == 200
     assert response.json() is None
+
+
+def test_unprocessable_content(client: TestClient):
+    json_post_dict = {
+        "diagnostic_code": "this is personal information",
+        "claim_id": "SQL \n injection \n not really",
+        "form526_submission_id": "1-234-567-9999",
+    }
+
+    response = client.post("/classifier", json=json_post_dict)
+    assert response.status_code == 422

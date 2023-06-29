@@ -10,6 +10,9 @@ on:
   release:
     types: [ "created" ]
 
+  pull_request:
+    branches: [ develop ]
+
   # Allow manual runs
   workflow_dispatch:
     inputs:
@@ -39,7 +42,8 @@ env:
 jobs:
   publish-to-ghcr:
     # only run for the internal repo, where the images are published
-    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal' &&
+      ((github.event_name == 'pull_request' && startsWith(github.head_ref, 'dependabot/')) || github.event_name != 'pull_request')
     outputs:
       vro-images: ${{ steps.publish-images.outputs.images_list }}
       slack-response-ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}

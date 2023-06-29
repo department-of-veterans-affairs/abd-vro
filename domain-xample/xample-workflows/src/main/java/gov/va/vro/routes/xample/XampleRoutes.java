@@ -9,7 +9,6 @@ import gov.va.vro.camel.ToRabbitMqRouteHelper;
 import gov.va.vro.camel.processor.FunctionProcessor;
 import gov.va.vro.model.xample.SomeDtoModel;
 import gov.va.vro.model.xample.StatusValue;
-import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.services.xample.ServiceB;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,12 +44,13 @@ public class XampleRoutes extends EndpointRouteBuilder {
 
   void configurePostResourceRoute() {
     from("direct:saveToDb")
-        .process(
-            new FunctionProcessor<SomeDtoModel, ClaimEntity>(
-                SomeDtoModel.class, model -> dbHelper.saveToDb(model)));
+        .log("Saving to DB is disabled since the DB schema has been reset after RRD removal");
+    //    .process(
+    //        new FunctionProcessor<SomeDtoModel, ClaimEntity>(
+    //            SomeDtoModel.class, model -> dbHelper.saveToDb(model)));
 
     var setStatusReceived =
-        new FunctionProcessor<SomeDtoModel, SomeDtoModel>(
+        FunctionProcessor.<SomeDtoModel, SomeDtoModel>fromFunction(
             SomeDtoModel.class, model -> model.status(StatusValue.RECEIVED));
 
     // This route looks long due to the code comments but it's not doing much:
@@ -143,7 +143,7 @@ public class XampleRoutes extends EndpointRouteBuilder {
 
   void configureRouteToServiceA() {
     var setStatusDone =
-        new FunctionProcessor<SomeDtoModel, SomeDtoModel>(
+        FunctionProcessor.<SomeDtoModel, SomeDtoModel>fromFunction(
             SomeDtoModel.class, model -> model.status(StatusValue.DONE));
 
     from(SERVICE_A_ENDPOINT)

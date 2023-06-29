@@ -18,6 +18,7 @@ public class DefaultJwtBearerSecuritySchemeProvider implements CustomSecuritySch
    *
    * @return created SecurityScheme object
    */
+  @Override
   public SecurityScheme create() {
 
     return new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT");
@@ -28,6 +29,7 @@ public class DefaultJwtBearerSecuritySchemeProvider implements CustomSecuritySch
    *
    * @return name of the SecurityScheme configuration object
    */
+  @Override
   public String getName() {
     return "bearer-jwt";
   }
