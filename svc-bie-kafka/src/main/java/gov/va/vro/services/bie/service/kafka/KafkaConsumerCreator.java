@@ -40,7 +40,7 @@ public class KafkaConsumerCreator {
           containerProps.setMessageListener(
               (MessageListener<Integer, String>)
                   data -> {
-                    log.info(
+                    log.debug(
                         "event=messageReceivedFromKafka topic={} msg={}",
                         data.topic(),
                         data.value());
