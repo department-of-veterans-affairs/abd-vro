@@ -177,7 +177,6 @@
 "local.ruby.container-service" [style=filled,color=pink]
 "local.ruby.container-service" -> "shared.docker.container"
 "local.std.base-project" [style=filled,color=pink]
-"local.std.base-project" -> "starter.java.build-utils-property"
 "local.std.base-project" -> "local.docker-compose-convention"
 "local.std.domain.folder" [style=filled,color=pink]
 "local.std.domain.folder" -> "local.docker-compose-convention"
@@ -189,17 +188,13 @@
 "local.std.java.application" -> "starter.java.deps-springdoc"
 "local.std.java.application" -> "starter.java.lint-spectral"
 "local.std.java.application" -> "starter.java.doc-springdoc"
-"local.std.java.application" -> "starter.java.lint-spotless-java"
 "local.std.java.application" -> "local.java.container-spring"
 "local.std.java.application" -> "shared.std.java"
 "local.std.java.library" [style=filled,color=pink]
 "local.std.java.library" -> "starter.java.deps-open-tracing-common"
 "local.std.java.library" -> "starter.java.publish-jar"
-"local.std.java.library" -> "starter.java.lint-spotless-java"
 "local.std.java.library" -> "shared.std.java"
 "local.std.java.library" -> "replacement-for-starter.bom"
-"local.std.java.library-spring" [style=filled,color=pink]
-"local.std.java.library-spring" -> "local.std.java.library"
 "shared.docker.container" [style=filled,color=lightgreen]
 "shared.java.vro-dep-constraints" [style=filled,color=lightgreen]
 "shared.std.java" [style=filled,color=lightgreen]
@@ -210,28 +205,28 @@
 "shared.std.java" -> "starter.java.build-javatarget"
 "shared.std.java" -> "starter.java.test"
 "shared.std.java" -> "starter.java.test-jacoco"
+"shared.std.java" -> "starter.java.lint-spotless-java"
 "shared.std.java" -> "shared.java.vro-dep-constraints"
 "replacement-for-starter.bom" [style=filled,color="#db9e2c"]
 
 "./mocks/mock-bip-ce-api" [style=filled,color=lightgrey,shape=box]
 "./mocks/mock-bip-ce-api" -> "local.java.container-spring"
-"./mocks/mock-bip-ce-api" -> "local.std.java.library-spring"
+"./mocks/mock-bip-ce-api" -> "local.std.java.library"
 "./mocks/mock-bie-kafka" [style=filled,color=lightgrey,shape=box]
-"./mocks/mock-bie-kafka" -> "local.java.container"
-"./mocks/mock-bie-kafka" -> "starter.java.build-utils-property"
+"./mocks/mock-bie-kafka" -> "shared.docker.container"
 "./mocks" [style=filled,color=lightgrey,shape=box]
 "./mocks" -> "local.std.base-project"
 "./mocks/mock-bip-shared" [style=filled,color=lightgrey,shape=box]
 "./mocks/mock-bip-shared" -> "local.std.java.library"
 "./mocks/mock-slack" [style=filled,color=lightgrey,shape=box]
 "./mocks/mock-slack" -> "local.java.container-spring"
-"./mocks/mock-slack" -> "local.std.java.library-spring"
+"./mocks/mock-slack" -> "local.std.java.library"
 "./mocks/mock-bip-claims-api" [style=filled,color=lightgrey,shape=box]
 "./mocks/mock-bip-claims-api" -> "local.java.container-spring"
-"./mocks/mock-bip-claims-api" -> "local.std.java.library-spring"
+"./mocks/mock-bip-claims-api" -> "local.std.java.library"
 "./mocks/mock-lighthouse-api" [style=filled,color=lightgrey,shape=box]
 "./mocks/mock-lighthouse-api" -> "local.java.container-spring"
-"./mocks/mock-lighthouse-api" -> "local.std.java.library-spring"
+"./mocks/mock-lighthouse-api" -> "local.std.java.library"
 "./svc-bgs-api" [style=filled,color=lightgrey,shape=box]
 "./svc-bgs-api" -> "local.ruby.container-service"
 "./app" [style=filled,color=lightgrey,shape=box]
@@ -239,18 +234,18 @@
 "./app" -> "local.docker-compose-convention"
 "./svc-lighthouse-api" [style=filled,color=lightgrey,shape=box]
 "./svc-lighthouse-api" -> "local.java.container-spring"
-"./svc-lighthouse-api" -> "local.std.java.library-spring"
+"./svc-lighthouse-api" -> "local.std.java.library"
 "./api-gateway" [style=filled,color=lightgrey,shape=box]
-"./api-gateway" -> "local.std.java.library-spring"
+"./api-gateway" -> "local.std.java.library"
 "./api-gateway" -> "local.java.container-spring"
 "./shared/lib-camel-connector" [style=filled,color=lightgrey,shape=box]
-"./shared/lib-camel-connector" -> "local.std.java.library-spring"
+"./shared/lib-camel-connector" -> "local.std.java.library"
 "./shared/persistence-model" [style=filled,color=lightgrey,shape=box]
-"./shared/persistence-model" -> "local.std.java.library-spring"
+"./shared/persistence-model" -> "local.std.java.library"
 "./postgres" [style=filled,color=lightgrey,shape=box]
-"./postgres" -> "local.java.container"
+"./postgres" -> "shared.docker.container"
 "./db-init" [style=filled,color=lightgrey,shape=box]
-"./db-init" -> "local.java.container"
+"./db-init" -> "shared.docker.container"
 "./db-init" -> "starter.java.build-utils-property"
 "./domain-cc/cc-app" [style=filled,color=lightgrey,shape=box]
 "./domain-cc/cc-app" -> "local.python.container-service"
@@ -262,9 +257,9 @@
 "." -> "local.std.base-project"
 "./domain-xample/xample-workflows" [style=filled,color=lightgrey,shape=box]
 "./domain-xample/xample-workflows" -> "local.java.container-spring"
-"./domain-xample/xample-workflows" -> "local.std.java.library-spring"
+"./domain-xample/xample-workflows" -> "local.std.java.library"
 "./domain-xample/xample-shared" [style=filled,color=lightgrey,shape=box]
-"./domain-xample/xample-shared" -> "local.std.java.library-spring"
+"./domain-xample/xample-shared" -> "local.std.java.library"
 "./domain-xample" [style=filled,color=lightgrey,shape=box]
 "./domain-xample" -> "local.std.domain.folder"
 "./domain-xample/svc-xample-j" [style=filled,color=lightgrey,shape=box]
@@ -272,13 +267,12 @@
 "./domain-xample/svc-hoppy-usage" [style=filled,color=lightgrey,shape=box]
 "./domain-xample/svc-hoppy-usage" -> "local.python.container-service"
 "./domain-xample/xample-api-controller" [style=filled,color=lightgrey,shape=box]
-"./domain-xample/xample-api-controller" -> "local.std.java.library-spring"
-"./gradle-plugins" [style=filled,color=lightgrey,shape=box]
+"./domain-xample/xample-api-controller" -> "local.std.java.library"
 "./svc-bip-api" [style=filled,color=lightgrey,shape=box]
 "./svc-bip-api" -> "local.std.java.library"
 "./console" [style=filled,color=lightgrey,shape=box]
 "./console" -> "local.java.container-spring"
-"./console" -> "local.std.java.library-spring"
+"./console" -> "local.std.java.library"
       }`;
       var parsedData = vis.parseDOTNetwork(DOTstring);
 
