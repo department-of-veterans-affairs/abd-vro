@@ -29,29 +29,22 @@ class KafkaConsumerCreatorTest {
 
   @Test
   void whenTopicMapIsEmpty_ShouldCreateNoListeners() {
-    // Given
-    bieProperties.setTopicMap(Map.of());
+    bieProperties.setKafkaTopicToAmqpQueueMap(Map.of());
 
-    // When
     kafkaConsumerCreator =
         new KafkaConsumerCreator(consumerFactory, amqpMessageSender, bieProperties);
 
-    // Then
     assertThat(kafkaConsumerCreator.getListeners()).isEmpty();
   }
 
   @Test
   void whenTopicMapIsNotEmpty_ShouldCreateListeners() {
-    // Given
-    bieProperties.setTopicMap(Map.of("kafkaTopic", "rabbitQueue"));
+    bieProperties.setKafkaTopicToAmqpQueueMap(Map.of("kafkaTopic", "rabbitQueue"));
 
-    // When
     kafkaConsumerCreator =
         new KafkaConsumerCreator(consumerFactory, amqpMessageSender, bieProperties);
 
-    // Then
     assertThat(kafkaConsumerCreator.getListeners()).hasSize(1);
-
     final String[] topics =
         kafkaConsumerCreator.getListeners().get(0).getContainerProperties().getTopics();
     assertThat(topics).isNotNull();

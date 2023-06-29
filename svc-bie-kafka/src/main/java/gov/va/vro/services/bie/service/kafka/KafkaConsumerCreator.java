@@ -26,7 +26,7 @@ public class KafkaConsumerCreator {
       final ConsumerFactory<?, ?> consumerFactory,
       final AmqpMessageSender amqpMessageSender,
       final BieProperties bieProperties) {
-    setUpListeners(consumerFactory, amqpMessageSender, bieProperties.getTopicMap());
+    setUpListeners(consumerFactory, amqpMessageSender, bieProperties.getKafkaTopicToAmqpQueueMap());
   }
 
   private void setUpListeners(

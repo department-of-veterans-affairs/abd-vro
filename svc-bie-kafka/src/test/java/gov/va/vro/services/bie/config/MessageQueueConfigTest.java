@@ -18,7 +18,7 @@ class MessageQueueConfigTest {
   @Test
   void createTopicBindingsWithEmptyTopicMap_ShouldReturnEmptyListOfDeclarables() {
     final BieProperties bieProperties = new BieProperties();
-    bieProperties.setTopicMap(Map.of());
+    bieProperties.setKafkaTopicToAmqpQueueMap(Map.of());
 
     final MessageQueueConfig config = new MessageQueueConfig();
     final Declarables declarables = config.topicBindings(bieProperties);
@@ -30,7 +30,7 @@ class MessageQueueConfigTest {
   @Test
   void createTopicBindingsWithNonEmptyTopicMap_ShouldReturnEmptyListOfDeclarables() {
     final BieProperties bieProperties = new BieProperties();
-    bieProperties.setTopicMap(Map.of("kafkaTopic", "rabbitQueue"));
+    bieProperties.setKafkaTopicToAmqpQueueMap(Map.of("kafkaTopic", "rabbitQueue"));
 
     final MessageQueueConfig config = new MessageQueueConfig();
     final Declarables declarables = config.topicBindings(bieProperties);

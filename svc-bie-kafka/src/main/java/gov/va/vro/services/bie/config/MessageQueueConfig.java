@@ -31,7 +31,7 @@ public class MessageQueueConfig {
   @Bean
   Declarables topicBindings(final BieProperties bieProperties) {
     final List<AbstractDeclarable> list =
-        bieProperties.getTopicMap().values().stream()
+        bieProperties.getKafkaTopicToAmqpQueueMap().values().stream()
             .map(
                 topic -> {
                   final Queue queue = new Queue(topic, DURABLE);
