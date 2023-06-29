@@ -57,6 +57,8 @@ jobs:
             echo "Unexpected status code: $STATUS_CODE"
             exit 10
           fi
+
+          ./gradlew -p domain-xample integrationTest
       - name: "Collect docker logs"
         if: always()
         uses: jwalton/gh-docker-logs@v2
