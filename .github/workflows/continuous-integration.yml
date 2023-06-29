@@ -26,3 +26,7 @@ jobs:
   xample-domain:
     uses: ./.github/workflows/xample-integration-test.yml
     secrets: inherit
+
+  api-gateway:
+    uses: ./.github/workflows/api-gateway-integration-test.yml
+    secrets: inherit
