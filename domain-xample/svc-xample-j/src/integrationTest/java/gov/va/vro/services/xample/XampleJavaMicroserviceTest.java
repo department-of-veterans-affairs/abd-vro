@@ -86,6 +86,7 @@ public class XampleJavaMicroserviceTest {
     assertEquals(request.getDiagnosticCode(), response.getDiagnosticCode());
     assertNull(response.getStatus());
     assertEquals(417, response.getHeader().getStatusCode());
-    assertEquals("java.lang.NumberFormatException: For input string: \"IdThatCausesError\"", response.getHeader().getStatusMessage());
+    assertEquals("java.lang.NumberFormatException: For input string: \"IdThatCausesError\"",
+        response.getHeader().getStatusMessage());
   }
 }
