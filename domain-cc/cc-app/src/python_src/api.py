@@ -1,4 +1,5 @@
 import logging
+import sys
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException
@@ -21,6 +22,7 @@ logging.basicConfig(
     format="[%(asctime)s] %(levelname)-8s %(message)s",
     level=logging.INFO,
     datefmt="%Y-%m-%d %H:%M:%S",
+    stream=sys.stdout,
 )
 
 
