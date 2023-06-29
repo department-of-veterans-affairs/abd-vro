@@ -1,6 +1,5 @@
 package gov.va.vro.camel.processor;
 
-import lombok.NoArgsConstructor;
 import org.apache.camel.Exchange;
 
 import java.util.Optional;
@@ -21,7 +20,8 @@ final class ProcessorUtils {
         if (body == null || (body instanceof Optional && ((Optional<?>) body).isEmpty())) break;
         exchange.getMessage().setBody(body);
       }
-      default -> {}
+      default -> {
+      }
     }
   }
 }
