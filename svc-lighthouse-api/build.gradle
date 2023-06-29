@@ -23,6 +23,7 @@ dependencies {
   implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
   implementation 'org.apache.commons:commons-lang3:3.12.0'
   implementation 'io.jsonwebtoken:jjwt:0.9.1'
+  implementation 'com.google.guava:guava:32.0.1-jre'
 
   testImplementation "org.apache.camel.springboot:camel-rabbitmq-starter:${camel_version}"
   //  testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
