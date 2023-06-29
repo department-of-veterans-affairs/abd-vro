@@ -21,29 +21,31 @@ import java.util.stream.Collectors;
 @Configuration
 public class MessageQueueConfig {
 
-    private static final boolean DURABLE = true;
-    private static final boolean AUTO_DELETE = false;
+  private static final boolean DURABLE = true;
+  private static final boolean AUTO_DELETE = false;
 
-    @Bean
-    public RabbitTemplate rabbitTemplate(final ConnectionFactory connectionFactory) {
-        final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
-        return rabbitTemplate;
-    }
+  @Bean
+  public RabbitTemplate rabbitTemplate(final ConnectionFactory connectionFactory) {
+    final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+    rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
+    return rabbitTemplate;
+  }
 
-    @Bean
-    Declarables topicBindings(final BieProperties bieProperties) {
-        final List<AbstractDeclarable> list = bieProperties.getTopicMap().values()
-                .stream()
-                .map(topic -> {
-                    final Queue queue = new Queue(topic, DURABLE);
-                    final FanoutExchange fanoutExchange = new FanoutExchange(topic, DURABLE, AUTO_DELETE);
-                    final Binding binding = BindingBuilder.bind(queue).to(fanoutExchange);
-                    return List.of(queue, fanoutExchange, binding);
+  @Bean
+  Declarables topicBindings(final BieProperties bieProperties) {
+    final List<AbstractDeclarable> list =
+        bieProperties.getTopicMap().values().stream()
+            .map(
+                topic -> {
+                  final Queue queue = new Queue(topic, DURABLE);
+                  final FanoutExchange fanoutExchange =
+                      new FanoutExchange(topic, DURABLE, AUTO_DELETE);
+                  final Binding binding = BindingBuilder.bind(queue).to(fanoutExchange);
+                  return List.of(queue, fanoutExchange, binding);
                 })
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-        log.info(list.toString());
-        return new Declarables(list);
-    }
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
+    log.info(list.toString());
+    return new Declarables(list);
+  }
 }

@@ -11,20 +11,17 @@ import java.util.concurrent.CountDownLatch;
 @SpringBootApplication
 public class BieKafkaApplication {
 
-    @Bean
-    public CountDownLatch shutdownLatch() {
-        return new CountDownLatch(1);
-    }
+  @Bean
+  public CountDownLatch shutdownLatch() {
+    return new CountDownLatch(1);
+  }
 
-    public static void main(String[] args) throws InterruptedException {
-        var ctx = SpringApplication.run(BieKafkaApplication.class, args);
+  public static void main(String[] args) throws InterruptedException {
+    var ctx = SpringApplication.run(BieKafkaApplication.class, args);
 
-        // Keep this application running
-        final CountDownLatch closeLatch = ctx.getBean(CountDownLatch.class);
-        Runtime.getRuntime()
-                .addShutdownHook(
-                        new Thread(closeLatch::countDown));
-        closeLatch.await();
-    }
-
+    // Keep this application running
+    final CountDownLatch closeLatch = ctx.getBean(CountDownLatch.class);
+    Runtime.getRuntime().addShutdownHook(new Thread(closeLatch::countDown));
+    closeLatch.await();
+  }
 }

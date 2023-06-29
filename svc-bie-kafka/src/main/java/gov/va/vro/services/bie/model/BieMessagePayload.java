@@ -16,11 +16,12 @@ import lombok.extern.jackson.Jacksonized;
 @ToString
 public class BieMessagePayload {
 
-    @JsonProperty("topic")
-    private String topic;
-    @JsonProperty("notifiedAt")
-    private String notifiedAt;
-    @JsonProperty("event")
-    private String event;
+  @JsonProperty("topic")
+  private String topic;
 
+  @JsonProperty("notifiedAt")
+  private String notifiedAt;
+
+  @JsonProperty("event")
+  private String event;
 }

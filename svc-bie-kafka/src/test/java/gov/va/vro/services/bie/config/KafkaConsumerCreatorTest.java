@@ -14,41 +14,40 @@ import java.util.Map;
 @ExtendWith(MockitoExtension.class)
 class KafkaConsumerCreatorTest {
 
-    @Mock
-    private ConsumerFactory<?, ?> consumerFactory;
-    @Mock
-    private AmqpTopicSender amqpTopicSender;
+  @Mock private ConsumerFactory<?, ?> consumerFactory;
+  @Mock private AmqpTopicSender amqpTopicSender;
 
-    private BieProperties bieProperties;
-    private KafkaConsumerCreator kafkaConsumerCreator;
+  private BieProperties bieProperties;
+  private KafkaConsumerCreator kafkaConsumerCreator;
 
-    @BeforeEach
-    public void setUp() {
-        bieProperties = new BieProperties();
-    }
+  @BeforeEach
+  public void setUp() {
+    bieProperties = new BieProperties();
+  }
 
-    @Test
-    public void whenTopicMapIsEmpty_ShouldCreateNoListeners() {
-        // Given
-        bieProperties.setTopicMap(Map.of());
+  @Test
+  public void whenTopicMapIsEmpty_ShouldCreateNoListeners() {
+    // Given
+    bieProperties.setTopicMap(Map.of());
 
-        // When
-        kafkaConsumerCreator = new KafkaConsumerCreator(consumerFactory, amqpTopicSender, bieProperties);
+    // When
+    kafkaConsumerCreator =
+        new KafkaConsumerCreator(consumerFactory, amqpTopicSender, bieProperties);
 
-        // Then
-        Assertions.assertThat(kafkaConsumerCreator.getListeners()).isEmpty();
-    }
+    // Then
+    Assertions.assertThat(kafkaConsumerCreator.getListeners()).isEmpty();
+  }
 
-    @Test
-    public void whenTopicMapIsNoneEmpty_ShouldCreateListeners() {
-        // Given
-        bieProperties.setTopicMap(Map.of("kafkaTopic", "rabbitQueue"));
+  @Test
+  public void whenTopicMapIsNoneEmpty_ShouldCreateListeners() {
+    // Given
+    bieProperties.setTopicMap(Map.of("kafkaTopic", "rabbitQueue"));
 
-        // When
-        kafkaConsumerCreator = new KafkaConsumerCreator(consumerFactory, amqpTopicSender, bieProperties);
+    // When
+    kafkaConsumerCreator =
+        new KafkaConsumerCreator(consumerFactory, amqpTopicSender, bieProperties);
 
-        // Then
-        Assertions.assertThat(kafkaConsumerCreator.getListeners()).hasSize(1);
-    }
-
+    // Then
+    Assertions.assertThat(kafkaConsumerCreator.getListeners()).hasSize(1);
+  }
 }

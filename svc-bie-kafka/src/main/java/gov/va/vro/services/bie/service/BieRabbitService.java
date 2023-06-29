@@ -11,20 +11,21 @@ import java.time.Instant;
 @Service
 public class BieRabbitService implements AmqpTopicSender {
 
-    private final RabbitTemplate rabbitTemplate;
+  private final RabbitTemplate rabbitTemplate;
 
-    public BieRabbitService(final RabbitTemplate rabbitTemplate) {
-        this.rabbitTemplate = rabbitTemplate;
-    }
+  public BieRabbitService(final RabbitTemplate rabbitTemplate) {
+    this.rabbitTemplate = rabbitTemplate;
+  }
 
-    @Override
-    public void send(final String exchange, final String topic, final String message) {
-        final BieMessagePayload bieMessagePayload = BieMessagePayload.builder()
-                .topic(topic)
-                .notifiedAt(Instant.now().toString())
-                .event(message)
-                .build();
-        rabbitTemplate.convertAndSend(exchange, topic, bieMessagePayload);
-        log.info("event=messageSent exchange={} topic={} msg={}", exchange, topic, bieMessagePayload);
-    }
+  @Override
+  public void send(final String exchange, final String topic, final String message) {
+    final BieMessagePayload bieMessagePayload =
+        BieMessagePayload.builder()
+            .topic(topic)
+            .notifiedAt(Instant.now().toString())
+            .event(message)
+            .build();
+    rabbitTemplate.convertAndSend(exchange, topic, bieMessagePayload);
+    log.info("event=messageSent exchange={} topic={} msg={}", exchange, topic, bieMessagePayload);
+  }
 }
