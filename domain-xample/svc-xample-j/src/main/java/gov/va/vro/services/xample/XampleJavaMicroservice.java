@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class XampleJavaMicroservice {
-  @RabbitListener(queues = "#{queue1.name}", errorHandler="xampleErrorHandler")
+  @RabbitListener(queues = "#{queue1.name}", errorHandler = "xampleErrorHandler")
   public SomeDtoModel receiveMessage(SomeDtoModel model) {
     log.info("Received: " + model);
     try {
@@ -19,7 +19,7 @@ public class XampleJavaMicroservice {
       model.status(StatusValue.DONE);
       model.getHeader().setStatusCode(200);
     } catch (Throwable t) {
-      log.error("Simulated error: "+t);
+      log.error("Simulated error: " + t);
       model.header(417, t.toString());
     }
     return model;

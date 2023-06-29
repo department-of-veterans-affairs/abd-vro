@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 
-//@NoArgsConstructor
+// @NoArgsConstructor
 @AllArgsConstructor
 // Use toBuilder as a copy constructor
 @Builder(toBuilder = true)
