@@ -75,22 +75,27 @@ public class JavaMicroserviceApplication {
   }
 
   @Bean
-  RabbitListenerErrorHandler xampleErrorHandler(){
-    RabbitListenerErrorHandler handler=new RabbitListenerErrorHandler() {
-      @Override
-      public Object handleError(Message amqpMessage, org.springframework.messaging.Message<?> message, ListenerExecutionFailedException exception) throws Exception {
-        log.info("Oh no!", exception);
+  RabbitListenerErrorHandler xampleErrorHandler() {
+    RabbitListenerErrorHandler handler =
+        new RabbitListenerErrorHandler() {
+          @Override
+          public Object handleError(
+              Message amqpMessage,
+              org.springframework.messaging.Message<?> message,
+              ListenerExecutionFailedException exception)
+              throws Exception {
+            log.info("Oh no!", exception);
 
-        if (message != null && message.getHeaders().getReplyChannel()!=null){
-          var errorModel=SomeDtoModel.builder().resourceId("").diagnosticCode("").build();
-          errorModel.header(500, exception.toString());
+            if (message != null && message.getHeaders().getReplyChannel() != null) {
+              var errorModel = SomeDtoModel.builder().resourceId("").diagnosticCode("").build();
+              errorModel.header(500, exception.toString());
 
-          return errorModel;
-        }
+              return errorModel;
+            }
 
-        return null;
-      }
-    };
+            return null;
+          }
+        };
     return handler;
   }
 }

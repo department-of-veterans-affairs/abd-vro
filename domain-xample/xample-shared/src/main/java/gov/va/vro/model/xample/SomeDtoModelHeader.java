@@ -18,5 +18,4 @@ public class SomeDtoModelHeader {
   @Builder.Default private int statusCode = 0;
   // Message to go with the statusCode
   private String statusMessage;
-
 }
