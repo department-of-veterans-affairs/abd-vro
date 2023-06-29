@@ -1,7 +1,9 @@
 package gov.va.vro.services.bie.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import gov.va.vro.services.bie.service.AmqpTopicSender;
-import org.assertj.core.api.Assertions;
+import gov.va.vro.services.bie.service.kafka.KafkaConsumerCreator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.core.ConsumerFactory;
 
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @ExtendWith(MockitoExtension.class)
 class KafkaConsumerCreatorTest {
@@ -21,12 +24,12 @@ class KafkaConsumerCreatorTest {
   private KafkaConsumerCreator kafkaConsumerCreator;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     bieProperties = new BieProperties();
   }
 
   @Test
-  public void whenTopicMapIsEmpty_ShouldCreateNoListeners() {
+  void whenTopicMapIsEmpty_ShouldCreateNoListeners() {
     // Given
     bieProperties.setTopicMap(Map.of());
 
@@ -35,11 +38,11 @@ class KafkaConsumerCreatorTest {
         new KafkaConsumerCreator(consumerFactory, amqpTopicSender, bieProperties);
 
     // Then
-    Assertions.assertThat(kafkaConsumerCreator.getListeners()).isEmpty();
+    assertThat(kafkaConsumerCreator.getListeners()).isEmpty();
   }
 
   @Test
-  public void whenTopicMapIsNoneEmpty_ShouldCreateListeners() {
+  void whenTopicMapIsNotEmpty_ShouldCreateListeners() {
     // Given
     bieProperties.setTopicMap(Map.of("kafkaTopic", "rabbitQueue"));
 
@@ -48,6 +51,10 @@ class KafkaConsumerCreatorTest {
         new KafkaConsumerCreator(consumerFactory, amqpTopicSender, bieProperties);
 
     // Then
-    Assertions.assertThat(kafkaConsumerCreator.getListeners()).hasSize(1);
+    assertThat(kafkaConsumerCreator.getListeners()).hasSize(1);
+    Pattern topicPattern =
+        kafkaConsumerCreator.getListeners().get(0).getContainerProperties().getTopicPattern();
+    assertThat(topicPattern).isNotNull();
+    assertThat(topicPattern.pattern()).contains(".*kafkaTopic.*");
   }
 }

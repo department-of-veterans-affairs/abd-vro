@@ -1,5 +1,6 @@
-package gov.va.vro.services.bie.config;
+package gov.va.vro.services.bie.service.kafka;
 
+import gov.va.vro.services.bie.config.BieProperties;
 import gov.va.vro.services.bie.service.AmqpTopicSender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.ConsumerFactory;

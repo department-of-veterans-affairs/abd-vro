@@ -22,7 +22,7 @@ class BieRabbitServiceTest {
   private BieRabbitService bieRabbitService;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     this.bieRabbitService = new BieRabbitService(rabbitTemplate);
   }
 
@@ -32,7 +32,7 @@ class BieRabbitServiceTest {
     @Captor ArgumentCaptor<BieMessagePayload> messageCaptor;
 
     @Test
-    public void shouldConvertAndSendBiePayload() {
+    void shouldConvertAndSendBiePayload() {
       // Given
       final String exchange = "testExchange";
       final String topic = "testTopic";
