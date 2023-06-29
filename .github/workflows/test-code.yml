@@ -70,7 +70,7 @@ jobs:
         # `jacocoAggregatedReport` reports aggregated coverage of all the subprojects
         #     excluding integrationTest and end2endTest (which are run elsewhere)
         run: |
-          ./gradlew jacocoAggregatedReport -x integrationTest
+          ./gradlew jacocoAggregatedReport
       - name: "Report JaCoCo Coverage as a GH Check Run"
         # This takes about 1 minute, so don't run on PRs
         # if: github.event_name != 'pull_request'
