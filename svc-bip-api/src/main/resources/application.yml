@@ -1,0 +1,3 @@
+truststore_password:pwd
+truststore:ts
+keystore:ks
