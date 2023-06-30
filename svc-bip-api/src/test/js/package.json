@@ -1,0 +1,16 @@
+{
+  "name": "rqmtest.js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "testRMQ.js",
+  "scripts": {
+    "test": "echo notest"
+  },
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.10.3",
+    "uuid": "^9.0.0"
+  }
+}

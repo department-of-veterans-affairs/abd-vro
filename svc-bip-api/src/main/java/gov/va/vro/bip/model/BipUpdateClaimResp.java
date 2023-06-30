@@ -6,12 +6,13 @@ import org.springframework.http.HttpStatus;
 
 @RequiredArgsConstructor
 @Data
-public class BipUpdateClaimResp {
-  private HttpStatus status;
-  private String message;
+public class BipUpdateClaimResp extends HasStatusCodeAndMessage{
 
+  public int getStatus(){
+    return statusCode;
+  }
   public BipUpdateClaimResp(HttpStatus status, String msg) {
-    this.status = status;
-    this.message = msg;
+    statusCode = status.value();
+    statusMessage = msg;
   }
 }
