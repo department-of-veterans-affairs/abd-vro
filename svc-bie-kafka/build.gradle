@@ -1,8 +1,6 @@
 plugins {
-  id 'java'
-  id "io.freefair.lombok"
   id 'local.java.container-spring-conventions'
-  id 'local.std.java.library-spring-conventions'
+  id 'local.std.java.library-conventions'
 }
 
 ext {

@@ -1,32 +1,11 @@
-/**
- * Provides docker container settings
- */
-
 plugins {
   id 'org.flywaydb.flyway' version '9.20.0'
-  id 'local.java.container-conventions'
-  id 'starter.java.build-utils-property-conventions'
+  id 'shared.docker.container-conventions'
 }
 
 docker {
   copySpec.from("src/main/resources").into(".")
 }
-
-dockerRun {
-  image "${dockerRegistry}/${rootProject.name}-db-init"
-  env 'FLYWAY_DEFAULT_SCHEMA': getEnvOrDefault('DB_NAME', 'vro'),
-  'FLYWAY_URL': "jdbc:${getEnvOrDefault('DB_SERVER', 'postgresql')}://${getEnvOrDefault('DB_HOST', 'localhost')}:5432/${getEnvOrDefault('DB_NAME', 'vro')}?user=${getEnvOrDefault('DB_ROOT_USER', 'vro_user')}&password=${getEnvOrDefault('DB_ROOT_USER_PASSWORD', 'not-the-user-password')}",
-  'FLYWAY_USER': getEnvOrDefault('DB_ROOT_USER', 'vro_user'),
-  'FLYWAY_PLACEHOLDERS_USERNAME': getEnvOrDefault('DB_USER', 'example_user'),
-  'FLYWAY_PLACEHOLDERS_SERVICENAME': getEnvOrDefault('DB_SERVICE', 'example_service'),
-  'FLYWAY_PLACEHOLDERS_ADMINNAME': getEnvOrDefault('DB_ADMIN', 'example_admin'),
-  'FLYWAY_PLACEHOLDERS_DBNAME': getEnvOrDefault('DB_NAME', 'vro'),
-  'FLYWAY_PLACEHOLDERS_SCHEMANAME': getEnvOrDefault('DB_SCHEMA', 'claims'),
-  'FLYWAY_PLACEHOLDERS_USERPASSWORD': getEnvOrDefault('DB_USER_PASSWORD', 'also-not-the-user-password'),
-  'FLYWAY_PLACEHOLDERS_SERVICEPASSWORD': getEnvOrDefault('DB_SERVICE_PASSWORD', 'also-not-the-service-password'),
-  'FLYWAY_PLACEHOLDERS_ADMINPASSWORD': getEnvOrDefault('DB_ADMIN_PASSWORD', 'also-not-the-admin-password')
-}
-
 
 configurations {
   flywayMigration
