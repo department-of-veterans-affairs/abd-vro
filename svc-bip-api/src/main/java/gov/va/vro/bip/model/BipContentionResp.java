@@ -2,6 +2,7 @@ package gov.va.vro.bip.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -13,7 +14,11 @@ import java.util.List;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true) // BIP API can send messages
-public class BipContentionResp {
+public class BipContentionResp extends HasStatusCodeAndMessage{
+  public BipContentionResp(List<ClaimContention> contentions){
+    this.contentions = contentions;
+  }
   private List<ClaimContention> contentions;
 }

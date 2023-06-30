@@ -1,9 +1,6 @@
 package gov.va.vro.bip.service;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import gov.va.vro.bip.model.BipClaim;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
@@ -29,11 +26,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * BIP service tests.
- *
- * @author warren @Date 2/2/23
- */
 @ExtendWith(MockitoExtension.class)
 @Slf4j
 public class BipApiServiceTest {
@@ -156,7 +148,7 @@ public class BipApiServiceTest {
     mockBipApiProp();
     try {
       BipUpdateClaimResp result = service.setClaimToRfdStatus(GOOD_CLAIM_ID);
-      assertSame(result.getStatus(), HttpStatus.OK);
+      assertEquals(result.getStatus(), 200);
     } catch (BipException e) {
       log.error("Positive setClaimToRfdStatus test failed.", e);
       fail();
@@ -246,7 +238,7 @@ public class BipApiServiceTest {
     UpdateContentionReq request = UpdateContentionReq.builder().build();
     try {
       BipUpdateClaimResp result = service.updateClaimContention(GOOD_CLAIM_ID, request);
-      assertSame(HttpStatus.OK, result.getStatus());
+      assertEquals(200, result.getStatus());
     } catch (BipException e) {
       log.error("Positive updateClaimContention test failed.", e);
       fail();
