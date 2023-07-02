@@ -1,5 +1,6 @@
 package gov.va.vro.bip.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import gov.va.vro.bip.model.BipClaim;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.ClaimContention;
@@ -22,7 +23,7 @@ public interface IBipApiService {
    * @return a BipClaim object.
    * @throws BipException error occurs.
    */
-  BipClaim getClaimDetails(long collectionId) throws BipException;
+  BipClaim getClaimDetails(long collectionId) throws JsonProcessingException;
 
   /**
    * Updates claim status to RFD.
