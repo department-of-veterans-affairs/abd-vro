@@ -1,5 +1,5 @@
 package gov.va.vro.bip.service;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.bip.model.BipClaim;
@@ -16,7 +16,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -63,30 +62,40 @@ public class BipApiService implements IBipApiService {
   private final ObjectMapper mapper = new ObjectMapper();
 
   @Override
-  @RabbitListener(queues = "getClaimDetailsQueue", errorHandler = "rabbitListenerErrorHandler")
-  public BipClaim getClaimDetails(long claimId) throws  JsonProcessingException {
-      log.info("Received request getClaimDetails({}).", claimId);
+  public BipClaim getClaimDetails(long claimId) throws BipException {
+    try {
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CLAIM_DETAILS, claimId);
       log.info("call {} to get claim info.", url);
       HttpHeaders headers = getBipHeader();
       HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(headers);
-      ResponseEntity<String> bipResponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
-      log.info("got bip response {}", bipResponse.toString());
+      ResponseEntity<String> bipResponse =
+          restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
       if (bipResponse.getStatusCode() == HttpStatus.OK) {
         BipClaimResp result = mapper.readValue(bipResponse.getBody(), BipClaimResp.class);
         return result.getClaim();
       } else {
-        throw  buildException(bipResponse, claimId);
+        log.error(
+            "Failed to get claim details for {}. {} \n{}",
+            claimId,
+            bipResponse.getStatusCode(),
+            bipResponse.getBody());
+        throw new BipException(bipResponse.getStatusCode(), bipResponse.getBody());
       }
-  }
-  private RuntimeException buildException(ResponseEntity<String> bipResponse,long claimId){
-    ObjectNode errorJsonObj  = new ObjectMapper().createObjectNode();
-    errorJsonObj.put("message", "Bip responce was error.");
-    errorJsonObj.put("claimId", claimId);
-    errorJsonObj.put("status", bipResponse.getStatusCode().toString());
-    errorJsonObj.put("body",bipResponse.getBody());
-    log.debug(errorJsonObj.toString());//todo: remove line
-    return new BipException(errorJsonObj.toString());
+    } catch (JsonProcessingException e) {
+      log.error("json processing error", e);
+      throw new BipException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+    } catch (HttpStatusCodeException e) {
+      String message = "Failed to get claim info for claim ID " + claimId;
+      log.error(message, e);
+      if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+        throw new BipException(HttpStatus.BAD_REQUEST, message);
+      } else {
+        throw new BipException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+      }
+    } catch (RestClientException e) {
+      log.error("failed to update status to {} for claim {}.", claimId, e);
+      throw new BipException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+    }
   }
 
   /**
