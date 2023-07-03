@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BipClaim {
   //todo: the dependency on example code has to be removed
+  //todo: this is bad engineering because we're mixing error handling with
+  //transport with business logic.
   @Builder.Default private SomeDtoModelHeader header = new SomeDtoModelHeader();
   public BipClaim(int httpStatus, String httpMessage){
     super();

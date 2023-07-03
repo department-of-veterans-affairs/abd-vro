@@ -56,10 +56,11 @@ public class RMQIntegrationTest {
 
     @Test
     void getClaimDetailsQueueOk() {
-//        routingKey = queueName = "getClaimDetailsQueue";
-//        String requestStr = "1";
-//        BipClaim response = (BipClaim) rabbitTemplate.convertSendAndReceive(exchangeName, routingKey, request);
-//        assertEquals(response.getClaimId().toString(), requestStr);
+       routingKey = queueName = "getClaimDetailsQueue";
+
+       BipClaim response = (BipClaim) rabbitTemplate.convertSendAndReceive(exchangeName, routingKey, "A");
+
+       assertEquals(response.getClaimId().toString(), 1);
     }
     @Test
     void getClaimDetailsQueueErr() {
