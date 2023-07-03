@@ -41,11 +41,12 @@ public class RMQErrorHandler {
 
         log.error("ListenerExecutionFailedException occurred. ", exception.getCause());
         String correlationId = amqpMessage.getMessageProperties().getCorrelationId().toString();
-        String messageStr = "There was a system error while processing your request with correlationId " + correlationId +
-                ".  Please contact VRO support if the problem persists.";
-        Message responce = new Message(messageStr.getBytes(StandardCharsets.UTF_8));
-        responce.getMessageProperties().setCorrelationId(correlationId);
-        responce.getMessageProperties().getHeaders().put("status", "500");
-        return responce;
+        String messageStr = "{\"msg\":\"There was a system error while processing your request with correlationId " + correlationId +
+                ".  Please contact VRO support if the problem persists.\"}";
+        Message response = new Message(messageStr.getBytes(StandardCharsets.UTF_8));
+        response.getMessageProperties().setCorrelationId(correlationId);
+        response.getMessageProperties().getHeaders().put("status", "500");
+        log.info("Responding with: {}", response.toString());
+        return response;
     }
 }

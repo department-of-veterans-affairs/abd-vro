@@ -64,6 +64,7 @@ public class BipApiService implements IBipApiService {
   @Override
   public BipClaim getClaimDetails(long claimId) throws BipException {
     try {
+      log.info("getClaimDetails({}) invoked", claimId);
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CLAIM_DETAILS, claimId);
       log.info("call {} to get claim info.", url);
       HttpHeaders headers = getBipHeader();
