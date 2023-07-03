@@ -130,7 +130,8 @@ jobs:
         if: always()
         shell: bash
         run: |
+          docker ps
           COMPOSE_PROFILES="all" ./gradlew dockerComposeDown
           
           # Shutdown CC
-          ./gradlew domain-cc:dockerComposeDown
+          ./gradlew :domain-cc:dockerComposeDown
