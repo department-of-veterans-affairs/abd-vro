@@ -2,17 +2,26 @@ package gov.va.vro.bip.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import gov.va.vro.model.xample.SomeDtoModelHeader;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-/**
- * BIP claim.
- *
- * @author warren @Date 11/8/22
- */
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder(toBuilder = true)
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BipClaim {
+  //todo: the dependency on example code has to be removed
+  @Builder.Default private SomeDtoModelHeader header = new SomeDtoModelHeader();
+  BipClaim(int httpStatus, String httpMessage){
+    super();
+    header.setStatusCode(httpStatus);
+    header.setStatusMessage(httpMessage);
+  }
   private String summaryDateTime;
   private String lastModified;
   private String claimId;
