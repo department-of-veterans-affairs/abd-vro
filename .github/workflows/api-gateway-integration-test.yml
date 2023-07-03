@@ -54,16 +54,6 @@ jobs:
           # Quit after 60 seconds
           timeout: 60000
 
-      - name: "Wait for CC to be ready"
-        uses: nev7n/wait_for_response@v1
-        with:
-          url: 'http://localhost:8120/health'
-          responseCode: 200
-          # Retry every 2 seconds
-          interval: 2000
-          # Quit after 60 seconds
-          timeout: 60000
-
       - name: "Swagger UI - Request"
         id: "swaggerUI"
         uses: fjogeleit/http-request-action@v1
