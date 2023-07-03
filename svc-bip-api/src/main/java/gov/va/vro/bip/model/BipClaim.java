@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class BipClaim {
   //todo: the dependency on example code has to be removed
   @Builder.Default private SomeDtoModelHeader header = new SomeDtoModelHeader();
-  BipClaim(int httpStatus, String httpMessage){
+  public BipClaim(int httpStatus, String httpMessage){
     super();
     header.setStatusCode(httpStatus);
     header.setStatusMessage(httpMessage);
