@@ -11,19 +11,19 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import java.util.List;
 
 public interface IBipApiService {
-    @RabbitListener(queues = "getClaimDetailsQueue", errorHandler = "rabbitListenerErrorHandler")
+    @RabbitListener(queues = "getClaimDetailsQueue", errorHandler = "errorHandlerForGetClaimDetails")
     BipClaim getClaimDetails(long collectionId) throws JsonProcessingException;
 
-    @RabbitListener(queues = "setClaimToRfdStatusQueue", errorHandler = "rabbitListenerErrorHandler")
+    @RabbitListener(queues = "setClaimToRfdStatusQueue", errorHandler = "errorHandlerForsetClaimToRfdStatus")
     BipUpdateClaimResp setClaimToRfdStatus(long collectionId) throws BipException;
 
-    @RabbitListener(queues = "updateClaimStatusQueue", errorHandler = "rabbitListenerErrorHandler")
+    //@RabbitListener(queues = "updateClaimStatusQueue", errorHandler = "rabbitListenerErrorHandler")
     BipUpdateClaimResp updateClaimStatus(long collectionId, ClaimStatus status) throws BipException;
 
-    @RabbitListener(queues = "getClaimContentionsQueue", errorHandler = "rabbitListenerErrorHandler")
+    //@RabbitListener(queues = "getClaimContentionsQueue", errorHandler = "rabbitListenerErrorHandler")
     List<ClaimContention> getClaimContentions(long claimId) throws BipException;
 
-    @RabbitListener(queues = "updateClaimContentionQueue", errorHandler = "rabbitListenerErrorHandler")
+    //@RabbitListener(queues = "updateClaimContentionQueue", errorHandler = "rabbitListenerErrorHandler")
     BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention)
             throws BipException;
 
@@ -32,6 +32,6 @@ public interface IBipApiService {
      *
      * @return boolean verification status
      */
-    @RabbitListener(queues = "verifySpecialIssueTypesQueue", errorHandler = "rabbitListenerErrorHandler")
+    //@RabbitListener(queues = "verifySpecialIssueTypesQueue", errorHandler = "rabbitListenerErrorHandler")
     boolean verifySpecialIssueTypes();
 }

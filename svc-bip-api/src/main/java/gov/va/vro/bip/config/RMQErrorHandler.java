@@ -3,7 +3,9 @@ import java.util.List;
 import gov.va.vro.bip.model.BipClaim;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.ClaimContention;
+import gov.va.vro.bip.model.HasStatusCodeAndMessage;
 import gov.va.vro.model.xample.SomeDtoModel;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.listener.api.RabbitListenerErrorHandler;
@@ -29,20 +31,35 @@ public class RMQErrorHandler {
 
     }
     /**
-     * Boilerplate that regiesters error handler method with the system
+     * Boilerplate that regiesters error handler method with the system.
      */
     @Bean
-    RabbitListenerErrorHandler rabbitListenerErrorHandler() {
+    RabbitListenerErrorHandler errorHandlerForGetClaimDetails() {
         return new RabbitListenerErrorHandler() {
             @Override
             public Object handleError(
                     Message amqpMessage,
                     org.springframework.messaging.Message<?> message,
                     ListenerExecutionFailedException exception) throws Exception {
-                return  RMQErrorHandler.handleError(amqpMessage,message,exception);
+
+                return  RMQErrorHandler.handleError(amqpMessage,message,exception,new BipClaim());
             }
         };
     }
+    @Bean
+    RabbitListenerErrorHandler errorHandlerForsetClaimToRfdStatus() {
+        return new RabbitListenerErrorHandler() {
+            @Override
+            public Object handleError(
+                    Message amqpMessage,
+                    org.springframework.messaging.Message<?> message,
+                    ListenerExecutionFailedException exception) throws Exception {
+
+                return  RMQErrorHandler.handleError(amqpMessage,message,exception,new BipUpdateClaimResp());
+            }
+        };
+    }
+
 
     /**
      * Handles uncaught exceptions that occur during processing of messages from queue.
@@ -50,14 +67,26 @@ public class RMQErrorHandler {
     public static Object handleError(
             Message amqpMessage,
             org.springframework.messaging.Message<?> message,
-            ListenerExecutionFailedException exception) throws Exception {
+            ListenerExecutionFailedException exception,
+            HasStatusCodeAndMessage rVal) throws Exception {
 
-        log.error("ListenerExecutionFailedException occurred because of:{}.  " +
-                "And the fialed message was {}. ", exception.getCause(), message.toString());
-        String dstQ = exception.getFailedMessage().getMessageProperties().getConsumerQueue();
-        String messageStr = "There was a system error while processing your request.  "+
-                ".  Please contact VRO support if the problem persists.";
-        return new BipClaim(500, messageStr);
-        //todo: this method needs to return whatever type the client expects.
+        try {
+
+            log.error("ListenerExecutionFailedException occurred because of:{}.  " +
+                    "And the fialed message was {}. ", exception.getCause(), message.toString());
+            String messageStr = "There was a system error while processing your request.  " +
+                    ".  Please contact VRO support if the problem persists.";
+
+            rVal.statusCode=500;
+            rVal.statusMessage = messageStr;
+            return rVal;
+        }
+        catch(Exception e){
+            log.error("An uncaught exception was thrown from within default error handler.  " +
+                    "This is really bad. Terminating process", e);
+            System.exit(-1);
+        }
+        return null;
+
     }
 }

@@ -14,15 +14,15 @@ import lombok.NoArgsConstructor;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BipClaim {
+public class BipClaim extends HasStatusCodeAndMessage{
   //todo: the dependency on example code has to be removed
   //todo: this is bad engineering because we're mixing error handling with
   //transport with business logic.
-  @Builder.Default private SomeDtoModelHeader header = new SomeDtoModelHeader();
+
   public BipClaim(int httpStatus, String httpMessage){
     super();
-    header.setStatusCode(httpStatus);
-    header.setStatusMessage(httpMessage);
+    statusCode = httpStatus;
+    statusMessage = httpMessage;
   }
   private String summaryDateTime;
   private String lastModified;

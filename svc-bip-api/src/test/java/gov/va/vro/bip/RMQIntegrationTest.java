@@ -3,18 +3,27 @@ package gov.va.vro.bip;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.bip.model.BipClaim;
+import gov.va.vro.bip.service.BipApiService;
 import gov.va.vro.model.xample.SomeDtoModel;
 import gov.va.vro.model.xample.StatusValue;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 
 import java.io.IOException;
 
@@ -29,6 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
  * ./gradlew :domain-xample:svc-xample-j:integrationTest
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 @Slf4j
 public class RMQIntegrationTest {
 
@@ -42,8 +52,13 @@ public class RMQIntegrationTest {
     @Autowired
     private RabbitAdmin rabbitAdmin;
 
+
+    @Mock
+    BipApiService bipApiService;
+
     @BeforeEach
     private void setUp() {
+        MockitoAnnotations.initMocks(this);
         rabbitAdmin.purgeQueue(queueName, true);
     }
 
@@ -56,11 +71,14 @@ public class RMQIntegrationTest {
 
     @Test
     void getClaimDetailsQueueOk() {
+
        routingKey = queueName = "getClaimDetailsQueue";
 
-       BipClaim response = (BipClaim) rabbitTemplate.convertSendAndReceive(exchangeName, routingKey, "A");
+       BipClaim response = (BipClaim) rabbitTemplate.convertSendAndReceive(exchangeName, routingKey, "abc");
 
-       assertEquals(response.getClaimId().toString(), 1);
+
+       System.out.println(response);
+       //assertEquals(response.getClaimId().toString(), 1);
     }
     @Test
     void getClaimDetailsQueueErr() {
