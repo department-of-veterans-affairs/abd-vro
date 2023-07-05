@@ -1,15 +1,18 @@
 package gov.va.vro.bip.config;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
+import gov.va.vro.bip.model.HasStatusCodeAndMessage;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.UUID;
+
 @Configuration
+@Slf4j
 public class RMQConfig {
     @Bean
     public MessageConverter jackson2MessageConverter() {
@@ -19,67 +22,32 @@ public class RMQConfig {
     DirectExchange bipApiExchange() {
         return new DirectExchange("bipApiExchange", true, true);
     }
-
-    //getClaimDetailsQueue (not a getter.  the "get" referes to the name of the api endpoint)
-    @Bean
-    Queue getClaimDetailsQueue() {
-        return new Queue("getClaimDetailsQueue", true, false, true);
+    public static Object respondToClientDueToUncaughtExcdeption(
+            Message amqpMessage,
+            org.springframework.messaging.Message<?> message,
+            ListenerExecutionFailedException exception,
+            HasStatusCodeAndMessage rVal) throws Exception {
+        try {
+            UUID errorId = UUID.randomUUID();
+            log.error("ListenerExecutionFailedException occurred because of:{}.  " +
+                    "And the fialed message was {}.  The error id reported to " +
+                    "client was {}",
+                    exception.getCause(),
+                    message.toString(),
+                    errorId);
+            String messageStr = "There was a system error while processing your request.  " +
+                    ".  Please contact VRO support with error number "+ errorId +" if the problem persists.";
+            rVal.statusCode=500;
+            rVal.statusMessage = messageStr;
+            return rVal;
+        }
+        catch(Exception e){
+            log.error("An uncaught exception was thrown from within default error handler.  " +
+                    "This is really bad. Terminating process", e);
+            System.exit(-1);
+        }
+        return null;
     }
-    @Bean
-    Binding getClaimDetailsBinding() {
-        return BindingBuilder.bind(getClaimDetailsQueue()).to(bipApiExchange()).with("getClaimDetailsQueue");
-    }
-
-    //setClaimToRfdStatus (not a setter)
-    @Bean
-    Queue setClaimToRfdStatusQueue() {
-        return new Queue("setClaimToRfdStatusQueue", true, false, true);
-    }
-    @Bean
-    Binding setClaimToRfdStatusBinding() {
-        return BindingBuilder.bind(setClaimToRfdStatusQueue()).to(bipApiExchange()).with("setClaimToRfdStatusQueue");
-    }
-
-    //updateClaimStatus
-    @Bean
-    Queue updateClaimStatusQueue() {
-        return new Queue("updateClaimStatusQueue", true, false, true);
-    }
-    @Bean
-    Binding updateClaimStatusBinding() {
-        return BindingBuilder.bind(updateClaimStatusQueue()).to(bipApiExchange()).with("updateClaimStatusQueue");
-    }
-
-    //getClaimContentions
-    @Bean
-    Queue getClaimContentionsQueue() {
-        return new Queue("getClaimContentionsQueue", true, false, true);
-    }
-    @Bean
-    Binding getClaimContentionsBinding() {
-        return BindingBuilder.bind(getClaimContentionsQueue()).to(bipApiExchange()).with("getClaimContentionsQueue");
-    }
-
-    //updateClaimContention
-    @Bean
-    Queue updateClaimContentionQueue() {
-        return new Queue("updateClaimContentionQueue", true, false, true);
-    }
-    @Bean
-    Binding updateClaimContentionBinding() {
-        return BindingBuilder.bind(updateClaimContentionQueue()).to(bipApiExchange()).with("updateClaimContentionQueue");
-    }
-
-    //verifySpecialIssueTypes
-    @Bean
-    Queue verifySpecialIssueTypesQueue() {
-        return new Queue("verifySpecialIssueTypesQueue", true, false, true);
-    }
-    @Bean
-    Binding verifySpecialIssueTypesBinding() {
-        return BindingBuilder.bind(verifySpecialIssueTypesQueue()).to(bipApiExchange()).with("verifySpecialIssueTypesQueue");
-    }
-
 }
 
 

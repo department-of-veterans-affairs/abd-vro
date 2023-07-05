@@ -14,7 +14,7 @@ public interface IBipApiService {
     @RabbitListener(queues = "getClaimDetailsQueue", errorHandler = "errorHandlerForGetClaimDetails")
     BipClaim getClaimDetails(long collectionId) throws JsonProcessingException;
 
-    @RabbitListener(queues = "setClaimToRfdStatusQueue", errorHandler = "errorHandlerForsetClaimToRfdStatus")
+    @RabbitListener(queues = "setClaimToRfdStatusQueue", errorHandler = "errorHandlerForSetClaimToRfdStatus")
     BipUpdateClaimResp setClaimToRfdStatus(long collectionId) throws BipException;
 
     //@RabbitListener(queues = "updateClaimStatusQueue", errorHandler = "rabbitListenerErrorHandler")

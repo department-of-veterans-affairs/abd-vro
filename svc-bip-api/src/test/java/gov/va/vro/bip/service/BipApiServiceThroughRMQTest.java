@@ -125,7 +125,7 @@ public class BipApiServiceThroughRMQTest {
   @BeforeEach private void setUp() {rabbitAdmin.purgeQueue(queueName, true);}
   @AfterEach private void tearDown() {rabbitAdmin.purgeQueue(queueName, true);}
 
-  static  String queueName = "getClaimDetailsQueue";
+  static  String queueName = null;
   static String exchangeName = "bipApiExchange";
   @Autowired private RabbitTemplate rabbitTemplate;
   @Autowired private RabbitAdmin rabbitAdmin;
