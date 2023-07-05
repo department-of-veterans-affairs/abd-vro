@@ -11,10 +11,15 @@ LOOKUP_TABLE = get_lookup_table()
 
 app = FastAPI(
     title="Contention Classification",
-    description="Mapping contention text to actual classifications per `/classifier` defined for [Benefits Reference Data API](https://developer.va.gov/explore/benefits/docs/benefits_reference_data).",
+    description="Mapping contention text to actual classifications per `/contention-classification/classifier` defined for [Benefits Reference Data API](https://developer.va.gov/explore/benefits/docs/benefits_reference_data).",
     contact={
         "name": "Premal Shah",
         "email": "premal.shah@va.gov"
+    },
+    version="v0.2",
+    license={
+        "name": "CCO 1.0",
+        "url": "https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md"
     },
     servers=[
         {

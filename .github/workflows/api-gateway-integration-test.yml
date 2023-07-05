@@ -56,7 +56,7 @@ jobs:
 
       - name: "Swagger UI - Request"
         id: "swaggerUI"
-        uses: fjogeleit/http-request-action@v1
+        uses: indiesdev/curl@v1.1
         with:
           url: "http://localhost:8060/webjars/swagger-ui/index.html"
           method: "GET"
@@ -66,6 +66,27 @@ jobs:
         uses: indiesdev/curl@v1.1
         with:
           url: "http://localhost:8060/v3/api-docs/swagger-config"
+          method: "GET"
+          accept: 200
+
+      - name: "VRO API Docs- Request"
+        uses: indiesdev/curl@v1.1
+        with:
+          url: "http://localhost:8060/abd-vro/v3/api-docs"
+          method: "GET"
+          accept: 200
+
+      - name: "VRO APP Docs- Request"
+        uses: indiesdev/curl@v1.1
+        with:
+          url: "http://localhost:8060/vro-app/v3/api-docs"
+          method: "GET"
+          accept: 200
+
+      - name: "CC API Docs- Request"
+        uses: indiesdev/curl@v1.1
+        with:
+          url: "http://localhost:8060/contention-classification/openapi.json"
           method: "GET"
           accept: 200
 
@@ -87,34 +108,6 @@ jobs:
           else 
             echo "Expected Response Received"
           fi
-
-      - name: "VRO API Docs- Request"
-        uses: indiesdev/curl@v1.1
-        with:
-          url: "http://localhost:8060/abd-vro/v3/api-docs"
-          method: "GET"
-          accept: 200
-
-      - name: "CC API Docs- Request"
-        uses: indiesdev/curl@v1.1
-        with:
-          url: "http://localhost:8060/contention-classification/openapi.json"
-          method: "GET"
-          accept: 200
-
-      - name: "Collect docker logs"
-        if: always()
-        uses: jwalton/gh-docker-logs@v2
-        with:
-          dest: './container-logs'
-
-      - name: "Upload artifact"
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: container-logs
-          path: ./container-logs/**
-          retention-days: 14
 
       - name: "Clean shutdown of all containers"
         if: always()
