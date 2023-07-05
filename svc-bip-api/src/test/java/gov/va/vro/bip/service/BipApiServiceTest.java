@@ -29,11 +29,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * BIP service tests.
- *
- * @author warren @Date 2/2/23
- */
+
 @ExtendWith(MockitoExtension.class)
 @Slf4j
 public class BipApiServiceTest {
