@@ -10,6 +10,12 @@ from .util.lookup_table import get_classification_name, get_lookup_table
 LOOKUP_TABLE = get_lookup_table()
 
 app = FastAPI(
+    title="Contention Classification",
+    description="Mapping contention text to actual classifications per `/classifier` defined for [Benefits Reference Data API](https://developer.va.gov/explore/benefits/docs/benefits_reference_data).",
+    contact={
+        "name": "Premal Shah",
+        "email": "premal.shah@va.gov"
+    },
     servers=[
         {
             "url": "/contention-classification",
@@ -36,7 +42,7 @@ def get_health_status():
 
 @app.post("/classifier")
 def get_classification(
-    claim_for_increase: ClaimForIncrease,
+        claim_for_increase: ClaimForIncrease,
 ) -> Optional[PredictedClassification]:
     classification_code = LOOKUP_TABLE.get(claim_for_increase.diagnostic_code, None)
     if classification_code:
