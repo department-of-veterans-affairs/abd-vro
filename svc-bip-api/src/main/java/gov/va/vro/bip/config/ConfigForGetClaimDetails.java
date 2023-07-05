@@ -10,32 +10,33 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ConfigForGetClaimDetails {
-    @Autowired
-    DirectExchange bipApiExchange;
-    @Bean
-    Queue getClaimDetailsQueue() {
-        return new Queue("getClaimDetailsQueue", true, false, true);
-    }
-    @Bean
-    Binding getClaimDetailsBinding() {
-        return BindingBuilder.bind(getClaimDetailsQueue()).to(bipApiExchange).with("getClaimDetailsQueue");
-    }
-    @Bean
-    RabbitListenerErrorHandler errorHandlerForGetClaimDetails() {
-        return new RabbitListenerErrorHandler() {
-            @Override
-            public Object handleError(
-                    Message amqpMessage,
-                    org.springframework.messaging.Message<?> message,
-                    ListenerExecutionFailedException exception) throws Exception {
+  @Autowired DirectExchange bipApiExchange;
 
-                return  RMQConfig.respondToClientDueToUncaughtExcdeption(
-                        amqpMessage,
-                        message,
-                        exception,
+  @Bean
+  Queue getClaimDetailsQueue() {
+    return new Queue("getClaimDetailsQueue", true, false, true);
+  }
 
-                        new BipClaim());
-            }
-        };
-    }
+  @Bean
+  Binding getClaimDetailsBinding() {
+    return BindingBuilder.bind(getClaimDetailsQueue())
+        .to(bipApiExchange)
+        .with("getClaimDetailsQueue");
+  }
+
+  @Bean
+  RabbitListenerErrorHandler errorHandlerForGetClaimDetails() {
+    return new RabbitListenerErrorHandler() {
+      @Override
+      public Object handleError(
+          Message amqpMessage,
+          org.springframework.messaging.Message<?> message,
+          ListenerExecutionFailedException exception)
+          throws Exception {
+
+        return RMQConfig.respondToClientDueToUncaughtExcdeption(
+            amqpMessage, message, exception, new BipClaim());
+      }
+    };
+  }
 }

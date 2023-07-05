@@ -10,32 +10,33 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ConfigForSetClaimToRfdStatus {
-    @Autowired
-    DirectExchange bipApiExchange;
-    @Bean
-    Queue setClaimToRfdStatusQueue() {
-        return new Queue("setClaimToRfdStatusQueue", true, false, true);
-    }
-    @Bean
-    Binding setClaimToRfdStatusBinding() {
-        return BindingBuilder.bind(setClaimToRfdStatusQueue()).to(bipApiExchange).with("setClaimToRfdStatusQueue");
-    }
-    @Bean
-    RabbitListenerErrorHandler errorHandlerForSetClaimToRfdStatus() {
-        return new RabbitListenerErrorHandler() {
-            @Override
-            public Object handleError(
-                    Message amqpMessage,
-                    org.springframework.messaging.Message<?> message,
-                    ListenerExecutionFailedException exception) throws Exception {
+  @Autowired DirectExchange bipApiExchange;
 
-                return  RMQConfig.respondToClientDueToUncaughtExcdeption(
-                        amqpMessage,
-                        message,
-                        exception,
-                        new BipUpdateClaimResp());
-            }
-        };
-    }
+  @Bean
+  Queue setClaimToRfdStatusQueue() {
+    return new Queue("setClaimToRfdStatusQueue", true, false, true);
+  }
 
+  @Bean
+  Binding setClaimToRfdStatusBinding() {
+    return BindingBuilder.bind(setClaimToRfdStatusQueue())
+        .to(bipApiExchange)
+        .with("setClaimToRfdStatusQueue");
+  }
+
+  @Bean
+  RabbitListenerErrorHandler errorHandlerForSetClaimToRfdStatus() {
+    return new RabbitListenerErrorHandler() {
+      @Override
+      public Object handleError(
+          Message amqpMessage,
+          org.springframework.messaging.Message<?> message,
+          ListenerExecutionFailedException exception)
+          throws Exception {
+
+        return RMQConfig.respondToClientDueToUncaughtExcdeption(
+            amqpMessage, message, exception, new BipUpdateClaimResp());
+      }
+    };
+  }
 }

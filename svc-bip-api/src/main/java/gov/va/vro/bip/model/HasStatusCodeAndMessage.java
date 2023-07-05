@@ -4,7 +4,8 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class HasStatusCodeAndMessage {
-    public int statusCode;
-    public String statusMessage;
-    HasStatusCodeAndMessage(){}
+  public int statusCode;
+  public String statusMessage;
+
+  HasStatusCodeAndMessage() {}
 }

@@ -1,5 +1,7 @@
 package gov.va.vro.bip.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import gov.va.vro.bip.model.BipClaim;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.ClaimContention;
@@ -23,9 +25,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 
 @ExtendWith(MockitoExtension.class)
 @Slf4j

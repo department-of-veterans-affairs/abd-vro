@@ -13,12 +13,13 @@ import lombok.NoArgsConstructor;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BipClaim extends HasStatusCodeAndMessage{
-  public BipClaim(int httpStatus, String httpMessage){
+public class BipClaim extends HasStatusCodeAndMessage {
+  public BipClaim(int httpStatus, String httpMessage) {
     super();
     statusCode = httpStatus;
     statusMessage = httpMessage;
   }
+
   private String summaryDateTime;
   private String lastModified;
   private String claimId;

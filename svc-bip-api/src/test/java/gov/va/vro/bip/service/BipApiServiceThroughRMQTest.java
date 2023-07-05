@@ -1,5 +1,7 @@
 package gov.va.vro.bip.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import gov.va.vro.bip.model.BipClaim;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import io.jsonwebtoken.Claims;
@@ -27,11 +29,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 /**
- * Does same thing as BipApiServiceTest but through
- * RMQ instance.  Assumes RMQ broker is available locally.
+ * Does same thing as BipApiServiceTest but through RMQ instance. Assumes RMQ broker is available
+ * locally.
  */
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -66,17 +66,16 @@ public class BipApiServiceThroughRMQTest {
             ArgumentMatchers.eq(String.class));
     mockBipApiProp();
 
-    BipClaim result = (BipClaim) rabbitTemplate.convertSendAndReceive(
-              exchangeName,
-              "getClaimDetailsQueue",
-              GOOD_CLAIM_ID);
+    BipClaim result =
+        (BipClaim)
+            rabbitTemplate.convertSendAndReceive(
+                exchangeName, "getClaimDetailsQueue", GOOD_CLAIM_ID);
     assertEquals(500, result.statusCode);
 
-
-    result = (BipClaim) rabbitTemplate.convertSendAndReceive(
-            exchangeName,
-            "getClaimDetailsQueue",
-            BAD_CLAIM_ID);
+    result =
+        (BipClaim)
+            rabbitTemplate.convertSendAndReceive(
+                exchangeName, "getClaimDetailsQueue", BAD_CLAIM_ID);
     assertEquals(500, result.statusCode);
   }
 
@@ -104,24 +103,32 @@ public class BipApiServiceThroughRMQTest {
             ArgumentMatchers.eq(String.class));
     mockBipApiProp();
 
-    //positive test
-    BipUpdateClaimResp result = (BipUpdateClaimResp) rabbitTemplate.convertSendAndReceive(
-            exchangeName,
-            "setClaimToRfdStatusQueue",
-            GOOD_CLAIM_ID);
+    // positive test
+    BipUpdateClaimResp result =
+        (BipUpdateClaimResp)
+            rabbitTemplate.convertSendAndReceive(
+                exchangeName, "setClaimToRfdStatusQueue", GOOD_CLAIM_ID);
     assertEquals(500, result.statusCode);
 
-    //negative test
-    result = (BipUpdateClaimResp) rabbitTemplate.convertSendAndReceive(
-            exchangeName,
-            "setClaimToRfdStatusQueue",
-            BAD_CLAIM_ID);
+    // negative test
+    result =
+        (BipUpdateClaimResp)
+            rabbitTemplate.convertSendAndReceive(
+                exchangeName, "setClaimToRfdStatusQueue", BAD_CLAIM_ID);
     assertEquals(500, result.statusCode);
   }
-  @BeforeEach private void setUp() {rabbitAdmin.purgeQueue(queueName, true);}
-  @AfterEach private void tearDown() {rabbitAdmin.purgeQueue(queueName, true);}
 
-  static  String queueName = null;
+  @BeforeEach
+  private void setUp() {
+    rabbitAdmin.purgeQueue(queueName, true);
+  }
+
+  @AfterEach
+  private void tearDown() {
+    rabbitAdmin.purgeQueue(queueName, true);
+  }
+
+  static String queueName = null;
   static String exchangeName = "bipApiExchange";
   @Autowired private RabbitTemplate rabbitTemplate;
   @Autowired private RabbitAdmin rabbitAdmin;
@@ -130,9 +137,9 @@ public class BipApiServiceThroughRMQTest {
 
   private static final long BAD_CLAIM_ID = 9666958L;
   private static final String CONTENTION_RESPONSE_200 =
-          "bip-test-data/contention_response_200.json";
+      "bip-test-data/contention_response_200.json";
   private static final String CONTENTION_RESPONSE_412 =
-          "bip-test-data/contention_response_412.json";
+      "bip-test-data/contention_response_412.json";
 
   private static final String CLAIM_RESPONSE_404 = "bip-test-data/claim_response_404.json";
   private static final String CLAIM_RESPONSE_200 = "bip-test-data/claim_response_200.json";
@@ -151,7 +158,7 @@ public class BipApiServiceThroughRMQTest {
 
   private String getTestData(String dataFile) throws Exception {
     String filename =
-            Objects.requireNonNull(getClass().getClassLoader().getResource(dataFile)).getPath();
+        Objects.requireNonNull(getClass().getClassLoader().getResource(dataFile)).getPath();
     Path filePath = Path.of(filename);
     return Files.readString(filePath);
   }
@@ -170,6 +177,4 @@ public class BipApiServiceThroughRMQTest {
     Mockito.doReturn(CLAIM_SECRET).when(bipApiProps).getClaimSecret();
     Mockito.doReturn(claims).when(bipApiProps).toCommonJwtClaims();
   }
-
-
 }
