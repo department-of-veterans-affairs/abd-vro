@@ -1,8 +1,12 @@
 
 plugins {
-  id "io.freefair.lombok"
   id 'local.java.container-spring-conventions'
+  id 'local.std.java.library-conventions'
   id 'jvm-test-suite'
+}
+
+ext {
+  jacocoExclude = ['**/*Application.*']
 }
 
 dependencies {

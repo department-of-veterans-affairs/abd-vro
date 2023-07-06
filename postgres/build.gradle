@@ -1,9 +1,5 @@
-/**
- * Provides docker container settings
- */
-
 plugins {
-  id 'local.java.container-conventions'
+  id 'shared.docker.container-conventions'
 }
 
 docker {

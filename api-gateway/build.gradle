@@ -1,5 +1,5 @@
 plugins {
-  id 'local.std.java.library-spring-conventions'
+  id 'local.std.java.library-conventions'
   id 'local.java.container-spring-conventions'
   id "com.google.osdetector" version "1.7.3"
 }

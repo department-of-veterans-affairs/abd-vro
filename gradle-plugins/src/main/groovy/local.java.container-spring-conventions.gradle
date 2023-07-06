@@ -6,7 +6,6 @@
 plugins {
     id 'org.springframework.boot'
     id 'local.java.container-conventions'
-    id 'shared.java.vro-dep-constraints'
 }
 
 docker {

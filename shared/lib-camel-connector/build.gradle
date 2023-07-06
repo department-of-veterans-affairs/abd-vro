@@ -1,5 +1,5 @@
 plugins {
-  id 'local.std.java.library-spring-conventions'
+  id 'local.std.java.library-conventions'
 }
 
 dependencies {
