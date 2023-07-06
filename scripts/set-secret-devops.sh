@@ -8,7 +8,8 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
-export SLACK_TOKEN_BASE64=$(echo -n "$1" | base64)
+SLACK_TOKEN_BASE64=$(echo -n "$1" | base64)
+export SLACK_TOKEN_BASE64
 # Only need in the 1 namespace, let's use dev
 scripts/echo-secret-yaml.sh "devops" "  SLACK_BOT_ACCESS_TOKEN_DEVOPS: $SLACK_TOKEN_BASE64" | \
   kubectl -n "va-abd-rrd-dev" replace --force -f -

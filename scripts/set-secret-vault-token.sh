@@ -9,7 +9,8 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
-export VAULT_TOKEN_BASE64=$(echo -n "$1" | base64)
+VAULT_TOKEN_BASE64=$(echo -n "$1" | base64)
+export VAULT_TOKEN_BASE64
 # The runner is deployed to the dev environment, so this secret is only needed there.
 scripts/echo-secret-yaml.sh "vro-vault" "  VAULT_TOKEN: $VAULT_TOKEN_BASE64" | \
   kubectl -n "va-abd-rrd-dev" replace --force -f -
