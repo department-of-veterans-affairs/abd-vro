@@ -25,7 +25,7 @@ pluginDependencyEdges(){
 
 # Print the edges representing the use of our Gradle plugins by our Gradle projects
 pluginUsageEdges(){
-  find . -type f -name build.gradle | while read BFILE; do
+  find . -type f -name build.gradle | while read -r BFILE; do
     PROJECT=$(dirname "${BFILE}")
     [ "$PROJECT" == "./gradle-plugins" ] && continue
     echo "\"$PROJECT\" [style=filled,color=lightgrey,shape=box]"
@@ -36,10 +36,12 @@ pluginUsageEdges(){
 }
 
 cd ../src/main/groovy || exit 20
-export PLUGIN_DEPS=$(pluginDependencyEdges)
+PLUGIN_DEPS=$(pluginDependencyEdges)
+export PLUGIN_DEPS
 cd - || exit 21
 cd ../.. || exit 22
-export PLUGIN_USES=$(pluginUsageEdges)
+PLUGIN_USES=$(pluginUsageEdges)
+export PLUGIN_USES
 cd - || exit 23
 
-cat dependency-graph-template.html | envsubst > dependencies.html
+cmd dependency-graph-template.html | envsubst > dependencies.html

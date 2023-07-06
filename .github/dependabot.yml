@@ -35,7 +35,7 @@ updates:
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
-    
+
   - package-ecosystem: "docker"
     directory: "/postgres/src/docker"
     target-branch: "develop"

@@ -112,9 +112,13 @@ echo '# for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
     echo "${!VARNAME}"
   }
   for IMG in "${IMAGES[@]}"; do
-    local GRADLE_FOLDER=$(gradle_folder "$IMG")
+    local GRADLE_FOLDER
+    local PREFIX
+    local IMG_VER
+
+    GRADLE_FOLDER=$(gradle_folder "$IMG")
     echo "# --- $IMG in folder $GRADLE_FOLDER"
-    local PREFIX=$(bash_var_prefix "$IMG")
+    PREFIX=$(bash_var_prefix "$IMG")
     echo "export ${PREFIX}_GRADLE_IMG=\"$(gradle_image_name "$IMG")\""
     echo "export ${PREFIX}_IMG=\"$(prod_image_name "$IMG")\""
     echo "export ${PREFIX}_VER=\"\$LAST_RELEASE_VERSION\""
