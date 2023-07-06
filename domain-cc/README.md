@@ -1,5 +1,5 @@
 # Contention Classification
-Mapping contention text to actual classifications per `/contention-classification/classifier` defined for [Benefits Reference Data API](https://developer.va.gov/explore/benefits/docs/benefits_reference_data).
+`/contention-classification/classifier` maps contention diagnostic codes to classifications as defined in the [Benefits Reference Data API](https://developer.va.gov/explore/benefits/docs/benefits_reference_data).
 
 ## Getting started
 Install Python3.10
