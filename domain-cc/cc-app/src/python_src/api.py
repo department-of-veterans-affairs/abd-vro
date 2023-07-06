@@ -11,7 +11,7 @@ LOOKUP_TABLE = get_lookup_table()
 
 app = FastAPI(
     title="Contention Classification",
-    description="Mapping contention text to actual classifications per `/contention-classification/classifier` defined for [Benefits Reference Data API](https://developer.va.gov/explore/benefits/docs/benefits_reference_data).",
+    description="Mapping VA.gov disability form contentions to actual classifications defined in the [Benefits Reference Data API](https://developer.va.gov/explore/benefits/docs/benefits_reference_data) for use in downstream VA systems.",
     contact={
         "name": "Premal Shah",
         "email": "premal.shah@va.gov"
