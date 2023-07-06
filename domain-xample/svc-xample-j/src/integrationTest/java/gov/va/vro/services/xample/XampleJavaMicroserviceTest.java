@@ -1,5 +1,9 @@
 package gov.va.vro.services.xample;
 
+import static gov.va.vro.services.xample.JavaMicroserviceApplication.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.xample.SomeDtoModel;
 import gov.va.vro.model.xample.StatusValue;
@@ -8,7 +12,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,26 +19,18 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
 
-import static gov.va.vro.services.xample.JavaMicroserviceApplication.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
 /**
- * Start RabbitMQ:
- * docker compose up -d rabbitmq-service
- * <p>
- * Run these tests:
- * ./gradlew :domain-xample:svc-xample-j:integrationTest
+ * Start RabbitMQ: docker compose up -d rabbitmq-service
+ *
+ * <p>Run these tests: ./gradlew :domain-xample:svc-xample-j:integrationTest
  */
 @SpringBootTest
 @Slf4j
 public class XampleJavaMicroserviceTest {
 
-  @Autowired
-  private RabbitTemplate rabbitTemplate;
+  @Autowired private RabbitTemplate rabbitTemplate;
 
-  @Autowired
-  private RabbitAdmin rabbitAdmin;
+  @Autowired private RabbitAdmin rabbitAdmin;
 
   @BeforeEach
   private void setUp() {
@@ -47,11 +42,13 @@ public class XampleJavaMicroserviceTest {
     rabbitAdmin.purgeQueue(queueName, true);
   }
 
-  private final SomeDtoModel request = SomeDtoModel.builder().resourceId("320").diagnosticCode("B").build();
+  private final SomeDtoModel request =
+      SomeDtoModel.builder().resourceId("320").diagnosticCode("B").build();
 
   @Test
   void sendDtoMessage() {
-    SomeDtoModel response = (SomeDtoModel) rabbitTemplate.convertSendAndReceive(exchangeName, routingKey, request);
+    SomeDtoModel response =
+        (SomeDtoModel) rabbitTemplate.convertSendAndReceive(exchangeName, routingKey, request);
 
     assertEquals(request.getResourceId(), response.getResourceId());
     assertEquals(request.getDiagnosticCode(), response.getDiagnosticCode());
@@ -60,8 +57,7 @@ public class XampleJavaMicroserviceTest {
     assertNull(response.getHeader().getStatusMessage());
   }
 
-  @Autowired
-  private ObjectMapper objectMapper;
+  @Autowired private ObjectMapper objectMapper;
 
   // Can also send a plain JSON String without any RabbitTemplate auto-conversion of the msg body
   @Test
@@ -82,13 +78,15 @@ public class XampleJavaMicroserviceTest {
   @Test
   void sendBadDtoMessage() {
     request.setResourceId("IdThatCausesError");
-    SomeDtoModel response = (SomeDtoModel) rabbitTemplate.convertSendAndReceive(exchangeName, routingKey, request);
+    SomeDtoModel response =
+        (SomeDtoModel) rabbitTemplate.convertSendAndReceive(exchangeName, routingKey, request);
 
     assertEquals(request.getResourceId(), response.getResourceId());
     assertEquals(request.getDiagnosticCode(), response.getDiagnosticCode());
     assertNull(response.getStatus());
     assertEquals(417, response.getHeader().getStatusCode());
-    assertEquals("java.lang.NumberFormatException: For input string: \"IdThatCausesError\"",
+    assertEquals(
+        "java.lang.NumberFormatException: For input string: \"IdThatCausesError\"",
         response.getHeader().getStatusMessage());
   }
 }
