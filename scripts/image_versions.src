@@ -11,9 +11,9 @@
 : ${RABBITMQ_VER:=3}
 : ${REDIS_VER:=7}
 
-# Mon Jun 26 12:59:02 CDT 2023
+# The following are pinned versions of images
+# Mon Jul 5
 dbinit_VER="v3.1.1"
-# Thu Jul  6 17:49:41 UTC 2023
 # Thu Jul  6 18:35:33 UTC 2023
 apigateway_VER="v3.2.1"
 app_VER="v3.2.1"

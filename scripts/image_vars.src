@@ -63,7 +63,7 @@ export postgres_VER="$LAST_RELEASE_VERSION"
 # --- db-init in folder ./db-init
 export dbinit_GRADLE_IMG="va/abd_vro-db-init"
 export dbinit_IMG="vro-db-init"
-export dbinit_VER="v3.1.1"
+export dbinit_VER="$LAST_RELEASE_VERSION"
 
 # --- console in folder ./console
 export console_GRADLE_IMG="va/abd_vro-console"
