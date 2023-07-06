@@ -17,10 +17,10 @@ if ! [ -d "helm/$HELM_CHART" ]; then
   exit 22
 fi
 
-: ${IMAGE_TAG:="${3:-latest}"}
+: "${IMAGE_TAG:="${3:-latest}"}"
 RELEASE_NAME="vro-$HELM_CHART"
 NAMESPACE=va-abd-rrd-${TARGET_ENV}
-: ${GITHUB_SHA:=$(git rev-parse HEAD)}
+: "${GITHUB_SHA:=$(git rev-parse HEAD)}"
 
 #echo -e "TARGET_ENV=$TARGET_ENV \t HELM_CHART=HELM_CHART \t IMAGE_TAG=$IMAGE_TAG"
 #echo -e "RELEASE_NAME=$RELEASE_NAME \t NAMESPACE=$NAMESPACE \t GITHUB_SHA=$GITHUB_SHA"
@@ -79,8 +79,8 @@ platformChartArgs(){
   HELM_ARGS="$HELM_ARGS \
     $(helmArgsForSubchart rabbitmq "$RABBITMQ_VER") \
     $(helmArgsForSubchart redis "$REDIS_VER") \
-    $(helmArgsForSubchart postgres "$postgres_VER") \
-    $(helmArgsForSubchart console "$console_VER") \
+    $(helmArgsForSubchart postgres "${postgres_VER:?}") \
+    $(helmArgsForSubchart console "${console_VER:?}") \
   "
   echo "Platform HELM_ARGS: $HELM_ARGS"
 }
@@ -95,15 +95,15 @@ case "$HELM_CHART" in
     platformChartArgs
     ;;
   api-gateway)
-    HELM_ARGS="$HELM_ARGS --set-string imageTag=$apigateway_VER ";;
-  vro-app)
-    HELM_ARGS="$HELM_ARGS --set-string imageTag=$app_VER \
-      --set-string dbInit.imageTag=$dbinit_VER "
+    HELM_ARGS="$HELM_ARGS --set-string imageTag=${apigateway_VER:?} ";;
+  app)
+    HELM_ARGS="$HELM_ARGS --set-string imageTag=${app_VER:?} \
+      --set-string dbInit.imageTag=${dbinit_VER:?} "
     ;;
   svc-bgs-api)
-    HELM_ARGS="$HELM_ARGS --set-string imageTag=$svcbgsapi_VER ";;
+    HELM_ARGS="$HELM_ARGS --set-string imageTag=${svcbgsapi_VER:?} ";;
   svc-lighthouse-api)
-    HELM_ARGS="$HELM_ARGS --set-string imageTag=$svclighthouseapi_VER ";;
+    HELM_ARGS="$HELM_ARGS --set-string imageTag=${svclighthouseapi_VER:?} ";;
 esac
 
 #echo "HELM_ARGS: $HELM_ARGS"
@@ -114,7 +114,7 @@ helm upgrade "$RELEASE_NAME" "helm/$HELM_CHART" -n "${NAMESPACE}" \
   --install --reset-values \
   --set-string "global.imageTag=${IMAGE_TAG}" \
   --set-string "global.commitSha=${GITHUB_SHA}" \
-  ${HELM_ARGS}
+  "${HELM_ARGS}"
 set +x
 
 k8sInfo(){

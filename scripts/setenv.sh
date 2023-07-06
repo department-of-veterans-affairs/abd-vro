@@ -2,7 +2,7 @@
 # This script is for local development or automated end2end testing.
 # No production secret values are in this file.
 
-if [[ $0 == $BASH_SOURCE ]]; then
+if [[ $0 == "${BASH_SOURCE[0]}" ]]; then
   echo "Usage: At the root of the abd-vro folder, run:
     source scripts/setenv.sh [path/to/abd-vro-dev-secrets]"
   exit 1
@@ -12,7 +12,7 @@ fi
 findSecretsDir(){
   local VRO_DEV_SECRETS_FOLDER
   [ "$1" ] && VRO_DEV_SECRETS_FOLDER="$1"
-  : ${VRO_DEV_SECRETS_FOLDER:=$PWD/../abd-vro-dev-secrets}
+  : "${VRO_DEV_SECRETS_FOLDER:=$PWD/../abd-vro-dev-secrets}"
   if SECRETS_DIR=$(cd -- "${VRO_DEV_SECRETS_FOLDER}/local" && pwd); then
     echo "Using secrets in $SECRETS_DIR"
   else
@@ -57,7 +57,8 @@ getSecret(){
 }
 
 exportSecretIfUnset(){
-  local VAR_VALUE=$(eval echo "\$$1")
+  local VAR_VALUE
+  VAR_VALUE=$(eval echo "\$$1")
   if [ "${VAR_VALUE}" ]; then
     >&2 echo "Not overriding: $1 already set."
   else
@@ -66,7 +67,8 @@ exportSecretIfUnset(){
 }
 
 exportIfUnset(){
-  local VAR_VALUE=$(eval echo "\$$1")
+  local VAR_VALUE
+  VAR_VALUE=$(eval echo "\$$1")
   if [ "${VAR_VALUE}" ]; then
     >&2 echo "Not overriding: $1 already set to: '${VAR_VALUE}'"
   else
@@ -75,7 +77,8 @@ exportIfUnset(){
 }
 
 exportFile(){
-  local FILE_VALUE=$(eval cat "$2")
+  local FILE_VALUE
+  FILE_VALUE=$(eval cat "$2")
   eval "export $1=${FILE_VALUE}"
 }
 

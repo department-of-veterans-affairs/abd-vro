@@ -15,4 +15,3 @@ slack:
   exception:
     webhook: "${SLACK_EXCEPTION_WEBHOOK:#{null}}"
     channel: benefits-vro-nonprod
-

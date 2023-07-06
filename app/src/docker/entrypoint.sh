@@ -3,6 +3,6 @@
 
 eval exec java -jar \
   -Djava.security.egd=file:/dev/./urandom \
-  $JAVA_PROFILE \
-  $JAVA_OPTS \
+  "$JAVA_PROFILE" \
+  "$JAVA_OPTS" \
   fat.jar

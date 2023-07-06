@@ -7,16 +7,16 @@ if [ -z "$kubeconfig" ] || [ ! -f "$kubeconfig" ]; then
   kubeconfig=~/.kube/config
 fi
 #echo "kubectl --kubeconfig ${kubeconfig} config current-context"
-context_name=$(kubectl --kubeconfig ${kubeconfig} config current-context)
+context_name=$(kubectl --kubeconfig "${kubeconfig}" config current-context)
 echo context_name "$context_name"
-cluster=$(kubectl --kubeconfig ${kubeconfig} config view -o json --raw | jq --arg context_name 'ldx-nonprod-1' '.clusters[] | select(.name == $context_name)')
+cluster=$(kubectl --kubeconfig "${kubeconfig}" config view -o json --raw | jq --arg context_name 'ldx-nonprod-1' '.clusters[] | select(.name == $context_name)')
 echo cluster "${cluster}"
 cluster_name=$(echo "${cluster}" | jq .name | tr -d '"')
 echo cluster_name "$cluster_name"
 service_account_name=default
-token_name=$(kubectl --kubeconfig ${kubeconfig} -n "$namespace" -o json get sa $service_account_name | jq '.secrets[0].name' | tr -d '"')
+token_name=$(kubectl --kubeconfig "${kubeconfig}" -n "$namespace" -o json get sa $service_account_name | jq '.secrets[0].name' | tr -d '"')
 echo token_name "$token_name"
-token=$(kubectl --kubeconfig ${kubeconfig} -n "$namespace" -o json get secret "$token_name" | jq '.data.token' | tr -d '"' | base64 -d)
+token=$(kubectl --kubeconfig "${kubeconfig}" -n "$namespace" -o json get secret "$token_name" | jq '.data.token' | tr -d '"' | base64 -d)
 echo token "$token"
 
 cat <<EOF | base64

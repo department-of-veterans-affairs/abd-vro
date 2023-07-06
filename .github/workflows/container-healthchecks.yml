@@ -6,7 +6,7 @@ on:
 
   # Allow being called by another GitHub Action
   workflow_call:
-  
+
   pull_request:
     branches: [ develop ]
 

@@ -5,7 +5,8 @@
 # https://pre-commit.com/#regular-expressions
 exclude: >
   (?x)^(
-      app/src/docker/docker-compose.yml
+      app/src/docker/docker-compose.yml |
+      gradlew
   )
 
 # https://pre-commit.com/#confining-hooks-to-run-at-certain-stages
@@ -50,6 +51,11 @@ repos:
     rev: v8.15.0
     hooks:
       - id: gitleaks
+
+  - repo: https://github.com/jumanjihouse/pre-commit-hooks
+    rev: 3.0.0
+    hooks:
+      - id: shellcheck
 
 #  - repo: local
 #    hooks:

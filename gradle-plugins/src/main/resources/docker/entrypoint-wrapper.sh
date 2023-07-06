@@ -12,12 +12,12 @@ if [ -e /app/entrypoint.sh ]; then
   exec /app/entrypoint.sh "$@"
 elif [ -e "fat.jar" ]; then
   echo "Running ${JAR_FILENAME}; health check port: ${HEALTHCHECK_PORT}"
-  eval exec java -jar $JAVA_OPTS fat.jar "$@"
+  exec java -jar "$JAVA_OPTS" fat.jar "$@"
 elif [ -e "main_consumer.py" ]; then
-  echo "Running: python -u main_consumer.py $@"
+  echo "Running: python -u main_consumer.py $*"
   exec python -u main_consumer.py "$@"
 elif [ -e "main_consumer.rb" ]; then
-  echo "Running: bundle exec ruby main_consumer.rb $@"
+  echo "Running: bundle exec ruby main_consumer.rb $*"
   exec bundle exec ruby main_consumer.rb "$@"
 else
   echo ""

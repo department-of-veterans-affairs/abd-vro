@@ -2,7 +2,7 @@
 # This script runs in the gh-runner container to set K8s secrets needed by VRO containers.
 
 NAMESPACE=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
-: ${TARGET_ENV:=${NAMESPACE#va-abd-rrd-}}
+: "${TARGET_ENV:=${NAMESPACE#va-abd-rrd-}}"
 echo "TARGET_ENV=$TARGET_ENV"
 
 if [ "$KUBE_CONFIG" ]; then
@@ -53,14 +53,14 @@ $2
 }
 
 splitSecretData(){
-  echo "$1" | jq -r 'to_entries | .[] | "\(.key) \(.value)"' | while read K V; do
+  echo "$1" | jq -r 'to_entries | .[] | "\(.key) \(.value)"' | while read -r K V; do
     >&2 echo "  - key: $K"
     # encode the value for the yaml file
     echo "  $K: $(echo -n "$V" | base64 -w0)"
   done
 }
 toExportCmds(){
-  echo "$1" | jq -r -c 'to_entries | .[] | "\(.key) \(.value)"' | while read K V; do
+  echo "$1" | jq -r -c 'to_entries | .[] | "\(.key) \(.value)"' | while read -r K V; do
     # If variable name ends with '_BASE64', decode it before exporting
     NEW_VARNAME=${K//_BASE64/}
     if [ "$NEW_VARNAME" = "$K" ]; then
@@ -108,7 +108,7 @@ VRO_SECRETS_NAMES="VRO_SECRETS_API VRO_SECRETS_SLACK VRO_SECRETS_MAS VRO_SECRETS
 # and evaluated by set-env-secrets.src in each VRO container.
 # Advantage: New environment variables can be added to these secrets without modifying
 # Helm configurations -- simply add them to Vault.
-SECRET_DATA=$(collectSecretExportCmds $VRO_SECRETS_NAMES)
+SECRET_DATA=$(collectSecretExportCmds "$VRO_SECRETS_NAMES")
 dumpYaml vro-secrets "$SECRET_DATA" | \
   kubectl -n "va-abd-rrd-${TARGET_ENV}" replace --force -f -
 
