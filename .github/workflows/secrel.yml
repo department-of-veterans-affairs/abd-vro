@@ -94,6 +94,9 @@ jobs:
 
       - name: "Checkout source code"
         uses: actions/checkout@v3
+        with:
+          # Checkout using a PAT so that we can do `git push` later in publish-images
+          token: ${{ secrets.ACCESS_TOKEN_PUSH_TO_DEVELOP }}
 
       - name: "Slack: workflow triggered"
         id: notify-slack
@@ -118,7 +121,8 @@ jobs:
           image_tag: "${{ steps.image-props.outputs.image_tag }}"
           ghcr_username: ${{ github.actor }}
           ghcr_password: ${{ secrets.GITHUB_TOKEN }}
-          run_tests: ${{ steps.image-props.outputs.run_tests }}
+          # run_tests should be a boolean -- https://github.com/actions/runner/issues/1483#issuecomment-994986996
+          run_tests: ${{ steps.image-props.outputs.run_tests == 'true' }}
 
       - name: "Slack thread: Images published"
         uses: archive/github-actions-slack@v2.6.0

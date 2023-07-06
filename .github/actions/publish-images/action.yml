@@ -19,6 +19,8 @@ inputs:
     required: true
   run_tests:
     description: 'Run test before publishing images'
+    # Caution: No warning or error occurs when a string value is provided
+    # Ensure a boolean is provided: https://github.com/actions/runner/issues/1483#issuecomment-994986996
     type: boolean
     default: true
 
@@ -45,6 +47,36 @@ runs:
         registry: ghcr.io
         username: ${{ inputs.ghcr_username }}
         password: ${{ inputs.ghcr_password }}
+
+    - name: "Unpin changed pinned images"
+      id: unpin-changed-pinned-images
+      shell: bash
+      run: |
+        # Install container-diff needed by image-version.sh
+        curl -LO https://storage.googleapis.com/container-diff/latest/container-diff-linux-amd64 && \
+        mkdir -p "/tmp/bin" && \
+        export PATH="/tmp/bin:$PATH" && \
+        install container-diff-linux-amd64 /tmp/bin/container-diff
+
+        # Unpin pinned images that have changed
+        scripts/image-version.sh unpinIfDiff
+
+        # Push any changes to image_versions.src -- https://stackoverflow.com/a/3879077
+        git update-index --refresh || echo "Files changed"
+        if [ "$(git rev-parse --abbrev-ref --symbolic-full-name HEAD)" == "HEAD" ]; then
+          # This should not occur as long as this step is run on `develop` before a release is created
+          echo "A release was created but changes were made to pinned images."
+          echo "To remedy, run SecRel on `develop` to unpin those images then create a release."
+          exit 4
+        elif ! git diff-index --quiet HEAD --; then
+          git config user.name "VRO Machine User"
+          git config user.email "abd-vro-machine@users.noreply.github.com"
+          git add scripts/image_versions.src
+          git commit -m "Automated: Unpin versions of updated images"
+          # Push to both repos:
+          git remote set-url --add origin https://github.com/department-of-veterans-affairs/abd-vro.git
+          git push
+        fi
 
     - name: "Tag and push images using commit hash and `latest`"
       id: push-images
