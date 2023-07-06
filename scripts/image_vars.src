@@ -58,27 +58,27 @@ export app_VER="$LAST_RELEASE_VERSION"
 # --- postgres in folder ./postgres
 export postgres_GRADLE_IMG="va/abd_vro-postgres"
 export postgres_IMG="vro-postgres"
-export postgres_VER="v3.1.0"
+export postgres_VER="$LAST_RELEASE_VERSION"
 
 # --- db-init in folder ./db-init
 export dbinit_GRADLE_IMG="va/abd_vro-db-init"
 export dbinit_IMG="vro-db-init"
-export dbinit_VER="$LAST_RELEASE_VERSION"
+export dbinit_VER="v3.1.1"
 
 # --- console in folder ./console
 export console_GRADLE_IMG="va/abd_vro-console"
 export console_IMG="vro-console"
-export console_VER="v3.1.0"
+export console_VER="$LAST_RELEASE_VERSION"
 
 # --- svc-bgs-api in folder ./svc-bgs-api
 export svcbgsapi_GRADLE_IMG="va/abd_vro-svc-bgs-api"
 export svcbgsapi_IMG="vro-svc-bgs-api"
-export svcbgsapi_VER="v3.1.0"
+export svcbgsapi_VER="$LAST_RELEASE_VERSION"
 
 # --- svc-lighthouse-api in folder ./svc-lighthouse-api
 export svclighthouseapi_GRADLE_IMG="va/abd_vro-svc-lighthouse-api"
 export svclighthouseapi_IMG="vro-svc-lighthouse-api"
-export svclighthouseapi_VER="v3.1.0"
+export svclighthouseapi_VER="$LAST_RELEASE_VERSION"
 
 # --- cc-app in folder domain-cc/cc-app
 export ccapp_GRADLE_IMG="va/abd_vro-cc-app"

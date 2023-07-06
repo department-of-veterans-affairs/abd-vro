@@ -60,6 +60,8 @@ runs:
 
         # Unpin pinned images that have changed
         scripts/image-version.sh unpinIfDiff
+        # Update scripts/image_vars.src to unpin default *_VER values
+        scripts/image-names.sh
 
         # Push any changes to image_versions.src -- https://stackoverflow.com/a/3879077
         git update-index --refresh || echo "Files changed"
@@ -71,7 +73,7 @@ runs:
         elif ! git diff-index --quiet HEAD --; then
           git config user.name "VRO Machine User"
           git config user.email "abd-vro-machine@users.noreply.github.com"
-          git add scripts/image_versions.src
+          git add scripts/image_versions.src scripts/image_vars.src
           git commit -m "Automated: Unpin versions of updated images"
           # Push to both repos:
           git remote set-url --add origin https://github.com/department-of-veterans-affairs/abd-vro.git
@@ -96,12 +98,12 @@ runs:
             IMG_TAG=$(getVarValue "${PREFIX}" _VER)
           fi
           echo "::group::Push image $IMG_NAME $IMG_TAG"
+          GHCR_PATH="ghcr.io/${{ github.repository }}/${IMG_NAME}"
           if [ "$(imageTagExists "$IMG_NAME" "$IMG_TAG")" == "200" ]; then
             echo "Image already exists: $IMG_NAME $IMG_TAG; not overwriting"
             echo "* Image already exists, not overwriting: ${GHCR_PATH}:$IMG_TAG" >> $GITHUB_STEP_SUMMARY
           else
             GRADLE_IMG_NAME=$(getVarValue "${PREFIX}" _GRADLE_IMG)
-            GHCR_PATH="ghcr.io/${{ github.repository }}/${IMG_NAME}"
 
             echo "Tagging '$GRADLE_IMG_NAME' as '$IMG_NAME:$IMG_TAG' and '$IMG_NAME:latest'"
             docker tag "$GRADLE_IMG_NAME" "${GHCR_PATH}:$IMG_TAG"
