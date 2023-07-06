@@ -20,6 +20,7 @@ inputs:
   run_tests:
     description: 'Run test before publishing images'
     # Caution: No warning or error occurs when a string value is provided
+    # Ensure a boolean is provided: https://github.com/actions/runner/issues/1483#issuecomment-994986996
     type: boolean
     default: true
 
