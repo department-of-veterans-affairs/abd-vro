@@ -12,9 +12,4 @@
 : ${REDIS_VER:=7}
 
 # Mon Jun 26 12:59:02 CDT 2023
-apigateway_VER="v3.1.0"
-console_VER="v3.1.0"
-postgres_VER="v3.1.1"
 dbinit_VER="v3.1.1"
-svcbgsapi_VER="v3.1.1"
-svclighthouseapi_VER="v3.1.1"
