@@ -14,3 +14,11 @@
 # Mon Jun 26 12:59:02 CDT 2023
 dbinit_VER="v3.1.1"
 # Thu Jul  6 17:49:41 UTC 2023
+# Thu Jul  6 18:35:33 UTC 2023
+apigateway_VER="v3.2.1"
+app_VER="v3.2.1"
+postgres_VER="v3.2.1"
+console_VER="v3.2.1"
+svcbgsapi_VER="v3.2.1"
+svclighthouseapi_VER="v3.2.1"
+ccapp_VER="v3.2.1"
