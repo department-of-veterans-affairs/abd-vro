@@ -52,32 +52,33 @@ runs:
       id: unpin-changed-pinned-images
       shell: bash
       run: |
-        # Install container-diff needed by image-version.sh
-        curl -LO https://storage.googleapis.com/container-diff/latest/container-diff-linux-amd64 && \
-        mkdir -p "/tmp/bin" && \
-        export PATH="/tmp/bin:$PATH" && \
-        install container-diff-linux-amd64 /tmp/bin/container-diff
-
-        # Unpin pinned images that have changed
-        scripts/image-version.sh unpinIfDiff
-        # Update scripts/image_vars.src to unpin default *_VER values
-        scripts/image-names.sh
-
-        # Push any changes to image_versions.src -- https://stackoverflow.com/a/3879077
-        git update-index --refresh || echo "Files changed"
         if [ "$(git rev-parse --abbrev-ref --symbolic-full-name HEAD)" == "HEAD" ]; then
-          # This should not occur as long as this step is run on `develop` before a release is created
-          echo "A release was created but changes were made to pinned images."
-          echo "To remedy, run SecRel on `develop` to unpin those images then create a release."
-          exit 4
+          echo "Presuming this GitHub Action workflow was triggered by a GitHub release, which means no unpinning needs to happen."
         elif ! git diff-index --quiet HEAD --; then
-          git config user.name "VRO Machine User"
-          git config user.email "abd-vro-machine@users.noreply.github.com"
-          git add scripts/image_versions.src scripts/image_vars.src
-          git commit -m "Automated: Unpin versions of updated images"
-          # Push to both repos:
-          git remote set-url --add origin https://github.com/department-of-veterans-affairs/abd-vro.git
-          git push
+          # Install container-diff needed by image-version.sh
+          curl -LO https://storage.googleapis.com/container-diff/latest/container-diff-linux-amd64 && \
+          mkdir -p "/tmp/bin" && \
+          export PATH="/tmp/bin:$PATH" && \
+          install container-diff-linux-amd64 /tmp/bin/container-diff
+
+          # Unpin pinned images that have changed
+          scripts/image-version.sh unpinIfDiff
+          # Update scripts/image_vars.src to unpin default *_VER values
+          scripts/image-names.sh
+
+          # Commit updated files -- https://stackoverflow.com/a/3879077
+          if git update-index --refresh; then
+            echo "No files changed"
+          else
+            git config user.name "VRO Machine User"
+            git config user.email "abd-vro-machine@users.noreply.github.com"
+            git add scripts/image_versions.src scripts/image_vars.src
+            git commit -m "Automated commit: Unpin versions of updated images"
+
+            # Push to both repos
+            git remote set-url --add origin https://github.com/department-of-veterans-affairs/abd-vro.git
+            git push
+          fi
         fi
 
     - name: "Tag and push images using commit hash and `latest`"
