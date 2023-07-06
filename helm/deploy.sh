@@ -96,7 +96,7 @@ case "$HELM_CHART" in
     ;;
   api-gateway)
     HELM_ARGS="$HELM_ARGS --set-string imageTag=${apigateway_VER:?} ";;
-  app)
+  vro-app)
     HELM_ARGS="$HELM_ARGS --set-string imageTag=${app_VER:?} \
       --set-string dbInit.imageTag=${dbinit_VER:?} "
     ;;
