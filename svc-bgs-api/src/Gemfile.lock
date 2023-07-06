@@ -100,7 +100,7 @@ DEPENDENCIES
   rspec
 
 RUBY VERSION
-   ruby 2.7.8p225
+   ruby 3.2.2p53
 
 BUNDLED WITH
    2.4.10
