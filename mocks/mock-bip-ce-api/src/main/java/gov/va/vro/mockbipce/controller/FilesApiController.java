@@ -1,11 +1,11 @@
 package gov.va.vro.mockbipce.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.bip.model.evidence.BipFileUploadPayload;
+import gov.va.vro.bip.model.evidence.response.UploadResponse;
 import gov.va.vro.mockbipce.api.FilesApi;
 import gov.va.vro.mockbipce.model.store.BasicStore;
 import gov.va.vro.mockbipce.model.store.EvidenceFile;
-import gov.va.vro.bip.model.evidence.BipFileUploadPayload;
-import gov.va.vro.bip.model.evidence.response.UploadResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

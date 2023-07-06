@@ -6,8 +6,8 @@ import reactor.core.publisher.Mono;
 
 @RestController
 public class ApiGatewayRestController {
-    @GetMapping("/hello")
-    public Mono<String> hello(){
-        return Mono.just("Hi!");
-    }
+  @GetMapping("/hello")
+  public Mono<String> hello() {
+    return Mono.just("Hi!");
+  }
 }

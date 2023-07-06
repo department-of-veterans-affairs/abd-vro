@@ -205,10 +205,10 @@ jobs:
 
           export RABBITMQ_VER=${{ inputs.rabbitmq }}
           export REDIS_VER=${{ inputs.redis }}
-          export $postgres_VER=${{ inputs.postgres }}
-          export $console_VER=${{ inputs.console }}
+          export postgres_VER=${{ inputs.postgres }}
+          export console_VER=${{ inputs.console }}
 
-          export K8SINFO=true
+          export K8S_INFO=true
           export WAIT_TIMEOUT=10m
           helm/deploy.sh "${{inputs.target_env}}" "${{inputs.helm_chart}}" "${{inputs.image_tag}}"
           echo "::endgroup::"

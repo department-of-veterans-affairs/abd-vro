@@ -20,7 +20,8 @@ env:
 
 jobs:
   container-healthcheck:
-    if: ((github.event_name == 'pull_request' && startsWith(github.head_ref, 'dependabot/')) || github.event_name != 'pull_request')
+    if: github.repository == 'department-of-veterans-affairs/abd-vro' &&
+        ((github.event_name == 'pull_request' && startsWith(github.head_ref, 'dependabot/')) || github.event_name != 'pull_request')
     runs-on: ubuntu-latest
 
     steps:

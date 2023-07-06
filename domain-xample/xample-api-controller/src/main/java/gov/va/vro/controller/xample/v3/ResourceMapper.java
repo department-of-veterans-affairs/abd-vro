@@ -10,8 +10,7 @@ import org.mapstruct.Mapping;
 public interface ResourceMapper {
 
   @Mapping(target = "status", ignore = true)
-  @Mapping(target = "statusCode", ignore = true)
-  @Mapping(target = "statusMessage", ignore = true)
+  @Mapping(target = "header", ignore = true)
   SomeDtoModel toModel(ResourceRequest request);
 
   ResourceResponse toResourceResponse(SomeDtoModel someDtoModel);

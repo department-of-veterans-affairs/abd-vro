@@ -21,10 +21,6 @@ plugins {
 
     id 'starter.java.lint-spectral-conventions'
     id 'starter.java.doc-springdoc-conventions'
-    id 'starter.java.test-integration-conventions'
-
-    id 'starter.java.deps-integration-conventions'
-    id 'starter.java.lint-spotless-java-conventions'
 }
 
 dependencies {

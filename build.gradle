@@ -100,7 +100,7 @@ scmVersion {
   localOnly = true
   useHighestVersion = true
 
-  def postgresDockerfileContent=file("${project.rootDir}/postgres/src/docker/Dockerfile").getText()
+  def postgresDockerfileContent=file("${project.rootDir}/postgres/Dockerfile").getText()
   def matcher = (postgresDockerfileContent =~ /FROM postgres:(.+)/)
   def postgresBaseImageVersion = matcher.getCount() > 0 ? matcher[0][1] : "latest"
   Map<String, Object> platformHelmValues = new org.yaml.snakeyaml.Yaml().load(file("${project.rootDir}/helm/platform/values.yaml").text)

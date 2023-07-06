@@ -64,6 +64,8 @@ public class RequestAndMerge<I, REQ, RESP> implements Processor {
   // default is to ignore the response
   @Builder.Default BiFunction<I, RESP, I> mergeResponse = (input, response) -> input;
 
+  ProcessorUtils processorUtils;
+
   /** When using this, no automatic conversion is done with the input message body. */
   public static <I, REQ, RESP> RequestAndMerge<I, REQ, RESP> build(
       String requestUri, Function<I, REQ> prepareRequest, BiFunction<I, RESP, I> mergeResponse) {
@@ -71,16 +73,17 @@ public class RequestAndMerge<I, REQ, RESP> implements Processor {
         .requestUri(requestUri)
         .prepareRequest(prepareRequest)
         .mergeResponse(mergeResponse)
+        .processorUtils(new ProcessorUtils())
         .build();
   }
 
   public void process(Exchange exchange) {
-    I input = ProcessorUtils.getInputBody(exchange, inputBodyClass);
+    I input = processorUtils.getInputBody(exchange, inputBodyClass);
     REQ request = prepareRequest.apply(input);
     RESP response = makeRequest(request, exchange.getMessage().getHeaders());
     I mergedBody = mergeResponse.apply(input, response);
 
-    ProcessorUtils.conditionallySetOutputBody(exchange, mergedBody);
+    processorUtils.conditionallySetOutputBody(exchange, mergedBody);
   }
 
   @SuppressWarnings("unchecked")
