@@ -1,4 +1,4 @@
-FROM ruby:2.7.8-alpine3.16
+FROM ruby:3.2.2-alpine3.16
 
  # Bundler needs git, and ruby-dev curl-dev build-base to make native gems
  # https://www.cloudbees.com/blog/build-minimal-docker-container-ruby-apps
