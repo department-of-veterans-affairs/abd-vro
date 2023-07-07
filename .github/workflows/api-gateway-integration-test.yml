@@ -33,6 +33,9 @@ jobs:
           
           # Run CC:
           ./gradlew :domain-cc:dockerComposeUp
+          
+          # Run Xample:
+          ./gradlew :domain-xample:dockerComposeUp
 
       - name: "Wait for VRO to be ready"
         uses: nev7n/wait_for_response@v1
@@ -99,6 +102,7 @@ jobs:
           accept: 200
           log-response: true
 
+      # API Gateway Endpoint Tests
       - name: "API Gateway Rest Controller GET /hello - Validate Response"
         run: |
           # Validate Response: 
@@ -109,12 +113,18 @@ jobs:
             echo "Expected Response Received"
           fi
 
+      # App API Endpoint Tests
+      - name: "VRO App xample POST - Request"
+        uses: indiesdev/curl@v1.1
+        with:
+          url: "http://localhost:8060/vro-app/v3/xample-resource"
+          method: "POST"
+          body: '{"resourceId":"20230706","diagnosticCode":"J"}'
+          accept: 201
+
       - name: "Clean shutdown of all containers"
         if: always()
         shell: bash
         run: |
           docker ps
           COMPOSE_PROFILES="all" ./gradlew dockerComposeDown
-          
-          # Shutdown CC
-          ./gradlew :domain-cc:dockerComposeDown

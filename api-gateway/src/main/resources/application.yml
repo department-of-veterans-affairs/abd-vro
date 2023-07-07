@@ -126,4 +126,3 @@ vro:
         url: "https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md"
     servers:
       - url: ${STARTER_OPENAPI_SERVERURL:/}
-      - url: ${VRO_CC_HOSTNAME}:${VRO_CC_PORT}

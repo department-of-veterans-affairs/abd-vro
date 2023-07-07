@@ -152,7 +152,6 @@ services:
       <<: *common-vars
       VRO_APP_HOSTNAME: app
       VRO_CC_HOSTNAME: svc-cc-api
-      VRO_CC_PORT: 8120
     networks:
       - intranet
 
