@@ -11,30 +11,31 @@ on:
 
 jobs:
   deploy-vro-app:
-    uses: ./.github/workflows/update-deployment.yml
+    uses: ./.github/workflows/update-deployment-app.yml
+    secrets: inherit
     with:
       target_env: dev
-      helm_chart: vro-app
       image_tag: latest
-    secrets: inherit
+      app: latest
+      db_init: latest
   deploy-vro-svc-bgs-api:
     uses: ./.github/workflows/update-deployment.yml
+    secrets: inherit
     with:
       target_env: dev
       helm_chart: svc-bgs-api
       image_tag: latest
-    secrets: inherit
   deploy-vro-svc-lighthouse-api:
     uses: ./.github/workflows/update-deployment.yml
+    secrets: inherit
     with:
       target_env: dev
       helm_chart: svc-lighthouse-api
       image_tag: latest
-    secrets: inherit
   deploy-domain-cc:
     uses: ./.github/workflows/update-deployment.yml
+    secrets: inherit
     with:
       target_env: dev
       helm_chart: domain-cc
       image_tag: latest
-    secrets: inherit

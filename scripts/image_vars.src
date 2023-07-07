@@ -23,6 +23,11 @@ getVarValue(){
   echo "${!VARNAME}"
 }
 
+# Bash variables cannot have dashes, so strip them out of the directory names
+bashVarPrefix() {
+  echo "${1//-/}"
+}
+
 # Return non-zero error code if image tag does not exist
 # Usage: imageTagExists IMAGE_NAME IMAGE_TAG
 # Environment variable GHCR_TOKEN should be in base64

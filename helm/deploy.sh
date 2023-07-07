@@ -65,9 +65,6 @@ deletePostgresStatefulSet(){
     --cascade=orphan --wait --ignore-not-found=true
 }
 
-# Load *_VER environment variables
-source scripts/image_vars.src
-
 helmArgsForSubchart(){
   if [ -z "$2" ] || [ "$2" == "(disable)" ]; then
     echo "--set $1.enabled=false"

@@ -5,7 +5,7 @@
 #
 # These versions are used as image tags for:
 # - image publishing to GHCR (see .github/actions/publish-images/action.yml)
-# - Helm chart deployments to LHDI (see helm/deploy.sh)
+# - Helm chart deployments to LHDI (see .github/workflows/update-deployment.yml)
 
 # These versions are treated specially because we don't modify the base image
 : ${RABBITMQ_VER:=3}
