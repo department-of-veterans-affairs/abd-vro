@@ -1,0 +1,50 @@
+name: "4. Create release tag"
+run-name: "Create release: ${{inputs.version}}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'The new semantic version number using the form X.Y.Z. \
+          Using the default (next patch version) will increment Z.'
+        required: true
+        default: "(next patch version)"
+        type: string
+
+jobs:
+  update-code-version:
+    # only run in public repo
+    if: github.repository == 'department-of-veterans-affairs/abd-vro'
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+        with:
+          # Checkout using a PAT so that we can do `git push` later
+          token: ${{ secrets.ACCESS_TOKEN_PUSH_TO_DEVELOP }}
+
+      - name: "Run gradle release"
+        run: |
+          if [ "${{ inputs.version }}" == "(next patch version)" ]; then
+            # Fetch prior tags to determine last version: https://axion-release-plugin.readthedocs.io/en/latest/configuration/ci_servers/#github-actions
+            # Fetch only tags, not branches: https://stackoverflow.com/questions/1204190/does-git-fetch-tags-include-git-fetch
+            git fetch --tags --unshallow origin 'refs/tags/*:refs/tags/*'
+            ./gradlew release
+          else
+            ./gradlew release -Prelease.forceVersion="${{ inputs.version }}"
+          fi
+
+      - name: "Pin unpinned image versions"
+        run: |
+          scripts/image-version.sh pin
+
+          git config --worktree user.name "VRO Machine User"
+          git config --worktree user.email "abd-vro-machine@users.noreply.github.com"
+          git add scripts/image_versions.src
+          git commit -m "Automated commit: Pin versions of unpinned images"
+
+      - name: "Push updated version number and new tag"
+        run: |
+          git push
+          # Push the release tag after a successful `git push`
+          git push --tags

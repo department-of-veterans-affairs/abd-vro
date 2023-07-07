@@ -1,0 +1,91 @@
+name: "CI: Xample domain integration test"
+
+on:
+  # Allow manual triggering
+  workflow_dispatch:
+
+  # Allow being called by another GitHub Action
+  workflow_call:
+
+concurrency:
+  group: xampleIntegrationTest-${{ github.ref }}
+
+env:
+  COMPOSE_PROFILES: ""
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+
+      - name: "Build the images"
+        uses: ./.github/actions/build-images
+
+      - name: "Start the containers"
+        run: |
+          source scripts/setenv.sh
+          export -p | sed 's/declare -x //'
+
+          ./gradlew :dockerComposeUp
+          ./gradlew :domain-xample:dockerComposeUp
+          COMPOSE_PROFILES="" ./gradlew :app:dockerComposeUp
+
+      - name: "Wait for VRO to be ready"
+        uses: nev7n/wait_for_response@v1
+        with:
+          url: 'http://localhost:8111/actuator/health'
+          responseCode: 200
+          # Retry every 2 seconds
+          interval: 2000
+          # Quit after 60 seconds
+          timeout: 60000
+
+      - name: "Run the integration test"
+        run: |
+          docker ps
+
+          # https://superuser.com/a/442395
+          STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST "http://localhost:8110/v3/xample-resource" \
+            -H "accept: application/json" -H "Content-Type: application/json" \
+            -d '{"resourceId":"1234","diagnosticCode":"J"}')
+          # Note: diagnosticCode must be J in order for the request to be routed to the svc-xample-j microservice,
+          # as coded in Xample's Camel route (XampleRoutes.java#L130-L131).
+
+          if [ "$STATUS_CODE" != 201 ]; then
+            echo "Unexpected status code: $STATUS_CODE"
+            exit 10
+          fi
+
+          ./gradlew -p domain-xample integrationTest
+      - name: "Collect docker logs"
+        if: always()
+        uses: jwalton/gh-docker-logs@v2
+        with:
+          dest: './container-logs'
+
+      - name: "Upload artifact"
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: container-logs
+          path: ./container-logs/**
+          retention-days: 14
+
+      - name: "Check for errors in container logs"
+        run: |
+          if docker logs vro_xample-workflows_1 | grep 'ERROR'; then
+            echo "Unexpected ERROR logs in xample-workflows container"
+            exit 11
+          fi
+          if docker logs vro_svc-xample-j_1 | grep 'ERROR\|WARN' | grep -v 'Simulated error'; then
+            echo "Unexpected ERROR logs in svc-xample-j container"
+            exit 12
+          fi
+
+      - name: "Clean shutdown of all containers"
+        if: always()
+        shell: bash
+        run: |
+          COMPOSE_PROFILES="all" ./gradlew dockerComposeDown

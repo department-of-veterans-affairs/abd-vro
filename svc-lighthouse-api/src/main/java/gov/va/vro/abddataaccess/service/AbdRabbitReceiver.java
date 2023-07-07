@@ -1,8 +1,8 @@
 package gov.va.vro.abddataaccess.service;
 
 import gov.va.vro.abddataaccess.model.AbdClaim;
+import gov.va.vro.abddataaccess.model.AbdEvidence;
 import gov.va.vro.abddataaccess.model.AbdResponse;
-import gov.va.vro.model.AbdEvidence;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;

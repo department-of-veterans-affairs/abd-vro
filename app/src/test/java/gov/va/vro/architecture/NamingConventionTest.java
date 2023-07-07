@@ -100,8 +100,6 @@ public class NamingConventionTest {
     classes()
         .that()
         .haveSimpleNameContaining("Service")
-        .and()
-        .doNotHaveFullyQualifiedName("gov.va.vro.model.ServiceLocation")
         .should()
         .resideInAPackage("..service..")
         .check(classes);

@@ -46,7 +46,7 @@ management:
       ns: "${NAMESPACE:example}"
       pod: "${POD_ID:docker}"
     web.server.request.autotime.enabled: true
-  server.port: 8081
+  server.port: 8111
 
 # Setting up K8 health probes - with health probes set to true you can use
 # the paths in your config like the snippet below
@@ -54,14 +54,14 @@ management:
 #livenessProbe:
 #  httpGet:
 #    path: /actuator/health/liveness
-#    port: 8081
+#    port: 8111
 #  failureThreshold: ...
 #  periodSeconds: ...
 #
 #readinessProbe:
 #  httpGet:
 #    path: /actuator/health/readiness
-#    port: 8081
+#    port: 8111
 #  failureThreshold: ...
 #
 
@@ -74,7 +74,7 @@ server:
     maxSwallowSize: 26214400
   ssl:
     enabled: false
-  port: 8080
+  port: 8110
   maxHttpHeaderSize: 48000
   session:
     timeout: 60
@@ -83,13 +83,16 @@ server:
   servlet:
     session:
       timeout: 120000
+  # https://springdoc.org/index.html#how-can-i-deploy-springdoc-openapi-ui-behind-a-reverse-proxy
+  use-forward-headers: true
+  forward-headers-strategy: framework
 
 log4j2:
   formatMsgNoLookups: true
 
 spring:
   application:
-    name: "abd-vro"
+    name: "vro-app"
   profiles:
     # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
     active: ${ENV:default}
@@ -174,6 +177,9 @@ springdoc:
     operations-sorter: method
     tagsSorter: alpha
     path: swagger
+    disable-swagger-default-url: true
+    configUrl: /v3/api-docs/swagger-config
+    url: /v3/api-docs
 
 vro:
   # Deployment environment
@@ -185,26 +191,8 @@ vro:
       base_folder: ${PERSIST_TRACKING_FOLDER:/tmp/persist/tracking}
 
   openapi:
-    info:
-      title: Virtual Regional Office (VRO) Automated Benefits Delivery (ABD) API
-      description: This API provides functionality to improve benefit delivery to Veterans using health data.
-      version: v2
-      contact:
-        name: Premal Shah
-        email: "premal.shah@va.gov"
-      license:
-        name: CCO 1.0
-        url: "https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md"
     servers:
-      -
-        description: "Server"
-        url: ${STARTER_OPENAPI_SERVERURL:/}
-      -
-        description: "Dev Server"
-        url: "https://dev.lighthouse.va.gov/abd-vro"
-      -
-        description: "QA Server"
-        url: "https://qa.lighthouse.va.gov/abd-vro"
+      - url: ${STARTER_OPENAPI_SERVERURL:/}
 
 spring.redis:
   # database index used by the connection factory
@@ -212,21 +200,6 @@ spring.redis:
   host: ${REDIS_PLACEHOLDERS_HOST}
   port: 6379
   password: ${REDIS_PLACEHOLDERS_PASSWORD}
-
-bip:
-  claimClientId: "${BIP_CLAIM_USERID}"
-  claimSecret: "${BIP_CLAIM_SECRET}"
-  claimBaseURL: "${BIP_CLAIM_URL}"
-  claimIssuer: "virtual_regional_office"
-  evidenceClientId: "${BIP_EVIDENCE_USERID}"
-  evidenceSecret: "${BIP_EVIDENCE_SECRET}"
-  evidenceBaseURL: "${BIP_EVIDENCE_URL}"
-  evidenceIssuer: "VRO"
-  applicationId: "${BIP_APPLICATION_ID:VRO}"
-  stationId: "${BIP_STATION_ID:281}"
-truststore: "${BIP_TRUSTSTORE}"
-truststore_password: "${BIP_PASSWORD}"
-keystore: "${BIP_KEYSTORE}"
 
 claim:
   special_issue_1: "RDR1"

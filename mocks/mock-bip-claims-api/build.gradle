@@ -1,20 +1,17 @@
 
 plugins {
   id 'local.java.container-spring-conventions'
-  id 'local.std.java.library-spring-conventions'
-  id 'io.spring.dependency-management'
-  id 'jacoco'
+  id 'local.std.java.library-conventions'
 }
 
 description = 'Mock Bip Claims Service'
 
 dependencies {
-  implementation project(':mocks:mock-shared')
-  implementation project(':svc-bip-api')
+  implementation project(':mock-bip-shared')
+//  implementation project(':svc-bip-api')
 
-  implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
-  implementation "com.fasterxml.jackson.core:jackson-core:${jackson_version}"
-  implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.0'
+  implementation "com.fasterxml.jackson.core:jackson-databind"
+  implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2'
 
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -28,7 +25,7 @@ dependencies {
   implementation "io.jsonwebtoken:jjwt:${io_jsonwebtoken_version}"
 
   // https://mvnrepository.com/artifact/commons-io/commons-io
-  implementation 'commons-io:commons-io:2.11.0'
+  implementation 'commons-io:commons-io:2.13.0'
 
-  testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
+  //  testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
 }

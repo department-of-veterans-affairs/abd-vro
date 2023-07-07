@@ -1,8 +1,6 @@
 plugins {
   id 'local.java.container-spring-conventions'
-  id 'local.std.java.library-spring-conventions'
-  id 'io.spring.dependency-management'
-  id 'jacoco'
+  id 'local.std.java.library-conventions'
 }
 
 description = 'Mock Slack Service'
@@ -13,8 +11,7 @@ ext {
 }
 
 dependencies {
-  implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
-  implementation "com.fasterxml.jackson.core:jackson-core:${jackson_version}"
+  implementation "com.fasterxml.jackson.core:jackson-databind"
 
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -25,5 +22,5 @@ dependencies {
 
   implementation 'org.apache.commons:commons-lang3:3.12.0'
 
-  testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
+  //testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
 }

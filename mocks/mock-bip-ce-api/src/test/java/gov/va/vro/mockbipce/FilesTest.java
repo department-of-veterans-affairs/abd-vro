@@ -5,11 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.bip.model.evidence.response.UploadResponse;
+import gov.va.vro.bip.model.evidence.response.VefsErrorResponse;
 import gov.va.vro.mockbipce.config.TestConfig;
 import gov.va.vro.mockbipce.util.TestHelper;
 import gov.va.vro.mockbipce.util.TestSpec;
-import gov.va.vro.model.bipevidence.response.UploadResponse;
-import gov.va.vro.model.bipevidence.response.VefsErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

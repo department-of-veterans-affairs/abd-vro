@@ -76,8 +76,7 @@ public class BgsApiClientRoutes extends RouteBuilder {
 
   private RequestAndMerge<BgsNotesCamelBody, BgsApiClientRequest, BgsApiClientResponse>
       requestBgsToAddNotesProcessor() {
-    return RequestAndMerge.<BgsNotesCamelBody, BgsApiClientRequest, BgsApiClientResponse>factory(
-            producerTemplate)
+    return RequestAndMerge.<BgsNotesCamelBody, BgsApiClientRequest, BgsApiClientResponse>factory(producerTemplate)
         .requestUri(BGSCLIENT_ADDNOTES)
         .prepareRequest(body -> body.currentRequest())
         // set responseClass so that Camel auto-converts JSON into object

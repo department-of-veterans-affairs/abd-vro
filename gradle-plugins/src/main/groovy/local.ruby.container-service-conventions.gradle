@@ -1,0 +1,17 @@
+/**
+ * Provides docker container settings
+ * Mimics local.java.container-conventions.gradle except for Ruby projects
+ */
+
+plugins {
+    id 'shared.docker.container-conventions'
+}
+
+docker {
+    dockerfile findDockerfile(['src/docker/Dockerfile', '/docker/Dockerfile-ruby'])
+
+    // Copy files into build/docker/ folder, where the container image will be built
+    copySpec.into(".").from("src"){
+        exclude('docker')
+    }
+}

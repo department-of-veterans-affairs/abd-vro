@@ -1,11 +1,14 @@
 FROM eclipse-temurin:17-jre-alpine
 
 # hadolint ignore=DL3018
-RUN apk update && apk --no-cache add expat=2.5.0-r0 curl && rm -rf /var/cache/apk/*
+RUN apk update && \
+    apk --no-cache add curl redis sudo && \
+    apk upgrade openssl libssl3 libcrypto3 && \
+    rm -rf /var/cache/apk/*
 
 RUN adduser --no-create-home --disabled-password tron
 
-HEALTHCHECK CMD curl --fail http://localhost:8081/actuator/health || exit 1
+HEALTHCHECK CMD curl --fail http://localhost:8111/actuator/health || exit 1
 
 WORKDIR /app
 ARG ENTRYPOINT_FILE=entrypoint.sh
@@ -19,6 +22,6 @@ COPY ${JAR_FILE} fat.jar
 # This folder should correspond with $PERSIST_TRACKING_FOLDER
 RUN mkdir -p /persist/tracking && chown -R tron /persist/tracking
 
-RUN mkdir -p /app/build/tomcat && chmod +x entrypoint.sh  && chown -R tron /app
+RUN mkdir -p /app/build/tomcat && chmod +x ./*.sh  && chown -R tron /app
 USER tron
 ENTRYPOINT ["/app/entrypoint-wrapper.sh"]

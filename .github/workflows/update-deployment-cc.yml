@@ -1,0 +1,167 @@
+name: "2. (Internal) Update CC Deployment"
+run-name: "${{inputs.target_env}}: Update deployment ${{inputs.helm_chart}} ${{inputs.image_tag}}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_env:
+        description: 'Target LHDI environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+        - dev
+        - qa
+        - sandbox
+        - prod-test
+        - prod
+
+      helm_chart:
+        description: 'Helm chart to deploy'
+        required: true
+        type: choice
+        options:
+        - domain-cc
+
+      image_tag:
+        description: 'Image tag: first 7 of commit hash, "latest", "v1.2.3", or "release-1.2.3"'
+        required: true
+        default: 'latest'
+        type: string
+
+      # Other deployment options
+      rollback:
+        description: 'If deploy fails, rollback to previous? (Always true for prod)'
+        required: true
+        type: boolean
+        default: false
+      shutdown:
+        description: '(As a last resort) Shut down chart completely, then redeploy'
+        required: true
+        type: boolean
+        default: false
+
+  # Allow other workflows to call this one
+  workflow_call:
+    inputs:
+      target_env:
+        required: true
+        type: string
+      helm_chart:
+        required: true
+        type: string
+      image_tag:
+        required: true
+        type: string
+
+      rollback:
+        required: false
+        type: boolean
+        default: false
+      shutdown:
+        required: false
+        type: boolean
+        default: false
+
+env:
+  # Id for the #benefits-vro-devops Slack channel
+  SLACK_CHANNEL: C04CA47HV96
+  RELEASE_NAME: "vro-${{ inputs.helm_chart }}"
+
+jobs:
+  update-cc-deployment:
+    # Required secrets are set in the specific repo
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Slack: workflow triggered"
+        id: notify-slack
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-text: ":rocket: \
+            <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|\
+            Updating deployment (#${{ github.run_number }})>: Helm chart *${{ inputs.helm_chart }}* \
+            in *${{ inputs.target_env }}* with images tagged `${{ inputs.image_tag }}`...\n\
+            (caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}`)\n\
+            - Rollback if chart deployment fails: *${{ inputs.rollback }}*\n\
+            - Shutdown chart before deployment: *${{ inputs.shutdown }}*"
+
+      - name: "Set up kube config"
+        id: kube-setup
+        run: |
+          mkdir ~/.kube
+          case "${{ inputs.target_env }}" in
+            dev|qa|sandbox) KUBE_CONFIG="${{ secrets.DEV_KUBE_CONFIG }}";;
+            prod-test|prod) KUBE_CONFIG="${{ secrets.PROD_KUBE_CONFIG }}";;
+          esac
+          echo -n "${KUBE_CONFIG}" | base64 -d > ~/.kube/config
+          chmod go-rwx ~/.kube/config
+
+          echo "==================================="
+          if helm list -n va-abd-rrd-${{ inputs.target_env }} | grep "^${{ env.RELEASE_NAME }} "; then
+            helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
+            kubectl -n va-abd-rrd-${{ inputs.target_env }} get pods --show-labels
+
+            echo '## Before update' >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          else
+            echo "No existing Helm release; creating a new Helm release: ${{ env.RELEASE_NAME }}"
+          fi
+
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+
+      - name: "Deploy ${{ inputs.helm_chart }} '${{ inputs.image_tag }}' to ${{ inputs.target_env }} env"
+        run: |
+          echo "::group::Upgrading Helm chart: ${{inputs.helm_chart}}"
+
+          export ROLLBACK=${{ inputs.rollback }}
+          export SHUTDOWN_FIRST=${{ inputs.shutdown }}
+
+          export K8SINFO=true
+          export WAIT_TIMEOUT=10m
+          helm/deploy.sh "${{inputs.target_env}}" "${{inputs.helm_chart}}" "${{inputs.image_tag}}"
+          echo "::endgroup::"
+
+          echo '## After update' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: "Slack thread: Post failed status message"
+        if: failure()
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-text: ":panda_cry: Failed *${{ inputs.helm_chart }}* deployment to *${{ inputs.target_env }}*"
+      - name: "Slack emoji: React failure on top-level Slack notification"
+        if: failure()
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-function: send-reaction
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-message-timestamp: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-emoji-name: 'x'
+
+      - name: "Slack thread: Post success status message"
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-text: ":panda_duck_yay: Completed *${{ inputs.helm_chart }}* deployment to ${{ inputs.target_env }}"
+      - name: "Slack emoji: React success on top-level Slack notification"
+        uses: archive/github-actions-slack@v2.6.0
+        with:
+          slack-function: send-reaction
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ env.SLACK_CHANNEL }}
+          slack-message-timestamp: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
+          slack-emoji-name: 'tada'

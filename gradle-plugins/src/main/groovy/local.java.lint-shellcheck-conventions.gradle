@@ -1,0 +1,32 @@
+/**
+ * Top-level configuration of all the typical standard configurations for a gradle plugin
+ * https://github.com/department-of-veterans-affairs/lighthouse-di-starter-boot/blob/main/buildSrc/src/main/groovy/starter.java.lint-shellcheck-conventions.gradle
+ */
+
+plugins {
+    id 'base'
+    id 'com.felipefzdz.gradle.shellcheck'
+}
+
+shellcheck {
+    sources = files(".")
+    ignoreFailures = true
+    showViolations = true
+    shellcheckVersion = "1.4.6"
+    useDocker = false
+    // don't specify the absolute path so that it can work in GH Actions and locally
+    shellcheckBinary = "shellcheck"
+    severity = "style" // "error"
+}
+
+tasks.named('shellcheck').configure {
+    reports {
+        xml.required = false
+        txt.required = false
+        html.required = true
+    }
+}
+
+tasks.named('check').configure {
+    dependsOn tasks.named('shellcheck')
+}

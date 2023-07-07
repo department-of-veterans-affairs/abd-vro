@@ -1,7 +1,7 @@
 
 plugins {
   id 'local.java.container-spring-conventions'
-  id 'local.std.java.library-spring-conventions'
+  id 'local.std.java.library-conventions'
 }
 
 ext {
@@ -11,7 +11,7 @@ ext {
 dependencies {
   implementation project(':domain-xample:xample-shared')
   implementation project(':shared:lib-camel-connector')
-  implementation project(':persistence:model')
+  implementation project(':shared:persistence-model')
 
   // Needed for *Repository classes to save to DB
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -26,7 +26,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
   testImplementation "org.apache.camel:camel-test-junit5:${camel_version}"
-  testImplementation "com.github.fppt:jedis-mock:1.0.7"
+  testImplementation "com.github.fppt:jedis-mock:1.0.9"
   testImplementation 'org.slf4j:slf4j-simple:2.0.7'
 
   // To fix jackson error: Java 8 date/time type `java.time.LocalDateTime` not supported by default

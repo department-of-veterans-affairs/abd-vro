@@ -32,8 +32,8 @@ services:
   # Containers with the `mock-` prefix are used for development and testing.
 
   mock-slack:
-    profiles: ["all","slack","v2-mocks"]
-    image: va/abd_vro-mock-slack:latest
+    profiles: ["all","slack"]
+    image: va/vro_mocks-mock-slack:latest
     <<: [*common-sde-security, *common-security-opt]
     ports:
       - "20100:20100"
@@ -43,8 +43,8 @@ services:
       - vro_intranet
 
   mock-lighthouse-api:
-    profiles: ["all","lh","v2-mocks"]
-    image: va/abd_vro-mock-lighthouse-api:latest
+    profiles: ["all","lh"]
+    image: va/vro_mocks-mock-lighthouse-api:latest
     <<: [*common-sde-security, *common-security-opt]
     ports:
       - "20200:20200"
@@ -55,9 +55,23 @@ services:
     networks:
       - vro_intranet
 
+  mock-bie-kafka:
+    profiles: ["all","kafka"]
+    image: va/vro_mocks-mock-bie-kafka:latest
+    <<: [*common-sde-security, *common-security-opt]
+    ports:
+      - "9092:9092"
+    environment:
+      <<: *common-vars
+      # for development only; TODO: Update with BIE-like authentication
+      ALLOW_PLAINTEXT_LISTENER: yes
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://mock-bie-kafka:9092
+    networks:
+      - vro_intranet
+
   mock-bip-claims-api:
-    profiles: ["all","bip","v2-mocks"]
-    image: va/abd_vro-mock-bip-claims-api:latest
+    profiles: ["all","bip"]
+    image: va/vro_mocks-mock-bip-claims-api:latest
     <<: [*common-sde-security, *common-security-opt]
     ports:
       - "20300:20300"
@@ -72,8 +86,8 @@ services:
       - vro_intranet
 
   mock-bip-ce-api:
-    profiles: ["all","bip","v2-mocks"]
-    image: va/abd_vro-mock-bip-ce-api:latest
+    profiles: ["all","bip"]
+    image: va/vro_mocks-mock-bip-ce-api:latest
     <<: [*common-sde-security, *common-security-opt]
     ports:
       - "20310:20310"
@@ -89,8 +103,8 @@ services:
       - vro_intranet
 
 #  mock-mas-api:
-#    profiles: ["all","mas","v2-mocks"]
-#    image: va/abd_vro-mock-mas-api:latest
+#    profiles: ["all","mas"]
+#    image: va/vro_mocks-mock-mas-api:latest
 #    <<: [*common-sde-security, *common-security-opt]
 #    ports:
 #      - "20400:20400"

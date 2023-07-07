@@ -4,7 +4,7 @@ FROM ruby:2.7.8-alpine3.16
  # https://www.cloudbees.com/blog/build-minimal-docker-container-ruby-apps
 
 # hadolint ignore=DL3018
-RUN apk update && apk --no-cache add expat=2.5.0-r0 git ruby-dev=3.1.4-r0 curl-dev build-base=0.5-r3 openssl && rm -rf /var/cache/apk/*
+RUN apk update && apk upgrade && apk --no-cache add git ruby-dev=3.1.4-r0 curl-dev build-base=0.5-r3 openssl && rm -rf /var/cache/apk/*
 
 RUN adduser --disabled-password --gecos "" tron
 
@@ -31,7 +31,7 @@ RUN gem install bundler:2.4.10 --no-document && bundle install && gem update cgi
 # Put commands that produce project-specific image layers below this line.
 
 COPY . .
-RUN chmod +x entrypoint*.sh && chown -R tron /app
+RUN chmod +x ./*.sh && chown -R tron /app
 
 USER tron
 ENTRYPOINT ["/app/entrypoint-wrapper.sh"]

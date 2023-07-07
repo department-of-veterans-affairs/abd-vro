@@ -1,0 +1,37 @@
+version: '3.9'
+
+networks:
+  # Put these services on the same `vro_intranet` network as VRO -- see app/src/docker/docker-compose.yml
+  vro_intranet:
+    # https://docs.docker.com/compose/networking/#use-a-pre-existing-network
+    # Change this to true if running with app/src/docker/docker-compose.yml
+    external: true
+
+# Reusable blocks
+# https://medium.com/@kinghuang/docker-compose-anchors-aliases-extensions-a1e4105d70bd
+# Also note https://yaml.org/type/merge.html
+
+x-common-vars: &common-vars
+  # ENV determines which configuration settings to use.
+  ENV: ${ENV:-local}
+
+x-common-security-opt: &common-security-opt
+  security_opt:
+    - no-new-privileges:true
+
+x-common-sde-security: &common-sde-security
+  ulimits:
+    nproc: 65535
+
+services:
+  # Containers with the `svc-` prefix are microservices to support domain workflows.
+
+  svc-cc-api:
+    image: va/abd_vro-cc-app:latest
+    <<: [*common-sde-security, *common-security-opt]
+    environment:
+      <<: *common-vars
+    ports:
+      - "8120:8120"
+    networks:
+      - vro_intranet

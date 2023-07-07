@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vro-redis
+  labels: {{- toYaml .Values.labels | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels: {{- toYaml .Values.labels | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- toYaml .Values.labels | nindent 8 }}
+        sidecar.istio.io/inject: "false"
+      annotations:
+        {{- include "vro.annotations.pod" . | nindent 8 }}
+    spec:
+      {{- include "vro.imagePullSecrets" . | nindent 6 }}
+      containers:
+        - name: redis{{ include "vro.containerSuffix" . }}
+          image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/mirror-redis:{{ .Values.imageTag }}
+          env:
+            - name: REDIS_PLACEHOLDERS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: vro-redis
+                  key: REDIS_CLIENTUSER_PASS
+          ports:
+            - containerPort: {{ .Values.service.redis.sourcePort }}
+              protocol: TCP
+          command: ["redis-server"]
+          args: ["--requirepass", "$(REDIS_PLACEHOLDERS_PASSWORD)"]
+          resources:
+            requests:
+              cpu: 150m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi

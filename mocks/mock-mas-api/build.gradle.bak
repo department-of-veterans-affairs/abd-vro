@@ -1,8 +1,6 @@
 plugins {
   id 'local.java.container-spring-conventions'
   id 'local.std.java.library-spring-conventions'
-  id 'io.spring.dependency-management'
-  id 'jacoco'
 }
 
 ext {
@@ -21,5 +19,5 @@ dependencies {
 
   implementation "org.springdoc:springdoc-openapi-webmvc-core"
 
-  testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
+  // testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
 }

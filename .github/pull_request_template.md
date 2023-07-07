@@ -4,8 +4,7 @@
 <!-- brief description of how things worked before this PR -->
 
 Associated tickets or Slack threads:
-<!-- replace "000" with ticket number in both places -->
-- [MCP-000](https://amida.atlassian.net/browse/MCP-000)
+- #?
 
 ## How does this fix it?[^1]
 <!-- description of how things will work after this PR -->

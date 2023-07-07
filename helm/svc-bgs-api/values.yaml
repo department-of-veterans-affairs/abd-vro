@@ -1,0 +1,23 @@
+labels:
+  app: vro-svc-bgs-api
+
+resources:
+  requests:
+    cpu: 150m
+    memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 1024Mi
+
+replicaCount: 1
+
+# autoscaling:
+#   enabled: false
+#   minReplicas: 1
+#   maxReplicas: 100
+#   targetCPUUtilizationPercentage: 80
+
+bip:
+  # TODO: Consider moving these URL settings to application-*.yml files
+  bipClaimUrl:    claims-uat.stage.bip.va.gov/api/v1
+  bipEvidenceUrl: vefs-claimevidence-uat.stage.bip.va.gov/api/v1/rest

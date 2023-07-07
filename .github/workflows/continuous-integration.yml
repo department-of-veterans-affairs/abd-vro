@@ -5,7 +5,7 @@ name: "3. Continuous Integration (run tests and checks)"
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ develop, domain-* ]
 
   # Allow manual triggering
   workflow_dispatch:
@@ -16,9 +16,13 @@ jobs:
     secrets: inherit
 
   codeql:
-    uses: ./.github/workflows/codeql.yml
+    uses: ./.github/workflows/codeql-analysis.yml
     secrets: inherit
 
-#  end2end-test:
-#    uses: ./.github/workflows/rrd-end2end-test.yml
-#    secrets: inherit
+  container-healthchecks:
+    uses: ./.github/workflows/container-healthchecks.yml
+    secrets: inherit
+
+  xample-domain:
+    uses: ./.github/workflows/xample-integration-test.yml
+    secrets: inherit

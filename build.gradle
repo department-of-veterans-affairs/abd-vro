@@ -1,39 +1,21 @@
 buildscript {
   dependencies {
-    classpath "se.patrikerdes:gradle-use-latest-versions-plugin:${use_latest_versions_plugin_version}"
-    classpath "com.github.ben-manes:gradle-versions-plugin:${versions_plugin_version}"
+    classpath "org.yaml:snakeyaml:2.0"
   }
   // There's a conflict between versions of jgit between spotless and axion release plugin
   configurations.classpath {
     resolutionStrategy {
-      force 'org.eclipse.jgit:org.eclipse.jgit:5.7.0.202003110725-r'
+      force 'org.eclipse.jgit:org.eclipse.jgit:6.6.0.202305301015-r'
     }
   }
 }
 
 plugins {
-  // Set versions for these plugins (but don't apply) so we don't have to specify the version later
-  id 'org.ajoberstar.grgit' version '4.1.0' apply false
-  id 'io.freefair.lombok' version '8.0.1' apply false
-  id 'org.springframework.boot' version "${spring_boot_version}" apply false
-  id 'io.swagger.swaggerhub' version '1.0.1' apply false
-  id 'com.diffplug.spotless' version '5.14.1' apply false
-  id 'com.palantir.docker' version '0.27.0' apply false
-  id 'com.palantir.docker-run' version '0.27.0' apply false
-  id 'net.rdrei.android.buildtimetracker' version '0.11.0' apply false
-  id 'com.github.ben-manes.versions' version "${versions_plugin_version}" apply false
-  id 'se.patrikerdes.use-latest-versions' version "${use_latest_versions_plugin_version}" apply false
-  id 'com.github.johnrengelman.processes' version '0.5.0' apply false
-  id 'org.springdoc.openapi-gradle-plugin' version '1.4.0' apply false
-  id 'org.flywaydb.flyway' version '9.2.0' apply false
-  id 'com.felipefzdz.gradle.shellcheck' version '1.4.6' apply false
+  id 'local.std.base-project-conventions'
+  id 'pl.allegro.tech.build.axion-release' version '1.15.3'
 
-  // Apply these
-  id 'org.barfuin.gradle.jacocolog' version '1.2.4' // provides task jacocoAggregatedReport
-  id 'org.barfuin.gradle.taskinfo' version '2.0.0'
-  id 'nebula.lint' version '18.0.3'
-  id 'pl.allegro.tech.build.axion-release' version '1.13.2'
-  id 'starter.java.build-utils-property-conventions'
+  // Set versions for these plugins (but don't apply) so we don't have to repeat the versions in subprojects
+  id "org.springframework.boot" version "${spring_boot_version}" apply false
 }
 
 allprojects {
@@ -45,14 +27,14 @@ allprojects {
     rules = ['unused-dependency']
     // criticalRules will fail the build in the event of a violation
     criticalRules = [
-      'minimum-dependency-version',
-      'overridden-dependency-version',
-      'unused-exclude-by-dep',
-      'unused-exclude-by-conf',
-      'dependency-parentheses',
-      'duplicate-dependency-class',
-      'archaic-wrapper',
-      'all-nebula-renames'
+            'minimum-dependency-version',
+            'overridden-dependency-version',
+            'unused-exclude-by-dep',
+            'unused-exclude-by-conf',
+            'dependency-parentheses',
+            'duplicate-dependency-class',
+            'archaic-wrapper',
+            'all-nebula-renames'
     ]
   }
 
@@ -60,11 +42,11 @@ allprojects {
     // Workaround for gradleLint failure
     // https://github.com/nebula-plugins/gradle-lint-plugin/issues/336#issuecomment-844989277
     // https://github.com/gradle/gradle/issues/6854
-    configurations.all {
-      if (name.startsWith("incrementalScalaAnalysis")) {
-        extendsFrom = []
-      }
-    }
+    // configurations.all {
+    //   if (name.startsWith("incrementalScalaAnalysis")) {
+    //     extendsFrom = []
+    //   }
+    // }
   }
 
   apply plugin: 'com.diffplug.spotless'
@@ -93,6 +75,8 @@ subprojects {
       }
     }
     // print out tracked failed tests when the build has finished
+    // TODO: https://github.com/gradle/gradle/issues/20151#issuecomment-1551007455
+    // and https://docs.gradle.org/current/userguide/dataflow_actions.html#lifecycle_event_providers
     gradle.buildFinished {
       if (!failedTests.empty) {
         println "Failed tests:"
@@ -108,40 +92,6 @@ subprojects {
 ext {
   jacoco_enforce_violations = true
   jacoco_minimum_coverage = 0.8
-
-  // Modules that use Java code
-  codeModules = [
-    ':app',
-    ':persistence:model',
-    ':shared:lib-camel-connector',
-    ':svc-lighthouse-api',
-    ':console',
-    ':mocks:mock-bip-ce-api',
-    ':mocks:mock-bip-claims-api',
-    ':mocks:mock-shared',
-    ':mocks:mock-lighthouse-api',
-    ':mocks:mock-slack',
-    ':domain-xample:xample-api-controller',
-    ':domain-xample:xample-shared',
-    ':domain-xample:xample-workflows',
-    ':domain-xample:svc-xample-j',
-    ':domain-cc:cc-api-controller'
-  ]
-  // Modules that create Docker images
-  dockerModules = [
-    ':app',
-    ':db-init',
-    ':svc-bgs-api',
-    ':svc-lighthouse-api',
-    ':console',
-    ':mocks:mock-bip-ce-api',
-    ':mocks:mock-bip-claims-api',
-    ':mocks:mock-bgs-api',
-    ':mocks:mock-lighthouse-api',
-    ':mocks:mock-slack',
-    ':domain-xample:xample-workflows',
-    ':domain-xample:svc-xample-j'
-  ]
 }
 
 // Used by `release` task to create a new version
@@ -150,14 +100,67 @@ scmVersion {
   localOnly = true
   useHighestVersion = true
 
+  def postgresDockerfileContent=file("${project.rootDir}/postgres/Dockerfile").getText()
+  def matcher = (postgresDockerfileContent =~ /FROM postgres:(.+)/)
+  def postgresBaseImageVersion = matcher.getCount() > 0 ? matcher[0][1] : "latest"
+  Map<String, Object> platformHelmValues = new org.yaml.snakeyaml.Yaml().load(file("${project.rootDir}/helm/platform/values.yaml").text)
+  def helmChartAppVersions = [
+          // These rarely change
+          'postgres'   : postgresBaseImageVersion, // extracted from Dockerfile
+          'redis'      : (String) platformHelmValues.get("redis-chart").get("imageTag"),
+          'rabbitmq'   : (String) platformHelmValues.get("rabbitmq-chart").get("imageTag"),
+
+          // Stable versions -- changes occasionally
+          'console'    : '2.5.0',
+
+          // These change often (i.e., with each release)
+          // A null value will result in the currentVersion being used
+          '..'         : null, // '..' will resolve to helm/Charts.yaml
+          'api-gateway': null, // Update the version presented in SwaggerUI
+          'vro-app'    : null,
+          'svc-bgs-api': null,
+          'svc-lighthouse-api': null,
+          // Once stable, set a version and move to previous section
+          'domain-cc'  : null,
+  ]
+
+  def setHelmChartAppVersions = { currentVersion ->
+    helmChartAppVersions.collect { projectName, version ->
+      if (version == null) version = currentVersion
+
+      def helmChartFilePaths = [
+              project.findProperty("helm.${projectName}.chart_file"),
+              "/helm/${projectName}/Chart.yaml",
+              "/helm/platform/charts/${projectName}/Chart.yaml",
+              "/helm/vro/charts/${projectName}/Chart.yaml"
+      ]
+      def helmChartFilePath = helmChartFilePaths.find{ it != null && file("${project.rootDir}/$it").exists() }
+      println String.format( "%-14s %-12s => %s", projectName, version, helmChartFilePath)
+      if (version != null && helmChartFilePath != null) {
+        def helmChartFile = file("${project.rootDir}/$helmChartFilePath")
+        String s = helmChartFile.text.replaceFirst(/(?m)^appVersion: ".*"/, "appVersion: \"$version\"")
+        helmChartFile.setText(s)
+        helmChartFile
+      }
+    }
+  }
+
   hooks {
-    pre("fileUpdate", [file       : "app/src/main/java/gov/va/vro/config/propmodel/Info.java",
-      pattern    : { v, p -> /version = "v.*"/ },
-      replacement: { v, p -> "version = \"v$v\"" }])
-    // Here is where the appVersion is updated with each release
-    pre("fileUpdate", [file       : "helm/vro-app/Chart.yaml",
-      pattern    : { v, p -> /appVersion: .*/ },
-      replacement: { v, p -> "appVersion: $v" }])
+    pre("fileUpdate", [file: "api-gateway/src/main/java/gov/va/vro/propmodel/Info.java",
+                       pattern    : { v, p -> /String version = "v.*"/ },
+                       replacement: { v, p -> "String version = \"v$v\"" }])
+    pre("fileUpdate", [file: "scripts/image_versions.src",
+                       pattern    : { v, p -> /CURRENT_RELEASE_VER="v.*"/ },
+                       replacement: { v, p -> "CURRENT_RELEASE_VER=\"v$v\"" }])
+    pre({ context ->
+      def versionsFile = file("${project.rootDir}/versions.txt")
+      versionsFile.append("v${context.currentVersion}\n")
+      context.addCommitPattern(versionsFile.canonicalPath)
+    })
+    pre({ context ->
+      setHelmChartAppVersions(context.currentVersion)
+              .findAll{ it !=null }.each { file -> context.addCommitPattern(file.canonicalPath) }
+    })
     pre("commit")
   }
 }
@@ -167,53 +170,9 @@ allprojects {
   project.version = scmVersion.version
 }
 
-def maintainerclean = tasks.register('maintainerclean') {
-  group = "Workflow"
-  description = "clean all submodules"
-  def tb = taskBuilder('clean')
-  codeModules.each { dependsOn tb(it) }
-  dockerModules.each { dependsOn tb(it) }
-  //depender codeModules, taskBuilder('clean')
-  //depender dockerModules, taskBuilder('clean')
-}
-
-def dockerclean = tasks.register('dockerclean') {
-  group = "Workflow"
-  description = "clean docker images"
-  dependsOn ':app:dockerComposeDown'
-  dependsOn ':app:dockerPrune'
-}
-
-def dockermaintainerclean = tasks.register('dockermaintainerclean') {
-  group = "Workflow"
-  description = "clean docker images"
-  dependsOn ':app:dockerPruneVolume'
-  mustRunAfter dockerclean
-}
-
-def devloop = tasks.register('devloop') {
-  group = "Workflow"
-  description = "Rebuild code, docker images, and restart docker-compose"
-  dependsOn ':app:build'
-  def tb = taskBuilder('docker')
-  dockerModules.each { dependsOn tb(it) }
-  //depender(dockerModules, taskBuilder('docker'))
-  dependsOn ':app:dockerComposeUp'
-  mustRunAfter dockerclean
-  mustRunAfter dockermaintainerclean
-}
-
-def restartloop = tasks.register('restartloop') {
-  group = "Workflow"
-  description = "Stop docker-compose, delete unused images, continue with devloop task"
-  dependsOn dockerclean
-  dependsOn devloop
-}
-
-tasks.register('resetloop') {
-  group = "Workflow"
-  description = "Remove docker volumes, continue with restartloop task"
-  dependsOn dockerclean
-  dependsOn dockermaintainerclean
-  dependsOn restartloop
+tasks.named("dockerComposeDown").configure {
+  // Shut down subprojects' containers before Platform containers, volumes, and network
+  mustRunAfter ':app:dockerComposeDown'
+  mustRunAfter ':domain-xample:dockerComposeDown'
+  mustRunAfter ':domain-cc:dockerComposeDown'
 }

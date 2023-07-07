@@ -1,0 +1,15 @@
+# This file contains significant versions of VRO and its components.
+# The versions are used to present options for manual runs of GitHub Action workflows.
+# This file is automatically updated when a new release is created.
+# Manually delete versions that are not significant milestones or will not be deployed.
+
+v3.0.6
+v3.0.7
+v3.0.7-domaincc1
+v3.0.8
+v3.0.9
+v3.1.0
+v3.1.1
+v3.2.0
+v3.2.1
+v3.2.2

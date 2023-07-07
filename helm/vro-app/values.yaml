@@ -1,0 +1,50 @@
+labels:
+  app: vro-app
+
+dbInit:
+  imageTag: latest
+
+replicaCount: 1
+
+serviceUriPrefix: vro-app
+
+service:
+  app:
+    sourcePort: 8110
+    targetPort: 8110
+
+ports:
+  - name: liveness
+    containerPort: 8111
+    protocol: TCP
+  - name: debug
+    containerPort: 5005
+    protocol: TCP
+
+livenessProbe:
+  httpGet:
+    path: /actuator/health/liveness
+    port: 8111
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  timeoutSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /actuator/health/readiness
+    port: 8111
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  timeoutSeconds: 10
+  failureThreshold: 3
+
+# autoscaling:
+#   enabled: false
+#   minReplicas: 1
+#   maxReplicas: 100
+#   targetCPUUtilizationPercentage: 80
+
+# TODO: Consider moving these URL settings to application-*.yml files
+vroAudUrl:    https://sandbox-api.va.gov/services/abd-vro
+lhApiAuthUrl: https://sandbox-api.va.gov/internal/auth/v2/validation

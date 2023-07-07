@@ -1,0 +1,4 @@
+
+bip:
+  bipClaimUrl: claims-prod.prod.bip.va.gov/api/v1
+  bipEvidenceUrl: vefs-claimevidence.prod.bip.va.gov/api/v1/rest

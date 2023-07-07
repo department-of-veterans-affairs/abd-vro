@@ -1,9 +1,8 @@
 
 plugins {
-  id 'java'
-  id "io.freefair.lombok"
-  id 'org.springframework.boot'
   id 'local.java.container-spring-conventions'
+  id 'local.std.java.library-conventions'
+  id 'jvm-test-suite'
 }
 
 ext {
@@ -13,15 +12,25 @@ ext {
 dependencies {
   implementation project(':domain-xample:xample-shared')
 
-  implementation "com.fasterxml.jackson.core:jackson-core:${jackson_version}"
-  implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
-
   // RabbitMQ
   implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
-  // Actuator for health check
+  // Provides endpoint for healthcheck
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
+}
 
-  testImplementation 'org.slf4j:slf4j-simple:2.0.7'
+// https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html#sec:jvm_test_suite_usage
+testing {
+  suites {
+    integrationTest(JvmTestSuite) {
+      dependencies {
+        implementation project(":domain-xample:svc-xample-j")
+        implementation project(':domain-xample:xample-shared')
+        implementation "org.springframework.boot:spring-boot-starter-test"
+        implementation "org.springframework.boot:spring-boot-starter-amqp"
+        implementation "com.fasterxml.jackson.core:jackson-databind"
+      }
+    }
+  }
 }

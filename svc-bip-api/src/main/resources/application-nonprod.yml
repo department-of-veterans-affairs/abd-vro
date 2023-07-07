@@ -1,0 +1,18 @@
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  # Contains shared properties for non-prod environments (local, dev, qa, sandbox)
+# Contrast this file against application-prod.yml
+#
+# This file is used when a Spring Group Profile is set up
+# in application.yml (under spring.profiles.group) to use `nonprod`
+# or when JAVA_PROFILE="-Dspring.profiles.include=nonprod"
+# See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
+
+opentracing:
+  zipkin:
+    # Disabling to run locally without errors
+    enabled: false
+
+slack:
+  exception:
+    webhook: "${SLACK_EXCEPTION_WEBHOOK:#{null}}"
+    channel: benefits-vro-nonprod
+

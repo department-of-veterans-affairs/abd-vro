@@ -1,0 +1,4 @@
+plugins {
+  id 'base'
+  id 'local.docker-compose-convention'
+}

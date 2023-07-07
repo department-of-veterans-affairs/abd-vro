@@ -31,12 +31,10 @@ runs:
     - name: "Install Python"
       uses: actions/setup-python@v4
       with:
-        python-version: "3.9"
+        python-version: "3.10"
         cache: "pip"
 
-#    Removing this for now to avoid bringing in unused dependencies
-#    but maintaining it as a comment to more easily support other domains in the future
-#    - name: "Install Python dependencies"
-#      shell: bash
-#      run: |
-#        pip install -r domain-rrd/service-python/requirements.txt
+    - name: "Install Python dependencies"
+      shell: bash
+      run: |
+        pip install -r domain-cc/*/*/requirements.txt

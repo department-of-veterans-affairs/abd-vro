@@ -1,7 +1,6 @@
 package gov.va.vro.abddataaccess.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import gov.va.vro.model.AbdEvidence;
 import lombok.Getter;
 import lombok.Setter;
 

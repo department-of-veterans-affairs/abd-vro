@@ -43,7 +43,13 @@ jobs:
       - name: "Run tests and checks"
         # `check` runs all checks, including spectralLint, hadolint, and shellcheck
         run: |
+          echo "::group::Gradle test check"
           ./gradlew test check
+          echo "::endgroup::"
+
+          echo "::group::Gradle test check - mocks"
+          ./gradlew -p mocks test check
+          echo "::endgroup::"
       - name: "Check for adequate test coverage"
         run: |
           ./gradlew jacocoLogTestCoverage jacocoTestCoverageVerification
@@ -64,7 +70,7 @@ jobs:
         # `jacocoAggregatedReport` reports aggregated coverage of all the subprojects
         #     excluding integrationTest and end2endTest (which are run elsewhere)
         run: |
-          ./gradlew jacocoAggregatedReport -x integrationTest
+          ./gradlew jacocoAggregatedReport
       - name: "Report JaCoCo Coverage as a GH Check Run"
         # This takes about 1 minute, so don't run on PRs
         # if: github.event_name != 'pull_request'
@@ -82,7 +88,7 @@ jobs:
           fail_below_threshold: false
           publish_only_summary: false
       - name: "Add JaCoCo Coverage Report as PR comment"
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
         uses: madrapps/jacoco-report@v1.3
         with:
           paths: ${{ github.workspace }}/build/reports/jacoco/jacocoAggregatedReport/jacocoAggregatedReport.xml
@@ -121,3 +127,30 @@ jobs:
         run: |
           cd svc-bgs-api/src
           bundle exec rspec --format documentation
+
+  test-python-cc-app-api:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+        with:
+          # Need to fetch more than 1 deep to see changes
+          fetch-depth: 2
+
+      - name: "Get changed files"
+        id: changed-files-specific
+        uses: tj-actions/changed-files@v35
+        with:
+          files: domain-cc/**
+
+      - name: "Install Python"
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+          cache: "pip"
+
+      - name: "Run contention classification tests"
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        run: |
+          ./gradlew :domain-cc:test
