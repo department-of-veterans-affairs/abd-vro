@@ -117,12 +117,7 @@ echo '# for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
     local PREFIX=$(bash_var_prefix "$IMG")
     echo "export ${PREFIX}_GRADLE_IMG=\"$(gradle_image_name "$IMG")\""
     echo "export ${PREFIX}_IMG=\"$(prod_image_name "$IMG")\""
-    local IMG_VER=$(getVarValue "$PREFIX" _VER)
-    >&2 echo -e "$PREFIX: \t$IMG_VER"
-    if [ -z "$IMG_VER" ]; then
-      IMG_VER='$LAST_RELEASE_VERSION'
-    fi
-    echo "export ${PREFIX}_VER=\"$IMG_VER\""
+    echo "export ${PREFIX}_VER=\"\$LAST_RELEASE_VERSION\""
     echo
   done
 

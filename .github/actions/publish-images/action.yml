@@ -19,6 +19,8 @@ inputs:
     required: true
   run_tests:
     description: 'Run test before publishing images'
+    # Caution: No warning or error occurs when a string value is provided
+    # Ensure a boolean is provided: https://github.com/actions/runner/issues/1483#issuecomment-994986996
     type: boolean
     default: true
 
@@ -46,6 +48,37 @@ runs:
         username: ${{ inputs.ghcr_username }}
         password: ${{ inputs.ghcr_password }}
 
+    - name: "Unpin changed pinned images"
+      id: unpin-changed-pinned-images
+      shell: bash
+      run: |
+        if [ "$(git rev-parse --abbrev-ref --symbolic-full-name HEAD)" == "HEAD" ]; then
+          echo "Presuming this GitHub Action workflow was triggered by a GitHub release, which means no unpinning needs to happen."
+        elif ! git diff-index --quiet HEAD --; then
+          # Install container-diff needed by image-version.sh
+          curl -LO https://storage.googleapis.com/container-diff/latest/container-diff-linux-amd64 && \
+          mkdir -p "/tmp/bin" && \
+          export PATH="/tmp/bin:$PATH" && \
+          install container-diff-linux-amd64 /tmp/bin/container-diff
+
+          # Unpin pinned images that have changed
+          scripts/image-version.sh unpinIfDiff
+
+          # Commit updated files -- https://stackoverflow.com/a/3879077
+          if git update-index --refresh; then
+            echo "No files changed"
+          else
+            git config user.name "VRO Machine User"
+            git config user.email "abd-vro-machine@users.noreply.github.com"
+            git add scripts/image_versions.src
+            git commit -m "Automated commit: Unpin versions of updated images"
+
+            # Push to both repos
+            git remote set-url --add origin https://github.com/department-of-veterans-affairs/abd-vro.git
+            git push
+          fi
+        fi
+
     - name: "Tag and push images using commit hash and `latest`"
       id: push-images
       shell: bash
@@ -64,12 +97,12 @@ runs:
             IMG_TAG=$(getVarValue "${PREFIX}" _VER)
           fi
           echo "::group::Push image $IMG_NAME $IMG_TAG"
+          GHCR_PATH="ghcr.io/${{ github.repository }}/${IMG_NAME}"
           if [ "$(imageTagExists "$IMG_NAME" "$IMG_TAG")" == "200" ]; then
             echo "Image already exists: $IMG_NAME $IMG_TAG; not overwriting"
             echo "* Image already exists, not overwriting: ${GHCR_PATH}:$IMG_TAG" >> $GITHUB_STEP_SUMMARY
           else
             GRADLE_IMG_NAME=$(getVarValue "${PREFIX}" _GRADLE_IMG)
-            GHCR_PATH="ghcr.io/${{ github.repository }}/${IMG_NAME}"
 
             echo "Tagging '$GRADLE_IMG_NAME' as '$IMG_NAME:$IMG_TAG' and '$IMG_NAME:latest'"
             docker tag "$GRADLE_IMG_NAME" "${GHCR_PATH}:$IMG_TAG"

@@ -18,6 +18,8 @@ plugins {
     id 'starter.java.test-conventions'
     id 'starter.java.test-jacoco-conventions'
 
+    id 'starter.java.lint-spotless-java-conventions'
+
     // Constrains transitive dependencies to use versions without vulnerabilities
     id 'shared.java.vro-dep-constraints'
 }

@@ -95,15 +95,15 @@ case "$HELM_CHART" in
     platformChartArgs
     ;;
   api-gateway)
-    HELM_ARGS="$HELM_ARGS --set-string 'imageTag=$apigateway_VER' ";;
-  app)
-    HELM_ARGS="$HELM_ARGS --set-string 'imageTag=$app_VER' \
-      --set-string 'dbInit.imageTag=$dbinit_VER' "
+    HELM_ARGS="$HELM_ARGS --set-string imageTag=$apigateway_VER ";;
+  vro-app)
+    HELM_ARGS="$HELM_ARGS --set-string imageTag=$app_VER \
+      --set-string dbInit.imageTag=$dbinit_VER "
     ;;
   svc-bgs-api)
-    HELM_ARGS="$HELM_ARGS --set-string 'imageTag=$svcbgsapi_VER' ";;
+    HELM_ARGS="$HELM_ARGS --set-string imageTag=$svcbgsapi_VER ";;
   svc-lighthouse-api)
-    HELM_ARGS="$HELM_ARGS --set-string 'imageTag=$svclighthouseapi_VER' ";;
+    HELM_ARGS="$HELM_ARGS --set-string imageTag=$svclighthouseapi_VER ";;
 esac
 
 #echo "HELM_ARGS: $HELM_ARGS"
