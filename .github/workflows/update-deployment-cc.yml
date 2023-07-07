@@ -122,7 +122,7 @@ jobs:
           export ROLLBACK=${{ inputs.rollback }}
           export SHUTDOWN_FIRST=${{ inputs.shutdown }}
 
-          export K8SINFO=true
+          export K8S_INFO=true
           export WAIT_TIMEOUT=10m
           helm/deploy.sh "${{inputs.target_env}}" "${{inputs.helm_chart}}" "${{inputs.image_tag}}"
           echo "::endgroup::"

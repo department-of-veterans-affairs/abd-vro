@@ -3,7 +3,7 @@
 source scripts/image_vars.src
 
 pinImageVersions(){
-  echo "# $(date)"
+  echo "# $(date) -- $LAST_RELEASE_VERSION"
   for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
     local IMG_VER=$(getVarValue "${PREFIX}" _VER)
     local IMG_VAR="${PREFIX}_VER"
