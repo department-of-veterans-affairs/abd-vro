@@ -65,7 +65,8 @@ runs:
           scripts/image-version.sh unpinIfDiff
 
           # Commit updated files -- https://stackoverflow.com/a/3879077
-          git update-index --refresh
+          # The '|| echo' prevents this step from reporting a failure
+          git update-index --refresh || echo "Files changed"
           if git diff-index --quiet HEAD --; then
             echo "No files changed"
           else
