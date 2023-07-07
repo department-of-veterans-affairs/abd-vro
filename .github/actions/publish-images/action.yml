@@ -54,7 +54,7 @@ runs:
       run: |
         if [ "$(git rev-parse --abbrev-ref --symbolic-full-name HEAD)" == "HEAD" ]; then
           echo "Presuming this GitHub Action workflow was triggered by a GitHub release, which means no unpinning needs to happen."
-        elif ! git diff-index --quiet HEAD --; then
+        else
           # Install container-diff needed by image-version.sh
           curl -LO https://storage.googleapis.com/container-diff/latest/container-diff-linux-amd64 && \
           mkdir -p "/tmp/bin" && \
@@ -65,7 +65,8 @@ runs:
           scripts/image-version.sh unpinIfDiff
 
           # Commit updated files -- https://stackoverflow.com/a/3879077
-          if git update-index --refresh; then
+          git update-index --refresh
+          if git diff-index --quiet HEAD --; then
             echo "No files changed"
           else
             git config user.name "VRO Machine User"
