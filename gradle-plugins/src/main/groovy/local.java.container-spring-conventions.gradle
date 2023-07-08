@@ -8,6 +8,11 @@ plugins {
     id 'local.java.container-conventions'
 }
 
+bootJar {
+    // Use the same filename so that the container-diff doesn't incorrectly report differences
+    archiveFileName = "${archiveBaseName.get()}.${archiveExtension.get()}"
+}
+
 docker {
     files "build/libs/${bootJar.archiveFileName.get()}",
         "src/docker/entrypoint.sh"
@@ -28,13 +33,4 @@ dockerRun {
 
 tasks.dockerPrepare.configure {
     dependsOn(tasks.bootJar)
-}
-
-bootJar {
-    manifest {
-        attributes(
-                'Application-Version': "${project.version}",
-                'Build-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date())
-        )
-    }
 }
