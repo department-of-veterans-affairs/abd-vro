@@ -22,7 +22,3 @@ postgres_VER="v3.2.1"
 apigateway_VER="v3.2.5"
 svclighthouseapi_VER="v3.2.5"
 # Sat Jul  8 16:42:46 UTC 2023 -- v3.2.6
-console_VER="v3.2.6"
-app_VER="v3.2.6"
-svcbgsapi_VER="v3.2.6"
-ccapp_VER="v3.2.6"
