@@ -9,7 +9,8 @@
 : ${RABBITMQ_VER:=3}
 : ${REDIS_VER:=7}
 # Manually pin these images; they don't need to be automatically updated
-: ${console_VER:="v3.2.5"}
+# Use the `export myimage_VER="v1.2.3"` syntax so that they will be ignored by `image-version.sh`
+export console_VER="v3.2.5"
 
 # The following are pinned versions of images;
 # they are automatically pinned and unpinned by scripts/image-version.sh.
