@@ -76,6 +76,7 @@ case "$1" in
     if [ "$?" = 4 ]; then
       >&2 echo "Error comparing images, probably due to missing image.\
       Retry after secrel.yml workflow publishes release versions."
+      exit 44
     fi
     for PREFIX in $CHANGED_PINNED_IMAGES; do
       unpinImageVersion "${PREFIX}" > unpinned_versions.src && \
