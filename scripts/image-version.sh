@@ -36,7 +36,7 @@ comparePinnedImages(){
   >&2 echo "  Comparing local ${GRADLE_IMG_NAME} vs GHCR's ${IMG_NAME}:$IMG_VER"
   container-diff diff --type=history --type=size --json \
     "daemon://${GRADLE_IMG_NAME}" \
-    "remote://${GHCR_PATH}:${IMG_VER}"
+    "remote://${GHCR_PATH}:${IMG_VER}" || echo "  Error"
 }
 isImageSame(){
   local IMG_DIFFS=$1
@@ -56,7 +56,9 @@ changedPinnedImages(){
   for PREFIX in $(pinnedImages); do
     >&2 echo "Found pinned image: ${PREFIX}"
     local IMG_DIFFS=$(comparePinnedImages)
-    if ! isImageSame "$IMG_DIFFS"; then
+    if [ "$IMG_DIFFS" = "  Error" ]; then
+      return 4
+    elif ! isImageSame "$IMG_DIFFS"; then
       >&2 echo "$IMG_DIFFS" | jq
       echo "${PREFIX}"
     fi
@@ -70,7 +72,12 @@ case "$1" in
   pin) pinImageVersions >> scripts/image_versions.src
     ;;
   unpinIfDiff)
-    for PREFIX in $(changedPinnedImages); do
+    CHANGED_PINNED_IMAGES=$(changedPinnedImages)
+    if [ "$?" = 4 ]; then
+      >&2 echo "Error comparing images, probably due to missing image.\
+      Retry after secrel.yml workflow publishes release versions."
+    fi
+    for PREFIX in $CHANGED_PINNED_IMAGES; do
       unpinImageVersion "${PREFIX}" > unpinned_versions.src && \
         mv unpinned_versions.src scripts/image_versions.src
     done
