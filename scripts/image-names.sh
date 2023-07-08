@@ -30,7 +30,10 @@ prodImageName() {
 
 # These names should match directory names, if the docker image is built in a
 # subdirectory, be sure to add the sub directory to the gradleFolder function above
-IMAGES=( api-gateway app postgres db-init console svc-bgs-api svc-lighthouse-api cc-app )
+IMAGES=( console postgres \
+  api-gateway app db-init \
+  svc-bgs-api svc-lighthouse-api \
+  cc-app )
 echo
 echo "=== ${#IMAGES[@]} VRO images"
 for INDEX in "${!IMAGES[@]}"; do

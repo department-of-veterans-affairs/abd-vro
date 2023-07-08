@@ -106,7 +106,7 @@ runs:
               ;;
             only_changed)
               # If image is pinned, then use it to avoid publishing unchanged image (and avoids SecRel scan)
-              if grep "^${PREFIX}_VER=" scripts/image_versions.src; then
+              if grep -w "${PREFIX}_VER" scripts/image_versions.src; then
                 # Use the pinned version
                 IMG_TAG=$(getVarValue "${PREFIX}" _VER)
               else
