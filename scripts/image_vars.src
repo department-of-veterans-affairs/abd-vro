@@ -5,14 +5,14 @@
 
 # Array of VRO images
 # shellcheck disable=SC2034
-VRO_IMAGES_ARR=( console postgres api-gateway app db-init svc-bgs-api svc-lighthouse-api cc-app )
+VRO_IMAGES_ARR=( console postgres api-gateway app db-init svc-bgs-api svc-lighthouse-api svc-bie-kafka cc-app )
 # Usage: for IMG in ${VRO_IMAGES_ARR[@]}; do echo "- $IMG"; done
-export VRO_IMAGES="console postgres api-gateway app db-init svc-bgs-api svc-lighthouse-api cc-app"
+export VRO_IMAGES="console postgres api-gateway app db-init svc-bgs-api svc-lighthouse-api svc-bie-kafka cc-app"
 
 # Array of variable prefixes
 # shellcheck disable=SC2034
-VAR_PREFIXES_ARR=( console postgres apigateway app dbinit svcbgsapi svclighthouseapi ccapp )
-export VAR_PREFIXES="console postgres apigateway app dbinit svcbgsapi svclighthouseapi ccapp"
+VAR_PREFIXES_ARR=( console postgres apigateway app dbinit svcbgsapi svclighthouseapi svcbiekafka ccapp )
+export VAR_PREFIXES="console postgres apigateway app dbinit svcbgsapi svclighthouseapi svcbiekafka ccapp"
 
 LAST_RELEASE_VERSION=$(tail -1 versions.txt)
 
@@ -89,6 +89,11 @@ export svcbgsapi_VER="$LAST_RELEASE_VERSION"
 export svclighthouseapi_GRADLE_IMG="va/abd_vro-svc-lighthouse-api"
 export svclighthouseapi_IMG="vro-svc-lighthouse-api"
 export svclighthouseapi_VER="$LAST_RELEASE_VERSION"
+
+# --- svc-bie-kafka in folder ./svc-bie-kafka
+export svcbiekafka_GRADLE_IMG="va/abd_vro-svc-bie-kafka"
+export svcbiekafka_IMG="vro-svc-bie-kafka"
+export svcbiekafka_VER="$LAST_RELEASE_VERSION"
 
 # --- cc-app in folder domain-cc/cc-app
 export ccapp_GRADLE_IMG="va/abd_vro-cc-app"
