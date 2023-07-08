@@ -34,6 +34,14 @@ on:
         required: true
         type: boolean
         default: true
+      publish_mode:
+        description: "Which images to publish"
+        required: true
+        type: choice
+        options:
+          - "only_changed"
+          - "all"
+          - "pinned_only"
 
 env:
   # Id for the #benefits-vro-devops Slack channel
@@ -53,10 +61,10 @@ jobs:
       - name: "Determine image prefix and tag"
         id: image-props
         run: |
-          echo "ref_name: ${{ github.ref_name }}"
           # Set defaults
           IMG_PREFIX="dev_"
           RUN_GRADLE_TESTS=true
+          PUBLISH_MODE="all"
           RUN_SECREL=true
           IMG_TAG=${GITHUB_SHA:0:7}
 
@@ -66,24 +74,31 @@ jobs:
               [ "${{ inputs.image_prefix }}" == "(no prefix)" ] && IMG_PREFIX=""
               RUN_GRADLE_TESTS=${{ inputs.run_tests }}
               RUN_SECREL=${{ inputs.run_secrel }}
+              PUBLISH_MODE=${{ inputs.publish_mode }}
               ;;
           esac
 
           # Override some defaults depending on the branch
+          echo "ref_name: ${{ github.ref_name }}"
           case "${{ github.ref_name }}" in
             main)      IMG_PREFIX=""
+                       PUBLISH_MODE="all"
                        ;;
             release-*|v*.*.*) # if git tag reflects a release, then publish non-dev images
                        IMG_PREFIX=""
-                       # A blank IMG_TAG value will cause image_versions.src to be used
-                       IMG_TAG=""
+                       # For release events, all images are pinned so use the pinned version
+                       PUBLISH_MODE="pinned_only"
                        ;;
-            develop)   RUN_GRADLE_TESTS=false
+            develop)   # To reduce workflow runtime, don't run tests
+                       RUN_GRADLE_TESTS=false
+                       # To reduce SecRel scans, only published changed images
+                       PUBLISH_MODE="only_changed"
                        ;;
           esac
           echo "image_prefix=${IMG_PREFIX}" >> $GITHUB_OUTPUT
           echo "image_tag=${IMG_TAG}" >> $GITHUB_OUTPUT
           echo "run_tests=${RUN_GRADLE_TESTS}" >> $GITHUB_OUTPUT
+          echo "publish_mode=${PUBLISH_MODE}" >> $GITHUB_OUTPUT
           echo "run_secrel=${RUN_SECREL}" >> $GITHUB_OUTPUT
 
       - name: "DEBUG"
@@ -91,6 +106,7 @@ jobs:
           echo "image_prefix: ${{ steps.image-props.outputs.image_prefix }}"
           echo "image_tag: ${{ steps.image-props.outputs.image_tag }}"
           echo "run_tests: ${{ steps.image-props.outputs.run_tests }}"
+          echo "publish_mode: ${{ steps.image-props.outputs.publish_mode }}"
 
       - name: "Checkout source code"
         uses: actions/checkout@v3
@@ -121,8 +137,8 @@ jobs:
           image_tag: "${{ steps.image-props.outputs.image_tag }}"
           ghcr_username: ${{ github.actor }}
           ghcr_password: ${{ secrets.GITHUB_TOKEN }}
-          # run_tests should be a boolean -- https://github.com/actions/runner/issues/1483#issuecomment-994986996
-          run_tests: ${{ steps.image-props.outputs.run_tests == 'true' }}
+          run_tests: ${{ steps.image-props.outputs.run_tests }}
+          publish_mode: ${{ steps.image-props.outputs.publish_mode }}
 
       - name: "Slack thread: Images published"
         uses: archive/github-actions-slack@v2.6.0

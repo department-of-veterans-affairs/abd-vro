@@ -7,7 +7,7 @@ inputs:
     type: string
     default: 'dev_'
   image_tag:
-    description: 'The tag/version for the image, e.g., first 7 of the commit hash or "" (blank) to use image_versions.src'
+    description: 'The tag/version for the image, e.g., first 7 of the commit hash'
     type: string
   ghcr_username:
     description: 'GHCR username'
@@ -19,10 +19,12 @@ inputs:
     required: true
   run_tests:
     description: 'Run test before publishing images'
-    # Caution: No warning or error occurs when a string value is provided
-    # Ensure a boolean is provided: https://github.com/actions/runner/issues/1483#issuecomment-994986996
-    type: boolean
+    type: string
     default: true
+  publish_mode:
+    description: 'Publish certain images to reduce SecRel'
+    type: string
+    default: 'only_changed'
 
 outputs:
   images_list:
@@ -37,7 +39,7 @@ runs:
       uses: ./.github/actions/build-images
 
     - name: "Test code"
-      if: inputs.run_tests
+      if: inputs.run_tests == 'true'
       shell: bash
       run: ./gradlew check
 
@@ -61,7 +63,7 @@ runs:
           export PATH="/tmp/bin:$PATH" && \
           install container-diff-linux-amd64 /tmp/bin/container-diff
 
-          # Unpin pinned images that have changed
+          # Unpin pinned images that have changed so that new image versions can be published
           scripts/image-version.sh unpinIfDiff
 
           # Commit updated files -- https://stackoverflow.com/a/3879077
@@ -75,8 +77,8 @@ runs:
             git add scripts/image_versions.src
             git commit -m "Automated commit: Unpin versions of updated images"
 
-            # Push to both repos
-            git remote set-url --add origin https://github.com/department-of-veterans-affairs/abd-vro.git
+            # Push to public repo, which will mirror to internal repo
+            git remote set-url origin https://github.com/department-of-veterans-affairs/abd-vro.git
             git push
           fi
         fi
@@ -92,15 +94,35 @@ runs:
         echo "images<<EOF" >> $GITHUB_OUTPUT
         source scripts/image_vars.src
         for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
+          # Set IMG_TAG, which will determine if a new image will get published
+          case "${{ inputs.publish_mode }}" in
+            all)
+              # This IMG_TAG value will cause a new image to be publish (and scanned by SecRel)
+              IMG_TAG="${{ inputs.image_tag }}"
+              ;;
+            pinned_only)
+              # For release events (see secrel.yml), all images are pinned
+              IMG_TAG=$(getVarValue "${PREFIX}" _VER)
+              ;;
+            only_changed)
+              # If image is pinned, then use it to avoid publishing unchanged image (and avoids SecRel scan)
+              if grep "^${PREFIX}_VER=" scripts/image_versions.src; then
+                # Use the pinned version
+                IMG_TAG=$(getVarValue "${PREFIX}" _VER)
+              else
+                IMG_TAG="${{ inputs.image_tag }}"
+              fi
+              ;;
+            *)  echo "Unknown publish_mode: ${{ inputs.publish_mode }}"
+                exit 30
+              ;;
+          esac
+
           IMG_NAME="${{ inputs.image_prefix }}$(getVarValue "${PREFIX}" _IMG)"
-          if [ "${{ inputs.image_tag }}" ]; then
-            IMG_TAG="${{ inputs.image_tag }}"
-          else
-            IMG_TAG=$(getVarValue "${PREFIX}" _VER)
-          fi
           echo "::group::Push image $IMG_NAME $IMG_TAG"
           GHCR_PATH="ghcr.io/${{ github.repository }}/${IMG_NAME}"
           if [ "$(imageTagExists "$IMG_NAME" "$IMG_TAG")" == "200" ]; then
+            # Pinned versions of images will already exist, so they don't need to be published
             echo "Image already exists: $IMG_NAME $IMG_TAG; not overwriting"
             echo "* Image already exists, not overwriting: ${GHCR_PATH}:$IMG_TAG" >> $GITHUB_STEP_SUMMARY
           else

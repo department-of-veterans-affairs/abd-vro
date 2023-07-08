@@ -5,9 +5,9 @@ source scripts/image_vars.src
 pinImageVersions(){
   echo "# $(date) -- $LAST_RELEASE_VERSION"
   for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
-    local IMG_VER=$(getVarValue "${PREFIX}" _VER)
     local IMG_VAR="${PREFIX}_VER"
     if ! grep -q "^${IMG_VAR}=" scripts/image_versions.src; then
+      local IMG_VER=$(getVarValue "${PREFIX}" _VER)
       >&2 echo "Pinning ${IMG_VAR}=\"$IMG_VER\""
       echo "${IMG_VAR}=\"$IMG_VER\""
     fi
@@ -57,6 +57,7 @@ changedPinnedImages(){
     >&2 echo "Found pinned image: ${PREFIX}"
     local IMG_DIFFS=$(comparePinnedImages)
     if ! isImageSame "$IMG_DIFFS"; then
+      >&2 echo "$IMG_DIFFS" | jq
       echo "${PREFIX}"
     fi
   done
