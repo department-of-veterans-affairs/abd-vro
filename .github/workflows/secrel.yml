@@ -62,21 +62,18 @@ jobs:
         id: image-props
         run: |
           # Set defaults
-          IMG_PREFIX="dev_"
-          RUN_GRADLE_TESTS=true
-          PUBLISH_MODE="all"
-          RUN_SECREL=true
           IMG_TAG=${GITHUB_SHA:0:7}
 
-          # Change defaults if workflow was dispatched manually
-          case "${{ github.event_name }}" in
-            workflow_dispatch)
-              [ "${{ inputs.image_prefix }}" == "(no prefix)" ] && IMG_PREFIX=""
-              RUN_GRADLE_TESTS=${{ inputs.run_tests }}
-              RUN_SECREL=${{ inputs.run_secrel }}
-              PUBLISH_MODE=${{ inputs.publish_mode }}
-              ;;
-          esac
+          RUN_GRADLE_TESTS=${{ inputs.run_tests }}
+          [ "$RUN_GRADLE_TESTS" == "" ] && RUN_GRADLE_TESTS='true'
+
+          RUN_SECREL=${{ inputs.run_secrel }}
+          [ "$RUN_SECREL" == "" ] && RUN_SECREL='true'
+
+          PUBLISH_MODE=${{ inputs.publish_mode || 'all' }}
+
+          IMG_PREFIX=${{ inputs.image_prefix || 'dev_' }}
+          [ "$IMG_PREFIX" == "(no prefix)" ] && IMG_PREFIX=""
 
           # Override some defaults depending on the branch
           echo "ref_name: ${{ github.ref_name }}"
