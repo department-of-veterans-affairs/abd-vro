@@ -2,31 +2,55 @@
 
 source scripts/image_vars.src
 
+# Pins image versions to the latest release version
+# if the image is not already pinned.
 pinImageVersions(){
   echo "# $(date) -- $LAST_RELEASE_VERSION"
   for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
     local IMG_VAR="${PREFIX}_VER"
-    if ! grep -q "^${IMG_VAR}=" scripts/image_versions.src; then
+    # If not (automatically or manually) pinned, then pin to latest release version
+    if ! grep -q -w "${IMG_VAR}" scripts/image_versions.src; then
       local IMG_VER=$(getVarValue "${PREFIX}" _VER)
       >&2 echo "Pinning ${IMG_VAR}=\"$IMG_VER\""
       echo "${IMG_VAR}=\"$IMG_VER\""
     fi
   done
 }
+
+# Unpins auto-pinned image versions
 unpinImageVersion(){
   local PREFIX=$1
   local IMG_VAR="${PREFIX}_VER"
   >&2 echo "Unpinning ${IMG_VAR}"
   sed "/^${IMG_VAR}=/d" scripts/image_versions.src
 }
-pinnedImages(){
+
+# Returns only versions that have been automatically pinned (by this script)
+autoPinnedImages(){
   for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
-    local IMG_VAR="${PREFIX}_VER"
-    if grep -q "^${IMG_VAR}=" scripts/image_versions.src; then
+    if grep -q "^${PREFIX}_VER=" scripts/image_versions.src; then
       echo "${PREFIX}"
     fi
   done
 }
+
+# Returns only versions that have been automatically pinned (by this script)
+# and have changed
+changedAutoPinnedImages(){
+  for PREFIX in $(autoPinnedImages); do
+    >&2 echo "Found pinned image: ${PREFIX}"
+    local IMG_DIFFS=$(comparePinnedImages)
+    >&2 echo "$IMG_DIFFS" | jq
+    if [ "$IMG_DIFFS" = "  Error" ]; then
+      return 4
+    elif ! isImageSame "$IMG_DIFFS"; then
+      echo "${PREFIX}"
+    fi
+  done
+}
+
+# Returns JSON of image differences between locally created image
+# and the pinned image version (which has a release tag)
 comparePinnedImages(){
   local IMG_VER=$(getVarValue "${PREFIX}" _VER)
   # Release versions are tagged on non-dev images only (see secrel.yml) so no image `dev_` image prefix is needed
@@ -60,18 +84,6 @@ isImageSame(){
     return 1
   fi
 }
-changedPinnedImages(){
-  for PREFIX in $(pinnedImages); do
-    >&2 echo "Found pinned image: ${PREFIX}"
-    local IMG_DIFFS=$(comparePinnedImages)
-    >&2 echo "$IMG_DIFFS" | jq
-    if [ "$IMG_DIFFS" = "  Error" ]; then
-      return 4
-    elif ! isImageSame "$IMG_DIFFS"; then
-      echo "${PREFIX}"
-    fi
-  done
-}
 
 ## The functions above perform only read operations.
 ## File modifications are done below.
@@ -80,7 +92,7 @@ case "$1" in
   pin) pinImageVersions >> scripts/image_versions.src
     ;;
   unpinIfDiff)
-    CHANGED_PINNED_IMAGES=$(changedPinnedImages)
+    CHANGED_PINNED_IMAGES=$(changedAutoPinnedImages)
     if [ "$?" = 4 ]; then
       >&2 echo "Error comparing images, probably due to missing image.\
       Retry after secrel.yml workflow publishes release versions."
