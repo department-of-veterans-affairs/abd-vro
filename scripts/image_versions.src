@@ -24,6 +24,3 @@ svclighthouseapi_VER="v3.2.5"
 # Sat Jul  8 18:48:37 UTC 2023 -- v3.2.7
 # Sat Jul  8 21:08:24 UTC 2023 -- v3.3.0
 apigateway_VER="v3.3.0"
-app_VER="v3.3.0"
-svcbgsapi_VER="v3.3.0"
-ccapp_VER="v3.3.0"
