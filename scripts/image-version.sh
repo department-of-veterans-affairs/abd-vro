@@ -38,12 +38,20 @@ comparePinnedImages(){
     "daemon://${GRADLE_IMG_NAME}" \
     "remote://${GHCR_PATH}:${IMG_VER}" || echo "  Error"
 }
+
+# Using container-diff, every tiny difference is detected.
+# There are docker-build-time differences (e.g., installing packages and file timestamps)
+# that cause two images that are practically the same to be different.
+# This function tries to account for some trivial differences but
+# an image size difference cannot be ignored.
 isImageSame(){
   local IMG_DIFFS=$1
   local SIZE_DIFF_LEN=$(echo "${IMG_DIFFS}" | jq '.[] | select(.DiffType == "Size") | .Diff | length')
-  local HIST_DIFF_LEN=$(echo "${IMG_DIFFS}" | jq '.[] | select(.DiffType == "History") | .Diff.Adds + .Diff.Dels | length')
+  # The 'grep -v " is used to ignore difference in the file identifier
+  local HIST_DIFF_LEN=$(echo "${IMG_DIFFS}" | jq '.[] | select(.DiffType == "History")' | \
+    grep -v "/bin/sh -c #(nop) COPY file:.* in fat.jar" | \
+    jq '.Diff.Adds + .Diff.Dels | length')
 
-  # >&2 echo "  $SIZE_DIFF_LEN $HIST_DIFF_LEN"
   if [ "$SIZE_DIFF_LEN" = 0 ] && [ "$HIST_DIFF_LEN" = 0 ]; then
     >&2 echo "  Same"
     return 0
