@@ -64,10 +64,10 @@ changedPinnedImages(){
   for PREFIX in $(pinnedImages); do
     >&2 echo "Found pinned image: ${PREFIX}"
     local IMG_DIFFS=$(comparePinnedImages)
+    >&2 echo "$IMG_DIFFS" | jq
     if [ "$IMG_DIFFS" = "  Error" ]; then
       return 4
     elif ! isImageSame "$IMG_DIFFS"; then
-      >&2 echo "$IMG_DIFFS" | jq
       echo "${PREFIX}"
     fi
   done
