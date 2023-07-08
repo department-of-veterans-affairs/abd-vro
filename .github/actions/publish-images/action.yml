@@ -123,8 +123,8 @@ runs:
           GHCR_PATH="ghcr.io/${{ github.repository }}/${IMG_NAME}"
           if [ "$(imageTagExists "$IMG_NAME" "$IMG_TAG")" == "200" ]; then
             # Pinned versions of images will already exist, so they don't need to be published
-            echo "Image already exists: $IMG_NAME $IMG_TAG; not overwriting"
-            echo "* Image already exists, not overwriting: ${GHCR_PATH}:$IMG_TAG" >> $GITHUB_STEP_SUMMARY
+            echo "Image already exists: $IMG_NAME:$IMG_TAG -- not overwriting"
+            echo "* ($IMG_NAME:$IMG_TAG -- already exists, not overwriting)" >> $GITHUB_STEP_SUMMARY
           else
             GRADLE_IMG_NAME=$(getVarValue "${PREFIX}" _GRADLE_IMG)
 
@@ -135,7 +135,7 @@ runs:
             docker tag "$GRADLE_IMG_NAME" "${GHCR_PATH}:latest"
             docker push "${GHCR_PATH}:latest"
 
-            echo "* ${GHCR_PATH}:$IMG_TAG" >> $GITHUB_STEP_SUMMARY
+            echo "* $IMG_NAME:$IMG_TAG" >> $GITHUB_STEP_SUMMARY
             echo "${GHCR_PATH}:$IMG_TAG" >> $GITHUB_OUTPUT
           fi
           echo "::endgroup::"
