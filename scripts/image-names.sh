@@ -101,14 +101,19 @@ imageTagExists(){
 }
 
 # Note: Bash arrays cannot be exported; use this workaround to
-#       set the array variable from the string first:'
+#       set the array variable from the string first if needed:'
 echo "# IFS=' ' read -ra VAR_PREFIXES_ARR <<< \$VAR_PREFIXES"
-echo '# for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
-#   echo "## $PREFIX"
-#   VARNAME=${PREFIX}_GRADLE_IMG
-#   echo "$VARNAME = `getVarValue ${PREFIX} _GRADLE_IMG`"
+echo '#       Then use it like normal:
+# for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
+#   echo "The value of ${PREFIX}_GRADLE_IMG is $(getVarValue ${PREFIX} _GRADLE_IMG)"
 #   echo
 # done
+
+imageVersions(){
+ for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
+   echo "$(getVarValue ${PREFIX} _IMG) $(getVarValue ${PREFIX} _VER)"
+ done
+}
 
 ######################################
 '
