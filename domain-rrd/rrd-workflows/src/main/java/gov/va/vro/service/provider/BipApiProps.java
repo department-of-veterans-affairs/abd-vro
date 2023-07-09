@@ -18,32 +18,16 @@ import java.util.Date;
 @Setter
 @ConfigurationProperties(prefix = "bip")
 public class BipApiProps {
-
   private String claimBaseUrl;
-
   private String claimSecret;
-
   private String claimClientId;
-
   private String claimIssuer;
-
   private String evidenceBaseUrl;
-
   private String evidenceSecret;
-
   private String evidenceClientId;
-
   private String evidenceIssuer;
-
   private String stationId;
-
   private String applicationId;
-
-  /**
-   * Creates common Jwt claims.
-   *
-   * @return Claims
-   */
   public Claims toCommonJwtClaims() {
     Calendar cal = Calendar.getInstance();
     cal.add(Calendar.MINUTE, 30);
