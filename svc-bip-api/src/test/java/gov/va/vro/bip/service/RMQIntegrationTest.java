@@ -40,51 +40,65 @@ class RMQIntegrationTest {
   @MockBean BipApiProps bipApiProps;
   @Autowired RabbitTemplate rabbitTemplate;
   @Autowired RabbitAdmin rabbitAdmin;
+
   @Value("${setClaimToRfdStatusQueue}")
   String setClaimToRfdStatusQueue;
+
   @Value("${getClaimDetailsQueue}")
   String getClaimDetailsQueue;
+
   @Test
-   void testPositiveSetClaimToRfdStatus() {
+  void testPositiveSetClaimToRfdStatus() {
     final String qName = setClaimToRfdStatusQueue;
     rabbitAdmin.purgeQueue(qName, true);
     mockRestTemplateForTestSetClaimToRfdStatus();
     mockBipApiProp();
 
-    BipUpdateClaimResp result = (BipUpdateClaimResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, GOOD_CLAIM_ID);
+    BipUpdateClaimResp result =
+        (BipUpdateClaimResp)
+            rabbitTemplate.convertSendAndReceive(exchangeName, qName, GOOD_CLAIM_ID);
     assertEquals(200, result.statusCode);
   }
+
   @Test
-   void testNegativeSetClaimToRfdStatus() {
+  void testNegativeSetClaimToRfdStatus() {
+
     final String qName = setClaimToRfdStatusQueue;
     rabbitAdmin.purgeQueue(qName, true);
     mockRestTemplateForTestSetClaimToRfdStatus();
     mockBipApiProp();
 
-    BipUpdateClaimResp result = (BipUpdateClaimResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, BAD_CLAIM_ID);
+    BipUpdateClaimResp result =
+        (BipUpdateClaimResp)
+            rabbitTemplate.convertSendAndReceive(exchangeName, qName, BAD_CLAIM_ID);
     assertEquals(500, result.statusCode);
   }
+
   @Test
-   void testPositiveGetClaimDetails() throws Exception {
+  void testPositiveGetClaimDetails() throws Exception {
     final String qName = getClaimDetailsQueue;
     mockRestTemplateForTestGetClaimDetails();
     rabbitAdmin.purgeQueue(qName, true);
     mockBipApiProp();
 
-    BipClaim result = (BipClaim) rabbitTemplate.convertSendAndReceive(exchangeName, qName, GOOD_CLAIM_ID);
+    BipClaim result =
+        (BipClaim) rabbitTemplate.convertSendAndReceive(exchangeName, qName, GOOD_CLAIM_ID);
     assertEquals(200, result.statusCode);
   }
+
   @Test
-   void testNegativeGetClaimDetails() throws Exception {
+  void testNegativeGetClaimDetails() throws Exception {
     final String qName = getClaimDetailsQueue;
     mockRestTemplateForTestGetClaimDetails();
     rabbitAdmin.purgeQueue(qName, true);
     mockBipApiProp();
 
-    BipClaim result = (BipClaim) rabbitTemplate.convertSendAndReceive(exchangeName, qName, BAD_CLAIM_ID);
+    BipClaim result =
+        (BipClaim) rabbitTemplate.convertSendAndReceive(exchangeName, qName, BAD_CLAIM_ID);
     assertEquals(500, result.statusCode);
   }
-   void mockRestTemplateForTestGetClaimDetails() throws Exception{
+
+  void mockRestTemplateForTestGetClaimDetails() throws Exception {
     String resp200Body = getTestData(CLAIM_RESPONSE_200);
     String resp404Body = getTestData(CLAIM_RESPONSE_404);
 
@@ -95,63 +109,67 @@ class RMQIntegrationTest {
     String badClaimUrl = baseUrl + String.format(CLAIM_DETAILS, BAD_CLAIM_ID);
 
     Mockito.doReturn(resp200)
-            .when(restTemplate)
-            .exchange(
-                    ArgumentMatchers.eq(claimUrl),
-                    ArgumentMatchers.eq(HttpMethod.GET),
-                    ArgumentMatchers.any(HttpEntity.class),
-                    ArgumentMatchers.eq(String.class));
+        .when(restTemplate)
+        .exchange(
+            ArgumentMatchers.eq(claimUrl),
+            ArgumentMatchers.eq(HttpMethod.GET),
+            ArgumentMatchers.any(HttpEntity.class),
+            ArgumentMatchers.eq(String.class));
     Mockito.doReturn(resp404)
-            .when(restTemplate)
-            .exchange(
-                    ArgumentMatchers.eq(badClaimUrl),
-                    ArgumentMatchers.eq(HttpMethod.GET),
-                    ArgumentMatchers.any(HttpEntity.class),
-                    ArgumentMatchers.eq(String.class));
+        .when(restTemplate)
+        .exchange(
+            ArgumentMatchers.eq(badClaimUrl),
+            ArgumentMatchers.eq(HttpMethod.GET),
+            ArgumentMatchers.any(HttpEntity.class),
+            ArgumentMatchers.eq(String.class));
   }
-  void mockRestTemplateForTestSetClaimToRfdStatus(){
+
+  void mockRestTemplateForTestSetClaimToRfdStatus() {
     String baseUrl = HTTPS + CLAIM_URL;
     String goodUrl = baseUrl + String.format(UPDATE_CLAIM_STATUS, GOOD_CLAIM_ID);
     String badUrl = baseUrl + String.format(UPDATE_CLAIM_STATUS, BAD_CLAIM_ID);
     ResponseEntity<String> resp200 = ResponseEntity.ok("{}");
     ResponseEntity<String> resp500 =
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+        ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
     Mockito.doReturn(resp200)
-            .when(restTemplate)
-            .exchange(
-                    ArgumentMatchers.eq(goodUrl),
-                    ArgumentMatchers.eq(HttpMethod.PUT),
-                    ArgumentMatchers.any(HttpEntity.class),
-                    ArgumentMatchers.eq(String.class));
+        .when(restTemplate)
+        .exchange(
+            ArgumentMatchers.eq(goodUrl),
+            ArgumentMatchers.eq(HttpMethod.PUT),
+            ArgumentMatchers.any(HttpEntity.class),
+            ArgumentMatchers.eq(String.class));
     Mockito.doReturn(resp500)
-            .when(restTemplate)
-            .exchange(
-                    ArgumentMatchers.eq(badUrl),
-                    ArgumentMatchers.eq(HttpMethod.PUT),
-                    ArgumentMatchers.any(HttpEntity.class),
-                    ArgumentMatchers.eq(String.class));
+        .when(restTemplate)
+        .exchange(
+            ArgumentMatchers.eq(badUrl),
+            ArgumentMatchers.eq(HttpMethod.PUT),
+            ArgumentMatchers.any(HttpEntity.class),
+            ArgumentMatchers.eq(String.class));
   }
+
   static String exchangeName = "bipApiExchange";
-   static final long GOOD_CLAIM_ID = 9666959L;
-   static final long BAD_CLAIM_ID = 9666958L;
-   static final String CLAIM_RESPONSE_404 = "bip-test-data/claim_response_404.json";
-   static final String CLAIM_RESPONSE_200 = "bip-test-data/claim_response_200.json";
-   static final String CLAIM_DETAILS = "/claims/%s";
-   static final String UPDATE_CLAIM_STATUS = "/claims/%s/lifecycle_status";
-   static final String HTTPS = "https://";
-   static final String CLAIM_URL = "claims.bip.va.gov";
-   static final String CLAIM_SECRET = "secret";
-   static final String CLAIM_USERID = "userid";
-   static final String CLAIM_ISSUER = "issuer";
-   static final String STATION_ID = "280";
-   static final String APP_ID = "bip";
-   String getTestData(String dataFile) throws Exception {
+  static final long GOOD_CLAIM_ID = 9666959L;
+  static final long BAD_CLAIM_ID = 9666958L;
+  static final String CLAIM_RESPONSE_404 = "bip-test-data/claim_response_404.json";
+  static final String CLAIM_RESPONSE_200 = "bip-test-data/claim_response_200.json";
+  static final String CLAIM_DETAILS = "/claims/%s";
+  static final String UPDATE_CLAIM_STATUS = "/claims/%s/lifecycle_status";
+  static final String HTTPS = "https://";
+  static final String CLAIM_URL = "claims.bip.va.gov";
+  static final String CLAIM_SECRET = "secret";
+  static final String CLAIM_USERID = "userid";
+  static final String CLAIM_ISSUER = "issuer";
+  static final String STATION_ID = "280";
+  static final String APP_ID = "bip";
+
+  String getTestData(String dataFile) throws Exception {
     String filename =
         Objects.requireNonNull(getClass().getClassLoader().getResource(dataFile)).getPath();
     Path filePath = Path.of(filename);
     return Files.readString(filePath);
   }
-   void mockBipApiProp() {
+
+  void mockBipApiProp() {
     BipApiProps props = new BipApiProps();
     props.setApplicationId(APP_ID);
     props.setApplicationId(CLAIM_ISSUER);

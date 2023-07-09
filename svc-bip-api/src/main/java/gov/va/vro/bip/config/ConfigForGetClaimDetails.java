@@ -14,6 +14,7 @@ public class ConfigForGetClaimDetails {
 
   @Value("${getClaimDetailsQueue}")
   String getClaimDetailsQueue;
+
   @Autowired DirectExchange bipApiExchange;
 
   @Bean

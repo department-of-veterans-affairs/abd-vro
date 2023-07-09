@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 public class ConfigForSetClaimToRfdStatus {
   @Value("${setClaimToRfdStatusQueue}")
   String setClaimToRfdStatusQueue;
+
   @Autowired DirectExchange bipApiExchange;
 
   @Bean
