@@ -105,6 +105,7 @@ services:
     <<: [*common-sde-security, *common-security-opt]
     environment:
       <<: [*rabbitmq-placeholder-vars, *common-vars]
+      DOCKER_LOGS: "true"
     networks:
       - vro_intranet
 

@@ -6,7 +6,16 @@ require_relative 'config/setup'
 require 'rabbit_subscriber'
 require 'bgs_client'
 
-$logger = Logger.new(STDOUT)
+if ENV.fetch('DOCKER_LOGS','') == 'true'
+  fd = IO.sysopen("/proc/1/fd/1","w")
+  io = IO.new(fd,"w")
+  io.sync = true
+  LOG_OUTPUT = io
+else
+  LOG_OUTPUT = STDOUT
+end
+
+$logger = Logger.new(LOG_OUTPUT)
 $logger.level = Logger::DEBUG
 STDOUT.sync = true if ENVIRONMENT == "development"
 
@@ -47,5 +56,7 @@ def run(subscriber)
   end
 end
 
+$logger.info "Initializing subscriber..."
 subscriber = initialize_subscriber(BgsClient.new)
+$logger.info "Initialized subscriber!"
 run(subscriber)
