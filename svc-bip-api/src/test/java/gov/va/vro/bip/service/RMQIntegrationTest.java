@@ -6,6 +6,7 @@ import gov.va.vro.bip.model.BipClaim;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -31,6 +32,7 @@ import java.util.Objects;
  * Does same thing as BipApiServiceTest but through RMQ instance. Assumes RMQ broker is available
  * locally.
  */
+@Disabled("needs an RMQ broker, which is not available in github build env.")
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @Slf4j
