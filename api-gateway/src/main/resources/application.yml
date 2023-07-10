@@ -102,10 +102,10 @@ springdoc:
       - name: 0. Gateway API
         # API defined for this API Gateway
         url: /abd-vro/v3/api-docs
-      - name: App API
+      - name: 1. App API
         # API defined for the VRO Java-base App
         url: /vro-app/v3/api-docs
-      - name: Contention Classification API
+      - name: 2. Contention Classification API
         # Use the route defined under spring.cloud.gateway below
         url: /contention-classification/openapi.json
 

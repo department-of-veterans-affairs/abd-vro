@@ -21,11 +21,10 @@ on:
         required: true
         type: choice
         options:
-        - vro-app
+        - domain-cc
         - svc-bgs-api
         - svc-lighthouse-api
         - api-gateway
-        - platform
 
       image_tag:
         description: 'Image tag: first 7 of commit hash, "latest", "v1.2.3", or "release-1.2.3"'
@@ -45,48 +44,6 @@ on:
         type: boolean
         default: false
 
-      # VRO Platform options
-      platformHeader:
-        description: '======= Platform chart only ======='
-        type: choice
-        options:
-          - Remaining options are for 'platform'
-          - Selections are ignored for others charts
-      rabbitmq:
-        description: 'RabbitMQ image tag'
-        required: true
-        default: 3
-        type: choice
-        options:
-        - latest
-        - 3
-        - (disable)
-      redis:
-        description: 'Redis image tag'
-        required: true
-        default: 7
-        type: choice
-        options:
-        - latest
-        - 7
-        - (disable)
-      postgres:
-        description: 'Postgres DB image tag'
-        required: true
-        default: latest
-        type: choice
-        options:
-        - latest
-        - (disable)
-      console:
-        description: 'VRO Console image tag'
-        required: true
-        default: "(disable)"
-        type: choice
-        options:
-        - latest
-        - (disable)
-
   # Allow other workflows to call this one
   workflow_call:
     inputs:
@@ -97,8 +54,9 @@ on:
         required: true
         type: string
       image_tag:
-        required: true
+        required: false
         type: string
+        default: "various"
 
       rollback:
         required: false
@@ -108,28 +66,19 @@ on:
         required: false
         type: boolean
         default: false
-
-      rabbitmq:
+      deploy_prep_script:
         required: false
         type: string
-        default: "latest"
-      redis:
-        required: false
-        type: string
-        default: "latest"
-      postgres:
-        required: false
-        type: string
-        default: "latest"
-      console:
-        required: false
-        type: string
-        default: "(disable)"
+        default: 'echo "No deploy_prep_script"'
 
 env:
   # Id for the #benefits-vro-devops Slack channel
   SLACK_CHANNEL: C04CA47HV96
   RELEASE_NAME: "vro-${{ inputs.helm_chart }}"
+
+  # Env variables expected by deploy.sh
+  ROLLBACK: ${{ inputs.rollback }}
+  SHUTDOWN_FIRST: ${{ inputs.shutdown }}
 
 jobs:
   update-deployment:
@@ -171,10 +120,6 @@ jobs:
             echo '```' >> $GITHUB_STEP_SUMMARY
             helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
-
-            # HELM_VALUES=$(helm get values ${{ env.RELEASE_NAME }} --all -n va-abd-rrd-${{ inputs.target_env }} -o json)
-            # Show values with an `enabled` key
-            # echo $HELM_VALUES | jq '. | with_entries(select(.value.enabled!=null))'
           else
             echo "No existing Helm release; creating a new Helm release: ${{ env.RELEASE_NAME }}"
           fi
@@ -183,33 +128,41 @@ jobs:
         uses: actions/checkout@v3
 
       - name: "Slack thread: Post deploying message"
-        if: inputs.helm_chart == 'platform'
         # Post in thread to reduce clutter in Slack
         uses: archive/github-actions-slack@v2.6.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-          slack-text: ":panda_angel: Deploying *${{ inputs.helm_chart }}* Helm chart:\n\
-            - rabbitmq: *${{ inputs.rabbitmq }}*\n\
-            - redis: *${{ inputs.redis }}*\n\
-            - postgres: *${{ inputs.postgres }}*\n\
-            - console: ${{ inputs.console }}"
+          slack-text: |
+            :panda_angel: Deploying *${{ inputs.helm_chart }}* Helm chart with inputs:\n
+            ```
+            ${{ toJSON(github.event.inputs) }}
+            ```
 
       - name: "Deploy ${{ inputs.helm_chart }} '${{ inputs.image_tag }}' to ${{ inputs.target_env }} env"
         run: |
           echo "::group::Upgrading Helm chart: ${{inputs.helm_chart}}"
-
-          export ROLLBACK=${{ inputs.rollback }}
-          export SHUTDOWN_FIRST=${{ inputs.shutdown }}
-
-          export RABBITMQ_VER=${{ inputs.rabbitmq }}
-          export REDIS_VER=${{ inputs.redis }}
-          export postgres_VER=${{ inputs.postgres }}
-          export console_VER=${{ inputs.console }}
-
           export K8S_INFO=true
           export WAIT_TIMEOUT=10m
+
+          # Load default values for *_VER environment variables, which pin image versions
+          source scripts/image_vars.src
+
+          # To override pinned image version default, export env variable, e.g., 'apigateway_VER' for Helm chart 'api-gateway'
+          VAR_PREFIX=$(bashVarPrefix "${{inputs.helm_chart}}")
+          eval export ${VAR_PREFIX}_VER="${{inputs.image_tag}}"
+
+          # Run deploy_prep_script to set/override environment variables used by deploy.sh
+          eval ${{inputs.deploy_prep_script}}
+
+          # Log environment variables
+          echo '## _VER environment variables' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          export -p | sed 's/declare -x //' | grep '_VER=' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+          # Do deployment
           helm/deploy.sh "${{inputs.target_env}}" "${{inputs.helm_chart}}" "${{inputs.image_tag}}"
           echo "::endgroup::"
 
@@ -242,7 +195,7 @@ jobs:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
-          slack-text: ":panda_duck_yay: Completed *${{ inputs.helm_chart }}* deployment to ${{ inputs.target_env }}"
+          slack-text: ":panda_duck_yay: Completed *${{ inputs.helm_chart }}* deployment to *${{ inputs.target_env }}*"
       - name: "Slack emoji: React success on top-level Slack notification"
         uses: archive/github-actions-slack@v2.6.0
         with:

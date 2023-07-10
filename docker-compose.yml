@@ -151,7 +151,7 @@ services:
     environment:
       <<: *common-vars
       VRO_APP_HOSTNAME: app
-      # VRO_CC_HOSTNAME: cc-app
+      VRO_CC_HOSTNAME: svc-cc-api
     networks:
       - intranet
 

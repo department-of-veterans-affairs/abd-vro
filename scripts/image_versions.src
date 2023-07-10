@@ -1,15 +1,26 @@
 # This file sets environment variables that enables pinning a version for specific containers
 # overriding the variables set in image_vars.src.
-# This file is automatically updated by scripts/image-version.sh.
-# See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Container-Image-Versions
 #
 # These versions are used as image tags for:
 # - image publishing to GHCR (see .github/actions/publish-images/action.yml)
-# - Helm chart deployments to LHDI (see helm/deploy.sh)
+# - Helm chart deployments to LHDI (see .github/workflows/update-deployment.yml)
 
 # These versions are treated specially because we don't modify the base image
 : ${RABBITMQ_VER:=3}
 : ${REDIS_VER:=7}
+# Manually pin these images; they don't need to be automatically updated
+# Use the `export myimage_VER="v1.2.3"` syntax so that they will be ignored by `image-version.sh`
+export console_VER="v3.2.5"
 
-# Mon Jun 26 12:59:02 CDT 2023
+# The following are pinned versions of images;
+# they are automatically pinned and unpinned by scripts/image-version.sh.
+# See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Container-Image-Versions
+# Mon Jul 5
 dbinit_VER="v3.1.1"
+# Thu Jul  6 18:35:33 UTC 2023
+postgres_VER="v3.2.1"
+# Sat Jul  8 03:49:47 UTC 2023 -- v3.2.5
+svclighthouseapi_VER="v3.2.5"
+# Sat Jul  8 18:48:37 UTC 2023 -- v3.2.7
+# Sat Jul  8 21:08:24 UTC 2023 -- v3.3.0
+apigateway_VER="v3.3.0"

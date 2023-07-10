@@ -37,7 +37,7 @@ public class OpenApiConfiguration {
                 new io.swagger.v3.oas.models.info.Info()
                     .title(info.getTitle())
                     .description(info.getDescription())
-                    .version(info.getVersion())
+                    // .version(info.getVersion())
                     .license(new License().name(license.getName()).url(license.getUrl()))
                     .contact(new Contact().name(contact.getName()).email(contact.getEmail())))
             .servers(servers);

@@ -8,33 +8,51 @@ on:
 
   # Allow manual triggering
   workflow_dispatch:
+    inputs:
+      target_env:
+        description: 'Target LHDI environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+        - dev
+        - qa
+        - sandbox
+        - prod-test
+        - prod
+
+      image_tag:
+        description: 'Image tag: first 7 of commit hash, "latest", "v1.2.3", or "release-1.2.3"'
+        required: true
+        default: 'latest'
+        type: string
 
 jobs:
   deploy-vro-app:
-    uses: ./.github/workflows/update-deployment.yml
-    with:
-      target_env: dev
-      helm_chart: vro-app
-      image_tag: latest
+    uses: ./.github/workflows/update-deployment-app.yml
     secrets: inherit
+    with:
+      target_env: ${{ inputs.target_env || 'dev' }}
+      app: ${{ inputs.image_tag || 'latest' }}
+      db_init: ${{ inputs.image_tag || 'latest' }}
   deploy-vro-svc-bgs-api:
     uses: ./.github/workflows/update-deployment.yml
-    with:
-      target_env: dev
-      helm_chart: svc-bgs-api
-      image_tag: latest
     secrets: inherit
+    with:
+      target_env: ${{ inputs.target_env || 'dev' }}
+      helm_chart: svc-bgs-api
+      image_tag: ${{ inputs.image_tag || 'latest' }}
   deploy-vro-svc-lighthouse-api:
     uses: ./.github/workflows/update-deployment.yml
-    with:
-      target_env: dev
-      helm_chart: svc-lighthouse-api
-      image_tag: latest
     secrets: inherit
+    with:
+      target_env: ${{ inputs.target_env || 'dev' }}
+      helm_chart: svc-lighthouse-api
+      image_tag: ${{ inputs.image_tag || 'latest' }}
   deploy-domain-cc:
     uses: ./.github/workflows/update-deployment.yml
-    with:
-      target_env: dev
-      helm_chart: domain-cc
-      image_tag: latest
     secrets: inherit
+    with:
+      target_env: ${{ inputs.target_env || 'dev' }}
+      helm_chart: domain-cc
+      image_tag: ${{ inputs.image_tag || 'latest' }}

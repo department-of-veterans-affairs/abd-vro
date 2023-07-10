@@ -5,7 +5,7 @@
 
 # Be consistent about naming our images. This script helps us understand inconsistencies.
 
-gradle_folder() {
+gradleFolder() {
   case "$1" in
     pdfgenerator|featuretoggle|assessclaim*) echo "./domain-rrd/service-python/$1";;
     cc-app) echo "domain-cc/$1";;
@@ -14,23 +14,26 @@ gradle_folder() {
 }
 
 # These are used in docker-compose.yml files
-gradle_image_name() {
+gradleImageName() {
   echo "va/abd_vro-$1"
 }
 
-# Bash variables can't have dashes, so strip them out of the directory names
-bash_var_prefix() {
+# Bash variables cannot have dashes, so strip them out of the directory names
+bashVarPrefix() {
   echo "${1//-/}"
 }
 
 # These names must match the images specified in Helm configs
-prod_image_name() {
+prodImageName() {
   echo "vro-$1"
 }
 
 # These names should match directory names, if the docker image is built in a
-# subdirectory, be sure to add the sub directory to the gradle_folder function above
-IMAGES=( api-gateway app postgres db-init console svc-bgs-api svc-lighthouse-api cc-app )
+# subdirectory, be sure to add the sub directory to the gradleFolder function above
+IMAGES=( console postgres \
+  api-gateway app db-init \
+  svc-bgs-api svc-lighthouse-api \
+  cc-app )
 echo
 echo "=== ${#IMAGES[@]} VRO images"
 for INDEX in "${!IMAGES[@]}"; do
@@ -41,7 +44,7 @@ echo "=== Verifying folders and files"
 {
 for IMG in "${IMAGES[@]}"; do
   echo "--- $IMG"
-  GRADLE_FOLDER=$(gradle_folder "$IMG")
+  GRADLE_FOLDER=$(gradleFolder "$IMG")
   ls "$GRADLE_FOLDER/build.gradle"
   echo
 done
@@ -54,7 +57,7 @@ echo "=== Overwriting $SRC_FILE"
 overwriteSrcFile(){
   VAR_PREFIXES=()
   for IMG in "${IMAGES[@]}"; do
-    VAR_PREFIXES+=( "$(bash_var_prefix "$IMG")" )
+    VAR_PREFIXES+=( "$(bashVarPrefix "$IMG")" )
   done
 
 echo '#!/bin/bash'
@@ -82,6 +85,11 @@ getVarValue(){
   echo "${!VARNAME}"
 }
 
+# Bash variables cannot have dashes, so strip them out of the directory names
+bashVarPrefix() {
+  echo "${1//-/}"
+}
+
 # Return non-zero error code if image tag does not exist
 # Usage: imageTagExists IMAGE_NAME IMAGE_TAG
 # Environment variable GHCR_TOKEN should be in base64
@@ -93,14 +101,19 @@ imageTagExists(){
 }
 
 # Note: Bash arrays cannot be exported; use this workaround to
-#       set the array variable from the string first:'
+#       set the array variable from the string first if needed:'
 echo "# IFS=' ' read -ra VAR_PREFIXES_ARR <<< \$VAR_PREFIXES"
-echo '# for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
-#   echo "## $PREFIX"
-#   VARNAME=${PREFIX}_GRADLE_IMG
-#   echo "$VARNAME = `getVarValue ${PREFIX} _GRADLE_IMG`"
+echo '#       Then use it like normal:
+# for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
+#   echo "The value of ${PREFIX}_GRADLE_IMG is $(getVarValue ${PREFIX} _GRADLE_IMG)"
 #   echo
 # done
+
+imageVersions(){
+ for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
+   echo "$(getVarValue ${PREFIX} _IMG) $(getVarValue ${PREFIX} _VER)"
+ done
+}
 
 ######################################
 '
@@ -112,17 +125,12 @@ echo '# for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
     echo "${!VARNAME}"
   }
   for IMG in "${IMAGES[@]}"; do
-    local GRADLE_FOLDER=$(gradle_folder "$IMG")
+    local GRADLE_FOLDER=$(gradleFolder "$IMG")
     echo "# --- $IMG in folder $GRADLE_FOLDER"
-    local PREFIX=$(bash_var_prefix "$IMG")
-    echo "export ${PREFIX}_GRADLE_IMG=\"$(gradle_image_name "$IMG")\""
-    echo "export ${PREFIX}_IMG=\"$(prod_image_name "$IMG")\""
-    local IMG_VER=$(getVarValue "$PREFIX" _VER)
-    >&2 echo -e "$PREFIX: \t$IMG_VER"
-    if [ -z "$IMG_VER" ]; then
-      IMG_VER='$LAST_RELEASE_VERSION'
-    fi
-    echo "export ${PREFIX}_VER=\"$IMG_VER\""
+    local PREFIX=$(bashVarPrefix "$IMG")
+    echo "export ${PREFIX}_GRADLE_IMG=\"$(gradleImageName "$IMG")\""
+    echo "export ${PREFIX}_IMG=\"$(prodImageName "$IMG")\""
+    echo "export ${PREFIX}_VER=\"\$LAST_RELEASE_VERSION\""
     echo
   done
 

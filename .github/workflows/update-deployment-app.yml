@@ -1,6 +1,6 @@
-name: "2. (Internal) Update Deployment - CC"
-# For Partner Team CC to deploy updates to their application
-run-name: "${{inputs.target_env}}: Update deployment domain-cc ${{inputs.image_tag}}"
+name: "1. (Internal) Update Deployment - App"
+# To deploy updates to VRO app and db-init images
+run-name: "${{inputs.target_env}}: Update deployment: vro-app ${{inputs.app}}, db-init ${{inputs.db_init}}"
 
 on:
   workflow_dispatch:
@@ -10,20 +10,12 @@ on:
         required: true
         default: 'dev'
         type: choice
-        # Partner Teams are not allowed to deploy to prod
         options:
         - dev
         - qa
         - sandbox
         - prod-test
-
-      image_tag:
-        description: 'Image tag: first 7 of commit hash, "latest", "v1.2.3", or "release-1.2.3"'
-        required: true
-        default: 'latest'
-        type: string
-
-      # Other deployment options
+        - prod
       rollback:
         description: 'If deploy fails, rollback to previous? (Always true for prod)'
         required: true
@@ -35,16 +27,23 @@ on:
         type: boolean
         default: false
 
+      app:
+        description: 'app image tag'
+        required: true
+        default: 'latest'
+        type: string
+      db_init:
+        description: 'db-init image tag'
+        required: true
+        default: 'latest'
+        type: string
+
   # Allow other workflows to call this one
   workflow_call:
     inputs:
       target_env:
         required: true
         type: string
-      image_tag:
-        required: true
-        type: string
-
       rollback:
         required: false
         type: boolean
@@ -54,13 +53,24 @@ on:
         type: boolean
         default: false
 
+      app:
+        required: false
+        type: string
+        default: "latest"
+      db_init:
+        required: false
+        type: string
+        default: "latest"
+
 jobs:
-  update-cc-deployment:
+  update-deployment-app:
     uses: ./.github/workflows/update-deployment.yml
     secrets: inherit
     with:
       target_env: ${{ inputs.target_env }}
-      helm_chart: domain-cc
-      image_tag: ${{ inputs.image_tag }}
+      helm_chart: vro-app
       rollback: ${{ inputs.rollback }}
       shutdown: ${{ inputs.shutdown }}
+      deploy_prep_script: |
+        export app_VER=${{ inputs.app }}
+        export dbinit_VER=${{ inputs.db_init }}

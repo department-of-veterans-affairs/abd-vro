@@ -1,0 +1,107 @@
+name: "1. (Internal) Update Deployment - Platform"
+# To deploy updates to VRO Base Platform container images
+run-name: "${{inputs.target_env}}: Update deployment platform: postgres ${{inputs.postgres}}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_env:
+        description: 'Target LHDI environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+        - dev
+        - qa
+        - sandbox
+        - prod-test
+        - prod
+      rollback:
+        description: 'If deploy fails, rollback to previous? (Always true for prod)'
+        required: true
+        type: boolean
+        default: false
+      shutdown:
+        description: '(As a last resort) Shut down chart completely, then redeploy'
+        required: true
+        type: boolean
+        default: false
+
+      rabbitmq:
+        description: 'RabbitMQ image tag'
+        required: true
+        default: 3
+        type: choice
+        options:
+        - latest
+        - 3
+        - (disable)
+      redis:
+        description: 'Redis image tag'
+        required: true
+        default: 7
+        type: choice
+        options:
+        - latest
+        - 7
+        - (disable)
+      postgres:
+        description: 'Postgres DB image tag'
+        required: true
+        default: 'latest'
+        type: string
+      console:
+        description: 'VRO Console image tag'
+        required: true
+        default: "(disable)"
+        type: choice
+        options:
+        - latest
+        - (disable)
+
+  # Allow other workflows to call this one
+  workflow_call:
+    inputs:
+      target_env:
+        required: true
+        type: string
+      rollback:
+        required: false
+        type: boolean
+        default: false
+      shutdown:
+        required: false
+        type: boolean
+        default: false
+
+      rabbitmq:
+        required: false
+        type: string
+        default: "latest"
+      redis:
+        required: false
+        type: string
+        default: "latest"
+      postgres:
+        required: false
+        type: string
+        default: "latest"
+      console:
+        required: false
+        type: string
+        default: "(disable)"
+
+jobs:
+  update-deployment-platform:
+    uses: ./.github/workflows/update-deployment.yml
+    secrets: inherit
+    with:
+      target_env: ${{ inputs.target_env }}
+      helm_chart: platform
+      rollback: ${{ inputs.rollback }}
+      shutdown: ${{ inputs.shutdown }}
+      deploy_prep_script: |
+        export RABBITMQ_VER=${{ inputs.rabbitmq }}
+        export REDIS_VER=${{ inputs.redis }}
+        export postgres_VER=${{ inputs.postgres }}
+        export console_VER=${{ inputs.console }}
