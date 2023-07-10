@@ -17,6 +17,7 @@ import java.util.UUID;
 public class RMQConfig {
   @Value("${exchangeName}")
   String exchangeName;
+
   @Bean
   public MessageConverter jackson2MessageConverter() {
     return new Jackson2JsonMessageConverter();

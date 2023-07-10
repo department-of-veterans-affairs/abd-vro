@@ -144,14 +144,15 @@ class RMQIntegrationTest {
             ArgumentMatchers.eq(String.class));
   }
 
-
   @Value("${setClaimToRfdStatusQueue}")
   String setClaimToRfdStatusQueue;
 
   @Value("${getClaimDetailsQueue}")
   String getClaimDetailsQueue;
+
   @Value("${exchangeName}")
   String exchangeName;
+
   static final long GOOD_CLAIM_ID = 9666959L;
   static final long BAD_CLAIM_ID = 9666958L;
   static final String CLAIM_RESPONSE_404 = "bip-test-data/claim_response_404.json";
