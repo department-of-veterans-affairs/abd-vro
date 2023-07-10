@@ -6,6 +6,7 @@ import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,6 +15,8 @@ import java.util.UUID;
 @Configuration
 @Slf4j
 public class RMQConfig {
+  @Value("${exchangeName}")
+  String exchangeName;
   @Bean
   public MessageConverter jackson2MessageConverter() {
     return new Jackson2JsonMessageConverter();
@@ -21,7 +24,7 @@ public class RMQConfig {
 
   @Bean
   DirectExchange bipApiExchange() {
-    return new DirectExchange("bipApiExchange", true, true);
+    return new DirectExchange(exchangeName, true, true);
   }
 
   public static Object respondToClientDueToUncaughtExcdeption(

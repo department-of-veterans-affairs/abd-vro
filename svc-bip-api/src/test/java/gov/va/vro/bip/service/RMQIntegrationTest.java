@@ -41,12 +41,6 @@ class RMQIntegrationTest {
   @Autowired RabbitTemplate rabbitTemplate;
   @Autowired RabbitAdmin rabbitAdmin;
 
-  @Value("${setClaimToRfdStatusQueue}")
-  String setClaimToRfdStatusQueue;
-
-  @Value("${getClaimDetailsQueue}")
-  String getClaimDetailsQueue;
-
   @Test
   void testPositiveSetClaimToRfdStatus() {
     final String qName = setClaimToRfdStatusQueue;
@@ -57,12 +51,12 @@ class RMQIntegrationTest {
     BipUpdateClaimResp result =
         (BipUpdateClaimResp)
             rabbitTemplate.convertSendAndReceive(exchangeName, qName, GOOD_CLAIM_ID);
+
     assertEquals(200, result.statusCode);
   }
 
   @Test
   void testNegativeSetClaimToRfdStatus() {
-
     final String qName = setClaimToRfdStatusQueue;
     rabbitAdmin.purgeQueue(qName, true);
     mockRestTemplateForTestSetClaimToRfdStatus();
@@ -71,6 +65,7 @@ class RMQIntegrationTest {
     BipUpdateClaimResp result =
         (BipUpdateClaimResp)
             rabbitTemplate.convertSendAndReceive(exchangeName, qName, BAD_CLAIM_ID);
+
     assertEquals(500, result.statusCode);
   }
 
@@ -83,6 +78,7 @@ class RMQIntegrationTest {
 
     BipClaim result =
         (BipClaim) rabbitTemplate.convertSendAndReceive(exchangeName, qName, GOOD_CLAIM_ID);
+
     assertEquals(200, result.statusCode);
   }
 
@@ -95,6 +91,7 @@ class RMQIntegrationTest {
 
     BipClaim result =
         (BipClaim) rabbitTemplate.convertSendAndReceive(exchangeName, qName, BAD_CLAIM_ID);
+
     assertEquals(500, result.statusCode);
   }
 
@@ -147,7 +144,14 @@ class RMQIntegrationTest {
             ArgumentMatchers.eq(String.class));
   }
 
-  static String exchangeName = "bipApiExchange";
+
+  @Value("${setClaimToRfdStatusQueue}")
+  String setClaimToRfdStatusQueue;
+
+  @Value("${getClaimDetailsQueue}")
+  String getClaimDetailsQueue;
+  @Value("${exchangeName}")
+  String exchangeName;
   static final long GOOD_CLAIM_ID = 9666959L;
   static final long BAD_CLAIM_ID = 9666958L;
   static final String CLAIM_RESPONSE_404 = "bip-test-data/claim_response_404.json";
