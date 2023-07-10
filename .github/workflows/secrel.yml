@@ -103,19 +103,12 @@ jobs:
         run: |
           # Set defaults
           IMG_TAG=${GITHUB_SHA:0:7}
+          IMG_PREFIX="dev_"
+          RUN_GRADLE_TESTS="true"
+          PUBLISH_MODE="all"
+          RUN_SECREL="true"
 
-          RUN_GRADLE_TESTS=${{ inputs.run_tests }}
-          [ "$RUN_GRADLE_TESTS" == "" ] && RUN_GRADLE_TESTS='true'
-
-          RUN_SECREL=${{ inputs.run_secrel }}
-          [ "$RUN_SECREL" == "" ] && RUN_SECREL='true'
-
-          PUBLISH_MODE=${{ inputs.publish_mode || 'all' }}
-
-          IMG_PREFIX=${{ inputs.image_prefix || 'dev_' }}
-          [ "$IMG_PREFIX" == "(no prefix)" ] && IMG_PREFIX=""
-
-          # Override some defaults depending on the branch
+          # Override some defaults depending on the branch/ref_name
           echo "ref_name: ${{ github.ref_name }}"
           case "${{ github.ref_name }}" in
             main)      IMG_PREFIX=""
@@ -132,11 +125,20 @@ jobs:
                        PUBLISH_MODE="only_changed"
                        ;;
           esac
-          echo "image_prefix=${IMG_PREFIX}" >> $GITHUB_OUTPUT
+
+          # If workflow was manually dispatched, override settings
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            [ "${{ inputs.image_prefix }}" == "(no prefix)" ] && IMG_PREFIX=""
+            RUN_GRADLE_TESTS=${{ inputs.run_tests }}
+            RUN_SECREL=${{ inputs.run_secrel }}
+            PUBLISH_MODE=${{ inputs.publish_mode }}
+          fi
+
           echo "image_tag=${IMG_TAG}" >> $GITHUB_OUTPUT
+          echo "image_prefix=${IMG_PREFIX}" >> $GITHUB_OUTPUT
           echo "run_tests=${RUN_GRADLE_TESTS}" >> $GITHUB_OUTPUT
-          echo "publish_mode=${PUBLISH_MODE}" >> $GITHUB_OUTPUT
           echo "run_secrel=${RUN_SECREL}" >> $GITHUB_OUTPUT
+          echo "publish_mode=${PUBLISH_MODE}" >> $GITHUB_OUTPUT
 
       - name: "DEBUG"
         run: |
