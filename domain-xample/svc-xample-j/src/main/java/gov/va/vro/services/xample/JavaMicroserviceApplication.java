@@ -84,15 +84,14 @@ public class JavaMicroserviceApplication {
               org.springframework.messaging.Message<?> message,
               ListenerExecutionFailedException exception) {
             try {
-              log.error("Oh no!", exception);
+              log.error("Oh no! " + Util.fl(), exception);
               var errorModel = SomeDtoModel.builder().resourceId("").diagnosticCode("").build();
               errorModel.header(500, exception.toString());
               return errorModel;
-            }
-            catch(Exception e){
-              log.error("Exception handler threw exception. Call 911. Exiting");
+            } catch (Exception e) {
+              log.error("Exception handler threw exception. Call 911. Exiting. {}", Util.fl());
               System.exit(-1);
-              return null; //never executed
+              return null; // never executed
             }
           }
         };
