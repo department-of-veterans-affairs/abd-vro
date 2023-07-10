@@ -22,14 +22,14 @@ on:
         description: 'Tag pattern to delete'
         required: true
         type: string
-        default: release-1.0
+        default: v1.0
 
 jobs:
   delete_releases:
     runs-on: ubuntu-latest
     steps:
     - name: "Delete old images in GHCR"
-      uses: dev-drprasad/delete-older-releases@v0.2.1
+      uses: yoomlam/delete-older-releases@master
       with:
         delete_tags: true
         keep_latest: ${{ inputs.keep_last }}
