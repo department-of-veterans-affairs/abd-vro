@@ -32,14 +32,16 @@ jobs:
           ./gradlew :app:dockerComposeUp
 
       - name: "Wait for RabbitMQ to be ready"
-        uses: nev7n/wait_for_response@v1
+        uses: indiesdev/curl@v1.1
         with:
           url: 'http://localhost:15672/api/vhosts'
-          responseCode: 200
+          method: "GET"
+          basic-auth-token: '${{secrets.RABBITMQ_PLACEHOLDERS_USERNAME}}:${{secrets.RABBITMQ_PLACEHOLDERS_USERPASSWORD}}'
+          accept: 200
           # Retry every 2 seconds
-          interval: 2000
+          timeout: 2000
           # Quit after 60 seconds
-          timeout: 60000
+          retries: 30
 
       - name: "Send Message to RabbitMQ"
         uses: indiesdev/curl@v1.1
