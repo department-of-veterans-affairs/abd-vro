@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: "Delete old images in GHCR"
-      uses: dev-drprasad/delete-older-releases@v0.2
+      uses: dev-drprasad/delete-older-releases@v0.2.1
       with:
         delete_tags: true
         keep_latest: ${{ inputs.keep_last }}
