@@ -27,6 +27,10 @@ jobs:
         run: |
           source scripts/setenv.sh
           export -p | sed 's/declare -x //'
+          
+          # create basic auth token for RabbitMQ and export to github environment
+          BASIC_AUTH=`echo "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" | base64`
+          echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}" >> $GITHUB_ENV
 
           ./gradlew :dockerComposeUp
           ./gradlew :app:dockerComposeUp
@@ -36,7 +40,7 @@ jobs:
         with:
           url: 'http://localhost:15672/api/vhosts'
           method: "GET"
-          basic-auth-token: '${{secrets.RABBITMQ_PLACEHOLDERS_USERNAME}}:${{secrets.RABBITMQ_PLACEHOLDERS_USERPASSWORD}}'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
           accept: 200
           # Retry every 2 seconds
           timeout: 2000
@@ -48,7 +52,7 @@ jobs:
         with:
           url: "http://localhost:15672/api/exchanges/%2F/bgs-api/publish"
           method: "POST"
-          basic-auth-token: '${{secrets.RABBITMQ_PLACEHOLDERS_USERNAME}}:${{secrets.RABBITMQ_PLACEHOLDERS_USERPASSWORD}}'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
           headers: '{"accept":"application/json","content-type":"application/json"}'
           body: '{"properties":{"delivery_mode":1,"reply_to":"response","correlation_id":"1234","headers":{}},"routing_key":"add-note","payload":"{\"veteranNote\":\"test\",\"veteranParticipantId\":111}","payload_encoding":"string"}'
           accept: 200
@@ -60,13 +64,12 @@ jobs:
         with:
           url: "http://localhost:15672/api/queues/%2f/response/get"
           method: "POST"
-          basic-auth-token: '${{secrets.RABBITMQ_PLACEHOLDERS_USERNAME}}:${{secrets.RABBITMQ_PLACEHOLDERS_USERPASSWORD}}'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
           headers: '{"accept":"application/json","content-type":"application/json"}'
           body: '{"count":1,"ackmode":"ack_requeue_true","encoding":"auto"}'
           accept: 200
           retries: 3
           log-response: true
-
 
       - name: "Clean shutdown of all containers"
         if: always()
