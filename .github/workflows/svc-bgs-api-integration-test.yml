@@ -30,6 +30,8 @@ jobs:
           
           # create basic auth token for RabbitMQ and export to github environment
           BASIC_AUTH=`echo "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" | base64`
+          echo "RABBITMQ_PLACEHOLDERS_USERNAME=${RABBITMQ_PLACEHOLDERS_USERNAME}" >> $GITHUB_ENV
+          echo "RABBITMQ_PLACEHOLDERS_USERPASSWORD=${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" >> $GITHUB_ENV
           echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}" >> $GITHUB_ENV
 
           ./gradlew :dockerComposeUp
@@ -48,21 +50,103 @@ jobs:
           retries: 30
 
       - name: "Send Message to RabbitMQ"
-        uses: indiesdev/curl@v1.1
-        with:
-          url: "http://localhost:15672/api/exchanges/%2F/bgs-api/publish"
-          method: "POST"
-          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
-          headers: '{"accept":"application/json","content-type":"application/json"}'
-          body: '{"properties":{"delivery_mode":1,"reply_to":"response","correlation_id":"1234","headers":{}},"routing_key":"add-note","payload":"{\"veteranNote\":\"test\",\"veteranParticipantId\":111}","payload_encoding":"string"}'
-          accept: 200
-          retries: 3
-          log-response: true
+        run: |
+          # create bgs-api exchange
+          STATUS_CODE=$( \
+            curl -s  -w "%{http_code}" \
+            -X PUT http://localhost:15672/api/exchanges/%2f/bgs-api \
+            -u "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" \
+            -H "content-type:application/json" \
+            -d'{"type":"direct", "durable":true, "auto_delete":true}' \
+          )
+          
+          if [ "$STATUS_CODE" != 201 ] && [ "$STATUS_CODE" != 204 ]; then
+            echo "Unexpected status code when creating bgs-api exchange: $STATUS_CODE"
+            exit 10
+          fi
+          
+          # create add-note queue
+          STATUS_CODE=$( \
+          curl -s -o /dev/null -w "%{http_code}" \
+          -X PUT http://localhost:15672/api/queues/%2f/add-note \
+          -u "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" \
+          -H "content-type:application/json" \
+          -d'{"durable":true, "auto_delete":true}'
+          )
+          
+          if [ "$STATUS_CODE" != 201 ] && [ "$STATUS_CODE" != 204 ]; then
+            echo "Unexpected status code when creating add-note queue: $STATUS_CODE"
+            exit 10
+          fi
+          
+          # create reply queue
+          STATUS_CODE=$( \
+            curl -s -o /dev/null -w "%{http_code}" \
+            -X PUT http://localhost:15672/api/queues/%2f/add-note-response \
+            -u "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" \
+            -H "content-type:application/json" \
+            -d'{"durable":true, "auto_delete":true}' \
+          )
+          
+          if [ "$STATUS_CODE" != 201 ] && [ "$STATUS_CODE" != 204 ]; then
+            echo "Unexpected status code when creating add-note-response queue: $STATUS_CODE"
+            exit 10
+          fi
+          
+          # create add-note binding
+          STATUS_CODE=$( \
+            curl -s -o /dev/null -w "%{http_code}" \
+            -X POST http://localhost:15672/api/bindings/%2f/e/bgs-api/q/add-note \
+            -u "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" \
+            -H "content-type:application/json" \
+            -d'{"routing_key":"add-note","arguments":{}}'
+          )
+          
+          if [ "$STATUS_CODE" != 201 ] && [ "$STATUS_CODE" != 204 ]; then
+            echo "Unexpected status code when creating binding add-note -> bgs-api: $STATUS_CODE"
+            exit 10
+          fi
+          
+          # create add-note-response binding
+          STATUS_CODE=$( \
+            curl -s -o /dev/null -w "%{http_code}" \
+            -X POST http://localhost:15672/api/bindings/%2f/e/bgs-api/q/add-note-response \
+            -u "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" \
+            -H "content-type:application/json" \
+            -d'{"routing_key":"add-note-response","arguments":{}}'
+          )
+          
+          if [ "$STATUS_CODE" != 201 ] && [ "$STATUS_CODE" != 204 ]; then
+            echo "Unexpected status code when creating binding add-note-response -> bgs-api: $STATUS_CODE"
+            exit 10
+          fi
+          
+          STATUS_CODE=$( \
+            curl -s -o /dev/null -w "%{http_code}" \
+            -X POST http://localhost:15672/api/exchanges/%2F/bgs-api/publish \
+            -H "Accept:application/json" -H "Content-Type:application/json" -w "%{http_code}" \
+            -u "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" \
+            -d'{
+            "properties": {
+              "delivery_mode": 1,
+              "reply_to": "add-note-response",
+              "correlation_id": "1234"
+            },
+            "routing_key": "add-note",
+            "payload": "{\"veteranNote\":\"test\",\"veteranParticipantId\":111}",
+            "payload_encoding": "string"
+            }'
+          )
+        
+          if [ "$STATUS_CODE" != 200 ]; then
+            echo "Unexpected status code: $STATUS_CODE"
+            exit 10
+          fi
 
       - name: "Get Message from RabbitMQ and Validate"
         uses: indiesdev/curl@v1.1
         with:
-          url: "http://localhost:15672/api/queues/%2f/response/get"
+          url: "http://localhost:15672/api/queues/%2f/add-note-response/get"
           method: "POST"
           basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
           headers: '{"accept":"application/json","content-type":"application/json"}'
