@@ -32,8 +32,7 @@ public class RMQConfig {
       Message amqpMessage,
       org.springframework.messaging.Message<?> message,
       ListenerExecutionFailedException exception,
-      HasStatusCodeAndMessage rVal)
-      throws Exception {
+      HasStatusCodeAndMessage rVal) {
     try {
       UUID errorId = UUID.randomUUID();
       log.error(
