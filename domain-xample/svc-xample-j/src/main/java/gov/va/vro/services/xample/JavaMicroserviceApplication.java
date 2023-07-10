@@ -82,18 +82,18 @@ public class JavaMicroserviceApplication {
           public Object handleError(
               Message amqpMessage,
               org.springframework.messaging.Message<?> message,
-              ListenerExecutionFailedException exception)
-              throws Exception {
-            log.info("Oh no!", exception);
-
-            if (message != null && message.getHeaders().getReplyChannel() != null) {
+              ListenerExecutionFailedException exception) {
+            try {
+              log.error("Oh no!", exception);
               var errorModel = SomeDtoModel.builder().resourceId("").diagnosticCode("").build();
               errorModel.header(500, exception.toString());
-
               return errorModel;
             }
-
-            return null;
+            catch(Exception e){
+              log.error("Exception handler threw exception. Call 911. Exiting");
+              System.exit(-1);
+              return null; //never executed
+            }
           }
         };
     return handler;
