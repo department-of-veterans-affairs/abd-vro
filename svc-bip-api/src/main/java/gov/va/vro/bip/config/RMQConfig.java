@@ -38,7 +38,7 @@ public class RMQConfig {
       UUID errorId = UUID.randomUUID();
       log.error(
           "ListenerExecutionFailedException occurred because of:{}.  "
-              + "And the fialed message was {}.  The error id reported to "
+              + "And the failed message was {}.  The error id reported to "
               + "client was {}",
           exception.getCause(),
           message.toString(),
