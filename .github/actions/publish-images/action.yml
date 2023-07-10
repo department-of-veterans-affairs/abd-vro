@@ -56,6 +56,8 @@ runs:
       run: |
         if [ "$(git rev-parse --abbrev-ref --symbolic-full-name HEAD)" == "HEAD" ]; then
           echo "Presuming this GitHub Action workflow was triggered by a GitHub release, which means no unpinning needs to happen."
+        elif [ "${{ inputs.publish_mode }}" == "all" ]; then
+          echo "Since publish_mode = 'all', skipping unnecessary comparing (and unpinning) of image versions."
         else
           # Install container-diff needed by image-version.sh
           curl -LO https://storage.googleapis.com/container-diff/latest/container-diff-linux-amd64 && \
