@@ -30,13 +30,15 @@ jobs:
 
       - name: "Before merge: Git log graph ${{ inputs.domain_branch }}"
         run: |
-          echo "## Before merge: Git log graph of ${{ inputs.domain_branch }}" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          git log --graph --decorate --date=relative --since="2 months ago" \
-            --pretty=format:'%C(bold blue)%h%C(reset) %C(green)(%ar) %C(white)- %C(reset)%C(yellow)%d%C(reset) %C(white)%s%C(reset)' \
-            origin/develop..origin/${{ inputs.domain_branch }} >> $GITHUB_STEP_SUMMARY
-          echo '' >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
+          {
+            echo "## Before merge: Git log graph of ${{ inputs.domain_branch }}"
+            echo '```'
+            git log --graph --decorate --date=relative --since="2 months ago" \
+              --pretty=format:'%C(bold blue)%h%C(reset) %C(green)(%ar) %C(white)- %C(reset)%C(yellow)%d%C(reset) %C(white)%s%C(reset)' \
+              origin/develop..origin/${{ inputs.domain_branch }}
+            echo ''
+            echo '```'
+          } | tee -a $GITHUB_STEP_SUMMARY
 
       - name: "Fast-forward merge ${{ inputs.domain_branch }}"
         run: |
@@ -46,12 +48,13 @@ jobs:
 
       - name: "After merge: Git log graph ${{ inputs.domain_branch }}"
         run: |
-          echo '## After merge: Git log graph' >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          git log --graph --decorate --date=relative --since="2 months ago" \
-            --pretty=format:'%C(bold blue)%h%C(reset) %C(green)(%ar) %C(white)- %C(reset)%C(yellow)%d%C(reset) %C(white)%s%C(reset)' \
-            origin/develop origin/${{ inputs.domain_branch }} > git-graph.log
-          cat git-graph.log
-          cat git-graph.log >> $GITHUB_STEP_SUMMARY
-          echo '' >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
+          {
+            echo '## After merge: Git log graph'
+            echo '```'
+            git log --graph --decorate --date=relative --since="2 months ago" \
+              --pretty=format:'%C(bold blue)%h%C(reset) %C(green)(%ar) %C(white)- %C(reset)%C(yellow)%d%C(reset) %C(white)%s%C(reset)' \
+              origin/develop origin/${{ inputs.domain_branch }} > git-graph.log
+            cat git-graph.log
+            echo ''
+            echo '```'
+          } | tee -a $GITHUB_STEP_SUMMARY
