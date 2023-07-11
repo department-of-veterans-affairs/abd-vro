@@ -31,6 +31,8 @@ on:
 
 jobs:
   delete_releases:
+    # Deletions in public repo will be automatically mirrored to internal repo
+    if: github.repository == 'department-of-veterans-affairs/abd-vro'
     runs-on: ubuntu-latest
     steps:
     - name: "Delete old releases in GHCR"
