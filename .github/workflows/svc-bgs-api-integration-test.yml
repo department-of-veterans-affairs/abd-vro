@@ -1,4 +1,4 @@
-name: "CI: SVC BGS API integration test"
+name: 'CI: SVC BGS API integration test'
 
 on:
   # Allow manual triggering
@@ -11,19 +11,20 @@ concurrency:
   group: svcBgsApiIntegrationTest-${{ github.ref }}
 
 env:
-  COMPOSE_PROFILES: "svc"
+  COMPOSE_PROFILES: 'svc'
+  CORRELATION_ID: '1234'
 
 jobs:
   integration-test:
     runs-on: ubuntu-latest
     steps:
-      - name: "Checkout source code"
+      - name: 'Checkout source code'
         uses: actions/checkout@v3
 
-      - name: "Build the images"
+      - name: 'Build the images'
         uses: ./.github/actions/build-images
 
-      - name: "Start the containers"
+      - name: 'Start the containers'
         run: |
           source scripts/setenv.sh
           export -p | sed 's/declare -x //'
@@ -37,7 +38,7 @@ jobs:
           ./gradlew :dockerComposeUp
           ./gradlew :app:dockerComposeUp
 
-      - name: "Wait for RabbitMQ to be ready"
+      - name: 'Wait for RabbitMQ to be ready'
         uses: indiesdev/curl@v1.1
         with:
           url: 'http://localhost:15672/api/vhosts'
@@ -49,7 +50,9 @@ jobs:
           # Quit after 60 seconds
           retries: 30
 
-      - name: "Create bgs-api exchange"
+      # Temporary step added to avoid race condition. Currently, there is no health check in 'svc-bgs-api'; therefore,
+      # at this step, it is unknown if svc-bgs-api has yet to create the 'bgs-api' exchange.
+      - name: 'Create bgs-api exchange'
         uses: indiesdev/curl@v1.1
         with:
           url: 'http://localhost:15672/api/exchanges/%2f/bgs-api'
@@ -60,7 +63,9 @@ jobs:
           retries: 3
           log-response: true
 
-      - name: "Create add-note queue"
+      # Temporary step added to avoid race condition. Currently, there is no health check in 'svc-bgs-api'; therefore,
+      # at this step, it is unknown if svc-bgs-api has yet to create the 'add-note' queue.
+      - name: 'Create add-note queue'
         uses: indiesdev/curl@v1.1
         with:
           url: 'http://localhost:15672/api/queues/%2f/add-note'
@@ -71,7 +76,10 @@ jobs:
           retries: 3
           log-response: true
 
-      - name: "Create binding for add-note queue to bgs-api exchange "
+      # Temporary step added to avoid race condition. Currently, there is no health check in 'svc-bgs-api'; therefore,
+      # at this step, it is unknown if svc-bgs-api has yet to create the binding from 'bgs-api' exchange to 'add-note'
+      # queue.
+      - name: 'Create binding for add-note queue to bgs-api exchange'
         uses: indiesdev/curl@v1.1
         with:
           url: 'http://localhost:15672/api/bindings/%2f/e/bgs-api/q/add-note'
@@ -82,7 +90,7 @@ jobs:
           retries: 3
           log-response: true
 
-      - name: "Create add-note-response Queue"
+      - name: 'Create add-note-response queue'
         uses: indiesdev/curl@v1.1
         with:
           url: 'http://localhost:15672/api/queues/%2f/add-note-response'
@@ -93,7 +101,7 @@ jobs:
           retries: 3
           log-response: true
 
-      - name: "Create binding for add-note-response queue to bgs-api exchange "
+      - name: 'Create binding for add-note-response queue to bgs-api exchange'
         uses: indiesdev/curl@v1.1
         with:
           url: 'http://localhost:15672/api/bindings/%2f/e/bgs-api/q/add-note-response'
@@ -104,117 +112,27 @@ jobs:
           retries: 3
           log-response: true
 
-      - name: "Send Message to RabbitMQ"
+      - name: 'Send message to RabbitMQ on bgs-api exchange routed to add-note queue'
         uses: indiesdev/curl@v1.1
         with:
           url: 'http://localhost:15672/api/exchanges/%2F/bgs-api/publish'
           method: 'POST'
           basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
-          body: '{"properties": {"delivery_mode": 1,"reply_to": "add-note-response","correlation_id": "1234"},"routing_key": "add-note","payload": "{\\\"veteranNote\\\":\\\"test\\\",\\\"veteranParticipantId\\\":111}","payload_encoding": "string"}'
+          body: '{"properties": {"delivery_mode": 1,"reply_to": "add-note-response","correlation_id": "${{CORRELATION_ID}}"},"routing_key": "add-note","payload": "{\\\"veteranNote\\\":\\\"test\\\",\\\"veteranParticipantId\\\":111}","payload_encoding": "string"}'
           accept: 200
           retries: 3
           log-response: true
 
-      - name: "Send Message to RabbitMQ"
-        if: always()
-        run: |
-          # create bgs-api exchange
-          STATUS_CODE=$( \
-            curl -s  -w "%{http_code}" \
-            -X PUT http://localhost:15672/api/exchanges/%2f/bgs-api \
-            -u "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" \
-            -H "content-type:application/json" \
-            -d'{"type":"direct", "durable":true, "auto_delete":true}' \
-          )
-          
-          if [ "$STATUS_CODE" != 201 ] && [ "$STATUS_CODE" != 204 ]; then
-            echo "Unexpected status code when creating bgs-api exchange: $STATUS_CODE"
-            exit 10
-          fi
-          
-          # create add-note queue
-          STATUS_CODE=$( \
-          curl -s -o /dev/null -w "%{http_code}" \
-          -X PUT http://localhost:15672/api/queues/%2f/add-note \
-          -u "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" \
-          -H "content-type:application/json" \
-          -d'{"durable":true, "auto_delete":true}'
-          )
-          
-          if [ "$STATUS_CODE" != 201 ] && [ "$STATUS_CODE" != 204 ]; then
-            echo "Unexpected status code when creating add-note queue: $STATUS_CODE"
-            exit 10
-          fi
-          
-          # create reply queue
-          STATUS_CODE=$( \
-            curl -s -o /dev/null -w "%{http_code}" \
-            -X PUT http://localhost:15672/api/queues/%2f/add-note-response \
-            -u "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" \
-            -H "content-type:application/json" \
-            -d'{"durable":true, "auto_delete":true}' \
-          )
-          
-          if [ "$STATUS_CODE" != 201 ] && [ "$STATUS_CODE" != 204 ]; then
-            echo "Unexpected status code when creating add-note-response queue: $STATUS_CODE"
-            exit 10
-          fi
-          
-          # create add-note binding
-          STATUS_CODE=$( \
-            curl -s -o /dev/null -w "%{http_code}" \
-            -X POST http://localhost:15672/api/bindings/%2f/e/bgs-api/q/add-note \
-            -u "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" \
-            -H "content-type:application/json" \
-            -d'{"routing_key":"add-note","arguments":{}}'
-          )
-          
-          if [ "$STATUS_CODE" != 201 ] && [ "$STATUS_CODE" != 204 ]; then
-            echo "Unexpected status code when creating binding add-note -> bgs-api: $STATUS_CODE"
-            exit 10
-          fi
-          
-          # create add-note-response binding
-          STATUS_CODE=$( \
-            curl -s -o /dev/null -w "%{http_code}" \
-            -X POST http://localhost:15672/api/bindings/%2f/e/bgs-api/q/add-note-response \
-            -u "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" \
-            -H "content-type:application/json" \
-            -d'{"routing_key":"add-note-response","arguments":{}}'
-          )
-          
-          if [ "$STATUS_CODE" != 201 ] && [ "$STATUS_CODE" != 204 ]; then
-            echo "Unexpected status code when creating binding add-note-response -> bgs-api: $STATUS_CODE"
-            exit 10
-          fi
-          
-          STATUS_CODE=$( \
-            curl -s -o /dev/null -w "%{http_code}" \
-            -X POST http://localhost:15672/api/exchanges/%2F/bgs-api/publish \
-            -H "Accept:application/json" -H "Content-Type:application/json" -w "%{http_code}" \
-            -u "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" \
-            -d'{
-            "properties": {
-              "delivery_mode": 1,
-              "reply_to": "add-note-response",
-              "correlation_id": "1234"
-            },
-            "routing_key": "add-note",
-            "payload": "{\"veteranNote\":\"test\",\"veteranParticipantId\":111}",
-            "payload_encoding": "string"
-            }'
-          )
-        
-          if [ "$STATUS_CODE" != 200 ]; then
-            echo "Unexpected status code: $STATUS_CODE"
-            exit 10
-          fi
+      - name: 'Sleep to give svc-bgs-api time to process and put response in add-note-response queue'
+        run: sleep 5
+        shell: bash
 
-      - name: "Get Message from RabbitMQ and Validate"
+      - name: 'Get message from RabbitMQ add-note-response queue'
+        id: 'addNoteResponse'
         uses: indiesdev/curl@v1.1
         with:
-          url: "http://localhost:15672/api/queues/%2f/add-note-response/get"
-          method: "POST"
+          url: 'http://localhost:15672/api/queues/%2f/add-note-response/get'
+          method: 'POST'
           basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
           headers: '{"accept":"application/json","content-type":"application/json"}'
           body: '{"count":1,"ackmode":"ack_requeue_true","encoding":"auto"}'
@@ -222,7 +140,32 @@ jobs:
           retries: 3
           log-response: true
 
-      - name: "Clean shutdown of all containers"
+      # Validate response Tests
+      - name: 'API Gateway Rest Controller GET /hello - Validate Response'
+        run: |
+          EXPECTED_RESPONSE=500
+          
+          # Validate Response:
+          CHECKS_FAILED=false
+          echo "Checking correlation_id..."
+          echo "correlation_id: ${{ fromJson(steps.addNoteResponse.outputs.response).data[0].properties.correlation_id }}"
+          if [ "${{ fromJson(steps.addNoteResponse.outputs.response).data[0].properties.correlation_id }}" != "${{CORRELATION_ID}}" ]; then
+            echo "Unexpected correlation_id: Expected ${{CORRELATION_ID}}. Found ${{ fromJson(steps.addNoteResponse.outputs.response).data[0].properties.correlation_id }}"
+            CHECKS_FAILED=true
+          fi
+          echo "Checking payload..."
+          echo "payload: ${{ fromJson(steps.addNoteResponse.outputs.response).data[0].properties.payload }}"
+          if [ "${{ contains(fromJson(steps.addNoteResponse.outputs.response).data[0].properties.payload, '$EXPECTED_RESPONSE') }}" ]; then
+            echo "Unexpected payload statusCode: Expected $EXPECTED_RESPONSE. Found ${{ fromJson(steps.addNoteResponse.outputs.response).data[0].properties.payload }}"
+            CHECKS_FAILED=true
+          fi
+          
+          if $CHECKS_FAILED; then
+            echo "Some checks failed."
+            exit 10
+          fi
+
+      - name: 'Clean shutdown of all containers'
         if: always()
         shell: bash
         run: |
