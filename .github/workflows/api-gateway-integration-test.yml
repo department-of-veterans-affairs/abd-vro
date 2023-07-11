@@ -121,6 +121,8 @@ jobs:
           method: "POST"
           body: '{"resourceId":"20230706","diagnosticCode":"J"}'
           accept: 201
+          timeout: 3000
+          retries: 3
 
       - name: "Clean shutdown of all containers"
         if: always()
