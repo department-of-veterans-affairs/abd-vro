@@ -139,6 +139,9 @@ echo '
 # Override default *_VER variables above
 source scripts/image_versions.src
 
+if [ "$1" ]; then
+  eval "$@"
+fi
 # End of file'
 }
 overwriteSrcFile > "$SRC_FILE"
