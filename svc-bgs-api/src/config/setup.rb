@@ -15,9 +15,16 @@ def redirect_output(prefix = nil)
   $fdio
 end
 
+ENVIRONMENT = ENV['ENV'] || 'local'
+
 if(ENV['DOCKER_LOGS'] == '1' && File.exist?('/proc/1/fd/1'))
-  redirect_output("| ")
+  fdio = redirect_output("| ")
+  $logger = Logger.new(fdio)
+else
+  $logger = Logger.new(STDOUT)
+  STDOUT.sync = true if ENVIRONMENT == "development"
 end
+$logger.level = Logger::DEBUG
 
 puts "Running setup.rb"
 
@@ -31,7 +38,6 @@ Bundler.require(:default)
 lib_path = File.expand_path '../../lib', __FILE__
 $LOAD_PATH.unshift lib_path
 
-ENVIRONMENT = ENV['ENV'] || 'local'
 
 require 'yaml'
 # some settings (like the RabbitMQ connection options or some API keys for the services we use)

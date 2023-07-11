@@ -6,19 +6,6 @@ require_relative 'config/setup'
 require 'rabbit_subscriber'
 require 'bgs_client'
 
-if ENV.fetch('DOCKER_LOGS','') == 'true'
-  fd = IO.sysopen("/proc/1/fd/1","w")
-  io = IO.new(fd,"w")
-  io.sync = true
-  LOG_OUTPUT = io
-else
-  LOG_OUTPUT = STDOUT
-end
-
-$logger = Logger.new(LOG_OUTPUT)
-$logger.level = Logger::DEBUG
-STDOUT.sync = true if ENVIRONMENT == "development"
-
 BUNNY_ARGS = {
   host: ENV['RABBITMQ_PLACEHOLDERS_HOST'].presence || "localhost",
   user: ENV['RABBITMQ_PLACEHOLDERS_USERNAME'].presence || "guest",
@@ -29,7 +16,7 @@ def initialize_subscriber(bgs_client)
   subscriber = RabbitSubscriber.new(BUNNY_ARGS)
   subscriber.setup_queue(exchange_name: 'bgs-api', queue_name: 'add-note')
   subscriber.subscribe_to('bgs-api', 'add-note') do |json|
-    puts "Subscriber received request #{json}"
+    $logger.info "Subscriber received request #{json}"
     begin
       bgs_client.handle_request(json)
     rescue => e

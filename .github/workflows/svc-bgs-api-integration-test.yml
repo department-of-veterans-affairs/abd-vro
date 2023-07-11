@@ -27,13 +27,14 @@ jobs:
       - name: 'Start the containers'
         run: |
           source scripts/setenv.sh
-          export -p | sed 's/declare -x //'
           
           # create basic auth token for RabbitMQ and export to github environment
           BASIC_AUTH=`echo "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" | base64`
           echo "RABBITMQ_PLACEHOLDERS_USERNAME=${RABBITMQ_PLACEHOLDERS_USERNAME}" >> $GITHUB_ENV
           echo "RABBITMQ_PLACEHOLDERS_USERPASSWORD=${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" >> $GITHUB_ENV
           echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}" >> $GITHUB_ENV
+
+          export -p | sed 's/declare -x //'
 
           ./gradlew :dockerComposeUp
           ./gradlew :app:dockerComposeUp
@@ -141,11 +142,8 @@ jobs:
           log-response: true
 
       # Validate response Tests
-      - name: 'API Gateway Rest Controller GET /hello - Validate Response'
+      - name: 'Validate response in payload of message from RabbitMQ add-note-response queue'
         run: |
-          # This expected response is temporary.
-          EXPECTED_RESPONSE=500
-          
           # Validate Response:
           CHECKS_FAILED=false
           echo "Checking correlation_id..."

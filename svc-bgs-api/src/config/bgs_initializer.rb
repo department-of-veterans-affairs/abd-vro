@@ -14,7 +14,7 @@ BGS.configure do |config|
   config.client_station_id = settings["client_station_id"]
   config.client_username = settings["client_username"]
   config.log = settings["log"]
-  config.logger = config.log ? Logger.new(STDOUT) : nil
+  config.logger = config.log ? $logger : nil
 
   # Rather than fall back on {env}.vba.va.gov if $BGS_BASE_URL is blank, we require $BGS_BASE_URL.
   # $BGS_BASE_URL also determines whether HTTPS is used.
