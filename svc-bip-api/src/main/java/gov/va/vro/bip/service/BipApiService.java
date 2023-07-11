@@ -2,13 +2,8 @@ package gov.va.vro.bip.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.bip.model.BipClaim;
-import gov.va.vro.bip.model.BipClaimResp;
-import gov.va.vro.bip.model.BipContentionResp;
-import gov.va.vro.bip.model.BipUpdateClaimResp;
-import gov.va.vro.bip.model.ClaimContention;
-import gov.va.vro.bip.model.ClaimStatus;
-import gov.va.vro.bip.model.UpdateContentionReq;
+import gov.va.vro.bip.config.UpdateClaimStatusConfig;
+import gov.va.vro.bip.model.*;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
@@ -109,13 +104,15 @@ public class BipApiService implements IBipApiService {
    */
   @Override
   public BipUpdateClaimResp setClaimToRfdStatus(long claimId) throws BipException {
-    return updateClaimStatus(claimId, ClaimStatus.RFD);
+    return updateClaimStatus(new RequestForUpdateClaimStatus(ClaimStatus.RFD, claimId));
   }
 
   @Override
-  public BipUpdateClaimResp updateClaimStatus(long claimId, ClaimStatus status)
-      throws BipException {
-    log.info("updateClaimStatus({},{}) invoked.", claimId, status);
+  public BipUpdateClaimResp updateClaimStatus(RequestForUpdateClaimStatus statusAndClaimId) throws BipException {
+    log.info("updateClaimStatus({}) invoked.", statusAndClaimId);
+    long claimId = statusAndClaimId.getClaimId();
+    ClaimStatus status = statusAndClaimId.getClaimStatus();
+
     final String description = status.getDescription();
     try {
 

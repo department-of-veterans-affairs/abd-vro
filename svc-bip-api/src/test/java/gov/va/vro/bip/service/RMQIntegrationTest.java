@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import gov.va.vro.bip.model.BipClaim;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
+import gov.va.vro.bip.model.ClaimStatus;
+import gov.va.vro.bip.model.RequestForUpdateClaimStatus;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
@@ -32,7 +34,7 @@ import java.util.Objects;
  * Does same thing as BipApiServiceTest but through RMQ instance. Assumes RMQ broker is available
  * locally.
  */
-@Disabled("needs an RMQ broker, which is not available in github build env.")
+//@Disabled("needs an RMQ broker, which is not available in github build env.")
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @Slf4j
@@ -42,6 +44,21 @@ class RMQIntegrationTest {
   @MockBean BipApiProps bipApiProps;
   @Autowired RabbitTemplate rabbitTemplate;
   @Autowired RabbitAdmin rabbitAdmin;
+
+  @Test
+  void testUpdateClaimStatus(){
+    String qName = updateClaimStatusQueue;
+    rabbitAdmin.purgeQueue(qName, true);
+    ClaimStatus claimStatus = ClaimStatus.OPEN;
+    RequestForUpdateClaimStatus req = new RequestForUpdateClaimStatus(claimStatus, 1);
+    BipUpdateClaimResp result =
+        (BipUpdateClaimResp)
+            rabbitTemplate.convertSendAndReceive(exchangeName, qName, req);
+    System.out.println("result: "+ result);
+
+  }
+
+
 
   @Test
   void testPositiveSetClaimToRfdStatus() {
@@ -148,6 +165,10 @@ class RMQIntegrationTest {
 
   @Value("${setClaimToRfdStatusQueue}")
   String setClaimToRfdStatusQueue;
+
+  @Value("${updateClaimStatusQueue}")
+  String updateClaimStatusQueue;
+
 
   @Value("${getClaimDetailsQueue}")
   String getClaimDetailsQueue;

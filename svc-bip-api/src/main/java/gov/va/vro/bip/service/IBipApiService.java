@@ -1,16 +1,16 @@
 package gov.va.vro.bip.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import gov.va.vro.bip.model.BipClaim;
-import gov.va.vro.bip.model.BipUpdateClaimResp;
-import gov.va.vro.bip.model.ClaimContention;
-import gov.va.vro.bip.model.ClaimStatus;
-import gov.va.vro.bip.model.UpdateContentionReq;
+import gov.va.vro.bip.config.UpdateClaimStatusConfig;
+import gov.va.vro.bip.model.*;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 
 import java.util.List;
 
 public interface IBipApiService {
+
+  //todo: move annotation to implementation
+  //todo: change queue names to @Value variables
   @RabbitListener(queues = "getClaimDetailsQueue", errorHandler = "errorHandlerForGetClaimDetails")
   BipClaim getClaimDetails(long collectionId) throws JsonProcessingException;
 
@@ -18,8 +18,10 @@ public interface IBipApiService {
       queues = "setClaimToRfdStatusQueue",
       errorHandler = "errorHandlerForSetClaimToRfdStatus")
   BipUpdateClaimResp setClaimToRfdStatus(long collectionId) throws BipException;
-
-  BipUpdateClaimResp updateClaimStatus(long collectionId, ClaimStatus status) throws BipException;
+  @RabbitListener(
+      queues = "updateClaimStatusQueue",
+      errorHandler = "errorHandlerForUpdateClaimStatus")
+  BipUpdateClaimResp updateClaimStatus(RequestForUpdateClaimStatus statusAndClaimId) throws BipException;
 
   List<ClaimContention> getClaimContentions(long claimId) throws BipException;
 
