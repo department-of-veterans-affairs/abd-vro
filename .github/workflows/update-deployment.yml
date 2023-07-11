@@ -23,6 +23,7 @@ on:
         options:
         - domain-cc
         - svc-bgs-api
+        - svc-bie-kafka
         - svc-lighthouse-api
         - api-gateway
 
