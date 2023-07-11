@@ -8,6 +8,11 @@ on:
   # Allow manual triggering
   workflow_dispatch:
     inputs:
+      dry_run:
+        description: 'Always do a dry-run first'
+        required: true
+        type: boolean
+        default: true
 #      retain_days:
 #        description: 'Delete images older than this many days'
 #        required: true
@@ -31,6 +36,7 @@ jobs:
     - name: "Delete old images in GHCR"
       uses: yoomlam/delete-older-releases@master
       with:
+        dry_run: ${{ inputs.dry_run }}
         delete_tags: true
         keep_latest: ${{ inputs.keep_last }}
         delete_tag_pattern:  ${{ inputs.tag_pattern }}
