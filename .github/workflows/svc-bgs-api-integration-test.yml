@@ -41,7 +41,7 @@ jobs:
         uses: indiesdev/curl@v1.1
         with:
           url: 'http://localhost:15672/api/vhosts'
-          method: "GET"
+          method: 'GET'
           basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
           accept: 200
           # Retry every 2 seconds
@@ -49,7 +49,74 @@ jobs:
           # Quit after 60 seconds
           retries: 30
 
+      - name: "Create bgs-api exchange"
+        uses: indiesdev/curl@v1.1
+        with:
+          url: 'http://localhost:15672/api/exchanges/%2f/bgs-api'
+          method: 'PUT'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          body: '{"type":"direct", "durable":true, "auto_delete":true}'
+          accept: 201, 204
+          retries: 3
+          log-response: true
+
+      - name: "Create add-note queue"
+        uses: indiesdev/curl@v1.1
+        with:
+          url: 'http://localhost:15672/api/queues/%2f/add-note'
+          method: 'PUT'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          body: '{"durable":true, "auto_delete":true}'
+          accept: 201, 204
+          retries: 3
+          log-response: true
+
+      - name: "Create binding for add-note queue to bgs-api exchange "
+        uses: indiesdev/curl@v1.1
+        with:
+          url: 'http://localhost:15672/api/bindings/%2f/e/bgs-api/q/add-note'
+          method: 'POST'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          body: '{"routing_key":"add-note","arguments":{}}'
+          accept: 201, 204
+          retries: 3
+          log-response: true
+
+      - name: "Create add-note-response Queue"
+        uses: indiesdev/curl@v1.1
+        with:
+          url: 'http://localhost:15672/api/queues/%2f/add-note-response'
+          method: 'PUT'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          body: '{"durable":true, "auto_delete":true}'
+          accept: 201, 204
+          retries: 3
+          log-response: true
+
+      - name: "Create binding for add-note-response queue to bgs-api exchange "
+        uses: indiesdev/curl@v1.1
+        with:
+          url: 'http://localhost:15672/api/bindings/%2f/e/bgs-api/q/add-note-response'
+          method: 'POST'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          body: '{"routing_key":"add-note-response","arguments":{}}'
+          accept: 201, 204
+          retries: 3
+          log-response: true
+
       - name: "Send Message to RabbitMQ"
+        uses: indiesdev/curl@v1.1
+        with:
+          url: 'http://localhost:15672/api/exchanges/%2F/bgs-api/publish'
+          method: 'POST'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          body: '{"properties": {"delivery_mode": 1,"reply_to": "add-note-response","correlation_id": "1234"},"routing_key": "add-note","payload": "{\\\"veteranNote\\\":\\\"test\\\",\\\"veteranParticipantId\\\":111}","payload_encoding": "string"}'
+          accept: 200
+          retries: 3
+          log-response: true
+
+      - name: "Send Message to RabbitMQ"
+        if: always()
         run: |
           # create bgs-api exchange
           STATUS_CODE=$( \
