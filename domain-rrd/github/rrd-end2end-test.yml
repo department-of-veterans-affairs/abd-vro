@@ -1,26 +1,25 @@
-# ALL BUT MANUAL DISPATCH IS DISABLED AS PART OF EXCLUDING
-# RRD CODE
+# UNUSED GITHUB WORKFLOW DEFINITION
 # MAINTAINED AS A FORMAT FOR FUTURE E2E TESTING
-#
+
 name: "PR: RRD End-to-end test for v2"
-#
+
 on:
-#  pull_request:
-#    branches: [ main, qa, develop ]
-#    # Limit to certain PR event types since this action doesn't need to run for every commit
-#    types: [ready_for_review, review_requested]
-#
-#  # When changes are pushed to special branches
-#  push:
-#    # Branch `develop` is handled by continuous-integration.yml, which calls this workflow
-#    branches: [main, qa]
-#
+  pull_request:
+    branches: [ main, qa, develop ]
+    # Limit to certain PR event types since this action doesn't need to run for every commit
+    types: [ready_for_review, review_requested]
+
+  # When changes are pushed to special branches
+  push:
+    # Branch `develop` is handled by continuous-integration.yml, which calls this workflow
+    branches: [main, qa]
+
   # Allow manual triggering
   workflow_dispatch:
-#
-#  # Trigger when called by another GitHub Action
-#  workflow_call:
-#
+
+  # Trigger when called by another GitHub Action
+  workflow_call:
+
 concurrency:
   group: end2end-${{ github.ref }}
 
@@ -28,7 +27,9 @@ env:
   LH_ACCESS_CLIENT_ID: ${{ secrets.LH_ACCESS_CLIENT_ID }}
   LH_PRIVATE_KEY: ${{ secrets.LH_PRIVATE_KEY }}
   SLACK_EXCEPTION_WEBHOOK: "http://mock-slack:20100/slack-messages"
-  MAS_API_AUTH_CLIENT_SECRET: ${{ secrets.MAS_API_AUTH_CLIENT_SECRET }}
+
+  # This GitHub Secret has been removed and will need to be re-created to restore connection to MAS system
+  # MAS_API_AUTH_CLIENT_SECRET: ${{ secrets.MAS_API_AUTH_CLIENT_SECRET }}
   COMPOSE_PROFILES: "v2,v2-mocks,pdfgen,lh"
 
 jobs:
