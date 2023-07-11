@@ -154,7 +154,7 @@ jobs:
           {
             echo '## Default image versions'
             echo '```'
-            imageVersions
+            imageVersions | sort
             echo '```'
           } | tee -a $GITHUB_STEP_SUMMARY
 
