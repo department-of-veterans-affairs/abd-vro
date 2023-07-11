@@ -16,7 +16,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: "Mirror to internal repo"
-        uses: yesolutions/mirror-action@master
+        uses: yesolutions/mirror-action@v0.6
         with:
           REMOTE: ssh://git@github.com/department-of-veterans-affairs/abd-vro-internal.git
           GIT_USERNAME: ${{ github.actor }}
