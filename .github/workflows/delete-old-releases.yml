@@ -42,11 +42,11 @@ jobs:
     - name: "Delete old releases in GHCR"
       uses: yoomlam/delete-older-releases@v0.3.0
       with:
-        dry_run: ${{ inputs.dry_run }}
+        dry_run: ${{ inputs.dry_run || false }}
         delete_tags: true
         pre_release_only: true
-        keep_latest: ${{ inputs.keep_latest }}
-        older_than: ${{ inputs.older_than }}
-        delete_tag_pattern:  ${{ inputs.tag_pattern }}
+        keep_latest: ${{ inputs.keep_latest || 10 }}
+        older_than: ${{ inputs.older_than || 45 }}
+        delete_tag_pattern:  ${{ inputs.tag_pattern || '^v' }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
