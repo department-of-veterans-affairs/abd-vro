@@ -46,6 +46,11 @@ dependencies {
             because("security vulnerability in prior versions")
         }
 
+        // For Kafka svc-bie-kafka service override
+        implementation('org.xerial.snappy:snappy-java:1.1.10.1') {
+            because("security vulnerability in prior versions")
+        }
+
         implementation('com.google.guava:guava:32.0.1-jre') {
             because("security vulnerability in prior versions")
         }
@@ -53,5 +58,6 @@ dependencies {
         // These are used indirectly but we need to specify versions, otherwise build error
         annotationProcessor "org.springframework.boot:spring-boot-autoconfigure-processor:${spring_boot_version}"
         annotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct_version}"
+
     }
 }
