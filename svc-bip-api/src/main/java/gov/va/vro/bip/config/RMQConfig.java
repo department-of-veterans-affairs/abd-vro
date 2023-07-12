@@ -1,6 +1,7 @@
 package gov.va.vro.bip.config;
 
 import gov.va.vro.bip.model.HasStatusCodeAndMessage;
+import gov.va.vro.bip.service.RMQController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
@@ -10,11 +11,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.UUID;
 
 @Configuration
 @Slf4j
 public class RMQConfig {
+  @Bean
+  RMQController controller(){
+    return new RMQController();
+  }
   @Value("${exchangeName}")
   String exchangeName;
 
@@ -28,6 +35,13 @@ public class RMQConfig {
     return new DirectExchange(exchangeName, true, true);
   }
 
+  static String getStackTrace(Throwable e){
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    e.printStackTrace(pw);
+    return sw.toString();
+  }
+
   public static Object respondToClientDueToUncaughtExcdeption(
       Message amqpMessage,
       org.springframework.messaging.Message<?> message,
@@ -35,16 +49,17 @@ public class RMQConfig {
       HasStatusCodeAndMessage rVal) {
     try {
       UUID errorId = UUID.randomUUID();
+
       log.error(
-          "ListenerExecutionFailedException occurred because of:{}.  "
-              + "And the failed message was {}.  The error id reported to "
-              + "client was {}",
-          exception.getCause(),
+          "ListenerExecutionFailedException occurred because of:{}\n "
+              + "And the failed message was {}.\n  "
+              + "The error id reported to client was {}",
+          getStackTrace(exception.getCause()),
           message.toString(),
           errorId);
       String messageStr =
           "There was a system error while processing your request.  "
-              + ".  Please contact VRO support with error number "
+              + "Please contact VRO support with error number "
               + errorId
               + " if the problem persists.";
       rVal.statusCode = 500;

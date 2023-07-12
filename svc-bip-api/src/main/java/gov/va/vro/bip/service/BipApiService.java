@@ -2,8 +2,13 @@ package gov.va.vro.bip.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.bip.config.UpdateClaimStatusConfig;
-import gov.va.vro.bip.model.*;
+import gov.va.vro.bip.model.BipClaim;
+import gov.va.vro.bip.model.BipClaimResp;
+import gov.va.vro.bip.model.BipContentionResp;
+import gov.va.vro.bip.model.BipUpdateClaimResp;
+import gov.va.vro.bip.model.ClaimContention;
+import gov.va.vro.bip.model.ClaimStatus;
+import gov.va.vro.bip.model.UpdateContentionReq;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
@@ -32,11 +37,7 @@ import java.util.List;
 import java.util.Map;
 import javax.crypto.spec.SecretKeySpec;
 
-/**
- * BIP claim API service.
- *
- * @author warren @Date 10/31/22
- */
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -57,7 +58,7 @@ public class BipApiService implements IBipApiService {
   final ObjectMapper mapper = new ObjectMapper();
 
   @Override
-  public BipClaim getClaimDetails(long claimId) throws BipException {
+  public BipClaim getClaimDetails(long claimId) {
     try {
       log.info("getClaimDetails({}) invoked", claimId);
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CLAIM_DETAILS, claimId);
@@ -95,24 +96,14 @@ public class BipApiService implements IBipApiService {
     }
   }
 
-  /**
-   * Updates claim status.
-   *
-   * @param claimId claim ID for the claim to be updated.
-   * @return an object with status and message.
-   * @throws BipException error occurs
-   */
   @Override
-  public BipUpdateClaimResp setClaimToRfdStatus(long claimId) throws BipException {
-    return updateClaimStatus(new RequestForUpdateClaimStatus(ClaimStatus.RFD, claimId));
+  public BipUpdateClaimResp setClaimToRfdStatus(long claimId)  {
+    return updateClaimStatus(claimId, ClaimStatus.RFD);
   }
 
   @Override
-  public BipUpdateClaimResp updateClaimStatus(RequestForUpdateClaimStatus statusAndClaimId) throws BipException {
-    log.info("updateClaimStatus({}) invoked.", statusAndClaimId);
-    long claimId = statusAndClaimId.getClaimId();
-    ClaimStatus status = statusAndClaimId.getClaimStatus();
-
+  public BipUpdateClaimResp updateClaimStatus(long claimId, ClaimStatus status) {
+    log.info("updateClaimStatus({},{}) invoked.", claimId, status);
     final String description = status.getDescription();
     try {
 
@@ -138,7 +129,7 @@ public class BipApiService implements IBipApiService {
   }
 
   @Override
-  public List<ClaimContention> getClaimContentions(long claimId) throws BipException {
+  public List<ClaimContention> getClaimContentions(long claimId) {
     try {
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
       log.info("Call {} to get claim contention for {}.", url, claimId);
@@ -166,8 +157,7 @@ public class BipApiService implements IBipApiService {
   }
 
   @Override
-  public BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention)
-      throws BipException {
+  public BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention) {
     try {
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
       log.info("Call {} to update contention for {}.", url, claimId);
@@ -188,7 +178,7 @@ public class BipApiService implements IBipApiService {
   }
 
   @Override
-  public boolean verifySpecialIssueTypes() {
+  public boolean confirmCanCallSpecialIssueTypes() {
     String url = HTTPS + bipApiProps.getClaimBaseUrl() + SPECIAL_ISSUE_TYPES;
     log.info("Call {} to get special_issue_types", url);
 
