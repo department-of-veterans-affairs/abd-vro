@@ -1,4 +1,8 @@
 spring:
+  profiles:
+    # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
+    active: ${ENV:default}
+
   # Specify where Spring connects to RabbitMQ
   rabbitmq:
     host: "${RABBITMQ_PLACEHOLDERS_HOST:localhost}"
