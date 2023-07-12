@@ -1,0 +1,5 @@
+
+spring:
+  # Specify where Spring connects to Kafka
+  kafka:
+    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:kafka.stage.bip.va.gov:443}"
