@@ -32,7 +32,7 @@ prodImageName() {
 # subdirectory, be sure to add the sub directory to the gradleFolder function above
 IMAGES=( console postgres \
   api-gateway app db-init \
-  svc-bgs-api svc-lighthouse-api \
+  svc-bgs-api svc-lighthouse-api svc-bie-kafka \
   cc-app )
 echo
 echo "=== ${#IMAGES[@]} VRO images"

@@ -23,6 +23,7 @@ on:
         options:
         - domain-cc
         - svc-bgs-api
+        - svc-bie-kafka
         - svc-lighthouse-api
         - api-gateway
 
@@ -116,10 +117,12 @@ jobs:
             helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
             kubectl -n va-abd-rrd-${{ inputs.target_env }} get pods --show-labels
 
-            echo '## Before update' >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
+            {
+              echo '## Before update'
+              echo '```'
+              helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
+              echo '```'
+            } | tee -a $GITHUB_STEP_SUMMARY
           else
             echo "No existing Helm release; creating a new Helm release: ${{ env.RELEASE_NAME }}"
           fi
@@ -142,12 +145,19 @@ jobs:
 
       - name: "Deploy ${{ inputs.helm_chart }} '${{ inputs.image_tag }}' to ${{ inputs.target_env }} env"
         run: |
-          echo "::group::Upgrading Helm chart: ${{inputs.helm_chart}}"
+          echo "::group::Prepping for Helm chart: ${{inputs.helm_chart}}"
           export K8S_INFO=true
           export WAIT_TIMEOUT=10m
 
           # Load default values for *_VER environment variables, which pin image versions
           source scripts/image_vars.src
+
+          {
+            echo '## Default image versions'
+            echo '```'
+            imageVersions | sort
+            echo '```'
+          } | tee -a $GITHUB_STEP_SUMMARY
 
           # To override pinned image version default, export env variable, e.g., 'apigateway_VER' for Helm chart 'api-gateway'
           VAR_PREFIX=$(bashVarPrefix "${{inputs.helm_chart}}")
@@ -157,19 +167,25 @@ jobs:
           eval ${{inputs.deploy_prep_script}}
 
           # Log environment variables
-          echo '## _VER environment variables' >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          export -p | sed 's/declare -x //' | grep '_VER=' >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
+          {
+            echo '## Final *_VER environment variables'
+            echo '```'
+            export -p | sed 's/declare -x //' | grep '_VER='
+            echo '```'
+          } | tee -a $GITHUB_STEP_SUMMARY
+          echo "::endgroup::"
 
+          echo "::group::Upgrading Helm chart: ${{inputs.helm_chart}}"
           # Do deployment
           helm/deploy.sh "${{inputs.target_env}}" "${{inputs.helm_chart}}" "${{inputs.image_tag}}"
           echo "::endgroup::"
 
-          echo '## After update' >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }} >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
+          {
+            echo '## After update'
+            echo '```'
+            helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
+            echo '```'
+          } | tee -a $GITHUB_STEP_SUMMARY
 
       - name: "Slack thread: Post failed status message"
         if: failure()
