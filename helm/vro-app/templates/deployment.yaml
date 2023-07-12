@@ -89,6 +89,7 @@ spec:
                   name: vro-secrets
                   key: VRO_SECRETS_SLACK
 
+            # These 2 should be moved to application-*.yml
             - name: LH_API_AUTH_URL
               value: {{ .Values.lhApiAuthUrl }}
             - name: VRO_AUD_URL

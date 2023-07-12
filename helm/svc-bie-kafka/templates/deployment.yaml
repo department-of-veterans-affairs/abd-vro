@@ -25,10 +25,11 @@ spec:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
             {{- include "vro.mqClient.envVars" . | nindent 12 }}
             # VRO_SECRETS_BIE_KAFKA provides Kafka credentials (keys and certs)
-            - name: VRO_SECRETS_BIE_KAFKA
-              valueFrom:
-                secretKeyRef:
-                  name: vro-secrets
-                  key: VRO_SECRETS_BIE_KAFKA
+            # TODO: Uncomment the following after it is added to Hashicorp Vault and secrets are deployed
+            #- name: VRO_SECRETS_BIE_KAFKA
+            #  valueFrom:
+            #    secretKeyRef:
+            #      name: vro-secrets
+            #      key: VRO_SECRETS_BIE_KAFKA
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
