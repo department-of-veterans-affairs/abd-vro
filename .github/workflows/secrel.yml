@@ -225,7 +225,7 @@ jobs:
               caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}` ..."
 
   slack-final:
-    needs: [ publish-to-ghcr, secrel]
+    needs: [ gate-check, publish-to-ghcr, secrel]
     runs-on: ubuntu-latest
     if: always()
     steps:
@@ -256,7 +256,7 @@ jobs:
           fi
 
       - name: "Slack thread: Post final status"
-        if: always()
+        if: always() && needs.gate-check.outputs.continue == 'true'
         uses: archive/github-actions-slack@v2.6.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
@@ -264,7 +264,7 @@ jobs:
           slack-optional-thread_ts: ${{ needs.publish-to-ghcr.outputs.slack-response-ts }}
           slack-text: ${{ env.WORKFLOW_STATE_TEXT }}
       - name: "Slack emoji: React success on top-level Slack notification"
-        if: always()
+        if: always() && needs.gate-check.outputs.continue == 'true'
         uses: archive/github-actions-slack@v2.6.0
         with:
           slack-function: send-reaction
