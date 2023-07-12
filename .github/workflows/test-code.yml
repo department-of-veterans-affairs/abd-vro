@@ -35,7 +35,7 @@ jobs:
           ./gradlew spotlessCheck shellcheck lintDockerfile
 
       - name: "Python isort"
-        uses: isort/isort-action@master
+        uses: isort/isort-action@v1
         with:
           requirementsFiles: "**/requirements.txt \
                               **/dev-requirements.txt"

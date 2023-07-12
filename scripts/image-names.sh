@@ -32,7 +32,7 @@ prodImageName() {
 # subdirectory, be sure to add the sub directory to the gradleFolder function above
 IMAGES=( console postgres \
   api-gateway app db-init \
-  svc-bgs-api svc-lighthouse-api \
+  svc-bgs-api svc-lighthouse-api svc-bie-kafka \
   cc-app )
 echo
 echo "=== ${#IMAGES[@]} VRO images"
@@ -139,6 +139,9 @@ echo '
 # Override default *_VER variables above
 source scripts/image_versions.src
 
+if [ "$1" ]; then
+  eval "$@"
+fi
 # End of file'
 }
 overwriteSrcFile > "$SRC_FILE"

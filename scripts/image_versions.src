@@ -16,7 +16,6 @@ export console_VER="v3.2.5"
 # they are automatically pinned and unpinned by scripts/image-version.sh.
 # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Container-Image-Versions
 # Mon Jul 5
-dbinit_VER="v3.1.1"
 # Thu Jul  6 18:35:33 UTC 2023
 postgres_VER="v3.2.1"
 # Sat Jul  8 03:49:47 UTC 2023 -- v3.2.5
