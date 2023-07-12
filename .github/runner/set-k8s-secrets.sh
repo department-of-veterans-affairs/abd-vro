@@ -19,7 +19,12 @@ fi
 
 # All secrets are in the Vault in mapi
 export VAULT_ADDR=https://ldx-mapi.lighthouse.va.gov
-vault login "$VAULT_TOKEN" &> /dev/null || { echo "Could not log into Vault $VAULT_ADDR using VAULT_TOKEN"; exit 4; }
+vault login "$VAULT_TOKEN" &> /dev/null || {
+  echo "Could not log into Vault $VAULT_ADDR using VAULT_TOKEN, which may be expired."
+  echo "Try running locally: scripts/set-secret-vault-token.sh <newTokenFromVaultWebGUI>"
+  echo "See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Secrets-Vault#setting-the-vault-token-secret"
+  exit 4;
+}
 
 # GitHub Team name, which used as the root path for Vault secrets
 # https://github.com/orgs/department-of-veterans-affairs/teams/vro-admins/members
