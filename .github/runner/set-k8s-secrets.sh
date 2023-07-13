@@ -16,14 +16,14 @@ fi
 
 # Test $KUBE_CONFIG
 kubectl -n "va-abd-rrd-${TARGET_ENV}" get pods || {
-  echo "Kubernetes access token (KUBE_CONFIG) may have expired. Run scripts/set-secret-kube-config.sh locally."
+  echo "ERROR: Kubernetes access token (KUBE_CONFIG) may have expired. Run scripts/set-secret-kube-config.sh locally."
   echo "See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Secrets-Vault#setting-kubernetes-access-tokens"
   exit 2
 }
 
 # Originates from the Vault web GUI
 [ "$VAULT_TOKEN" ] || {
-  echo "Missing VAULT_TOKEN"
+  echo "ERROR: Missing VAULT_TOKEN"
   echo "Try running locally: scripts/set-secret-vault-token.sh <newTokenFromVaultWebGUI>"
   echo "See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Secrets-Vault#setting-the-vault-token-secret"
   exit 3
@@ -32,7 +32,7 @@ kubectl -n "va-abd-rrd-${TARGET_ENV}" get pods || {
 # All secrets are in the Vault in mapi
 export VAULT_ADDR=https://ldx-mapi.lighthouse.va.gov
 vault login "$VAULT_TOKEN" &> /dev/null || {
-  echo "Could not log into Vault $VAULT_ADDR using VAULT_TOKEN, which may be expired."
+  echo "ERROR: Could not log into Vault $VAULT_ADDR using VAULT_TOKEN, which may be expired."
   echo "Try running locally: scripts/set-secret-vault-token.sh <newTokenFromVaultWebGUI>"
   echo "See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Secrets-Vault#setting-the-vault-token-secret"
   exit 4
