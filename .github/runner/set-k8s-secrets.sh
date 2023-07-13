@@ -115,7 +115,7 @@ for SERVICE_NAME in $SERVICE_NAMES; do
   SERVICE_SECRET_DATA=$(splitSecretData "$JSON")
   dumpYaml "vro-$SERVICE_NAME" "$SERVICE_SECRET_DATA" | \
     kubectl -n "va-abd-rrd-${TARGET_ENV}" replace --force -f - \
-    || exit 90
+    || echo "!!! ERROR: Could not replace secret 'vro-$SERVICE_NAME'"
 done
 
 # These are the env variable names, as well as part of the Vault path
@@ -130,7 +130,7 @@ SECRET_DATA=$(collectSecretExportCmds $VRO_SECRETS_NAMES)
 echo -e "\n## Setting aggregate 'vro-secrets' secret with all VRO_SECRETS_* Vault secrets"
 dumpYaml vro-secrets "$SECRET_DATA" | \
   kubectl -n "va-abd-rrd-${TARGET_ENV}" replace --force -f -\
-    || exit 91
+    || echo "!!! ERROR: Could not replace secret 'vro-secrets'"
 
 # TODO: Once all relevant pods are up or after some time, delete the secrets.
 # Or use preStop hook to delete those secrets on this pod's shutdown.
