@@ -16,6 +16,12 @@ spring:
       group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-group}"
     bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:localhost:9092}"
 
+    ssl:
+      keystore-location: "${KEYSTORE_FILE:keystore.p12}"
+      keystore-password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
+      truststore-location: "${TRUSTSTORE_FILE:truststore.p12}"
+      truststore-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
+
 ## Specify bie properties
 bie:
   kafka-topic-to-amqp-queue-map:
