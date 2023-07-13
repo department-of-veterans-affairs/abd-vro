@@ -96,7 +96,7 @@ toExportCmds(){
 }
 collectSecretExportCmds(){
   for VRO_SECRETS in "$@"; do
-    >&2 echo -e "\n## Setting secret 'vro-secrets': '$VRO_SECRETS'"
+    >&2 echo -e "\n#### Adding to secret 'vro-secrets' from: '$VRO_SECRETS'"
     JSON=$(queryVault "$VRO_SECRETS")
     # Encode exportCommands b/c it's usually multiline, plus it must be encoded for the secrets*.yaml file
     EXPORT_CMDS_BASE64=$(toExportCmds "$JSON" | base64 -w0 )
@@ -127,6 +127,7 @@ VRO_SECRETS_NAMES="VRO_SECRETS_API VRO_SECRETS_SLACK VRO_SECRETS_BIP VRO_SECRETS
 # Advantage: New environment variables can be added to these secrets without modifying
 # Helm configurations -- simply add them to Vault.
 SECRET_DATA=$(collectSecretExportCmds $VRO_SECRETS_NAMES)
+echo -e "\n## Setting aggregate 'vro-secrets' secret with all VRO_SECRETS_* Vault secrets"
 dumpYaml vro-secrets "$SECRET_DATA" | \
   kubectl -n "va-abd-rrd-${TARGET_ENV}" replace --force -f -\
     || exit 91
