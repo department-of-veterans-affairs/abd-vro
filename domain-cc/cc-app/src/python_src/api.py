@@ -41,6 +41,7 @@ logging.basicConfig(
 def get_health_status():
     if not len(LOOKUP_TABLE):
         raise HTTPException(status_code=500, detail="Lookup table is empty")
+    raise Exception("This is a test exception")
 
     return {"status": "ok"}
 
