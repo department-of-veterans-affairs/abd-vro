@@ -14,8 +14,20 @@ else
   echo "Missing KUBE_CONFIG. Using kubectl namespace of container."
 fi
 
+# Test $KUBE_CONFIG
+kubectl -n "va-abd-rrd-${TARGET_ENV}" get pods || {
+  echo "Kubernetes access token (KUBE_CONFIG) may have expired. Run scripts/set-secret-kube-config.sh locally."
+  echo "See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Secrets-Vault#setting-kubernetes-access-tokens"
+  exit 2
+}
+
 # Originates from the Vault web GUI
-[ "$VAULT_TOKEN" ] || { echo "Missing VAULT_TOKEN"; exit 3; }
+[ "$VAULT_TOKEN" ] || {
+  echo "Missing VAULT_TOKEN"
+  echo "Try running locally: scripts/set-secret-vault-token.sh <newTokenFromVaultWebGUI>"
+  echo "See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Secrets-Vault#setting-the-vault-token-secret"
+  exit 3
+}
 
 # All secrets are in the Vault in mapi
 export VAULT_ADDR=https://ldx-mapi.lighthouse.va.gov
@@ -23,7 +35,7 @@ vault login "$VAULT_TOKEN" &> /dev/null || {
   echo "Could not log into Vault $VAULT_ADDR using VAULT_TOKEN, which may be expired."
   echo "Try running locally: scripts/set-secret-vault-token.sh <newTokenFromVaultWebGUI>"
   echo "See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Secrets-Vault#setting-the-vault-token-secret"
-  exit 4;
+  exit 4
 }
 
 # GitHub Team name, which used as the root path for Vault secrets
