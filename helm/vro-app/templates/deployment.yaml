@@ -89,6 +89,8 @@ spec:
                   name: vro-secrets
                   key: VRO_SECRETS_SLACK
 
+            # These 2 should be moved to application-*.yml, then
+            # values-for-prod.yaml and values-for-prod.yaml can be deleted.
             - name: LH_API_AUTH_URL
               value: {{ .Values.lhApiAuthUrl }}
             - name: VRO_AUD_URL
@@ -113,6 +115,8 @@ spec:
 #              value: { { .Values.bip.bipClaimUrl }}
 #            - name: BIP_EVIDENCE_URL
 #              value: { { .Values.bip.bipEvidenceUrl }}
+
+            # This should be moved to application.yml
             - name: BIP_STATION_ID
               value: "281"
           resources:
