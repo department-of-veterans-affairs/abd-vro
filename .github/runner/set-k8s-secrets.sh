@@ -31,14 +31,14 @@ vault login "$VAULT_TOKEN" &> /dev/null || {
 TEAM_NAME=vro-admins
 queryVault(){
   FOLDER=$1
-  >&2 echo "Querying vault at $TEAM_NAME/deploy/(default|$TARGET_ENV)/$FOLDER"
+  >&2 echo "Querying vault at $TEAM_NAME/deploy/(default and $TARGET_ENV)/$FOLDER"
   JSON_DEFAULT=$(vault read -format=json "$TEAM_NAME/deploy/default/$FOLDER")
   if JSON_TARGET=$(vault read -format=json "$TEAM_NAME/deploy/$TARGET_ENV/$FOLDER"); then
     # Merge the JSON results, where the latter overrides the former -- https://stackoverflow.com/a/24904276
     echo "$JSON_DEFAULT" "$JSON_TARGET" | jq -s '.[0].data * .[1].data'
   else
     # Not overriding default secrets for $TARGET_ENV
-    >&2 echo "(Using only default secrets)"
+    >&2 echo "(Using only secrets in 'default' folder)"
     echo "$JSON_DEFAULT" | jq '.data'
   fi
 }
@@ -102,11 +102,12 @@ for SERVICE_NAME in $SERVICE_NAMES; do
   JSON=$(queryVault "$SERVICE_NAME")
   SERVICE_SECRET_DATA=$(splitSecretData "$JSON")
   dumpYaml "vro-$SERVICE_NAME" "$SERVICE_SECRET_DATA" | \
-    kubectl -n "va-abd-rrd-${TARGET_ENV}" replace --force -f -
+    kubectl -n "va-abd-rrd-${TARGET_ENV}" replace --force -f - \
+    || exit 90
 done
 
 # These are the env variable names, as well as part of the Vault path
-VRO_SECRETS_NAMES="VRO_SECRETS_API VRO_SECRETS_SLACK VRO_SECRETS_MAS VRO_SECRETS_BIP VRO_SECRETS_LH"
+VRO_SECRETS_NAMES="VRO_SECRETS_API VRO_SECRETS_SLACK VRO_SECRETS_BIP VRO_SECRETS_LH VRO_SECRETS_BIE_KAFKA"
 # Set the `vro-secrets` secret, where for each key-value pair,
 # the key begins with `VRO_SECRETS_` and the value is a multiline string consisting
 # of a series of `export VAR1=VAL1` lines. These multiline strings will be interpreted
@@ -115,7 +116,8 @@ VRO_SECRETS_NAMES="VRO_SECRETS_API VRO_SECRETS_SLACK VRO_SECRETS_MAS VRO_SECRETS
 # Helm configurations -- simply add them to Vault.
 SECRET_DATA=$(collectSecretExportCmds $VRO_SECRETS_NAMES)
 dumpYaml vro-secrets "$SECRET_DATA" | \
-  kubectl -n "va-abd-rrd-${TARGET_ENV}" replace --force -f -
+  kubectl -n "va-abd-rrd-${TARGET_ENV}" replace --force -f -\
+    || exit 91
 
 # TODO: Once all relevant pods are up or after some time, delete the secrets.
 # Or use preStop hook to delete those secrets on this pod's shutdown.
