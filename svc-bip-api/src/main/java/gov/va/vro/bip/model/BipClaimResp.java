@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true) // BIP API can send messages
-public class BipClaimResp extends HasStatusCodeAndMessage{
+public class BipClaimResp extends HasStatusCodeAndMessage {
   private BipClaim claim;
 }

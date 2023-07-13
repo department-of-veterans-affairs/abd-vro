@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Map;
 import javax.crypto.spec.SecretKeySpec;
 
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -97,7 +96,7 @@ public class BipApiService implements IBipApiService {
   }
 
   @Override
-  public BipUpdateClaimResp setClaimToRfdStatus(long claimId)  {
+  public BipUpdateClaimResp setClaimToRfdStatus(long claimId) {
     return updateClaimStatus(claimId, ClaimStatus.RFD);
   }
 

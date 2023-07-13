@@ -19,9 +19,10 @@ import java.util.UUID;
 @Slf4j
 public class RMQConfig {
   @Bean
-  RMQController controller(){
+  RMQController controller() {
     return new RMQController();
   }
+
   @Value("${exchangeName}")
   String exchangeName;
 
@@ -35,7 +36,7 @@ public class RMQConfig {
     return new DirectExchange(exchangeName, true, true);
   }
 
-  static String getStackTrace(Throwable e){
+  static String getStackTrace(Throwable e) {
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
     e.printStackTrace(pw);

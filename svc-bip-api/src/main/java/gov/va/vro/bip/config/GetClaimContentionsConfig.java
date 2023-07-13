@@ -1,7 +1,6 @@
 package gov.va.vro.bip.config;
 
 import gov.va.vro.bip.model.BipContentionResp;
-import gov.va.vro.bip.model.BipUpdateClaimResp;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.listener.api.RabbitListenerErrorHandler;
 import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
@@ -12,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class GetClaimContentionsConfig {
-
 
   @Value("${getClaimContentionsQueue}")
   String getClaimContentionsQueue;
