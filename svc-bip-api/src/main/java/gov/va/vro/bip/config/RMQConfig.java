@@ -2,8 +2,10 @@ package gov.va.vro.bip.config;
 
 import gov.va.vro.bip.model.HasStatusCodeAndMessage;
 import gov.va.vro.bip.service.RMQController;
+import gov.va.vro.model.xample.SomeDtoModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.listener.api.RabbitListenerErrorHandler;
 import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
@@ -74,5 +76,30 @@ public class RMQConfig {
       System.exit(-1);
     }
     return null;
+  }
+
+  @Bean
+  RabbitListenerErrorHandler xampleErrorHandler() {
+    RabbitListenerErrorHandler handler =
+        new RabbitListenerErrorHandler() {
+          @Override
+          public Object handleError(
+              Message amqpMessage,
+              org.springframework.messaging.Message<?> message,
+              ListenerExecutionFailedException exception)
+              throws Exception {
+            log.info("Oh no!", exception);
+
+            if (message != null && message.getHeaders().getReplyChannel() != null) {
+              var errorModel = SomeDtoModel.builder().resourceId("").diagnosticCode("").build();
+              errorModel.header(500, exception.toString());
+
+              return errorModel;
+            }
+
+            return null;
+          }
+        };
+    return handler;
   }
 }
