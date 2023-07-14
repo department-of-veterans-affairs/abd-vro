@@ -113,8 +113,13 @@ services:
     image: va/abd_vro-svc-bie-kafka:latest
     <<: [ *common-sde-security, *common-security-opt ]
     environment:
-      <<: [ *rabbitmq-placeholder-vars ]
+      <<: [*rabbitmq-placeholder-vars, *common-vars]
       BIE_KAFKA_PLACEHOLDERS_BROKERS: mock-bie-kafka:9092
       BIE_KAFKA_PLACEHOLDERS_GROUP_ID: vro-bie-group
+      BIE_KAFKA_KEYSTORE_INBASE64: ${BIE_KAFKA_KEYSTORE_INBASE64}
+      BIE_KAFKA_KEYSTORE_PASSWORD: ${BIE_KAFKA_KEYSTORE_PASSWORD}
+      BIE_KAFKA_TRUSTSTORE_INBASE64: ${BIE_KAFKA_TRUSTSTORE_INBASE64}
+      BIE_KAFKA_TRUSTSTORE_PASSWORD: ${BIE_KAFKA_TRUSTSTORE_PASSWORD}
+
     networks:
       - vro_intranet
