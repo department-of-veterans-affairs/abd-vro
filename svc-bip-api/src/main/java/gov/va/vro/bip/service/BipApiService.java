@@ -37,6 +37,11 @@ import java.util.List;
 import java.util.Map;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ * BIP claim API service.
+ *
+ * @author warren @Date 10/31/22
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -95,6 +100,13 @@ public class BipApiService implements IBipApiService {
     }
   }
 
+  /**
+   * Updates claim status.
+   *
+   * @param claimId claim ID for the claim to be updated.
+   * @return an object with status and message.
+   * @throws BipException error occurs
+   */
   @Override
   public BipUpdateClaimResp setClaimToRfdStatus(long claimId) {
     return updateClaimStatus(claimId, ClaimStatus.RFD);
