@@ -19,8 +19,10 @@ spring:
     ssl:
       keystore-location: "${KEYSTORE_FILE:keystore.p12}"
       keystore-password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
+      key-store-type: "PKCS12"
       truststore-location: "${TRUSTSTORE_FILE:truststore.p12}"
       truststore-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
+      trust-store-type: "PKCS12"
 
 ## Specify bie properties
 bie:
