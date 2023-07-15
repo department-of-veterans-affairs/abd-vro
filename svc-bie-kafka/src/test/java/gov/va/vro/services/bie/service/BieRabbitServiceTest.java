@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
-import gov.va.vro.services.bie.model.BieMessagePayload;
+import gov.va.vro.biekafka.model.BieMessagePayload;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -41,9 +41,9 @@ class BieRabbitServiceTest {
 
       verify(rabbitTemplate).convertAndSend(eq(exchange), eq(topic), messageCaptor.capture());
       final BieMessagePayload payload = messageCaptor.getValue();
-      assertThat(payload.getTopic()).isEqualTo(topic);
+      assertThat(payload.getEvent()).isEqualTo(topic);
       assertThat(payload.getNotifiedAt()).isNotBlank();
-      assertThat(payload.getEvent()).isEqualTo(message);
+      assertThat(payload.getEventDetails()).isEqualTo(message);
     }
   }
 }

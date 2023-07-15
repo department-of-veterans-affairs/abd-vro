@@ -27,6 +27,14 @@ public class RabbitMqCamelUtils {
     return "rabbitmq:" + exchangeName + "?exchangeType=topic&queue=" + queueName;
   }
 
+  public static String rabbitmqFanoutConsumerEndpoint(String exchangeName, String queueName) {
+    return "rabbitmq:"
+        + exchangeName
+        + "?exchangeType=fanout&queue="
+        + queueName
+        + "&skipExchangeDeclare=true&skipQueueDeclare=true&skipQueueBind=true";
+  }
+
   public static String rabbitmqConsumerEndpoint(String exchangeName, String routingKey) {
     // Name the queue so that it's easily identifiable; otherwise a random number is set as the
     // queue name
@@ -37,6 +45,11 @@ public class RabbitMqCamelUtils {
   public static RouteDefinition fromRabbitmq(
       RouteBuilder builder, String exchangeName, String routingKey) {
     return fromRabbitmq(builder, rabbitmqConsumerEndpoint(exchangeName, routingKey));
+  }
+
+  public static RouteDefinition fromRabbitmqFanoutExchange(
+      RouteBuilder builder, String fanoutExchange, String routingKey) {
+    return fromRabbitmq(builder, rabbitmqFanoutConsumerEndpoint(fanoutExchange, routingKey));
   }
 
   public static RouteDefinition fromRabbitmq(RouteBuilder builder, String rabbitMqUri) {

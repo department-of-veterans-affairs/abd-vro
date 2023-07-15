@@ -1,0 +1,12 @@
+plugins {
+  id 'local.std.java.library-conventions'
+}
+
+ext {
+  // TODO: improve test code coverage so that the following can be removed
+  jacoco_minimum_coverage = 0.8
+}
+
+dependencies {
+  implementation 'org.springframework.boot:spring-boot-starter-amqp'
+}
