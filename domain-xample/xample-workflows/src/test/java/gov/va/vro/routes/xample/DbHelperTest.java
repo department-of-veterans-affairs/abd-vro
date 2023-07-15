@@ -42,7 +42,8 @@ public class DbHelperTest {
     dbHelper = new DbHelper(claimRepository, veteranRepository, contentionEventRepository);
   }
 
-  private final SomeDtoModel someDtoModel = SomeDtoModel.builder().resourceId("320").diagnosticCode("B").build();
+  private final SomeDtoModel someDtoModel =
+      SomeDtoModel.builder().resourceId("320").diagnosticCode("B").build();
 
   @Test
   void testSaveToDb() {
