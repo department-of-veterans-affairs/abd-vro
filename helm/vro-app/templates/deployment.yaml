@@ -17,7 +17,7 @@ spec:
         {{- include "vro.annotations.pod" . | nindent 8 }}
         {{- include "vro.annotations.reloadLatest" . | nindent 8 }}
     spec:
-      {{ include "vro.imagePullSecrets" . | nindent 6 }}
+      {{- include "vro.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: pg-isready{{ include "vro.containerSuffix" . }}
           # TODO: This simple container does not need to use the big `db` image
