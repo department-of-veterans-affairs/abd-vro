@@ -40,6 +40,23 @@ class BgsClient
 
   def initialize
     @bgs = BGS::Services.new(external_uid: nil, external_key: nil)
+    sleep(10)
+    req = JSON.parse(File.read("test.txt"))
+    $logger.info "requestBody=#{req}"
+    begin
+      response = handle_request(req)
+      response = yield(response)
+    rescue => e
+      $logger.error e.backtrace
+      response = {
+        statusCode: e.is_a?(ArgumentError) ? 400 : 500,
+        statusMessage: "#{e.class}: #{e.message}",
+      }
+    ensure
+      $logger.info "response=#{response}"
+    end
+
+
   end
 
   def handle_request(req)
