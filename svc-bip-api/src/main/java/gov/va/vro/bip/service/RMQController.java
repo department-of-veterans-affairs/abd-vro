@@ -16,7 +16,6 @@ public class RMQController {
   BipUpdateClaimResp setClaimToRfdStatus(long collectionId) {
     return service.setClaimToRfdStatus(collectionId);
   }
-  ; // 2
 
   @RabbitListener(queues = "updateClaimStatusQueue", errorHandler = "xampleErrorHandler")
   BipUpdateClaimResp updateClaimStatus(RequestForUpdateClaimStatus statusAndClaimId) {
