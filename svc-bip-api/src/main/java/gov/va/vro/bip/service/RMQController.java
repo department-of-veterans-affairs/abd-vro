@@ -1,11 +1,21 @@
 package gov.va.vro.bip.service;
 
-import gov.va.vro.bip.model.*;
+import gov.va.vro.bip.model.BipClaim;
+import gov.va.vro.bip.model.BipContentionResp;
+import gov.va.vro.bip.model.BipUpdateClaimResp;
+import gov.va.vro.bip.model.RequestForUpdateClaimStatus;
+import gov.va.vro.bip.model.UpdateContentionReq;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Slf4j
+@Component
+@RequiredArgsConstructor
 public class RMQController {
-  @Autowired BipApiService service;
+
+  final BipApiService service;
 
   @RabbitListener(queues = "getClaimDetailsQueue", errorHandler = "svcBipApiErrorHandler")
   BipClaim getClaimDetails(long collectionId) {
@@ -19,7 +29,6 @@ public class RMQController {
 
   @RabbitListener(queues = "updateClaimStatusQueue", errorHandler = "svcBipApiErrorHandler")
   BipUpdateClaimResp updateClaimStatus(RequestForUpdateClaimStatus statusAndClaimId) {
-    System.out.println(statusAndClaimId.toString());
     BipUpdateClaimResp result =
         service.updateClaimStatus(statusAndClaimId.getClaimId(), statusAndClaimId.getClaimStatus());
     return result;

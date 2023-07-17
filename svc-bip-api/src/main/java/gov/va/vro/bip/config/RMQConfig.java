@@ -1,9 +1,9 @@
 package gov.va.vro.bip.config;
 
 import gov.va.vro.bip.model.HasStatusCodeAndMessage;
-import gov.va.vro.bip.service.RMQController;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.listener.api.RabbitListenerErrorHandler;
 import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -20,10 +20,6 @@ import java.util.UUID;
 @Configuration
 @Slf4j
 public class RMQConfig {
-  @Bean
-  RMQController controller() {
-    return new RMQController();
-  }
 
   @Value("${exchangeName}")
   String exchangeName;
