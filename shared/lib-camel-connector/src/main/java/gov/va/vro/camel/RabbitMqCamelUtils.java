@@ -28,11 +28,7 @@ public class RabbitMqCamelUtils {
   }
 
   public static String rabbitmqFanoutConsumerEndpoint(String exchangeName, String queueName) {
-    return "rabbitmq:"
-        + exchangeName
-        + "?exchangeType=fanout&queue="
-        + queueName
-        + "&skipExchangeDeclare=true&skipQueueDeclare=true&skipQueueBind=true";
+    return "rabbitmq:" + exchangeName + "?exchangeType=fanout&queue=" + queueName;
   }
 
   public static String rabbitmqConsumerEndpoint(String exchangeName, String routingKey) {

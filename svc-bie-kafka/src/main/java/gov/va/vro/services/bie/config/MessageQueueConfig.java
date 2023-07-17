@@ -22,6 +22,7 @@ public class MessageQueueConfig {
 
   private static final boolean DURABLE = true;
   private static final boolean AUTO_DELETE = true;
+  private static final boolean EXCLUSIVE = false;
 
   @Bean
   public MessageConverter messageConverter() {
@@ -34,7 +35,7 @@ public class MessageQueueConfig {
         bieProperties.getKafkaTopicToAmqpQueueMap().values().stream()
             .map(
                 topic -> {
-                  final Queue queue = new Queue(topic, DURABLE);
+                  final Queue queue = new Queue(topic, DURABLE, EXCLUSIVE, AUTO_DELETE);
                   final FanoutExchange fanoutExchange =
                       new FanoutExchange(topic, DURABLE, AUTO_DELETE);
                   final Binding binding = BindingBuilder.bind(queue).to(fanoutExchange);

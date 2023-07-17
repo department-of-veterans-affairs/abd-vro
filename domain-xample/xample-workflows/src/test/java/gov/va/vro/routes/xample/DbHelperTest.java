@@ -57,13 +57,19 @@ public class DbHelperTest {
 
   @Test
   void saveContentionEvent() {
+    final LocalDateTime notifiedAt = LocalDateTime.now();
+    final String eventDetails = "Lorem ipsum";
+    final String event = "testEvent";
     final BieMessagePayload item =
         BieMessagePayload.builder()
-            .event("testEvent")
-            .eventDetails("testEventDetails")
-            .notifiedAt(LocalDateTime.now().toString())
+            .event(event)
+            .eventDetails(eventDetails)
+            .notifiedAt(notifiedAt.toString())
             .build();
     final ContentionEventEntity entity = dbHelper.saveContentionEvent(item);
-    assertNotNull(entity.getEventDetails());
+    assertNotNull(entity);
+    assertEquals(event, entity.getEventType());
+    assertEquals(eventDetails, entity.getEventDetails());
+    assertEquals(notifiedAt, entity.getNotifiedAt());
   }
 }

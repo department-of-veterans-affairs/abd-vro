@@ -23,5 +23,6 @@ public class ContentionEventEntity extends BaseEntity {
   @Column(name = "event_details")
   private String eventDetails;
 
-  // Todo: Add event details to be extracted from eventDetails into their own fields
+  // TODO: Add event details to be extracted from eventDetails into their own fields. See ticket
+  // #1680 https://github.com/department-of-veterans-affairs/abd-vro/issues/1680
 }
