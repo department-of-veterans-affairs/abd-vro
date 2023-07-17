@@ -1,9 +1,9 @@
 package gov.va.vro.bip.config;
 
-import gov.va.vro.bip.model.BipContentionResp;
-import org.springframework.amqp.core.*;
-import org.springframework.amqp.rabbit.listener.api.RabbitListenerErrorHandler;
-import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -27,20 +27,5 @@ public class GetClaimContentionsConfig {
     return BindingBuilder.bind(getClaimContentionsQueue())
         .to(bipApiExchange)
         .with(getClaimContentionsQueue);
-  }
-
-  @Bean
-  RabbitListenerErrorHandler errorHandlerForGetClaimContentions() {
-    return new RabbitListenerErrorHandler() {
-      @Override
-      public Object handleError(
-          Message amqpMessage,
-          org.springframework.messaging.Message<?> message,
-          ListenerExecutionFailedException exception) {
-
-        return RMQConfig.respondToClientDueToUncaughtExcdeption(
-            amqpMessage, message, exception, new BipContentionResp());
-      }
-    };
   }
 }

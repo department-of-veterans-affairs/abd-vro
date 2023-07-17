@@ -1,13 +1,16 @@
-package gov.va.vro.bip.service;
+package gov.va.vro.bip;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import gov.va.vro.bip.model.*;
+import gov.va.vro.bip.service.BipApiService;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -26,7 +29,6 @@ import java.util.List;
  * Does same thing as BipApiServiceTest but through RMQ instance. Assumes RMQ broker is available
  * locally.
  */
-@Disabled("needs an RMQ broker, which is not available in github build env.")
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @Slf4j
@@ -35,21 +37,19 @@ class RMQIntegrationTest {
   @Autowired RabbitTemplate rabbitTemplate;
   @Autowired RabbitAdmin rabbitAdmin;
 
-  //  @Autowired
-  //  private ApplicationContext context;
-
   @Test
   void testUpdateClaimStatus(@Value("${updateClaimStatusQueue}") String qName) {
     rabbitAdmin.purgeQueue(qName, true);
     RequestForUpdateClaimStatus req = new RequestForUpdateClaimStatus(ClaimStatus.RFD, 1);
     BipUpdateClaimResp resp = new BipUpdateClaimResp();
     resp.statusMessage = "test pass";
-    Mockito.doReturn(resp).when(service).updateClaimStatus(req.getClaimId(), req.getClaimStatus());
+    Mockito.when(service.updateClaimStatus(Mockito.anyLong(),Mockito.any())).thenReturn(resp);
 
     BipUpdateClaimResp result =
         (BipUpdateClaimResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, req);
 
-    assertEquals(result.statusMessage, resp.statusMessage);
+    Assertions.assertEquals(result.statusMessage, resp.statusMessage);
+    rabbitAdmin.purgeQueue(qName, true);
   }
 
   @Test
@@ -61,12 +61,14 @@ class RMQIntegrationTest {
     result.add(new ClaimContention());
 
     resp.statusMessage = "test pass";
-    Mockito.doReturn(result).when(service).getClaimContentions(req);
+    Mockito.when(service.getClaimContentions(Mockito.any())).thenReturn(result);
+//    Mockito.doReturn(result).when(service).getClaimContentions(req);
 
     BipContentionResp response =
         (BipContentionResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, req);
 
     assertTrue(response.getContentions().size() == 1);
+    rabbitAdmin.purgeQueue(qName, true);
   }
 
   @Test
@@ -75,11 +77,14 @@ class RMQIntegrationTest {
     long req = 42;
     BipClaim result = new BipClaim();
     result.setPhase("phase");
-    Mockito.doReturn(result).when(service).getClaimDetails(req);
+//    Mockito.doReturn(result).when(service).getClaimDetails(req);
+    Mockito.when(service.getClaimDetails(Mockito.eq(req))).thenReturn(result);
+
 
     BipClaim response = (BipClaim) rabbitTemplate.convertSendAndReceive(exchangeName, qName, req);
 
-    assertEquals(response.getPhase(), result.getPhase());
+    Assertions.assertEquals(response.getPhase(), result.getPhase());
+    rabbitAdmin.purgeQueue(qName, true);
   }
 
   @Test
@@ -88,12 +93,16 @@ class RMQIntegrationTest {
     long req = 42;
     BipUpdateClaimResp result = new BipUpdateClaimResp();
     result.statusMessage = "msg";
-    Mockito.doReturn(result).when(service).setClaimToRfdStatus(req);
+//    Mockito.doReturn(result).when(service).setClaimToRfdStatus(req);
+    Mockito.when(service.setClaimToRfdStatus(Mockito.eq(req))).thenReturn(result);
+
 
     BipUpdateClaimResp response =
         (BipUpdateClaimResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, req);
 
-    assertEquals(response.statusMessage, result.statusMessage);
+    Assertions.assertNotNull(response);
+    Assertions.assertEquals(response.statusMessage, result.statusMessage);
+    rabbitAdmin.purgeQueue(qName, true);
   }
 
   @Test
@@ -107,7 +116,8 @@ class RMQIntegrationTest {
     BipUpdateClaimResp response =
         (BipUpdateClaimResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, req);
 
-    assertEquals(response.statusMessage, result.statusMessage);
+    Assertions.assertEquals(response.statusMessage, result.statusMessage);
+    rabbitAdmin.purgeQueue(qName, true);
   }
 
   @Value("${exchangeName}")

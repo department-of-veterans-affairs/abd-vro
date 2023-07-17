@@ -7,17 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class RMQController {
   @Autowired BipApiService service;
 
-  @RabbitListener(queues = "getClaimDetailsQueue", errorHandler = "xampleErrorHandler")
+  @RabbitListener(queues = "getClaimDetailsQueue", errorHandler = "svcBipApiErrorHandler")
   BipClaim getClaimDetails(long collectionId) {
     return service.getClaimDetails(collectionId);
   }
 
-  @RabbitListener(queues = "setClaimToRfdStatusQueue", errorHandler = "xampleErrorHandler")
+  @RabbitListener(queues = "setClaimToRfdStatusQueue", errorHandler = "svcBipApiErrorHandler")
   BipUpdateClaimResp setClaimToRfdStatus(long collectionId) {
     return service.setClaimToRfdStatus(collectionId);
   }
 
-  @RabbitListener(queues = "updateClaimStatusQueue", errorHandler = "xampleErrorHandler")
+  @RabbitListener(queues = "updateClaimStatusQueue", errorHandler = "svcBipApiErrorHandler")
   BipUpdateClaimResp updateClaimStatus(RequestForUpdateClaimStatus statusAndClaimId) {
     System.out.println(statusAndClaimId.toString());
     BipUpdateClaimResp result =
@@ -25,12 +25,12 @@ public class RMQController {
     return result;
   }
 
-  @RabbitListener(queues = "getClaimContentionsQueue", errorHandler = "xampleErrorHandler")
+  @RabbitListener(queues = "getClaimContentionsQueue", errorHandler = "svcBipApiErrorHandler")
   BipContentionResp getClaimContentions(long claimId) {
     return new BipContentionResp(service.getClaimContentions(claimId));
   }
 
-  @RabbitListener(queues = "updateClaimContentionQueue", errorHandler = "xampleErrorHandler")
+  @RabbitListener(queues = "updateClaimContentionQueue", errorHandler = "svcBipApiErrorHandler")
   BipUpdateClaimResp updateClaimContention(UpdateContentionReq contention) {
     return service.updateClaimContention(contention.getClaimId(), contention);
   }

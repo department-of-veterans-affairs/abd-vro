@@ -4,6 +4,7 @@ plugins {
   id "io.freefair.lombok"
   id 'org.springframework.boot'
   id 'local.java.container-spring-conventions'
+  id 'jvm-test-suite'
 }
 
 
@@ -37,6 +38,18 @@ dependencies {
   testImplementation 'org.slf4j:slf4j-simple:2.0.7'
 }
 
-test {
-  useJUnitPlatform()
+// https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html#sec:jvm_test_suite_usage
+testing {
+  suites {
+    integrationTest(JvmTestSuite) {
+      dependencies {
+        implementation project(':svc-bip-api')
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation "org.springframework.boot:spring-boot-starter-test"
+        implementation "org.springframework.boot:spring-boot-starter-amqp"
+        implementation "com.fasterxml.jackson.core:jackson-databind"
+        implementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+      }
+    }
+  }
 }
