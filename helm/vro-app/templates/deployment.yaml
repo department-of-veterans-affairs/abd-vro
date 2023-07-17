@@ -96,11 +96,11 @@ spec:
             - name: VRO_AUD_URL
               value: {{ .Values.vroAudUrl }}
 
-            - name: VRO_SECRETS_MAS
-              valueFrom:
-                secretKeyRef:
-                  name: vro-secrets
-                  key: VRO_SECRETS_MAS
+#            - name: VRO_SECRETS_MAS
+#              valueFrom:
+#                secretKeyRef:
+#                  name: vro-secrets
+#                  key: VRO_SECRETS_MAS
 #            - name: MAS_API_AUTH_TOKEN_URI
 #              value: { { .Values.mas.masApiAuthTokenUri }}
 #            - name: MAS_API_BASE_URL
