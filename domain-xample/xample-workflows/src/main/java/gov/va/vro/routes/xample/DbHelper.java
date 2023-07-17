@@ -52,8 +52,8 @@ public class DbHelper {
     final ContentionEventEntity contentionEventEntity = new ContentionEventEntity();
     contentionEventEntity.setEventType(bieMessagePayload.getEvent());
 
-    // TODO: Non-PII event details to be extracted from eventDetails into their own fields See
-    // ticket #1680 https://github.com/department-of-veterans-affairs/abd-vro/issues/1680
+    // TODO: Non-PII event details to be extracted from eventDetails into their own fields.
+    // See ticket #1680 https://github.com/department-of-veterans-affairs/abd-vro/issues/1680
     contentionEventEntity.setEventDetails("Lorem ipsum");
     contentionEventEntity.setNotifiedAt(LocalDateTime.parse(bieMessagePayload.getNotifiedAt()));
     return contentionEventRepository.save(contentionEventEntity);
