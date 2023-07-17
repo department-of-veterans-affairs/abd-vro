@@ -2,6 +2,7 @@
 
 require 'active_support/time'
 require 'bgs'
+require 'json'
 
 # patch bgs_ext with a createNote implementation that follows our spec better
 BGS::DevelopmentNotesService.class_eval do
