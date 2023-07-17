@@ -61,11 +61,11 @@ dumpYaml(){
 apiVersion: v1
 kind: Secret
 type: Opaque
-immutable: true
 metadata:
   name: $1
+immutable: $2
 data:
-$2
+$3
 "
 }
 
@@ -113,7 +113,7 @@ for SERVICE_NAME in $SERVICE_NAMES; do
   >&2 echo -e "\n## Setting secret 'vro-$SERVICE_NAME'"
   JSON=$(queryVault "$SERVICE_NAME")
   SERVICE_SECRET_DATA=$(splitSecretData "$JSON")
-  dumpYaml "vro-$SERVICE_NAME" "$SERVICE_SECRET_DATA" | \
+  dumpYaml "vro-$SERVICE_NAME" true "$SERVICE_SECRET_DATA" | \
     kubectl -n "va-abd-rrd-${TARGET_ENV}" replace --force -f - \
     || echo "!!! ERROR: Could not replace secret 'vro-$SERVICE_NAME'"
 done
@@ -128,7 +128,9 @@ VRO_SECRETS_NAMES="VRO_SECRETS_API VRO_SECRETS_SLACK VRO_SECRETS_BIP VRO_SECRETS
 # Helm configurations -- simply add them to Vault.
 SECRET_DATA=$(collectSecretExportCmds $VRO_SECRETS_NAMES)
 echo -e "\n## Setting aggregate 'vro-secrets' secret with all VRO_SECRETS_* Vault secrets"
-dumpYaml vro-secrets "$SECRET_DATA" | \
+# Make vro-secrets immutable=false so that changes propagate better
+# See https://dsva.slack.com/archives/C04QLHM9LR0/p1689634792401989?thread_ts=1689604659.611619&cid=C04QLHM9LR0
+dumpYaml vro-secrets false "$SECRET_DATA" | \
   kubectl -n "va-abd-rrd-${TARGET_ENV}" replace --force -f -\
     || echo "!!! ERROR: Could not replace secret 'vro-secrets'"
 
