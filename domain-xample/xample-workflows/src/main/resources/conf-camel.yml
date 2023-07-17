@@ -7,10 +7,3 @@ camel.dataformat.json-jackson.auto-discover-object-mapper: true
 # Ensure the Spring-Boot application keeps running until being stopped or the JVM terminated
 # https://camel.apache.org/components/2.x/others/spring-boot.html
 camel.springboot.main-run-controller: true
-
-vro:
-  camel:
-    # Can use specific class or all classes in package name (using suffix '.*')
-    # Parsed by CamelDtoClassesProperties. `gov.va.vro.model.*` is already included
-    dto-classes:
-      - gov.va.vro.biekafka.model.*

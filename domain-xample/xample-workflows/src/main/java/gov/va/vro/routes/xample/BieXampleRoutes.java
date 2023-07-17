@@ -1,8 +1,8 @@
 package gov.va.vro.routes.xample;
 
-import gov.va.vro.biekafka.model.BieMessagePayload;
 import gov.va.vro.camel.OnExceptionHelper;
 import gov.va.vro.camel.RabbitMqCamelUtils;
+import gov.va.vro.model.biekafka.BieMessagePayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;

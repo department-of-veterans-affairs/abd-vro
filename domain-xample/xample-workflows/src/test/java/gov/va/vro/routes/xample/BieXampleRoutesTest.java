@@ -2,7 +2,7 @@ package gov.va.vro.routes.xample;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import gov.va.vro.biekafka.model.BieMessagePayload;
+import gov.va.vro.model.biekafka.BieMessagePayload;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.RoutesBuilder;

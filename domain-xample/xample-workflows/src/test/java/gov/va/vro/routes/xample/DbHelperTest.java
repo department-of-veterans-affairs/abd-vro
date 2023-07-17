@@ -6,7 +6,7 @@ import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 
-import gov.va.vro.biekafka.model.BieMessagePayload;
+import gov.va.vro.model.biekafka.BieMessagePayload;
 import gov.va.vro.model.xample.SomeDtoModel;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEventEntity;

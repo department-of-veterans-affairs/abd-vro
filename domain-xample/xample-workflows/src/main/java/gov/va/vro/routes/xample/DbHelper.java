@@ -1,6 +1,6 @@
 package gov.va.vro.routes.xample;
 
-import gov.va.vro.biekafka.model.BieMessagePayload;
+import gov.va.vro.model.biekafka.BieMessagePayload;
 import gov.va.vro.model.xample.SomeDtoModel;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEntity;

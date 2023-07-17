@@ -1,6 +1,6 @@
 package gov.va.vro.services.bie.service;
 
-import gov.va.vro.biekafka.model.BieMessagePayload;
+import gov.va.vro.model.biekafka.BieMessagePayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

@@ -1,4 +1,4 @@
-package gov.va.vro.biekafka.model;
+package gov.va.vro.model.biekafka;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
