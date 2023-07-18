@@ -32,9 +32,9 @@ bie:
     # RabbitMQ exchange/queue upon which the payload will be put. These values are separated by a colon ":" character.
     TST_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02: bie-events-contention-associated
     TST_CONTENTION_BIE_CONTENTION_UPDATED_V02: bie-events-contention-updated
-    TST_CONTENTION_BIE_CONTENTION_CLASSIFIED: bie-events-contention-classified
-    TST_CONTENTION_BIE_CONTENTION_COMPLETED: bie-events-contention-completed
-    TST_CONTENTION_BIE_CONTENTION_DELETED: bie-events-contention-deleted
+    TST_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02: bie-events-contention-classified
+    TST_CONTENTION_BIE_CONTENTION_COMPLETED_V02: bie-events-contention-completed
+    TST_CONTENTION_BIE_CONTENTION_DELETED_V02: bie-events-contention-deleted
 
 ## Actuator for health check
 management:

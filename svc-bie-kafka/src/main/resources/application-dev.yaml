@@ -3,3 +3,9 @@ spring:
   # Specify where Spring connects to Kafka
   kafka:
     bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:kafka.dev.bip.va.gov:443}"
+    properties:
+      ssl:
+        keystore:
+          alias: "kafka-truststore-dev"
+        truststore:
+          alias: "kafka-keystore-dev"
