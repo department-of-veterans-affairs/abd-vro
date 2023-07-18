@@ -46,24 +46,25 @@ import javax.crypto.spec.SecretKeySpec;
 @RequiredArgsConstructor
 @Slf4j
 public class BipApiService implements IBipApiService {
-  private static final String CLAIM_DETAILS = "/claims/%s";
-  private static final String UPDATE_CLAIM_STATUS = "/claims/%s/lifecycle_status";
-  private static final String CONTENTION = "/claims/%s/contentions";
-  private static final String SPECIAL_ISSUE_TYPES = "/contentions/special_issue_types";
+  static final String CLAIM_DETAILS = "/claims/%s";
+  static final String UPDATE_CLAIM_STATUS = "/claims/%s/lifecycle_status";
+  static final String CONTENTION = "/claims/%s/contentions";
+  static final String SPECIAL_ISSUE_TYPES = "/contentions/special_issue_types";
 
-  private static final String HTTPS = "https://";
+  static final String HTTPS = "https://";
 
   @Qualifier("bipCERestTemplate")
   @NonNull
-  private final RestTemplate restTemplate;
+  final RestTemplate restTemplate;
 
-  private final BipApiProps bipApiProps;
+  final BipApiProps bipApiProps;
 
-  private final ObjectMapper mapper = new ObjectMapper();
+  final ObjectMapper mapper = new ObjectMapper();
 
   @Override
-  public BipClaim getClaimDetails(long claimId) throws BipException {
+  public BipClaim getClaimDetails(long claimId) {
     try {
+      log.info("getClaimDetails({}) invoked", claimId);
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CLAIM_DETAILS, claimId);
       log.info("call {} to get claim info.", url);
       HttpHeaders headers = getBipHeader();
@@ -72,6 +73,7 @@ public class BipApiService implements IBipApiService {
           restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
       if (bipResponse.getStatusCode() == HttpStatus.OK) {
         BipClaimResp result = mapper.readValue(bipResponse.getBody(), BipClaimResp.class);
+
         return result.getClaim();
       } else {
         log.error(
@@ -106,15 +108,16 @@ public class BipApiService implements IBipApiService {
    * @throws BipException error occurs
    */
   @Override
-  public BipUpdateClaimResp setClaimToRfdStatus(long claimId) throws BipException {
+  public BipUpdateClaimResp setClaimToRfdStatus(long claimId) {
     return updateClaimStatus(claimId, ClaimStatus.RFD);
   }
 
   @Override
-  public BipUpdateClaimResp updateClaimStatus(long claimId, ClaimStatus status)
-      throws BipException {
+  public BipUpdateClaimResp updateClaimStatus(long claimId, ClaimStatus status) {
+    log.info("updateClaimStatus({},{}) invoked.", claimId, status);
     final String description = status.getDescription();
     try {
+
       String url =
           HTTPS + bipApiProps.getClaimBaseUrl() + String.format(UPDATE_CLAIM_STATUS, claimId);
       log.info("call {} to update claim status to {}.", url, description);
@@ -137,7 +140,7 @@ public class BipApiService implements IBipApiService {
   }
 
   @Override
-  public List<ClaimContention> getClaimContentions(long claimId) throws BipException {
+  public List<ClaimContention> getClaimContentions(long claimId) {
     try {
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
       log.info("Call {} to get claim contention for {}.", url, claimId);
@@ -165,8 +168,7 @@ public class BipApiService implements IBipApiService {
   }
 
   @Override
-  public BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention)
-      throws BipException {
+  public BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention) {
     try {
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
       log.info("Call {} to update contention for {}.", url, claimId);
@@ -187,7 +189,7 @@ public class BipApiService implements IBipApiService {
   }
 
   @Override
-  public boolean verifySpecialIssueTypes() {
+  public boolean confirmCanCallSpecialIssueTypes() {
     String url = HTTPS + bipApiProps.getClaimBaseUrl() + SPECIAL_ISSUE_TYPES;
     log.info("Call {} to get special_issue_types", url);
 
@@ -200,7 +202,7 @@ public class BipApiService implements IBipApiService {
     return response.getStatusCode() == HttpStatus.OK && !response.getBody().isEmpty();
   }
 
-  private HttpHeaders getBipHeader() throws BipException {
+  HttpHeaders getBipHeader() throws BipException {
     try {
       HttpHeaders bipHttpHeaders = new HttpHeaders();
       bipHttpHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -214,7 +216,7 @@ public class BipApiService implements IBipApiService {
     }
   }
 
-  private String createJwt() throws BipException {
+  String createJwt() throws BipException {
     Claims claims = bipApiProps.toCommonJwtClaims();
     Map<String, Object> headerType = new HashMap<>();
     headerType.put("typ", Header.JWT_TYPE);
