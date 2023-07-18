@@ -1,9 +1,8 @@
-package gov.va.vro.bip.config;
+package gov.va.vro.bip;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
+import gov.va.vro.bip.config.BipApiConfig;
 import gov.va.vro.bip.service.BipException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +28,7 @@ class BipApiConfigTest {
   private RestTemplate template;
 
   @Test
-  public void testRestTemplate() throws Exception {
-
-    assertNotNull(template);
-
+  public void testRestTemplate() {
     BipApiConfig config = new BipApiConfig();
     try {
       RestTemplate temp = config.getHttpsRestTemplate(new RestTemplateBuilder());

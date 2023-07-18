@@ -22,7 +22,7 @@ public interface IBipApiService {
    * @return a BipClaim object.
    * @throws BipException error occurs.
    */
-  BipClaim getClaimDetails(long collectionId) throws BipException;
+  BipClaim getClaimDetails(long collectionId);
 
   /**
    * Updates claim status to RFD.
@@ -52,21 +52,7 @@ public interface IBipApiService {
    */
   List<ClaimContention> getClaimContentions(long claimId) throws BipException;
 
-  /**
-   * Updates a contention in a cloim.
-   *
-   * @param claimId claim ID.
-   * @param contention updated contention.
-   * @return an object with the information of update status and a message.
-   * @throws BipException error occurs.
-   */
-  BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention)
-      throws BipException;
+  BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention);
 
-  /**
-   * Verifies a call to the BIP Claims API can be made by getting document types.
-   *
-   * @return boolean verification status
-   */
-  boolean verifySpecialIssueTypes();
+  boolean confirmCanCallSpecialIssueTypes();
 }

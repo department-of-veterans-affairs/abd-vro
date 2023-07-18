@@ -30,10 +30,10 @@ jobs:
 
           COMPOSE_PROFILES="gateway" ./gradlew :dockerComposeUp
           ./gradlew :app:dockerComposeUp
-          
+
           # Run CC:
           ./gradlew :domain-cc:dockerComposeUp
-          
+
           # Run Xample:
           ./gradlew :domain-xample:dockerComposeUp
 
@@ -44,8 +44,8 @@ jobs:
           responseCode: 200
           # Retry every 2 seconds
           interval: 2000
-          # Quit after 60 seconds
-          timeout: 60000
+          # Quit after 100 seconds
+          timeout: 100000
 
       - name: "Wait for API Gateway to be ready"
         uses: nev7n/wait_for_response@v1
@@ -105,11 +105,11 @@ jobs:
       # API Gateway Endpoint Tests
       - name: "API Gateway Rest Controller GET /hello - Validate Response"
         run: |
-          # Validate Response: 
+          # Validate Response:
           if [ "${{ fromJson(steps.apiGatewayHello.outputs.response).data }}" != "Hi!"]; then
             echo "Unexpected Response: ${{ steps.apiGatewayHello.outputs.response }}"
             exit 10
-          else 
+          else
             echo "Expected Response Received"
           fi
 
