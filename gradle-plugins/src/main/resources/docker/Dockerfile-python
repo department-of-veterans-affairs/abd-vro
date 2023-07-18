@@ -34,7 +34,7 @@ ENV PYTHONUNBUFFERED 1
 
 # Copy over all files specified in local.python.container-service-convention
 COPY . ./
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip --no-cache-dir -r requirements.txt
 
 RUN chmod +x ./*.sh && chown -R tron /app
 USER tron
