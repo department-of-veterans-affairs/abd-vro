@@ -1,3 +1,12 @@
 plugins {
+  id 'local.std.base-project-conventions'
   id 'local.std.domain.folder-conventions'
+
+  // Set versions for these plugins (but don't apply) so we don't have to repeat the versions in subprojects
+  id "org.springframework.boot" version "${spring_boot_version}" apply false
+}
+
+ext {
+  jacoco_enforce_violations = true
+  jacoco_minimum_coverage = 0.8
 }

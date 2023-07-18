@@ -10,7 +10,7 @@ ext {
 }
 
 dependencies {
-  implementation project(':domain-xample:xample-shared')
+  implementation project(':xample-shared')
 
   // RabbitMQ
   implementation 'org.springframework.boot:spring-boot-starter-amqp'
@@ -25,8 +25,8 @@ testing {
   suites {
     integrationTest(JvmTestSuite) {
       dependencies {
-        implementation project(":domain-xample:svc-xample-j")
-        implementation project(':domain-xample:xample-shared')
+        implementation project(":svc-xample-j")
+        implementation project(':xample-shared')
         implementation "org.springframework.boot:spring-boot-starter-test"
         implementation "org.springframework.boot:spring-boot-starter-amqp"
         implementation "com.fasterxml.jackson.core:jackson-databind"

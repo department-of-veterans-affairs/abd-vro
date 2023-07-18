@@ -1,0 +1,18 @@
+pluginManagement {
+  includeBuild '../gradle-plugins'
+}
+
+dependencyResolutionManagement {
+  repositories {
+    maven { url "https://repo1.maven.org/maven2/" }
+    mavenCentral()
+  }
+}
+
+rootProject.name = 'domain-xample'
+
+include ':xample-api-controller'
+include ':xample-shared'
+include ':xample-workflows'
+include ':svc-xample-j'
+include ':svc-hoppy-usage'

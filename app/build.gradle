@@ -10,7 +10,7 @@ ext {
 
 dependencies {
   implementation project(':shared:persistence-model')
-  implementation project(':domain-xample:xample-api-controller')
+  implementation 'domain-xample:xample-api-controller'
 
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-security'

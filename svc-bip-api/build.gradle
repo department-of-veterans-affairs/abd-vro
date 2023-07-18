@@ -11,7 +11,8 @@ ext {
 }
 
 dependencies {
-  implementation project(':domain-xample:xample-shared')
+  implementation 'io.jsonwebtoken:jjwt:0.2'
+  implementation 'domain-xample:xample-shared'
 
   implementation "org.springdoc:springdoc-openapi-webmvc-core"
   implementation 'org.apache.httpcomponents:httpclient:4.5.14'

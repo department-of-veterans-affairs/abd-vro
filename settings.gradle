@@ -43,11 +43,6 @@ include ':svc-bip-api'
 include ':svc-lighthouse-api'
 include ':svc-bie-kafka'
 
-include ':domain-xample:xample-api-controller'
-include ':domain-xample:xample-shared'
-include ':domain-xample:xample-workflows'
-include ':domain-xample:svc-xample-j'
-include ':domain-xample:svc-hoppy-usage'
-
+includeBuild 'domain-xample'
 include ':domain-cc:cc-app'
 include ':domain-ee:ee-max-cfi-app'

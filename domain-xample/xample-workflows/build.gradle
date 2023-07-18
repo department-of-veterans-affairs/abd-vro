@@ -8,10 +8,10 @@ ext {
 }
 
 dependencies {
-  implementation project(':domain-xample:xample-shared')
-  implementation project(':shared:lib-camel-connector')
-  implementation project(':shared:lib-bie-kafka')
-  implementation project(':shared:persistence-model')
+  implementation project(':xample-shared')
+  implementation 'abd_vro:lib-camel-connector'
+  implementation 'abd_vro:persistence-model'
+  implementation 'abd_vro:lib-bie-kafka'
 
   // Needed for *Repository classes to save to DB
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa'

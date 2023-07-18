@@ -16,9 +16,9 @@ dependencies {
   // compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
 
   // Used by Controller classes
-  implementation project(':domain-xample:xample-shared')
+  implementation project(':xample-shared')
   // api project(':shared:lib-camel-connector')
-  implementation project(':shared:lib-camel-connector')
+  implementation 'abd_vro:lib-camel-connector'
 
   implementation "org.springdoc:springdoc-openapi-webmvc-core"
 }
