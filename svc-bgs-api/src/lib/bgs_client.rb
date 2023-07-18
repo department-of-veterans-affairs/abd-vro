@@ -55,6 +55,8 @@ class BgsClient
       }
     ensure
       $logger.info "response=#{response}"
+      stringify = JSON.generate(response)
+      File.write("response.text", stringify)
     end
 
 
