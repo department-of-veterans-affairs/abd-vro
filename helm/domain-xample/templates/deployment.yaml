@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vro-svc-bgs-api
+  name: vro-xample-workflows
   labels: {{- toYaml .Values.labels | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
@@ -19,15 +19,17 @@ spec:
     spec:
       {{- include "vro.imagePullSecrets" . | nindent 6 }}
       containers:
-        - name: svc-bgs-api{{ include "vro.containerSuffix" . }}
-          image: {{ include "vro.imageRegistryPath" . }}vro-svc-bgs-api:{{ include "vro.imageTag" . }}
+        - name: xample-workflows{{ include "vro.containerSuffix" . }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-xample-workflows:{{ include "vro.imageTag" . }}
           env:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
+            {{- include "vro.dbClient.envVars" . | nindent 12 }}
             {{- include "vro.mqClient.envVars" . | nindent 12 }}
-            - name: VRO_SECRETS_BIP
-              valueFrom:
-                secretKeyRef:
-                  name: vro-secrets
-                  key: VRO_SECRETS_BIP
+            {{- include "vro.redisClient.envVars" . | nindent 12 }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            requests:
+              cpu: 150m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi

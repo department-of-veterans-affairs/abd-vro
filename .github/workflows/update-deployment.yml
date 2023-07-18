@@ -22,6 +22,7 @@ on:
         type: choice
         options:
         - domain-cc
+        - domain-xample
         - svc-bgs-api
         - svc-bie-kafka
         - svc-lighthouse-api

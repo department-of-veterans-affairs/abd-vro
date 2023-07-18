@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vro-svc-bgs-api
+  name: vro-svc-bie-kafka
   labels: {{- toYaml .Values.labels | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
@@ -19,15 +19,15 @@ spec:
     spec:
       {{- include "vro.imagePullSecrets" . | nindent 6 }}
       containers:
-        - name: svc-bgs-api{{ include "vro.containerSuffix" . }}
-          image: {{ include "vro.imageRegistryPath" . }}vro-svc-bgs-api:{{ include "vro.imageTag" . }}
+        - name: svc-bie-kafka{{ include "vro.containerSuffix" . }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-svc-bie-kafka:{{ include "vro.imageTag" . }}
           env:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
             {{- include "vro.mqClient.envVars" . | nindent 12 }}
-            - name: VRO_SECRETS_BIP
+            - name: VRO_SECRETS_BIE_KAFKA
               valueFrom:
                 secretKeyRef:
                   name: vro-secrets
-                  key: VRO_SECRETS_BIP
+                  key: VRO_SECRETS_BIE_KAFKA
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

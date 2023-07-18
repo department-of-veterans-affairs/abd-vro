@@ -170,3 +170,11 @@ export BIP_EVIDENCE_SECRET=daSecret
 # BIP Common.
 #export BIP_APPLICATION_ID=VRO
 export BIP_STATION_ID=456
+
+###
+### Integration with BIE's Kafka ###
+##
+exportSecretIfUnset BIE_KAFKA_TRUSTSTORE_INBASE64
+exportSecretIfUnset BIE_KAFKA_KEYSTORE_INBASE64
+exportSecretIfUnset BIE_KAFKA_KEYSTORE_PASSWORD
+exportSecretIfUnset BIE_KAFKA_TRUSTSTORE_PASSWORD

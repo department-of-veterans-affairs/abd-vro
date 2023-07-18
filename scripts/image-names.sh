@@ -33,6 +33,7 @@ prodImageName() {
 IMAGES=( console postgres \
   api-gateway app db-init \
   svc-bgs-api svc-lighthouse-api svc-bie-kafka \
+  xample-workflows \
   cc-app )
 echo
 echo "=== ${#IMAGES[@]} VRO images"
