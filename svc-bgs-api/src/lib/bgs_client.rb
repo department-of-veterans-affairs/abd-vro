@@ -7,7 +7,7 @@ require 'bgs'
 BGS::DevelopmentNotesService.class_eval do
   # Takes a hash with keys txt, user_id, and at least one of participant_id or claim_id
   def create_note(note)
-    response = request(:create_note, 'note' => format_note(note))
+    response = request(:create_note, 'note' => format_note(**note))
     response.body[:create_note_response]
   end
 
@@ -15,7 +15,8 @@ BGS::DevelopmentNotesService.class_eval do
   # This will result in success but incorrect behavior if called with multiple notes that include
   # at least one veteran-level note
   def create_notes(notes)
-    response = request(:create_notes, 'notes' => notes.map { |note| format_note(note) })
+    put "#{notes}"
+    response = request(:create_notes, 'notes' => notes.map { |note| format_note(**note) })
     response.body[:create_notes_response]
   end
 
@@ -63,8 +64,9 @@ class BgsClient
 
   def vro_participant_id
     @vro_participant_id ||= begin
-      cfg = BGS.configuration
-      bgs.security.find_participant_id(station_id: cfg.client_station_id, css_id: cfg.client_username)
+      # cfg = BGS.configuration
+      # bgs.security.find_participant_id(station_id: cfg.client_station_id, css_id: cfg.client_username)
+      "1111"
     end
   end
 
