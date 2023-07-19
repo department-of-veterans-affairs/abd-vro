@@ -29,13 +29,14 @@ public class BieXampleRoutes extends EndpointRouteBuilder {
   public void configure() {
     configureExceptionHandling();
     for (String queue : queues) {
-      configureSaveContentionEventToDbFromQueue(queue);
+      configureRouteToSaveContentionEventToDbFromQueue(queue);
     }
   }
 
-  void configureSaveContentionEventToDbFromQueue(final String queue) {
-    // The exchange and queue share the same name
-    RabbitMqCamelUtils.fromRabbitmqFanoutExchange(this, queue, queue)
+  void configureRouteToSaveContentionEventToDbFromQueue(final String queue) {
+    final String exchangeName = queue;
+    final String routingKey = queue;
+    RabbitMqCamelUtils.fromRabbitmqFanoutExchange(this, exchangeName, routingKey)
         .routeId(queue + "-saveToDb-route")
         .log("Received ${headers} ${body.getClass()}: ${body}")
         .convertBodyTo(BieMessagePayload.class)
@@ -54,8 +55,6 @@ public class BieXampleRoutes extends EndpointRouteBuilder {
   void configureExceptionHandling() {
     BiFunction<Exchange, Throwable, BieMessagePayload> exceptionHandler =
         (exchange, cause) -> {
-          // TODO: replace with biemessagepayload class
-          //          var clazz = exchange.getMessage().getHeader()
           var body = exchange.getMessage().getBody(BieMessagePayload.class);
           body.setStatus(500);
           body.setStatusMessage(cause.toString());

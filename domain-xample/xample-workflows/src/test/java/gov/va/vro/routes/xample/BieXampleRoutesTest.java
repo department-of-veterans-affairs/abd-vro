@@ -77,7 +77,7 @@ class BieXampleRoutesTest extends CamelTestSupport {
   @Test
   @SneakyThrows
   void testMainRouteOnException() {
-    final IllegalStateException exception = new IllegalStateException("Testing exception handling");
+    final RuntimeException exception = new RuntimeException("Testing exception handling");
     Mockito.when(dbHelper.saveContentionEvent(Mockito.any())).thenThrow(exception);
 
     // send a message in the original route
