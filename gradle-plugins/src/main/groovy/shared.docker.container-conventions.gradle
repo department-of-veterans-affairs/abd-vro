@@ -61,7 +61,6 @@ docker {
 dockerRun {
     name project.name
     image "${dockerRegistry}/${rootProject.name}-${project.name}"
-    ports '8080:8080'
 }
 
 tasks.register('dockerStart', DefaultTask) {
