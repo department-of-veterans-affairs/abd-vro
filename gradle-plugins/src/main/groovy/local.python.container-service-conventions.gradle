@@ -14,9 +14,6 @@ docker {
     copySpec.into(".").from("src"){
         exclude('docker')
     }
-    copySpec.into(".").from("../"){
-        include("*.py")
-    }
 
     def dockerArgs=[:]
     if(project.hasProperty('healthcheck_port'))
@@ -26,8 +23,3 @@ docker {
 
     buildArgs(dockerArgs)
 }
-
-//dockerRun {
-//    env 'RABBITMQ_PLACEHOLDERS_USERNAME': getEnvOrDefault('DB_SERVICE_PASSWORD', 'also-not-the-service-password'),
-//        'RABBITMQ_PLACEHOLDERS_USERPASSWORD': getEnvOrDefault('DB_USER_PASSWORD', 'also-not-the-user-password')
-//}

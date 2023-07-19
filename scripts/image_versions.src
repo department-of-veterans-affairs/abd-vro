@@ -15,10 +15,5 @@ export console_VER="v3.2.5"
 # The following are pinned versions of images;
 # they are automatically pinned and unpinned by scripts/image-version.sh.
 # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Container-Image-Versions
-# Mon Jul 5
-# Thu Jul  6 18:35:33 UTC 2023
-# Sat Jul  8 03:49:47 UTC 2023 -- v3.2.5
-# Sat Jul  8 18:48:37 UTC 2023 -- v3.2.7
-# Sat Jul  8 21:08:24 UTC 2023 -- v3.3.0
 # Wed Jul 12 17:45:45 UTC 2023 -- v3.3.1
 dbinit_VER="v3.3.1"

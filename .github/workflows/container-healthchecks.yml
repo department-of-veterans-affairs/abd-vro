@@ -6,7 +6,7 @@ on:
 
   # Allow being called by another GitHub Action
   workflow_call:
-  
+
   pull_request:
     branches: [ develop ]
 
@@ -17,7 +17,6 @@ env:
   LH_ACCESS_CLIENT_ID: ${{ secrets.LH_ACCESS_CLIENT_ID }}
   LH_PRIVATE_KEY: ${{ secrets.LH_PRIVATE_KEY }}
   SLACK_EXCEPTION_WEBHOOK: "http://mock-slack:20100/slack-messages"
-
 jobs:
   container-healthcheck:
     if: github.repository == 'department-of-veterans-affairs/abd-vro' &&
@@ -40,11 +39,13 @@ jobs:
       - name: "Create app containers with healthchecks"
         shell: bash
         run: |
+          source scripts/setenv.sh
           COMPOSE_PROFILES="svc" ./gradlew :app:dockerComposeUp
 
       - name: "Create domain-cc containers with healthchecks"
         shell: bash
         run: |
+          source scripts/setenv.sh
           ./gradlew :domain-cc:dockerComposeUp
 
       - name: "Clean shutdown of all containers"
