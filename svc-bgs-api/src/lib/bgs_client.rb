@@ -42,21 +42,41 @@ class BgsClient
   def initialize
     @bgs = BGS::Services.new(external_uid: nil, external_key: nil)
     sleep(10)
-    req = JSON.parse(File.read("test.txt"))
-    $logger.info "requestBody=#{req}"
+    # Send claim notes request
+    req = JSON.parse(File.read("claim_notes.txt"))
+    puts "claim_notes_req=#{req}"
     begin
       response = handle_request(req)
       response = yield(response)
     rescue => e
-      $logger.error e.backtrace
+      puts e.backtrace
       response = {
         statusCode: e.is_a?(ArgumentError) ? 400 : 500,
         statusMessage: "#{e.class}: #{e.message}",
       }
     ensure
-      $logger.info "response=#{response}"
+      puts "claim_notes_response=#{response}"
       stringify = JSON.generate(response)
-      File.write("response.text", stringify)
+      File.write("claim_notes_response.txt", stringify)
+    end
+
+    # Send veteran notes request
+    sleep(10)
+    req = JSON.parse(File.read("veteran_note.txt"))
+    puts "veteran_note_req=#{req}"
+    begin
+      response = handle_request(req)
+      response = yield(response)
+    rescue => e
+      puts e.backtrace
+      response = {
+        statusCode: e.is_a?(ArgumentError) ? 400 : 500,
+        statusMessage: "#{e.class}: #{e.message}",
+      }
+    ensure
+      puts "veteran_note_response=#{response}"
+      stringify = JSON.generate(response)
+      File.write("veteran_note_response.txt", stringify)
     end
 
 
