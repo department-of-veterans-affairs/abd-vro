@@ -34,7 +34,8 @@ ENV PYTHONUNBUFFERED 1
 
 # Copy over all files specified in local.python.container-service-convention
 COPY . ./
-RUN pip install --upgrade pip --no-cache-dir -r requirements.txt
+# install python packages, using a long timeout so that builds won't fail when the repo is slow (pypi.org)
+RUN pip install --default-timeout=100 --no-cache-dir -r requirements.txt
 
 RUN chmod +x ./*.sh && chown -R tron /app
 USER tron
