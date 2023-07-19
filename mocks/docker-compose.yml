@@ -64,7 +64,7 @@ services:
     environment:
       <<: *common-vars
       # for development only; TODO: Update with BIE-like authentication
-      ALLOW_PLAINTEXT_LISTENER: yes
+      ALLOW_PLAINTEXT_LISTENER: 'yes'
       KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://mock-bie-kafka:9092
     networks:
       - vro_intranet
