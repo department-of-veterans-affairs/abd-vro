@@ -2,7 +2,6 @@
 
 require 'active_support/time'
 require 'bgs'
-require 'json'
 
 # patch bgs_ext with a createNote implementation that follows our spec better
 BGS::DevelopmentNotesService.class_eval do
@@ -21,6 +20,7 @@ BGS::DevelopmentNotesService.class_eval do
   end
 
   def format_note(claim_id: nil, participant_id: nil, txt:, user_id:)
+    puts "claim_id=#{claim_id} participant_id=#{participant_id} txt=#{txt} user_id=#{user_id}"
     note = if claim_id.nil?
              { 'ptcpntNoteTc' => "CLMNTCONTACT", 'noteOutTn' => "Contact with Claimant" }
            else
@@ -41,45 +41,6 @@ class BgsClient
 
   def initialize
     @bgs = BGS::Services.new(external_uid: nil, external_key: nil)
-    sleep(10)
-    # Send claim notes request
-    req = JSON.parse(File.read("claim_notes.txt"))
-    puts "claim_notes_req=#{req}"
-    begin
-      response = handle_request(req)
-      response = yield(response)
-    rescue => e
-      puts e.backtrace
-      response = {
-        statusCode: e.is_a?(ArgumentError) ? 400 : 500,
-        statusMessage: "#{e.class}: #{e.message}",
-      }
-    ensure
-      puts "claim_notes_response=#{response}"
-      stringify = JSON.generate(response)
-      File.write("claim_notes_response.txt", stringify)
-    end
-
-    # Send veteran notes request
-    sleep(10)
-    req = JSON.parse(File.read("veteran_note.txt"))
-    puts "veteran_note_req=#{req}"
-    begin
-      response = handle_request(req)
-      response = yield(response)
-    rescue => e
-      puts e.backtrace
-      response = {
-        statusCode: e.is_a?(ArgumentError) ? 400 : 500,
-        statusMessage: "#{e.class}: #{e.message}",
-      }
-    ensure
-      puts "veteran_note_response=#{response}"
-      stringify = JSON.generate(response)
-      File.write("veteran_note_response.txt", stringify)
-    end
-
-
   end
 
   def handle_request(req)

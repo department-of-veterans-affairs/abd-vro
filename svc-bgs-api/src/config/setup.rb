@@ -22,7 +22,7 @@ if(ENV['DOCKER_LOGS'] == '1' && File.exist?('/proc/1/fd/1'))
   $logger = Logger.new(fdio)
 else
   $logger = Logger.new(STDOUT)
-  STDOUT.sync = true if ENVIRONMENT == "development"
+  STDOUT.sync = true if ENVIRONMENT == "dev"
 end
 $logger.level = Logger::DEBUG
 
