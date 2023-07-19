@@ -15,13 +15,11 @@ BGS::DevelopmentNotesService.class_eval do
   # This will result in success but incorrect behavior if called with multiple notes that include
   # at least one veteran-level note
   def create_notes(notes)
-    put "#{notes}"
     response = request(:create_notes, 'notes' => notes.map { |note| format_note(**note) })
     response.body[:create_notes_response]
   end
 
   def format_note(claim_id: nil, participant_id: nil, txt:, user_id:)
-    puts "claim_id=#{claim_id} participant_id=#{participant_id} txt=#{txt} user_id=#{user_id}"
     note = if claim_id.nil?
              { 'ptcpntNoteTc' => "CLMNTCONTACT", 'noteOutTn' => "Contact with Claimant" }
            else
