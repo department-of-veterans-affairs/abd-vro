@@ -28,7 +28,7 @@ spec:
             - name: VRO_SECRETS_LH
               valueFrom:
                 secretKeyRef:
-                  name: vro-secrets
+                  name: vro-secrets-lh
                   key: VRO_SECRETS_LH
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

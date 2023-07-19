@@ -27,7 +27,7 @@ spec:
             - name: VRO_SECRETS_BIE_KAFKA
               valueFrom:
                 secretKeyRef:
-                  name: vro-secrets
+                  name: vro-secrets-bie-kafka
                   key: VRO_SECRETS_BIE_KAFKA
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
