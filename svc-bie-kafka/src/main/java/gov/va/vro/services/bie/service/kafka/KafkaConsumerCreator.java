@@ -26,7 +26,7 @@ public class KafkaConsumerCreator {
 
   public KafkaConsumerCreator(
 //      final ConsumerFactory<?, ?> consumerFactory,
-      final AmqpMessageSender amqpMessageSender,
+      final AmqpMessageSender amqpMessageSender
 //      final BieProperties bieProperties
   ) {
 //    setUpListeners(consumerFactory, amqpMessageSender, bieProperties.getKafkaTopicToAmqpQueueMap());
@@ -64,17 +64,17 @@ public class KafkaConsumerCreator {
 //        });
 //  }
 
-  public List<KafkaMessageListenerContainer<?, ?>> getListeners() {
-    return List.copyOf(listeners);
-  }
-
-  @PostConstruct
-  public void startUp() {
-    listeners.forEach(AbstractMessageListenerContainer::start);
-  }
-
-  @PreDestroy
-  public void tearDown() {
-    listeners.forEach(AbstractMessageListenerContainer::stop);
-  }
+//  public List<KafkaMessageListenerContainer<?, ?>> getListeners() {
+//    return List.copyOf(listeners);
+//  }
+//
+//  @PostConstruct
+//  public void startUp() {
+//    listeners.forEach(AbstractMessageListenerContainer::start);
+//  }
+//
+//  @PreDestroy
+//  public void tearDown() {
+//    listeners.forEach(AbstractMessageListenerContainer::stop);
+//  }
 }
