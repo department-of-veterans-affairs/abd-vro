@@ -14,7 +14,7 @@ RUN chmod a+x /emerg.sh && \
   echo 'tron ALL=(ALL) NOPASSWD: /emerg.sh' > /etc/sudoers.d/tron
 
 WORKDIR /app
-ARG ENTRYPOINT_FILE=entrypoint.sh
+ARG ENTRYPOINT_FILE=docker-entrypoint.sh
 COPY groovysh.rc set-env-secrets.src entrypoint-wrapper.sh ${ENTRYPOINT_FILE}* ./
 
 ARG JAR_FILE

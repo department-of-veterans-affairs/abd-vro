@@ -24,7 +24,7 @@ spec:
         app.kubernetes.io/podversion: {{ .Chart.AppVersion | quote }}
         app.kubernetes.io/podenv: {{ .Values.global.environment }}
     spec:
-      {{ include "vro.imagePullSecrets" . | nindent 6 }}
+      {{- include "vro.imagePullSecrets" . | nindent 6 }}
       containers:
         - name: api-gateway{{ include "vro.containerSuffix" . }}
           image: {{ include "vro.imageRegistryPath" . }}vro-api-gateway:{{ include "vro.imageTag" . }}

@@ -61,11 +61,11 @@ dumpYaml(){
 apiVersion: v1
 kind: Secret
 type: Opaque
-immutable: true
 metadata:
   name: $1
+immutable: $2
 data:
-$2
+$3
 "
 }
 
@@ -94,43 +94,52 @@ toExportCmds(){
     fi
   done
 }
-collectSecretExportCmds(){
-  for VRO_SECRETS in "$@"; do
-    >&2 echo -e "\n#### Adding to secret 'vro-secrets' from: '$VRO_SECRETS'"
-    JSON=$(queryVault "$VRO_SECRETS")
-    # Encode exportCommands b/c it's usually multiline, plus it must be encoded for the secrets*.yaml file
-    EXPORT_CMDS_BASE64=$(toExportCmds "$JSON" | base64 -w0 )
-    echo "  $VRO_SECRETS: $EXPORT_CMDS_BASE64"
-  done
+setK8Secret(){
+  # K8s secret names must only contain lowercase, '-', and '.'
+  K8S_SECRET_NAME=$(echo "$1" | tr '[:upper:]_' '[:lower:]-')
+  IMMUTABLE="$2"
+  SECRET_DATA="$3"
+  if [ "$IMMUTABLE" == "true" ]; then
+    >&2 echo -e "\n## Deleting immutable secret '$K8S_SECRET_NAME'"
+    kubectl -n "va-abd-rrd-${TARGET_ENV}" delete secret "$K8S_SECRET_NAME"
+  fi
+  >&2 echo -e "\n## Setting secret '$K8S_SECRET_NAME' from: '$VAULT_SECRET_SUFFIX'"
+  dumpYaml "$K8S_SECRET_NAME" "$IMMUTABLE" "$SECRET_DATA" | \
+    kubectl -n "va-abd-rrd-${TARGET_ENV}" apply --force -f - \
+    || echo "!!! ERROR: Could not set secret '$K8S_SECRET_NAME'"
 }
 
 # Corresponds to subfolder of the paths to Vault secrets
 SERVICE_NAMES="db mq redis"
-# For each SERVICE_NAMES, set a SERVICE_NAME secret, where
+# For each SERVICE_NAMES, set a vro-$VAULT_SECRET_SUFFIX K8s secret, where
 # each key-value pair has a single value (a normal secret).
 # These secrets are used for third-party containers that expect environment variables to be set.
-for SERVICE_NAME in $SERVICE_NAMES; do
-  >&2 echo -e "\n## Setting secret 'vro-$SERVICE_NAME'"
-  JSON=$(queryVault "$SERVICE_NAME")
-  SERVICE_SECRET_DATA=$(splitSecretData "$JSON")
-  dumpYaml "vro-$SERVICE_NAME" "$SERVICE_SECRET_DATA" | \
-    kubectl -n "va-abd-rrd-${TARGET_ENV}" replace --force -f - \
-    || echo "!!! ERROR: Could not replace secret 'vro-$SERVICE_NAME'"
+for VAULT_SECRET_SUFFIX in $SERVICE_NAMES; do
+  JSON=$(queryVault "$VAULT_SECRET_SUFFIX")
+  SECRET_DATA=$(splitSecretData "$JSON")
+  setK8Secret "vro-$VAULT_SECRET_SUFFIX" true "$SECRET_DATA"
 done
 
 # These are the env variable names, as well as part of the Vault path
-VRO_SECRETS_NAMES="VRO_SECRETS_API VRO_SECRETS_SLACK VRO_SECRETS_BIP VRO_SECRETS_LH VRO_SECRETS_BIE_KAFKA"
-# Set the `vro-secrets` secret, where for each key-value pair,
-# the key begins with `VRO_SECRETS_` and the value is a multiline string consisting
-# of a series of `export VAR1=VAL1` lines. These multiline strings will be interpreted
-# and evaluated by set-env-secrets.src in each VRO container.
+VRO_SECRETS_SUFFIXES="API SLACK BIP LH BIE_KAFKA"
+# Set individual `vro-secrets-*` secrets, where for each key-value pair in each secret,
+#   the key begins with `VRO_SECRETS_` and the value is a multiline string consisting
+#   of a series of `export VAR1=VAL1` lines. These multiline strings will be interpreted
+#   and evaluated by set-env-secrets.src in each VRO container.
 # Advantage: New environment variables can be added to these secrets without modifying
-# Helm configurations -- simply add them to Vault.
-SECRET_DATA=$(collectSecretExportCmds $VRO_SECRETS_NAMES)
-echo -e "\n## Setting aggregate 'vro-secrets' secret with all VRO_SECRETS_* Vault secrets"
-dumpYaml vro-secrets "$SECRET_DATA" | \
-  kubectl -n "va-abd-rrd-${TARGET_ENV}" replace --force -f -\
-    || echo "!!! ERROR: Could not replace secret 'vro-secrets'"
+# Helm configurations -- simply add them to Vault, then deploy the secrets to each LHDI env.
+# Do not aggregate these individual secrets into a single secret,
+#   as that introduces issues with propagation of secret updates.
+for VAULT_SECRET_SUFFIX in $VRO_SECRETS_SUFFIXES; do
+  JSON=$(queryVault "VRO_SECRETS_$VAULT_SECRET_SUFFIX")
+  # Encode exportCommands b/c it's usually multiline, plus it must be encoded for the secrets*.yaml file
+  EXPORT_CMDS_BASE64=$(toExportCmds "$JSON" | base64 -w0 )
+  SECRET_DATA="  VRO_SECRETS_$VAULT_SECRET_SUFFIX: $EXPORT_CMDS_BASE64"
+
+  # Make vro-secrets-* immutable=false so that changes propagate better
+  # See https://dsva.slack.com/archives/C04QLHM9LR0/p1689634792401989?thread_ts=1689604659.611619&cid=C04QLHM9LR0
+  setK8Secret "vro-secrets-${VAULT_SECRET_SUFFIX}" false "$SECRET_DATA"
+done
 
 # TODO: Once all relevant pods are up or after some time, delete the secrets.
 # Or use preStop hook to delete those secrets on this pod's shutdown.
@@ -138,4 +147,4 @@ dumpYaml vro-secrets "$SECRET_DATA" | \
 # Or delete at least the VAULT_TOKEN secret.
 
 # For debugging
-sleep 600
+# sleep 600

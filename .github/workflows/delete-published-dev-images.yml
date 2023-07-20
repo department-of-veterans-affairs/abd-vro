@@ -1,0 +1,66 @@
+name: "9. (Internal) Delete old published DEV images"
+on:
+  schedule:
+    # Run at 01:01 twice a month.
+    # https://pubs.opengroup.org/onlinepubs/9699919799/utilities/crontab.html#tag_20_25_07
+    - cron: '1 1 5,19 * *'
+
+  # Allow manual triggering
+  workflow_dispatch:
+    inputs:
+      retain_days:
+        description: 'Delete images older than this many days'
+        required: true
+        type: number
+        default: 30
+      keep_last:
+        description: 'Minimum versions to keep'
+        required: true
+        type: number
+        default: 10
+      dry_run:
+        description: 'Always do a dry-run first'
+        required: true
+        type: boolean
+        default: true
+
+jobs:
+  delete_images:
+    if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        repo:
+        - abd-vro-internal
+        # Do NOT delete non-dev images, which will be managed in a different workflow
+        package:
+        - dev_vro-console
+        - dev_vro-postgres
+        - dev_vro-api-gateway
+        - dev_vro-app
+        - dev_vro-db-init
+        - dev_vro-svc-bgs-api
+        - dev_vro-svc-lighthouse-api
+        - dev_vro-svc-bie-kafka
+        - dev_vro-xample-workflows
+        - dev_vro-cc-app
+    runs-on: ubuntu-latest
+    steps:
+    - name: "Delete old images in GHCR"
+      uses: vlaurin/action-ghcr-prune@v0.5.0
+      with:
+        token: ${{ secrets.ACCESS_TOKEN_DELETE_PACKAGE }}
+        organization: department-of-veterans-affairs
+        container: ${{ matrix.repo }}/${{ matrix.package }}
+        # Dry-run first, then change to `false`
+        dry-run: ${{ inputs.dry_run }}
+        keep-younger-than: ${{ inputs.retain_days || 30 }} # days
+        # This applies to each of the 2 categories separately: prune-untagged and prune-tags-regexes
+        keep-last: ${{ inputs.keep_last || 10 }}
+        # Packages without a tag (shown as sha256:...)
+        prune-untagged: true
+        # Package with exactly 7 characters and SecRel-created signatures
+        prune-tags-regexes: |
+          ^.......$
+          ^sha256-.*.sig$
