@@ -9,5 +9,5 @@ plugins {
 }
 
 docker {
-    dockerfile findDockerfile(['src/docker/Dockerfile', '/docker/Dockerfile-java'])
+    dockerfile findDockerfile(['Dockerfile', '/docker/Dockerfile-java'])
 }

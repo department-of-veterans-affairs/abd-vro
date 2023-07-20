@@ -19,10 +19,10 @@ RUN gem install bundler:2.4.10 --no-document && bundle install \
     && apk del git ruby-dev curl-dev build-base \
     && rm -rf /var/cache/apk/*
 
-ARG ENTRYPOINT_FILE=entrypoint.sh
+ARG ENTRYPOINT_FILE=docker-entrypoint.sh
 # Workaround to copy ENTRYPOINT_FILE that may not exist
 # https://stackoverflow.com/a/46801962
-# Copy script that runs entrypoint.sh if it exists
+# Copy script that runs docker-entrypoint.sh if it exists
 COPY set-env-secrets.src entrypoint-wrapper.sh ${ENTRYPOINT_FILE}* ./
 
 # === Image layers above this line are general and will be reused as cache when building the image.

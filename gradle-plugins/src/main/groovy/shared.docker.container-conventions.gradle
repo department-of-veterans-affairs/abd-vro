@@ -51,7 +51,7 @@ docker {
     noCache false // Use image caches; only recreate if different
 
     // Specify files to copy into Docker build context
-    files "src/docker/entrypoint.sh"
+    files "docker-entrypoint.sh"
     copyFromResources(copySpec, [
         '/docker/set-env-secrets.src',
         '/docker/entrypoint-wrapper.sh'

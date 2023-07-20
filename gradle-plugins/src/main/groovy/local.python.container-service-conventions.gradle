@@ -8,7 +8,7 @@ plugins {
 }
 
 docker {
-    dockerfile findDockerfile(['src/docker/Dockerfile', '/docker/Dockerfile-python'])
+    dockerfile findDockerfile(['Dockerfile', '/docker/Dockerfile-python'])
 
     // Copy files into build/docker/ folder, where the container image will be built
     copySpec.into(".").from("src"){

@@ -1,7 +1,7 @@
 # This file is referenced from local.java.docker.container-conventions.gradle.
 # It acts as the default Dockerfile for Java-based containers, i.e., those created by build.gradle
 # that use the local.java.docker.container-conventions plugin (directly or indirectly).
-# To override this file, create a src/docker/Dockerfile file in your Gradle module.
+# To override this file, create a Dockerfile file in your Gradle module.
 FROM eclipse-temurin:17-jre-alpine
 
 # curl is needed for HEALTHCHECK
@@ -13,10 +13,10 @@ RUN apk update && \
 
 WORKDIR /app
 
-ARG ENTRYPOINT_FILE=entrypoint.sh
+ARG ENTRYPOINT_FILE=docker-entrypoint.sh
 # Workaround to copy ENTRYPOINT_FILE that may not exist
 # https://stackoverflow.com/a/46801962
-# Copy script that runs entrypoint.sh if it exists, otherwise run jar file
+# Copy script that runs docker-entrypoint.sh if it exists, otherwise run jar file
 COPY set-env-secrets.src entrypoint-wrapper.sh ${ENTRYPOINT_FILE}* ./
 
 ARG JAR_FILE
