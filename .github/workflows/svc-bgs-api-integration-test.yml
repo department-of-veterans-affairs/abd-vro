@@ -1,0 +1,168 @@
+name: 'CI: SVC BGS API integration test'
+
+on:
+  # Allow manual triggering
+  workflow_dispatch:
+
+  # Allow being called by another GitHub Action
+  workflow_call:
+
+concurrency:
+  group: svcBgsApiIntegrationTest-${{ github.ref }}
+
+env:
+  COMPOSE_PROFILES: 'svc'
+  CORRELATION_ID: '1234'
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout source code'
+        uses: actions/checkout@v3
+
+      - name: 'Build the images'
+        uses: ./.github/actions/build-images
+
+      - name: 'Start the containers'
+        run: |
+          source scripts/setenv.sh
+          
+          # create basic auth token for RabbitMQ and export to github environment
+          BASIC_AUTH=`echo "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" | base64`
+          echo "RABBITMQ_PLACEHOLDERS_USERNAME=${RABBITMQ_PLACEHOLDERS_USERNAME}" >> $GITHUB_ENV
+          echo "RABBITMQ_PLACEHOLDERS_USERPASSWORD=${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" >> $GITHUB_ENV
+          echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}" >> $GITHUB_ENV
+
+          export -p | sed 's/declare -x //'
+
+          ./gradlew :dockerComposeUp
+          ./gradlew :app:dockerComposeUp
+
+      - name: 'Wait for RabbitMQ to be ready'
+        uses: indiesdev/curl@v1.1
+        with:
+          url: 'http://localhost:15672/api/vhosts'
+          method: 'GET'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          accept: 200
+          # Retry every 2 seconds
+          timeout: 2000
+          # Quit after 60 seconds
+          retries: 30
+
+      # Temporary step added to avoid race condition. Currently, there is no health check in 'svc-bgs-api'; therefore,
+      # at this step, it is unknown if svc-bgs-api has yet to create the 'bgs-api' exchange.
+      - name: 'Create bgs-api exchange'
+        uses: indiesdev/curl@v1.1
+        with:
+          url: 'http://localhost:15672/api/exchanges/%2f/bgs-api'
+          method: 'PUT'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          body: '{"type":"direct", "durable":true, "auto_delete":true}'
+          accept: 201, 204
+          retries: 3
+          log-response: true
+
+      # Temporary step added to avoid race condition. Currently, there is no health check in 'svc-bgs-api'; therefore,
+      # at this step, it is unknown if svc-bgs-api has yet to create the 'add-note' queue.
+      - name: 'Create add-note queue'
+        uses: indiesdev/curl@v1.1
+        with:
+          url: 'http://localhost:15672/api/queues/%2f/add-note'
+          method: 'PUT'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          body: '{"durable":true, "auto_delete":true}'
+          accept: 201, 204
+          retries: 3
+          log-response: true
+
+      # Temporary step added to avoid race condition. Currently, there is no health check in 'svc-bgs-api'; therefore,
+      # at this step, it is unknown if svc-bgs-api has yet to create the binding from 'bgs-api' exchange to 'add-note'
+      # queue.
+      - name: 'Create binding for add-note queue to bgs-api exchange'
+        uses: indiesdev/curl@v1.1
+        with:
+          url: 'http://localhost:15672/api/bindings/%2f/e/bgs-api/q/add-note'
+          method: 'POST'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          body: '{"routing_key":"add-note","arguments":{}}'
+          accept: 201, 204
+          retries: 3
+          log-response: true
+
+      - name: 'Create add-note-response queue'
+        uses: indiesdev/curl@v1.1
+        with:
+          url: 'http://localhost:15672/api/queues/%2f/add-note-response'
+          method: 'PUT'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          body: '{"durable":true, "auto_delete":true}'
+          accept: 201, 204
+          retries: 3
+          log-response: true
+
+      - name: 'Create binding for add-note-response queue to bgs-api exchange'
+        uses: indiesdev/curl@v1.1
+        with:
+          url: 'http://localhost:15672/api/bindings/%2f/e/bgs-api/q/add-note-response'
+          method: 'POST'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          body: '{"routing_key":"add-note-response","arguments":{}}'
+          accept: 201, 204
+          retries: 3
+          log-response: true
+
+      - name: 'Send message to RabbitMQ on bgs-api exchange routed to add-note queue'
+        uses: indiesdev/curl@v1.1
+        with:
+          url: 'http://localhost:15672/api/exchanges/%2F/bgs-api/publish'
+          method: 'POST'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          body: '{"properties": {"delivery_mode": 1,"reply_to": "add-note-response","correlation_id": "${{env.CORRELATION_ID}}"},"routing_key": "add-note","payload": "{\\\"veteranNote\\\":\\\"test\\\",\\\"veteranParticipantId\\\":111}","payload_encoding": "string"}'
+          accept: 200
+          retries: 3
+          log-response: true
+
+      - name: 'Sleep to give svc-bgs-api time to process and put response in add-note-response queue'
+        run: sleep 5
+        shell: bash
+
+      - name: 'Get message from RabbitMQ add-note-response queue'
+        id: 'addNoteResponse'
+        uses: indiesdev/curl@v1.1
+        with:
+          url: 'http://localhost:15672/api/queues/%2f/add-note-response/get'
+          method: 'POST'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          headers: '{"accept":"application/json","content-type":"application/json"}'
+          body: '{"count":1,"ackmode":"ack_requeue_true","encoding":"auto"}'
+          accept: 200
+          retries: 3
+          log-response: true
+
+      # Validate response Tests
+      - name: 'Validate response in payload of message from RabbitMQ add-note-response queue'
+        run: |
+          # Validate Response:
+          CHECKS_FAILED=false
+          echo "Checking correlation_id..."
+          echo "correlation_id: ${{ fromJson(steps.addNoteResponse.outputs.response).data[0].properties.correlation_id }}"
+          if [ "${{ fromJson(steps.addNoteResponse.outputs.response).data[0].properties.correlation_id }}" != "${{env.CORRELATION_ID}}" ]; then
+            echo "Unexpected correlation_id: Expected ${{env.CORRELATION_ID}}. Found ${{ fromJson(steps.addNoteResponse.outputs.response).data[0].properties.correlation_id }}"
+            CHECKS_FAILED=true
+          fi
+          
+          echo "Skip checking payload until bgs-api is connected..."
+                    
+          if $CHECKS_FAILED; then
+            echo "Some checks failed."
+            exit 10
+          fi
+
+      - name: 'Clean shutdown of all containers'
+        if: always()
+        shell: bash
+        run: |
+          docker ps
+          COMPOSE_PROFILES="all" ./gradlew dockerComposeDown

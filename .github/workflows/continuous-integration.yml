@@ -30,3 +30,7 @@ jobs:
   api-gateway:
     uses: ./.github/workflows/api-gateway-integration-test.yml
     secrets: inherit
+
+  svc-bgs-api:
+    uses: ./.github/workflows/svc-bgs-api-integration-test.yml
+    secrets: inherit
