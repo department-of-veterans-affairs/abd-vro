@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @ExtendWith(MockitoExtension.class)
 public class DbHelperTest {
@@ -58,7 +59,7 @@ public class DbHelperTest {
   @Test
   void saveContentionEvent() {
     final LocalDateTime notifiedAt = LocalDateTime.now();
-    final String eventDetails = "Lorem ipsum";
+    final Map<String, Object> eventDetails = Map.of("testKey", "testValue");
     final String event = "testEvent";
     final BieMessagePayload item =
         BieMessagePayload.builder()
@@ -66,10 +67,12 @@ public class DbHelperTest {
             .eventDetails(eventDetails)
             .notifiedAt(notifiedAt.toString())
             .build();
+
     final ContentionEventEntity entity = dbHelper.saveContentionEvent(item);
+
     assertNotNull(entity);
     assertEquals(event, entity.getEventType());
-    assertEquals(eventDetails, entity.getEventDetails());
+    assertEquals(eventDetails.toString(), entity.getEventDetails());
     assertEquals(notifiedAt, entity.getNotifiedAt());
   }
 }
