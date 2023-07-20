@@ -1,0 +1,81 @@
+name: 'CI: BIE Kafka End 2 End Test with Mock'
+
+on:
+  # Allow manual triggering
+  workflow_dispatch:
+
+  # Allow being called by another GitHub Action
+  workflow_call:
+
+concurrency:
+  group: bieKafkaEnd2EndTestWithMock-${{ github.ref }}
+
+env:
+  COMPOSE_PROFILES: 'kafka'
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Install kcat'
+        run: |
+          sudo apt-get update
+          sudo apt-get install kafkacat
+          which kafkacat
+
+      - name: 'Checkout source code'
+        uses: actions/checkout@v3
+
+      - name: 'Build the images'
+        uses: ./.github/actions/build-images
+
+      - name: 'Start the containers'
+        run: |
+          source scripts/setenv.sh
+
+          # create basic auth token for RabbitMQ and export to github environment
+          BASIC_AUTH=`echo "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" | base64`
+          echo "RABBITMQ_PLACEHOLDERS_USERNAME=${RABBITMQ_PLACEHOLDERS_USERNAME}" >> $GITHUB_ENV
+          echo "RABBITMQ_PLACEHOLDERS_USERPASSWORD=${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" >> $GITHUB_ENV
+          echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}" >> $GITHUB_ENV
+
+          export -p | sed 's/declare -x //'
+
+          ./gradlew :dockerComposeUp
+
+          ./gradlew -p mocks :mock-bie-kafka:docker
+          ./gradlew -p mocks :dockerComposeUp
+
+          ./gradlew :domain-xample:dockerComposeUp
+          ./gradlew :app:dockerComposeUp
+
+      - name: 'Wait for RabbitMQ to be ready'
+        uses: indiesdev/curl@v1.1
+        with:
+          url: 'http://localhost:15672/api/vhosts'
+          method: 'GET'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          accept: 200
+          # Retry every 2 seconds
+          timeout: 2000
+          # Quit after 60 seconds
+          retries: 30
+
+      - name: 'Wait for Kafka to be ready and create topic'
+        run: |
+          # Verify broker is up
+          BROKER_QUERY=$(kafkacat -m 30 -b localhost:9092 -L)
+          if echo $BROKER_QUERY | grep -q '1 brokers'
+          then
+            echo "Found Broker: $BROKER_QUERY"
+          else
+            echo "Count not find Kafka broker"
+          fi
+
+      - name: 'Clean shutdown of all containers'
+        if: always()
+        shell: bash
+        run: |
+          docker ps
+          COMPOSE_PROFILES="all" ./gradlew dockerComposeDown
+          ./gradlew -p mocks :dockerComposeDown
