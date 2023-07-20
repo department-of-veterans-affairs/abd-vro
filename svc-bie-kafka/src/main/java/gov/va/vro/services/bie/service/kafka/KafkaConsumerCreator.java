@@ -3,43 +3,39 @@ package gov.va.vro.services.bie.service.kafka;
 import gov.va.vro.services.bie.config.BieProperties;
 import gov.va.vro.services.bie.service.AmqpMessageSender;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.ConsumerFactory;
-import org.springframework.kafka.listener.AbstractMessageListenerContainer;
-import org.springframework.kafka.listener.ContainerProperties;
-import org.springframework.kafka.listener.KafkaMessageListenerContainer;
-import org.springframework.kafka.listener.MessageListener;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 
 @Slf4j
 @Component
 public class KafkaConsumerCreator {
 
-//  private final List<KafkaMessageListenerContainer<?, ?>> listeners = new ArrayList<>();
+    //  private final List<KafkaMessageListenerContainer<?, ?>> listeners = new ArrayList<>();
+    @Autowired
+    AmqpMessageSender amqpMessageSender;
+    @Autowired
+    BieProperties bieProperties;
 
-  public KafkaConsumerCreator(
-//      final ConsumerFactory<?, ?> consumerFactory,
-      final AmqpMessageSender amqpMessageSender
-//      final BieProperties bieProperties
-  ) {
-//    setUpListeners(consumerFactory, amqpMessageSender, bieProperties.getKafkaTopicToAmqpQueueMap());
-  }
+//  public KafkaConsumerCreator(
+////      final ConsumerFactory<?, ?> consumerFactory,
+//      final AmqpMessageSender amqpMessageSender
+////      final BieProperties bieProperties
+//  ) {
+////    setUpListeners(consumerFactory, amqpMessageSender, bieProperties.getKafkaTopicToAmqpQueueMap());
+//  }
 
-  @KafkaListener(topics = {"TST_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02",
-          "TST_CONTENTION_BIE_CONTENTION_UPDATED_V02",
-          "TST_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02",
-        "TST_CONTENTION_BIE_CONTENTION_COMPLETED_V02",
-        "TST_CONTENTION_BIE_CONTENTION_DELETED_V02"})
-  public void consume(String message) {
-    log.debug("Consumed message: " + message);
-  }
+    @KafkaListener(topics = {"#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02",
+                             "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_UPDATED_V02",
+                             "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02",
+                             "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_COMPLETED_V02",
+                             "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_DELETED_V02"})
+    public void consume(String message, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
+        log.debug("Consumed message: " + message);
+        amqpMessageSender.send(bieProperties.getKafkaTopicToAmqpQueueMap().get(topic), topic, message);
+    }
 
 //  private void setUpListeners(
 //      final ConsumerFactory<?, ?> consumerFactory,

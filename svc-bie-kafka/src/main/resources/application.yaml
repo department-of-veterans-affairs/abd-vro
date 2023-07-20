@@ -9,7 +9,6 @@ spring:
     port: 5672
     username: "${RABBITMQ_PLACEHOLDERS_USERNAME:guest}"
     password: "${RABBITMQ_PLACEHOLDERS_USERPASSWORD:guest}"
-
   # Specify where Spring connects to Kafka
   kafka:
     consumer:
@@ -25,6 +24,9 @@ spring:
         trust-store-type: "PKCS12"
     bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:localhost:9092}"
 
+kafka:
+  topic:
+    prefix: TST
 ## Specify bie properties
 bie:
   kafka-topic-to-amqp-queue-map:
