@@ -13,7 +13,7 @@ spring:
   # Specify where Spring connects to Kafka
   kafka:
     consumer:
-      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-group}"
+      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-tst-vro}"
       security:
         protocol: SSL
       ssl:
