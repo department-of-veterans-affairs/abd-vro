@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
@@ -57,7 +58,14 @@ class BieXampleRoutesTest extends CamelTestSupport {
   final BieMessagePayload testItem =
       BieMessagePayload.builder()
           .event("testEvent")
-          .eventDetails("testEventDetails")
+          .eventDetails(
+              Map.of(
+                  "claimId",
+                  "testClaimId",
+                  "testKey1",
+                  "testValue1",
+                  "testKey2",
+                  "testValue2"))
           .notifiedAt(LocalDateTime.now().toString())
           .build();
 
