@@ -24,7 +24,7 @@ public class KafkaConsumerCreator {
         "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_DELETED_V02"
       })
   public void consume(String message, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
-    log.debug("Consumed message: " + message);
+    log.info("Consumed message: " + message);
     amqpMessageSender.send(bieProperties.getKafkaTopicToAmqpQueueMap().get(topic), topic, message);
   }
 }
