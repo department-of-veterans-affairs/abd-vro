@@ -12,65 +12,19 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class KafkaConsumerCreator {
+  @Autowired AmqpMessageSender amqpMessageSender;
+  @Autowired BieProperties bieProperties;
 
-    //  private final List<KafkaMessageListenerContainer<?, ?>> listeners = new ArrayList<>();
-    @Autowired
-    AmqpMessageSender amqpMessageSender;
-    @Autowired
-    BieProperties bieProperties;
-
-//  public KafkaConsumerCreator(
-////      final ConsumerFactory<?, ?> consumerFactory,
-//      final AmqpMessageSender amqpMessageSender
-////      final BieProperties bieProperties
-//  ) {
-////    setUpListeners(consumerFactory, amqpMessageSender, bieProperties.getKafkaTopicToAmqpQueueMap());
-//  }
-
-    @KafkaListener(topics = {"#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02",
-                             "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_UPDATED_V02",
-                             "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02",
-                             "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_COMPLETED_V02",
-                             "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_DELETED_V02"})
-    public void consume(String message, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
-        log.debug("Consumed message: " + message);
-        amqpMessageSender.send(bieProperties.getKafkaTopicToAmqpQueueMap().get(topic), topic, message);
-    }
-
-//  private void setUpListeners(
-//      final ConsumerFactory<?, ?> consumerFactory,
-//      final AmqpMessageSender amqpMessageSender,
-//      final Map<String, String> topicMap) {
-//    topicMap.forEach(
-//        (kafkaTopic, amqpExchange) -> {
-//          final ContainerProperties containerProps = new ContainerProperties(kafkaTopic);
-//          containerProps.setAckMode(ContainerProperties.AckMode.RECORD);
-//          containerProps.setMessageListener(
-//              (MessageListener<Integer, String>)
-//                  data -> {
-//                    log.debug(
-//                        "event=messageReceivedFromKafka topic={} msg={}",
-//                        data.topic(),
-//                        data.value());
-//                    amqpMessageSender.send(amqpExchange, data.topic(), data.value());
-//                  });
-//          listeners.add(new KafkaMessageListenerContainer<>(consumerFactory, containerProps));
-//
-//
-//        });
-//  }
-
-//  public List<KafkaMessageListenerContainer<?, ?>> getListeners() {
-//    return List.copyOf(listeners);
-//  }
-//
-//  @PostConstruct
-//  public void startUp() {
-//    listeners.forEach(AbstractMessageListenerContainer::start);
-//  }
-//
-//  @PreDestroy
-//  public void tearDown() {
-//    listeners.forEach(AbstractMessageListenerContainer::stop);
-//  }
+  @KafkaListener(
+      topics = {
+        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02",
+        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_UPDATED_V02",
+        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02",
+        "#{'${kafka.topic.prefix}'}__CONTENTION_BIE_CONTENTION_COMPLETED_V02",
+        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_DELETED_V02"
+      })
+  public void consume(String message, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
+    log.debug("Consumed message: " + message);
+    amqpMessageSender.send(bieProperties.getKafkaTopicToAmqpQueueMap().get(topic), topic, message);
+  }
 }
