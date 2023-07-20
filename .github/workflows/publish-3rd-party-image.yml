@@ -66,7 +66,7 @@ jobs:
     name: SecRel Pipeline
     needs: publish-image
     # https://psychic-disco-c1251ea1.pages.github.io/pipeline/release_notes/v4.1.0/
-    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v4.1.1
+    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v4
     with:
       config-file: .github/secrel/config.yml
       images: ${{ needs.publish-image.outputs.published-images }}
