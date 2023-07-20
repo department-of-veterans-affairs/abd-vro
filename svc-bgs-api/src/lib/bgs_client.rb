@@ -62,9 +62,8 @@ class BgsClient
 
   def vro_participant_id
     @vro_participant_id ||= begin
-      # cfg = BGS.configuration
-      # bgs.security.find_participant_id(station_id: cfg.client_station_id, css_id: cfg.client_username)
-      "1111"
+      cfg = BGS.configuration
+      bgs.security.find_participant_id(station_id: cfg.client_station_id, css_id: cfg.client_username)
     end
   end
 
