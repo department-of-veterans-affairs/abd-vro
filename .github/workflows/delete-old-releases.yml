@@ -1,38 +1,52 @@
-name: "9. Delete old GitHub releases and tags"
+name: "9. Delete old Pre-Releases and tags"
 on:
-  #schedule:
+  schedule:
     # Run at 00:00 twice a month.
     # https://pubs.opengroup.org/onlinepubs/9699919799/utilities/crontab.html#tag_20_25_07
-    #- cron: '0 0 6,20 * *'
+    - cron: '0 0 6,20 * *'
 
   # Allow manual triggering
   workflow_dispatch:
     inputs:
-#      retain_days:
-#        description: 'Delete images older than this many days'
-#        required: true
-#        type: number
-#        default: 30
-      keep_last:
-        description: 'Minimum versions to keep'
+      dry_run:
+        description: 'Always do a dry-run first'
+        required: true
+        type: boolean
+        default: true
+      older_than:
+        description: 'Delete pre-releases published older than this many days ago'
+        required: true
+        type: number
+        default: 45
+      keep_latest:
+        description: 'Number of latest pre-releases to keep'
         required: true
         type: number
         default: 10
       tag_pattern:
-        description: 'Tag pattern to delete'
+        description: 'Pre-releases matching this git tag regex pattern'
         required: true
         type: string
-        default: release-1.0
+        default: ^v
 
 jobs:
   delete_releases:
+    # Deletions in public repo will be automatically propagated to internal repo when mirror.yml runs, at which point:
+    # - Git tag deletions will delete tags in internal repo
+    # - Deleted tags will result in GitHub releases disappearing in internal repo: https://github.com/department-of-veterans-affairs/abd-vro-internal/releases
+    #   but the number of releases (shown on the front page) is incorrect (i.e., there are orphaned GH releases)
+    #   Submitted bug report to GitHub: https://support.github.com/ticket/personal/0/2247467
+    if: github.repository == 'department-of-veterans-affairs/abd-vro'
     runs-on: ubuntu-latest
     steps:
-    - name: "Delete old images in GHCR"
-      uses: dev-drprasad/delete-older-releases@v0.2
+    - name: "Delete old releases in GHCR"
+      uses: yoomlam/delete-older-releases@v0.3.0
       with:
+        dry_run: ${{ inputs.dry_run || false }}
         delete_tags: true
-        keep_latest: ${{ inputs.keep_last }}
-        delete_tag_pattern:  ${{ inputs.tag_pattern }}
+        pre_release_only: true
+        keep_latest: ${{ inputs.keep_latest || 10 }}
+        older_than: ${{ inputs.older_than || 45 }}
+        delete_tag_pattern:  ${{ inputs.tag_pattern || '^v' }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

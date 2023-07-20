@@ -17,7 +17,7 @@ spec:
         {{- include "vro.annotations.pod" . | nindent 8 }}
         {{- include "vro.annotations.reloadLatest" . | nindent 8 }}
     spec:
-      {{ include "vro.imagePullSecrets" . | nindent 6 }}
+      {{- include "vro.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: pg-isready{{ include "vro.containerSuffix" . }}
           # TODO: This simple container does not need to use the big `db` image
@@ -81,38 +81,32 @@ spec:
             - name: VRO_SECRETS_API
               valueFrom:
                 secretKeyRef:
-                  name: vro-secrets
+                  name: vro-secrets-api
                   key: VRO_SECRETS_API
             - name: VRO_SECRETS_SLACK
               valueFrom:
                 secretKeyRef:
-                  name: vro-secrets
+                  name: vro-secrets-slack
                   key: VRO_SECRETS_SLACK
 
+            # These 2 should be moved to application-*.yml, then
+            # values-for-prod.yaml and values-for-prod.yaml can be deleted.
             - name: LH_API_AUTH_URL
               value: {{ .Values.lhApiAuthUrl }}
             - name: VRO_AUD_URL
               value: {{ .Values.vroAudUrl }}
 
-            - name: VRO_SECRETS_MAS
-              valueFrom:
-                secretKeyRef:
-                  name: vro-secrets
-                  key: VRO_SECRETS_MAS
-#            - name: MAS_API_AUTH_TOKEN_URI
-#              value: { { .Values.mas.masApiAuthTokenUri }}
-#            - name: MAS_API_BASE_URL
-#              value: { { .Values.mas.masApiBaseUrl }}
-
             - name: VRO_SECRETS_BIP
               valueFrom:
                 secretKeyRef:
-                  name: vro-secrets
+                  name: vro-secrets-bip
                   key: VRO_SECRETS_BIP
 #            - name: BIP_CLAIM_URL
 #              value: { { .Values.bip.bipClaimUrl }}
 #            - name: BIP_EVIDENCE_URL
 #              value: { { .Values.bip.bipEvidenceUrl }}
+
+            # This should be moved to application.yml
             - name: BIP_STATION_ID
               value: "281"
           resources:

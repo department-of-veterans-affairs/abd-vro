@@ -35,5 +35,5 @@ runs:
     - name: Install ShellCheck
       shell: bash
       run: |
-        sudo apt-get install shellcheck
+        sudo apt-get install --no-install-recommends shellcheck
         which shellcheck

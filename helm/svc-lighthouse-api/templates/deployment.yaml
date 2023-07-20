@@ -17,7 +17,7 @@ spec:
         {{- include "vro.annotations.pod" . | nindent 8 }}
         {{- include "vro.annotations.reloadLatest" . | nindent 8 }}
     spec:
-      {{ include "vro.imagePullSecrets" . | nindent 6 }}
+      {{- include "vro.imagePullSecrets" . | nindent 6 }}
       containers:
         - name: svc-lighthouse-api{{ include "vro.containerSuffix" . }}
           image: {{ include "vro.imageRegistryPath" . }}vro-svc-lighthouse-api:{{ include "vro.imageTag" . }}
@@ -28,7 +28,7 @@ spec:
             - name: VRO_SECRETS_LH
               valueFrom:
                 secretKeyRef:
-                  name: vro-secrets
+                  name: vro-secrets-lh
                   key: VRO_SECRETS_LH
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

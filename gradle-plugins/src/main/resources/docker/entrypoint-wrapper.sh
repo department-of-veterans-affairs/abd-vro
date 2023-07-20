@@ -2,14 +2,14 @@
 # This file is copied into the container by the Dockerfile.
 # This is referenced from local.java.container-spring-conventions.gradle
 # and local.python.container-service-convention.
-# To run your own script, create src/docker/entrypoint.sh in your Gradle module.
+# To run your own script, create docker-entrypoint.sh in your Gradle module.
 
 # Sets environment variable secrets
 [ -e set-env-secrets.src ] && . ./set-env-secrets.src
 
-# Run entrypoint.sh if it exists, otherwise run jar file
-if [ -e /app/entrypoint.sh ]; then
-  exec /app/entrypoint.sh "$@"
+# Run docker-entrypoint.sh if it exists, otherwise run jar file
+if [ -e /app/docker-entrypoint.sh ]; then
+  exec /app/docker-entrypoint.sh "$@"
 elif [ -e "fat.jar" ]; then
   echo "Running ${JAR_FILENAME}; health check port: ${HEALTHCHECK_PORT}"
   eval exec java -jar $JAVA_OPTS fat.jar "$@"

@@ -30,9 +30,11 @@ prodImageName() {
 
 # These names should match directory names, if the docker image is built in a
 # subdirectory, be sure to add the sub directory to the gradleFolder function above
+# Also add image to .github/workflows/delete-published-*images.yml
 IMAGES=( console postgres \
   api-gateway app db-init \
   svc-bgs-api svc-lighthouse-api svc-bie-kafka \
+  xample-workflows \
   cc-app )
 echo
 echo "=== ${#IMAGES[@]} VRO images"

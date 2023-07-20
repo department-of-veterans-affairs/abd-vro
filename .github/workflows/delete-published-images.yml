@@ -1,9 +1,9 @@
-name: "9. (Internal) Delete old published DEV images"
+name: "9. (Internal) Delete old published non-DEV images"
 on:
   schedule:
-    # Run at 00:00 twice a month.
+    # Run at 02:02 twice a month.
     # https://pubs.opengroup.org/onlinepubs/9699919799/utilities/crontab.html#tag_20_25_07
-    - cron: '0 0 5,19 * *'
+    - cron: '2 2 5,19 * *'
 
   # Allow manual triggering
   workflow_dispatch:
@@ -23,10 +23,18 @@ on:
         required: true
         type: boolean
         default: true
+      tag-pattern:
+        description: 'Target LHDI environment'
+        required: true
+        type: choice
+        options:
+        - '^([a-z]|\d){7}$'
+        - '^([a-z]|\d){40}$'
+#        - '^sha256-([a-z]|\d){64}.sig$'
+#        - '^release-1\.\d+\.\d+$'
 
 jobs:
   delete_images:
-    # Don't need to run in both repos since we can delete in both repos from either repo
     if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
     continue-on-error: true
     strategy:
@@ -34,13 +42,17 @@ jobs:
       matrix:
         repo:
         - abd-vro-internal
-        # Do NOT delete non-dev images, which will be managed in a different workflow
         package:
-        - dev_vro-app
-        - dev_vro-console
-        - dev_vro-db-init
-        - dev_vro-postgres
-        - dev_vro-svc-lighthouse-api
+        - vro-console
+        - vro-postgres
+        - vro-api-gateway
+        - vro-app
+        - vro-db-init
+        - vro-svc-bgs-api
+        - vro-svc-lighthouse-api
+        - vro-svc-bie-kafka
+        - vro-xample-workflows
+        - vro-cc-app
     runs-on: ubuntu-latest
     steps:
     - name: "Delete old images in GHCR"
@@ -56,7 +68,4 @@ jobs:
         keep-last: ${{ inputs.keep_last || 10 }}
         # Packages without a tag (shown as sha256:...)
         prune-untagged: true
-        # Package with exactly 7 characters and SecRel-created signatures
-        prune-tags-regexes: |
-          ^.......$
-          ^sha256-.*.sig$
+        prune-tags-regexes: ${{ inputs.tag-pattern || '^([a-z]|\d){7}$' }}
