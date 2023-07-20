@@ -20,7 +20,7 @@ public class KafkaConsumerCreator {
         "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02",
         "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_UPDATED_V02",
         "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02",
-        "#{'${kafka.topic.prefix}'}__CONTENTION_BIE_CONTENTION_COMPLETED_V02",
+        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_COMPLETED_V02",
         "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_DELETED_V02"
       })
   public void consume(String message, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
