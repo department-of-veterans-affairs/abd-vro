@@ -10,8 +10,10 @@ import org.apache.camel.builder.endpoint.EndpointRouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.apache.camel.model.dataformat.JsonLibrary;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 
 // https://camel.apache.org/manual/Endpoint-dsl.html
@@ -36,8 +38,9 @@ public class BieXampleRoutes extends EndpointRouteBuilder {
   void configureRouteToSaveContentionEventToDbFromQueue(final String queue) {
     final String exchangeName = queue;
     final String routingKey = queue;
+
     RabbitMqCamelUtils.fromRabbitmqFanoutExchange(this, exchangeName, routingKey)
-        .routeId(queue + "-saveToDb-route")
+            .routeId(queue + "-saveToDb-route")
         .log("Received ${headers} ${body.getClass()}: ${body}")
         .convertBodyTo(BieMessagePayload.class)
         .log("Converted to ${body.getClass()}: ${body}")
@@ -49,7 +52,9 @@ public class BieXampleRoutes extends EndpointRouteBuilder {
               body.setStatus(200);
               exchange.getMessage().setBody(body);
             })
-        .log("Saved Contention Event to DB  ${exchange.pattern}: body ${body.getClass()}: ${body}");
+        .marshal().json(JsonLibrary.Jackson)
+        .log("ReceivedMessageEventBody: ${body}");
+
   }
 
   void configureExceptionHandling() {

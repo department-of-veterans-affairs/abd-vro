@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.Map;
+
 @Setter
 @Getter
 @Builder(toBuilder = true)
@@ -15,6 +17,6 @@ public class BieMessagePayload {
   private Integer status;
   private String statusMessage;
   private String event;
-  private String eventDetails;
+  private Map<String, Object> eventDetails;
   private String notifiedAt;
 }
