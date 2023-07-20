@@ -7,6 +7,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -16,7 +17,7 @@ public class BieRabbitService implements AmqpMessageSender {
   private final RabbitTemplate rabbitTemplate;
 
   @Override
-  public void send(final String exchange, final String queue, final String message) {
+  public void send(final String exchange, final String queue, final Map<String, Object> message) {
     final BieMessagePayload bieMessagePayload =
         BieMessagePayload.builder()
             .event(queue)

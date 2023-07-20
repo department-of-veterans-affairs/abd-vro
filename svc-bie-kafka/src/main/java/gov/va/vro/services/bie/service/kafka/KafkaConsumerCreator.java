@@ -1,5 +1,8 @@
 package gov.va.vro.services.bie.service.kafka;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.services.bie.config.BieProperties;
 import gov.va.vro.services.bie.service.AmqpMessageSender;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +40,9 @@ public class KafkaConsumerCreator {
         (kafkaTopic, amqpExchange) -> {
           final ContainerProperties containerProps = new ContainerProperties(kafkaTopic);
           containerProps.setAckMode(ContainerProperties.AckMode.RECORD);
+
+          ObjectMapper objectMapper = new ObjectMapper();
+
           containerProps.setMessageListener(
               (MessageListener<Integer, String>)
                   data -> {
@@ -44,7 +50,14 @@ public class KafkaConsumerCreator {
                         "event=messageReceivedFromKafka topic={} msg={}",
                         data.topic(),
                         data.value());
-                    amqpMessageSender.send(amqpExchange, data.topic(), data.value());
+
+
+                    try {
+                      amqpMessageSender.send(amqpExchange, data.topic(), objectMapper.readValue(data.value(), new TypeReference<>() {
+                      }));
+                    } catch (JsonProcessingException e) {
+                      throw new RuntimeException(e);
+                    }
                   });
           listeners.add(new KafkaMessageListenerContainer<>(consumerFactory, containerProps));
         });

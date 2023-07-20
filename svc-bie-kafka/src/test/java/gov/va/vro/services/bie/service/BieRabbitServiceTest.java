@@ -1,5 +1,6 @@
 package gov.va.vro.services.bie.service;
 
+import static java.util.Map.entry;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -14,6 +15,8 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+
+import java.util.Map;
 
 @ExtendWith(MockitoExtension.class)
 class BieRabbitServiceTest {
@@ -35,7 +38,8 @@ class BieRabbitServiceTest {
     void shouldConvertAndSendBiePayload() {
       final String exchange = "testExchange";
       final String topic = "testTopic";
-      final String message = "testMessage";
+
+      final Map<String, Object> message = Map.ofEntries(entry("testKey", "testValue"), entry("testKey2", "testValue2"));
 
       bieRabbitService.send(exchange, topic, message);
 
