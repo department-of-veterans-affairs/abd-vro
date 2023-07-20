@@ -13,6 +13,13 @@ spring:
     hibernate:
       ddl-auto: none
 
+# Spring's RabbitHealthIndicator needs a connection to RabbitMQ:
+  rabbitmq:
+    host: "${RABBITMQ_PLACEHOLDERS_HOST:localhost}"
+    port: 5672
+    username: "${RABBITMQ_PLACEHOLDERS_USERNAME:guest}"
+    password: "${RABBITMQ_PLACEHOLDERS_USERPASSWORD:guest}"
+
 ## Actuator for health check
 management:
   server:
@@ -42,3 +49,12 @@ logging:
 
 spring.config.import: >
   conf-camel.yml
+
+## Specify bie properties
+bie:
+  queues: >-
+    bie-events-contention-associated
+    bie-events-contention-updated
+    bie-events-contention-classified
+    bie-events-contention-completed
+    bie-events-contention-deleted

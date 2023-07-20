@@ -2,3 +2,11 @@ plugins {
   id 'base'
   id 'local.docker-compose-convention'
 }
+
+tasks.named("build") {
+  dependsOn subprojects*.getTasksByName('build', true)
+}
+
+tasks.register("test") {
+  dependsOn subprojects*.getTasksByName('test', true)
+}

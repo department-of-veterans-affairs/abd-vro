@@ -1,35 +1,4 @@
-import ru.vyarus.gradle.plugin.python.task.PythonTask
-
 plugins {
+  id 'local.python.app-conventions'
   id 'local.python.container-service-conventions'
-  id('ru.vyarus.use-python') version "3.0.0"
 }
-
-python {
-  installVirtualenv = true
-}
-
-tasks.register("devrequirements", PythonTask) {
-  module = 'pip'
-  command = "install -r src/dev-requirements.txt"
-}
-
-tasks.register("requirements", PythonTask) {
-  module = 'pip'
-  command = "install -r src/requirements.txt"
-  dependsOn 'devrequirements'
-}
-
-tasks.register("pyflake8", PythonTask) {
-  module = 'flake8'
-  command = "."
-  dependsOn 'requirements'
-}
-
-// Runs pytest when `./gradlew test` is run
-tasks.register("pytest", PythonTask) {
-  module = 'pytest'
-  dependsOn 'pyflake8'
-}
-
-tasks.test.dependsOn pytest
