@@ -27,7 +27,7 @@ spec:
             - name: VRO_SECRETS_BIP
               valueFrom:
                 secretKeyRef:
-                  name: vro-secrets
+                  name: vro-secrets-bip
                   key: VRO_SECRETS_BIP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

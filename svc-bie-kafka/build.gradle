@@ -8,6 +8,7 @@ ext {
 }
 
 dependencies {
+  implementation project(":shared:lib-bie-kafka")
 
   // RabbitMQ
   implementation 'org.springframework.boot:spring-boot-starter-amqp'

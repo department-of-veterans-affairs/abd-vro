@@ -1,4 +1,3 @@
-
 plugins {
   id 'local.java.container-spring-conventions'
   id 'local.std.java.library-conventions'
@@ -11,6 +10,7 @@ ext {
 dependencies {
   implementation project(':domain-xample:xample-shared')
   implementation project(':shared:lib-camel-connector')
+  implementation project(':shared:lib-bie-kafka')
   implementation project(':shared:persistence-model')
 
   // Needed for *Repository classes to save to DB
