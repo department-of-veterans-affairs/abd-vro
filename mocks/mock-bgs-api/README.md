@@ -15,7 +15,7 @@ To update from a newer wsdl or add mock responses, follow the [Use Case: SOAP](h
 abd-vro/mocks/mock-bgs-api/src/main/resources/bgs-castlemock.xml. 
 
 ### Local Usage
-The mock server can be accessed locally, [log in](https://github.com/castlemock/castlemock/wiki#how-to-use) at http://localhost:20500/castlemock
+The mock server can be accessed locally: [log in](https://github.com/castlemock/castlemock/wiki#how-to-use) at http://localhost:20500/castlemock
 
 The wsdl can be queried with curl
 ```
