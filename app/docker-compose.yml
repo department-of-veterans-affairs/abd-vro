@@ -112,6 +112,8 @@ services:
       - vro_intranet
 
   svc-bie-kafka:
+    ports:
+      - "10301:10301"
     profiles: [ "all","svc","kafka" ]
     image: va/abd_vro-svc-bie-kafka:latest
     <<: [ *common-sde-security, *common-security-opt ]

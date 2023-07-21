@@ -12,16 +12,22 @@ concurrency:
 
 env:
   COMPOSE_PROFILES: 'kafka'
+  TEST_TOPIC: 'TST_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02'
+  # TEST_DATA should be replaced with data after event_details is populated with non PII data. See Github Issue 1680
+  TEST_DATA: 'Lorem ipsum'
 
 jobs:
   integration-test:
     runs-on: ubuntu-latest
     steps:
-      - name: 'Install kcat'
+      - name: 'Install kcat and postgresql'
         run: |
           sudo apt-get update
           sudo apt-get install kafkacat
           which kafkacat
+
+          sudo apt-get install postgresql
+          which psql
 
       - name: 'Checkout source code'
         uses: actions/checkout@v3
@@ -38,6 +44,8 @@ jobs:
           echo "RABBITMQ_PLACEHOLDERS_USERNAME=${RABBITMQ_PLACEHOLDERS_USERNAME}" >> $GITHUB_ENV
           echo "RABBITMQ_PLACEHOLDERS_USERPASSWORD=${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" >> $GITHUB_ENV
           echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}" >> $GITHUB_ENV
+          echo "POSTGRES_USER=${POSTGRES_USER}" >> $GITHUB_ENV
+          echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> $GITHUB_ENV
 
           export -p | sed 's/declare -x //'
 
@@ -61,7 +69,7 @@ jobs:
           # Quit after 60 seconds
           retries: 30
 
-      - name: 'Wait for Kafka to be ready and create topic'
+      - name: 'Wait for Kafka to be ready'
         run: |
           # Verify broker is up
           BROKER_QUERY=$(kafkacat -m 30 -b localhost:9092 -L)
@@ -70,6 +78,49 @@ jobs:
             echo "Found Broker: $BROKER_QUERY"
           else
             echo "Count not find Kafka broker"
+          fi
+
+      - name: 'Wait for svc-bie-kafka to be ready'
+        uses: nev7n/wait_for_response@v1
+        with:
+          url: 'http://localhost:10301/actuator/health'
+          responseCode: 200
+          # Retry every 2 seconds
+          interval: 2000
+          # Quit after 60 seconds
+          timeout: 60000
+
+      - name: 'Create Kafka topic and send message'
+        run: |
+          # Create Test File:
+
+
+          echo '${{env.TEST_DATA}}' > test.txt
+
+          # Send the test message
+          kcat -b 127.0.0.1:9092 -P -t '${{env.TEST_TOPIC}}' -l test.txt
+
+      - name: 'Sleep to give time for message to travel end 2 end from kafka to saved in database'
+        run: sleep 5
+
+      - name: 'Find entry in Postgres'
+        run: |
+          RESULTS=$(psql postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/vro -x -c \
+          "SELECT COUNT(*)
+            FROM
+              claims.bie_contention_event
+            WHERE
+              event='${{env.TEST_TOPIC}}'
+                AND
+              event_details = '${{env.TEST_DATA}}'
+          ")
+          echo $RESULTS
+          if echo $RESULTS | grep -q 'count | 1'
+          then
+            echo "Found record in DB."
+          else
+            echo "Could not find record in DB."
+            exit 10
           fi
 
       - name: 'Clean shutdown of all containers'
