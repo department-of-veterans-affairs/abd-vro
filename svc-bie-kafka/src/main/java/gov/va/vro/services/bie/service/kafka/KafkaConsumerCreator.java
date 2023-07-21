@@ -19,11 +19,7 @@ public class KafkaConsumerCreator {
 
   @KafkaListener(
       topics = {
-        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02",
-        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_UPDATED_V02",
-        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02",
-        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_COMPLETED_V02",
-        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_DELETED_V02"
+        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02"
       })
   public void consume(ConsumerRecord<byte[], byte[]> record, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
     String key = new String(record.key(), StandardCharsets.UTF_8);
