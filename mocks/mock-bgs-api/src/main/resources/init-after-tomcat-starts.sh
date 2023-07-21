@@ -2,7 +2,7 @@
 
 until [ "`curl --silent --show-error --connect-timeout 1 -I http://localhost:8080/castlemock/ | grep 'HTTP/1.1 200'`" != "" ];
 do
-  echo --- waiting on castlemock for 3 seconds
+  echo "--- waiting on castlemock for 3 seconds"
   sleep 3
 done
 
