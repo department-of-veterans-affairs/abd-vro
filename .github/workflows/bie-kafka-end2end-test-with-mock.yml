@@ -105,6 +105,12 @@ jobs:
 
       - name: 'Find entry in Postgres'
         run: |
+          psql postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/vro -x -c
+          "SELECT *
+            FROM
+              claims.bie_contention_event
+          ")
+
           RESULTS=$(psql postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/vro -x -c \
           "SELECT COUNT(*)
             FROM
@@ -112,7 +118,7 @@ jobs:
             WHERE
               event='${{env.TEST_TOPIC}}'
                 AND
-              event_details = '${{env.TEST_DATA}}'
+              event_details='${{env.TEST_DATA}}'
           ")
           echo $RESULTS
           if echo $RESULTS | grep -q 'count | 1'
@@ -122,6 +128,21 @@ jobs:
             echo "Could not find record in DB."
             exit 10
           fi
+
+      - name: "Collect docker logs"
+        if: always()
+        uses: jwalton/gh-docker-logs@v2
+        with:
+          dest: './bie-kafka-end2end-test-with-mock-container-logs'
+
+      - name: "Upload artifact"
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: bie-kafka-end2end-test-with-mock-container-logs
+          path: ./bie-kafka-end2end-test-with-mock-container-logs/**
+          retention-days: 14
+
 
       - name: 'Clean shutdown of all containers'
         if: always()
