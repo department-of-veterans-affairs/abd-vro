@@ -11,7 +11,7 @@ In particular the following functionality is of interest
 
 This mock service is run on [CastleMock](https://castlemock.github.io) in a [container from DockerHub](https://hub.docker.com/r/castlemock/castlemock)
 It extends the standard image, by loading the project settings file: bgs-castlemock.xml. These settings were created with the WSDL from http://bepdev.vba.va.gov/DevelopmentNotesService?wsdl
-To update from a newer wsdl or add mock responses follow the [Use Case: SOAP](https://github.com/castlemock/castlemock/wiki/Use-Case:-SOAP#import-wsdl-file), exporting the settings, save this file to 
+To update from a newer wsdl or add mock responses, follow the [Use Case: SOAP](https://github.com/castlemock/castlemock/wiki/Use-Case:-SOAP#import-wsdl-file) to export the settings and save this file to 
 abd-vro/mocks/mock-bgs-api/src/main/resources/bgs-castlemock.xml. 
 
 ### Local Usage
