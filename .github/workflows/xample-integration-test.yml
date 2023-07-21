@@ -63,14 +63,14 @@ jobs:
         if: always()
         uses: jwalton/gh-docker-logs@v2
         with:
-          dest: './container-logs'
+          dest: './xample-itest-container-logs'
 
       - name: "Upload artifact"
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: container-logs
-          path: ./container-logs/**
+          name: xample-itest-container-logs
+          path: ./xample-itest-container-logs/**
           retention-days: 14
 
       - name: "Check for errors in container logs"

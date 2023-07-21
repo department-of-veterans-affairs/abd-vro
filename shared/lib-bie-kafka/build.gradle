@@ -1,0 +1,11 @@
+plugins {
+  id 'local.std.java.library-conventions'
+}
+
+ext {
+  jacoco_minimum_coverage = 0.8
+}
+
+dependencies {
+  implementation 'org.springframework.boot:spring-boot-starter-amqp'
+}

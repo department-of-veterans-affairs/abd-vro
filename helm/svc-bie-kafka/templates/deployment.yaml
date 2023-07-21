@@ -17,7 +17,7 @@ spec:
         {{- include "vro.annotations.pod" . | nindent 8 }}
         {{- include "vro.annotations.reloadLatest" . | nindent 8 }}
     spec:
-      {{ include "vro.imagePullSecrets" . | nindent 6 }}
+      {{- include "vro.imagePullSecrets" . | nindent 6 }}
       containers:
         - name: svc-bie-kafka{{ include "vro.containerSuffix" . }}
           image: {{ include "vro.imageRegistryPath" . }}vro-svc-bie-kafka:{{ include "vro.imageTag" . }}
@@ -27,7 +27,7 @@ spec:
             - name: VRO_SECRETS_BIE_KAFKA
               valueFrom:
                 secretKeyRef:
-                  name: vro-secrets
+                  name: vro-secrets-bie-kafka
                   key: VRO_SECRETS_BIE_KAFKA
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

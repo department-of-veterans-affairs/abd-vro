@@ -1,6 +1,7 @@
 package gov.va.vro.consolegroovy
 
 import gov.va.vro.persistence.repository.ClaimRepository
+import gov.va.vro.persistence.repository.ContentionEventRepository
 import gov.va.vro.persistence.repository.VeteranRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.domain.EntityScan
@@ -17,4 +18,7 @@ class DatabaseConnection {
 
   @Autowired
   final VeteranRepository veteranRepository
+
+  @Autowired
+  final ContentionEventRepository contentionEventRepository;
 }

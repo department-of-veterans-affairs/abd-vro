@@ -14,8 +14,7 @@ bootJar {
 }
 
 docker {
-    files "build/libs/${bootJar.archiveFileName.get()}",
-        "src/docker/entrypoint.sh"
+    files "build/libs/${bootJar.archiveFileName.get()}", "docker-entrypoint.sh"
 
     def dockerArgs=[
         JAR_FILE: bootJar.archiveFileName.get()

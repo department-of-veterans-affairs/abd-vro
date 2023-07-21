@@ -26,7 +26,7 @@ x-common-sde-security: &common-sde-security
 services:
   # Containers with the `svc-` prefix are microservices to support domain workflows.
 
-  svc-cc-api:
+  cc-app:
     image: va/abd_vro-cc-app:latest
     <<: [*common-sde-security, *common-security-opt]
     environment:

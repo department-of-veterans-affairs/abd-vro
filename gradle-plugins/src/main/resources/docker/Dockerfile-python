@@ -1,27 +1,14 @@
 # This file is referenced from local.python.container-service-convention.
 # It acts as the default Dockerfile for Python-based containers, i.e., those created by build.gradle
 # that use the local.python.container-service-convention plugin.
-# To override this file, create a src/docker/Dockerfile file in your Gradle module.
+# To override this file, create a Dockerfile file in your Gradle module.
 ARG BASE_IMAGE="python:3.10-alpine"
 FROM ${BASE_IMAGE}
 
 # hadolint ignore=DL3018
-RUN apk update && apk --no-cache upgrade && apk add git && rm -rf /var/cache/apk/*
-
-RUN adduser --disabled-password tron
-
-ARG HEALTHCHECK_PORT_ARG
-ENV HEALTHCHECK_PORT=${HEALTHCHECK_PORT_ARG}
-ARG HEALTHCHECK_CMD_ARG="curl --fail http://localhost:${HEALTHCHECK_PORT}/health || exit 1"
-ENV HEALTHCHECK_CMD=${HEALTHCHECK_CMD_ARG}
-HEALTHCHECK CMD eval $HEALTHCHECK_CMD
+RUN apk update && apk --no-cache upgrade && apk add git curl && rm -rf /var/cache/apk/*
 
 WORKDIR /app
-ARG ENTRYPOINT_FILE=entrypoint.sh
-# Workaround to copy ENTRYPOINT_FILE that may not exist
-# https://stackoverflow.com/a/46801962
-# Copy script that runs entrypoint.sh if it exists
-COPY set-env-secrets.src entrypoint-wrapper.sh ${ENTRYPOINT_FILE}* ./
 
 # Used to specify the service folder you want to build if running locally
 # No longer write *.pyc files to disk
@@ -29,15 +16,30 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # Send logs directly to container
 ENV PYTHONUNBUFFERED 1
 
-# === Image layers above this line are general and will be reused as cache when building the image.
-# Put commands that produce project-specific image layers below this line.
+# Copy and install requirements first (without application code)
+# b/c this is a big image layer that doesn't change often
+# See https://vsupalov.com/5-tips-to-speed-up-docker-build/
+COPY requirements.txt ./
+# Install python packages using a long timeout so that builds won't fail when pypi.org is slow
+RUN pip install --default-timeout=100 --no-cache-dir -r requirements.txt
 
-# Copy over all files specified in local.python.container-service-convention
+ARG ENTRYPOINT_FILE=docker-entrypoint.sh
+# Workaround to copy ENTRYPOINT_FILE that may not exist
+# https://stackoverflow.com/a/46801962
+# Copy script that runs docker-entrypoint.sh if it exists
+COPY set-env-secrets.src entrypoint-wrapper.sh ${ENTRYPOINT_FILE}* ./
+
+# Copy application code, which changes more often,
+# along with files specified in local.python.container-service-convention
 COPY . ./
-RUN pip install --no-cache-dir -r requirements.txt
 
+RUN adduser --disabled-password tron
 RUN chmod +x ./*.sh && chown -R tron /app
 USER tron
-# The exec form of the Dockerfile ENTRYPOINT is used so that there is no shell wrapping the Java process.
-# The advantage is that the java process responds to KILL signals sent to the container.
 ENTRYPOINT ["/app/entrypoint-wrapper.sh"]
+
+ARG HEALTHCHECK_PORT_ARG
+ENV HEALTHCHECK_PORT=${HEALTHCHECK_PORT_ARG}
+ARG HEALTHCHECK_CMD_ARG="curl --fail http://localhost:${HEALTHCHECK_PORT}/health || exit 1"
+ENV HEALTHCHECK_CMD=${HEALTHCHECK_CMD_ARG}
+HEALTHCHECK CMD eval $HEALTHCHECK_CMD

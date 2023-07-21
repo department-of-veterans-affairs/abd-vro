@@ -45,18 +45,15 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: "Publish images using tags '${{ inputs.image_tag }}' and 'latest'"
+    - name: "Publish images using tags '${{ inputs.image_tag }}'"
       id: docker-push
       shell: bash
       run: |
         docker pull "${{ inputs.image_name }}:${{ inputs.image_tag }}"
-        echo "# Publishing image ${{ inputs.image_name }}:${{ inputs.image_tag }} to ${{ env.GHCR_PATH }} and also tagged as 'latest'"
+        echo "# Publishing image ${{ inputs.image_name }}:${{ inputs.image_tag }} to ${{ env.GHCR_PATH }}"
 
         docker tag "${{ inputs.image_name }}:${{ inputs.image_tag }}" "${{ env.GHCR_PATH }}:${{ inputs.image_tag }}"
         docker push "${{ env.GHCR_PATH }}:${{ inputs.image_tag }}"
-
-        docker tag "${{ inputs.image_name }}:${{ inputs.image_tag }}" "${{ env.GHCR_PATH }}:latest"
-        docker push "${{ env.GHCR_PATH }}:latest"
 
         echo "images_list<<EOF" >> $GITHUB_OUTPUT
         echo "${{ env.GHCR_PATH }}:${{ inputs.image_tag }}" >> $GITHUB_OUTPUT
@@ -66,7 +63,7 @@ jobs:
     name: SecRel Pipeline
     needs: publish-image
     # https://psychic-disco-c1251ea1.pages.github.io/pipeline/release_notes/v4.1.0/
-    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v4.1.1
+    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v4
     with:
       config-file: .github/secrel/config.yml
       images: ${{ needs.publish-image.outputs.published-images }}
@@ -81,7 +78,7 @@ jobs:
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
-          slack-text: "*${{ github.workflow }}* to `${{ env.GHCR_PATH }}:${{ inputs.image_tag }}` as `latest` by `${{ github.triggering_actor }}` \n\
+          slack-text: "*${{ github.workflow }}* to `${{ env.GHCR_PATH }}:${{ inputs.image_tag }}` by `${{ github.triggering_actor }}` \n\
             Check for the package in <https://github.com/department-of-veterans-affairs/${{ github.event.repository.name }}/packages|GHCR>\n\
             See thread :thread: to complete any remaining steps..."
 

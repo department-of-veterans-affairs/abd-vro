@@ -6,7 +6,7 @@ on:
 
   # Allow being called by another GitHub Action
   workflow_call:
-  
+
   pull_request:
     branches: [ develop ]
 
@@ -17,7 +17,6 @@ env:
   LH_ACCESS_CLIENT_ID: ${{ secrets.LH_ACCESS_CLIENT_ID }}
   LH_PRIVATE_KEY: ${{ secrets.LH_PRIVATE_KEY }}
   SLACK_EXCEPTION_WEBHOOK: "http://mock-slack:20100/slack-messages"
-
 jobs:
   container-healthcheck:
     if: github.repository == 'department-of-veterans-affairs/abd-vro' &&
@@ -31,21 +30,86 @@ jobs:
       - name: "Docker build"
         uses: ./.github/actions/build-images
 
-      - name: "Create platform containers with healthchecks"
+      - name: "Start containers: platform and api-gateway"
         run: |
           source scripts/setenv.sh
           export -p | sed 's/declare -x //'
           COMPOSE_PROFILES="gateway" ./gradlew :dockerComposeUp
 
-      - name: "Create app containers with healthchecks"
+      - name: "Start containers: app and svc-*"
         shell: bash
         run: |
+          source scripts/setenv.sh
+          # Build and start Kafka mock required for svc-bie-kafka
+          ./gradlew -p mocks :mock-bie-kafka:docker
+          COMPOSE_PROFILES="kafka" ./gradlew -p mocks :dockerComposeUp
           COMPOSE_PROFILES="svc" ./gradlew :app:dockerComposeUp
 
-      - name: "Create domain-cc containers with healthchecks"
+      - name: "Start containers: domain-cc"
         shell: bash
         run: |
+          source scripts/setenv.sh
           ./gradlew :domain-cc:dockerComposeUp
+
+      - name: "Wait for containers to start"
+        run: |
+          STATUS="..."
+          while [ "$STATUS" != "All started" ]; do
+            echo "Waiting for containers to start..."
+            sleep 10
+            STATUS=$(docker container ls --format '{{.Names}} \t {{.Status}}' | grep "(health: starting)" \
+              || echo "All started")
+            echo "$STATUS"
+          done
+      - name: "Check for unhealthy containers"
+        shell: bash
+        run: |
+          {
+            echo "## Docker containers"
+            echo '```'
+            docker ps --all
+            echo ''
+            echo '```'
+          } | tee -a $GITHUB_STEP_SUMMARY
+
+          # Ignore mocks and redis-service since they don't have health checks
+          # TODO: add health check for svc-bgs-api; ignore it for now
+          if docker container ls --format '{{.Names}} \t {{.Status}}' | grep -v "(healthy)" \
+            | grep -v "-mock-\|redis-service\|svc-bgs-api"; then
+            echo 'There are unexpected unhealthy containers!'
+            exit 2
+          fi
+      - name: "Check for exited containers"
+        shell: bash
+        run: |
+          # Ignore db-init since it is expected to exit once finished
+          # TODO: fix svc-bie-kafka so that it doesn't exit
+          if docker container ls --filter "status=exited" --format '{{.Names}} {{.Status}}' \
+            | grep -v "db-init\|svc-bie-kafka"; then
+            echo 'There are unexpected exited containers!'
+            exit 3
+          fi
+      - name: "Check for errors in container logs"
+        run: |
+          for C_NAME in $(docker container ls --format '{{.Names}}' | grep -v '-service1'); do
+            echo "## Searching $C_NAME container logs"
+            if docker logs "$C_NAME" 2>&1 | grep 'ERROR\|error'; then
+              echo "::error::Unexpected ERROR in $C_NAME container logs"
+            fi
+          done
+
+      - name: "Collect docker logs"
+        if: always()
+        uses: jwalton/gh-docker-logs@v2
+        with:
+          dest: './healthchecks-container-logs'
+      - name: "Upload artifact"
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: healthchecks-container-logs
+          path: ./healthchecks-container-logs/**
+          retention-days: 14
 
       - name: "Clean shutdown of all containers"
         if: always()
