@@ -6,7 +6,7 @@ do
   sleep 3
 done
 
-echo castlemock is ready!
+echo "castlemock is ready!"
 
 curl -X POST "http://localhost:8080/castlemock/api/rest/core/project/soap/import" -H "accept: /" -H "Authorization: Basic YWRtaW46YWRtaW4=" -H "Content-Type: multipart/form-data" -F "file=@/bgs-castlemock.xml;type=text/xml"
 
