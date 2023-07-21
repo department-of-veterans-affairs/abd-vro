@@ -1,6 +1,6 @@
 #!/bin/bash
 
-until [ "`curl --silent --show-error --connect-timeout 1 -I http://localhost:8080/castlemock/ | grep 'HTTP/1.1 200'`" != "" ];
+until [ "$(curl --silent -o /dev/null -w "%{http_code}" --connect-timeout 1 -I http://localhost:8080/castlemock/)" == "200"
 do
   echo "--- waiting on castlemock for 3 seconds"
   sleep 3
