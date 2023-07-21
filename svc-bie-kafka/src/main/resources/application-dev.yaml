@@ -5,6 +5,6 @@ spring:
 #    properties:
 #      schema.registry.url: "http://kafka.dev.bip.va.gov:443"
     consumer:
-      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-tst1-vro}"
+      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-tst-vro1}"
       auto-offset-reset: earliest
     bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:kafka.dev.bip.va.gov:443}"
