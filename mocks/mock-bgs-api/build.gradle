@@ -3,7 +3,6 @@ plugins {
 }
 
 docker {
-  dockerfile file('src/docker/Dockerfile')
   copySpec.from("src/main/resources").into(".")
   noCache true
 }
