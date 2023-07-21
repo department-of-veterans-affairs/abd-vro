@@ -31,19 +31,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Does same thing as BipApiServiceTest but through RMQ instance. Assumes RMQ broker is available
- * locally.
- */
-@Disabled // Currently fails on first run, but passes on second run
+
+@Disabled("Currently fails on first run, but passes on second run")
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @Slf4j
 class RMQIntegrationTest {
-
   @MockBean BipApiService service;
   @Autowired RMQController controller;
-
   @Autowired RabbitTemplate rabbitTemplate;
   @Autowired RabbitAdmin rabbitAdmin;
 
@@ -57,8 +52,6 @@ class RMQIntegrationTest {
     BipUpdateClaimResp resp = new BipUpdateClaimResp();
     resp.statusMessage = "test pass";
     when(service.updateClaimStatus(anyLong(), any(ClaimStatus.class))).thenReturn(resp);
-    //    Mockito.doReturn(resp).when(service).updateClaimStatus(req.getClaimId(),
-    // req.getClaimStatus());
 
     BipUpdateClaimResp result =
         (BipUpdateClaimResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, req);
@@ -77,7 +70,6 @@ class RMQIntegrationTest {
 
     resp.statusMessage = "test pass";
     Mockito.when(service.getClaimContentions(Mockito.eq(req))).thenReturn(result);
-    //    Mockito.doReturn(result).when(service).getClaimContentions(req);
 
     BipContentionResp response =
         (BipContentionResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, req);
@@ -93,7 +85,6 @@ class RMQIntegrationTest {
     long req = 42;
     BipClaim result = new BipClaim();
     result.setPhase("phase");
-    //    Mockito.doReturn(result).when(service).getClaimDetails(req);
     Mockito.when(service.getClaimDetails(Mockito.anyLong())).thenReturn(result);
 
     BipClaim response = (BipClaim) rabbitTemplate.convertSendAndReceive(exchangeName, qName, req);
@@ -105,11 +96,9 @@ class RMQIntegrationTest {
   @Test
   void testSetClaimToRfdStatus(@Value("${setClaimToRfdStatusQueue}") String qName) {
     rabbitAdmin.purgeQueue(qName, false);
-
     long req = 42L;
     BipUpdateClaimResp result = new BipUpdateClaimResp();
     result.statusMessage = "msg";
-    //    Mockito.doReturn(result).when(service).setClaimToRfdStatus(req);
     Mockito.when(service.setClaimToRfdStatus(Mockito.anyLong())).thenReturn(result);
 
     BipUpdateClaimResp response =
@@ -123,7 +112,6 @@ class RMQIntegrationTest {
   @Test
   void testUpdateClaimContention(@Value("${updateClaimContentionQueue}") String qName) {
     rabbitAdmin.purgeQueue(qName, false);
-
     UpdateContentionReq req = UpdateContentionReq.builder().claimId(123).build();
     BipUpdateClaimResp result = new BipUpdateClaimResp();
     result.statusMessage = "msg";
