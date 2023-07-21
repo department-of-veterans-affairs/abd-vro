@@ -13,7 +13,6 @@ spring:
   kafka:
     consumer:
       group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-tst-vro}"
-      auto-offset-reset: earliest
       key-deserializer: "org.apache.kafka.common.serialization.ByteArrayDeserializer"
       value-deserializer: "org.apache.kafka.common.serialization.ByteArrayDeserializer"
       security:

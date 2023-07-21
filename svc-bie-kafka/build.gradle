@@ -9,7 +9,7 @@ ext {
 
 dependencies {
   implementation project(":shared:lib-bie-kafka")
-
+  implementation 'org.apache.avro:avro:1.11.2'
   // RabbitMQ
   implementation 'org.springframework.boot:spring-boot-starter-amqp'
   implementation 'org.springframework.kafka:spring-kafka'

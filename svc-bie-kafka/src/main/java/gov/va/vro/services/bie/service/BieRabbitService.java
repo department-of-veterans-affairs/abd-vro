@@ -24,6 +24,6 @@ public class BieRabbitService implements AmqpMessageSender {
             .eventDetails(message)
             .build();
     rabbitTemplate.convertAndSend(exchange, queue, bieMessagePayload);
-    log.debug("event=messageSent exchange={} topic={} msg={}", exchange, queue, bieMessagePayload);
+    log.info("event=messageSent exchange={} topic={} msg={}", exchange, queue, bieMessagePayload);
   }
 }
