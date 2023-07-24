@@ -59,13 +59,21 @@ services:
     profiles: ["all","kafka"]
     image: va/vro_mocks-mock-bie-kafka:latest
     <<: [*common-sde-security, *common-security-opt]
+    # Port 9092 is for internal communication within the vro_intranet, and is needed for consuming/producing messages
+    # within the vro_intranet docker network. In order to produce/consume messages outside the vro_intranet network,
+    # the port 9094 is exposed for external communication with mock-bie-kafka from outside the vro_intranet. Advertised
+    # listeners are configured to consume messages on both ports.
     ports:
       - "9092:9092"
+      - "9094:9094"
     environment:
       <<: *common-vars
       # for development only; TODO: Update with BIE-like authentication
       ALLOW_PLAINTEXT_LISTENER: 'yes'
-      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://mock-bie-kafka:9092
+      KAFKA_ADVERTISED_HOST_NAME: mock-bie-kafka
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://mock-bie-kafka:9092,EXTERNAL://localhost:9094
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
     networks:
       - vro_intranet
 
