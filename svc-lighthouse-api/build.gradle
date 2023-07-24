@@ -7,7 +7,7 @@ plugins {
 description = 'Automated Benefit Delivery Data Access Service'
 
 dependencies {
-  implementation "org.springframework.boot:spring-boot-dependencies:3.1.2"
+//  implementation "org.springframework.boot:spring-boot-dependencies:3.1.2"
   implementation "com.fasterxml.jackson.core:jackson-databind"
   //implementation "com.fasterxml.jackson.core:jackson-core:${jackson_version}"
   implementation 'org.springframework.boot:spring-boot-starter-amqp'
