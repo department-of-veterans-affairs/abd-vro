@@ -34,3 +34,7 @@ jobs:
   svc-bgs-api:
     uses: ./.github/workflows/svc-bgs-api-integration-test.yml
     secrets: inherit
+
+  bie-kafka-end-to-end:
+    uses: ./.github/workflows/bie-kafka-end2end-test.yml
+    secrets: inherit
