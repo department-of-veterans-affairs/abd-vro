@@ -53,8 +53,8 @@ services:
       <<: [*postgres-vars, *rabbitmq-placeholder-vars, *redis-placeholder-vars]
     networks:
       - vro_intranet
+    # Expose healthcheck port for end2end test
     ports:
-      # Expose healthcheck port for end2end test
       - "10021:10021"
 
   svc-xample-j:
