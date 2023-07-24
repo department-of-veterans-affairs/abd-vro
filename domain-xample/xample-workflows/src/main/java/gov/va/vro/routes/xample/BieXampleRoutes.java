@@ -52,7 +52,8 @@ public class BieXampleRoutes extends EndpointRouteBuilder {
             })
 
         .log("Saved Contention Event to DB  ${exchange.pattern}: body ${body.getClass()}")
-        .marshal().json(JsonLibrary.Jackson)
+        .marshal()
+        .json(JsonLibrary.Jackson)
         .log("ReceivedMessageEventBody: ${body}");
   }
 
