@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.endpoint.EndpointRouteBuilder;
+import org.apache.camel.model.dataformat.JsonLibrary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -49,7 +50,10 @@ public class BieXampleRoutes extends EndpointRouteBuilder {
               body.setStatus(200);
               exchange.getMessage().setBody(body);
             })
-        .log("Saved Contention Event to DB  ${exchange.pattern}: body ${body.getClass()}: ${body}");
+
+        .log("Saved Contention Event to DB  ${exchange.pattern}: body ${body.getClass()}")
+        .marshal().json(JsonLibrary.Jackson)
+        .log("ReceivedMessageEventBody: ${body}");
   }
 
   void configureExceptionHandling() {
