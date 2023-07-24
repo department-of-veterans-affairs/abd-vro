@@ -2,8 +2,8 @@
 spring:
   # Specify where Spring connects to Kafka
   kafka:
-#    properties:
-#      schema.registry.url: "http://kafka.dev.bip.va.gov:443"
+    properties:
+      schema.registry.url: "http://kafka.dev.bip.va.gov:443"
     consumer:
       group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-tst-vro2}"
       auto-offset-reset: earliest
