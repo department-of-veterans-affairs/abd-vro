@@ -17,9 +17,9 @@ dependencies {
   implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
 
   // Groovy REPL shell
-  implementation 'org.apache.groovy:groovy'
-  implementation 'org.apache.groovy:groovy-json'
-  implementation 'org.apache.groovy:groovy-groovysh'
+  implementation 'org.codehaus.groovy:groovy'
+  implementation 'org.codehaus.groovy:groovy-json'
+  implementation 'org.codehaus.groovy:groovy-groovysh'
   implementation 'jline:jline:2.14.6' // Needed to add custom Groovysh commands
 
   // DB access

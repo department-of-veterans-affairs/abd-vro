@@ -19,7 +19,7 @@ plugins {
     // Use our `local` container variants
     id 'local.java.container-spring-conventions'
 
-//    id 'starter.java.lint-spectral-conventions'
+    id 'starter.java.lint-spectral-conventions'
     id 'starter.java.doc-springdoc-conventions'
 }
 

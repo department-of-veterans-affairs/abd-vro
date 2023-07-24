@@ -12,7 +12,7 @@ import lombok.ToString;
 import java.time.OffsetDateTime;
 import java.util.Set;
 import java.util.UUID;
-import jakarta.validation.constraints.NotNull;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
