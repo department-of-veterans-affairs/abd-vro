@@ -31,7 +31,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Disabled("Currently fails on first run, but passes on second run")
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
