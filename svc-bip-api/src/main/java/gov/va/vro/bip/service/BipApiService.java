@@ -13,6 +13,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Encoders;
+import io.jsonwebtoken.security.Keys;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +37,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -224,6 +227,10 @@ public class BipApiService implements IBipApiService {
     claims.put("iss", bipApiProps.getClaimIssuer());
     byte[] signSecretBytes = bipApiProps.getClaimSecret().getBytes(StandardCharsets.UTF_8);
     Key signingKey = new SecretKeySpec(signSecretBytes, SignatureAlgorithm.HS256.getJcaName());
+
+    String secretString = Encoders.BASE64.encode(signingKey.getEncoded());
+    System.out.println(bipApiProps.getClaimSecret());
+
     return Jwts.builder()
         .setSubject("Claim")
         .setIssuedAt(Calendar.getInstance().getTime())

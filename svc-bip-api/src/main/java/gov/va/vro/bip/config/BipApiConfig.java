@@ -103,7 +103,7 @@ public class BipApiConfig {
       CloseableHttpClient httpClient =
           HttpClients.custom().setConnectionManager(connectionManager).build();
       ClientHttpRequestFactory requestFactory =
-          new HttpComponentsClientHttpRequestFactory((HttpClient) httpClient);
+          new HttpComponentsClientHttpRequestFactory(httpClient);
       return new RestTemplate(requestFactory);
     } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
       log.error("Failed to create SSL context for VA certificate. {}", e.getMessage(), e);

@@ -7,6 +7,7 @@ plugins {
 description = 'Automated Benefit Delivery Data Access Service'
 
 dependencies {
+  implementation "org.springframework.boot:spring-boot-dependencies:3.1.2"
   implementation "com.fasterxml.jackson.core:jackson-databind"
   //implementation "com.fasterxml.jackson.core:jackson-core:${jackson_version}"
   implementation 'org.springframework.boot:spring-boot-starter-amqp'
@@ -20,7 +21,10 @@ dependencies {
   }
   implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
   implementation 'org.apache.commons:commons-lang3:3.12.0'
-  implementation 'io.jsonwebtoken:jjwt:0.9.1'
+  implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+  implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+  implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
 
   testImplementation "org.apache.camel.springboot:camel-rabbitmq-starter:${camel_version}"
   //  testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
