@@ -23,6 +23,7 @@ dependencies {
   implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
   implementation 'io.jsonwebtoken:jjwt:0.2'
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+  implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
   implementation project(':domain-xample:xample-shared')
 

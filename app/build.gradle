@@ -13,7 +13,6 @@ dependencies {
   implementation project(':domain-xample:xample-api-controller')
 
   implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
-  implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-security'
   implementation 'org.springframework.boot:spring-boot-starter-actuator'

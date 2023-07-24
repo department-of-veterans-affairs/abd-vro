@@ -15,6 +15,6 @@ dependencies {
   // implementation "io.opentracing.contrib:opentracing-spring-cloud-jdbc-starter"
   implementation "jakarta.validation:jakarta.validation-api"
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-  implementation "io.hypersistence:hypersistence-utils-hibernate-60:${hibernate_types_version}"
+  implementation "com.vladmihalcea:hibernate-types-55:2.21.1"
   testRuntimeOnly "com.h2database:h2:${h2_version}"
 }
