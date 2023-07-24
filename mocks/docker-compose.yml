@@ -60,7 +60,9 @@ services:
     image: va/vro_mocks-mock-bie-kafka:latest
     <<: [*common-sde-security, *common-security-opt]
     ports:
+      # Port 9092 is for internal communication within the vro_intranet
       - "9092:9092"
+      # Port 9094 is for external communication outside the vro_intranet
       - "9094:9094"
     environment:
       <<: *common-vars

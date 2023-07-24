@@ -54,6 +54,7 @@ services:
     networks:
       - vro_intranet
     ports:
+      # Expose healthcheck port for end2end test
       - "10021:10021"
 
   svc-xample-j:

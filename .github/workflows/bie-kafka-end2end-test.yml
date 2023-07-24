@@ -1,4 +1,4 @@
-name: 'CI: BIE Kafka End 2 End Test with Mock'
+name: 'CI: BIE Kafka End-2-End Test'
 
 on:
   # Allow manual triggering
@@ -35,18 +35,19 @@ jobs:
       - name: 'Build the images'
         uses: ./.github/actions/build-images
 
-      - name: 'Start the containers'
+      - name: 'Set RABBITMQ_BASIC_AUTH'
         run: |
           source scripts/setenv.sh
 
           # create basic auth token for RabbitMQ and export to github environment
           BASIC_AUTH=`echo "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" | base64`
-          echo "RABBITMQ_PLACEHOLDERS_USERNAME=${RABBITMQ_PLACEHOLDERS_USERNAME}" >> $GITHUB_ENV
-          echo "RABBITMQ_PLACEHOLDERS_USERPASSWORD=${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" >> $GITHUB_ENV
           echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}" >> $GITHUB_ENV
-          echo "POSTGRES_USER=${POSTGRES_USER}" >> $GITHUB_ENV
-          echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> $GITHUB_ENV
 
+          export -p | sed 's/declare -x //'
+
+      - name: 'Start the containers'
+        run: |
+          source scripts/setenv.sh
           export -p | sed 's/declare -x //'
 
           ./gradlew :dockerComposeUp
@@ -113,8 +114,10 @@ jobs:
       - name: 'Sleep to give time for message to travel end to end from kafka to saved in database'
         run: sleep 5
 
-      - name: 'Find entry in Postgres'
+      - name: 'Check for saved DB entry in Postgres'
         run: |
+          source scripts/setenv.sh
+
           psql postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/vro -c \
           "SELECT *
             FROM

@@ -35,6 +35,6 @@ jobs:
     uses: ./.github/workflows/svc-bgs-api-integration-test.yml
     secrets: inherit
 
-  bie-kafka-end-to-end-mock:
-    uses: ./.github/workflows/bie-kafka-end2end-test-with-mock.yml
+  bie-kafka-end-to-end:
+    uses: ./.github/workflows/bie-kafka-end2end-test.yml
     secrets: inherit
