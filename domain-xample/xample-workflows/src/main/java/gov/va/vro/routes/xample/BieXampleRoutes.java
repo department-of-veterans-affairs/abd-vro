@@ -56,9 +56,8 @@ public class BieXampleRoutes extends EndpointRouteBuilder {
               final BieMessagePayload body = exchange.getMessage().getBody(BieMessagePayload.class);
               final ObjectMapper objectMapper = new ObjectMapper();
               final String jsonBody = objectMapper.writeValueAsString(body);
-              exchange.setProperty("jsonBody", jsonBody);
+              log.info("ReceivedMessageEventBody: " + jsonBody);
             })
-        .log("ReceivedMessageEventBody: ${exchangeProperty.jsonBody}");
   }
 
   void configureExceptionHandling() {
