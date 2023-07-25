@@ -69,29 +69,51 @@ services:
     environment:
       <<: *common-vars
       #DOING: # for development only; TODO: Update with BIE-like authentication
-      # ALLOW_PLAINTEXT_LISTENER: 'yes'
+#      ALLOW_PLAINTEXT_LISTENER: 'yes'
       KAFKA_ADVERTISED_HOST_NAME: mock-bie-kafka
       # Refer to "Security" section of https://hub.docker.com/r/bitnami/kafka/
-      KAFKA_CFG_LISTENERS: SASL_SSL://:9092,CONTROLLER://:9093,EXTERNAL://:9094
-      KAFKA_CFG_ADVERTISED_LISTENERS: SASL_SSL://mock-bie-kafka:9092,EXTERNAL://localhost:9094
-      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CFG_LISTENERS: INTERNAL://:9092,CONTROLLER://:9093
+      KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://mock-bie-kafka:9092
+      #KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:SSL,CONTROLLER:SSL
+
+      # https://github.com/bitnami/containers/blob/main/bitnami/kafka/README.md
+      # https://stackoverflow.com/a/72018409
+      # Empty string '' and "" don't work; ' ' or " " does
+      KAFKA_CFG_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: " "
+#      KAFKA_SSL_ENABLED_PROTOCOLS: 'TLSv1.2'
+#      KAFKA_TLS_CLIENT_AUTH: required
+#      KAFKA_SSL_CLIENT_AUTH: required
+#      KAFKA_AUTH_ENABLE: false
+#      KAFKA_CFG_AUTH_ENABLE: false
+
+#      KAFKA_SECURITY_INTER_BROKER_PROTOCOL: 'SSL'
+      KAFKA_CFG_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
+#      KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: 'SSL'
+#      KAFKA_SASL_ENABLED_MECHANISMS: 'SSL'
 
       # Irrelevant since no Zookeeper
       # Users that will be created into Zookeeper when using SASL for client communications
-      #KAFKA_CLIENT_USERS: user
-      #KAFKA_CLIENT_PASSWORDS: bitnami
+      KAFKA_CLIENT_USERS: user
+      KAFKA_CLIENT_PASSWORDS: bitnami
 
-      KAFKA_CERTIFICATE_PASSWORD: mockCertificatePwd123
-      KAFKA_TLS_TYPE: PEM
+      KAFKA_CERTIFICATE_PASSWORD: mockKafka
+      #KAFKA_TLS_TYPE: PEM
+      KAFKA_TLS_TYPE: JKS
+
+      BITNAMI_DEBUG: true
 
       # BIE_KAFKA_KEYSTORE_INBASE64: ${BIE_KAFKA_KEYSTORE_INBASE64}
       # BIE_KAFKA_KEYSTORE_PASSWORD: ${BIE_KAFKA_KEYSTORE_PASSWORD}
       # BIE_KAFKA_TRUSTSTORE_INBASE64: ${BIE_KAFKA_TRUSTSTORE_INBASE64}
       # BIE_KAFKA_TRUSTSTORE_PASSWORD: ${BIE_KAFKA_TRUSTSTORE_PASSWORD}
     volumes:
-      - './kafka.keystore.pem:/opt/bitnami/kafka/config/certs/kafka.keystore.pem:ro'
-      - './kafka.keystore.key:/opt/bitnami/kafka/config/certs/kafka.keystore.key:ro'
-      - './kafka.truststore.pem:/opt/bitnami/kafka/config/certs/kafka.truststore.pem:ro'
+      # - './kafka.keystore.pem:/opt/bitnami/kafka/config/certs/kafka.keystore.pem:ro'
+      # - './kafka.keystore.key:/opt/bitnami/kafka/config/certs/kafka.keystore.key:ro'
+      # - './kafka.truststore.pem:/opt/bitnami/kafka/config/certs/kafka.truststore.pem:ro'
+      # - './kafka.keystore.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro'
+      # - './kafka.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro'
+      - './config:/bitnami/kafka/config'
     networks:
       - vro_intranet
 

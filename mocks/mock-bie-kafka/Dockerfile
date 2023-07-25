@@ -5,12 +5,12 @@ FROM bitnami/kafka:3.3
 #ENV KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
 
 # "Security" section of https://hub.docker.com/r/bitnami/kafka/
-ENV KAFKA_TLS_TYPE=PEM
-ENV KAFKA_CERTIFICATE_PASSWORD=mockCertificate
-ENV KAFKA_TLS_TRUSTSTORE_FILE=/Users/yoom/dev/abd-vro/certificate.p12
+## ENV KAFKA_TLS_TYPE=PEM
+## ENV KAFKA_CERTIFICATE_PASSWORD=mockCertificate
+## ENV KAFKA_TLS_TRUSTSTORE_FILE=/Users/yoom/dev/abd-vro/certificate.p12
 
 # Don't verify host name of SSL certificates
-ENV KAFKA_CFG_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM=""
+#ENV KAFKA_CFG_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM=""
 
 # Client config:
 #ENV KAFKA_CFG_LISTENERS=SASL_SSL://:9092,CONTROLLER://:9093
@@ -39,3 +39,9 @@ ENV KAFKA_CFG_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM=""
 
 # To run in Docker Compose setup: COMPOSE_PROFILES="kafka" ./gradlew -p mocks :dockerComposeUp
 # Start the kafka client in the Docker Compose network and connect to `mock-bie-kafka:9092`
+
+
+# COMPOSE_PROFILES="kafka" g :dockerComposeUp
+# docker-compose exec mock-bie-kafka bash
+# /opt/bitnami/scripts/kafka/entrypoint.sh /opt/bitnami/scripts/kafka/run.sh
+#ENTRYPOINT ["tail", "-f", "/dev/null"]
