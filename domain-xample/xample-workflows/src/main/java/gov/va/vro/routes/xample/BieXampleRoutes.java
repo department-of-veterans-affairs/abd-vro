@@ -57,7 +57,7 @@ public class BieXampleRoutes extends EndpointRouteBuilder {
               final ObjectMapper objectMapper = new ObjectMapper();
               final String jsonBody = objectMapper.writeValueAsString(body);
               log.info("ReceivedMessageEventBody: " + jsonBody);
-            })
+            });
   }
 
   void configureExceptionHandling() {
