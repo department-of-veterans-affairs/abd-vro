@@ -25,6 +25,8 @@ spring:
         trust-store-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
         trust-store-type: "PKCS12"
     bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:localhost:9092}"
+    properties:
+      specific.avro.reader: false
 
 kafka:
   topic:
