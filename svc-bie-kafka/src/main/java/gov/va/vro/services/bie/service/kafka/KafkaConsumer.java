@@ -16,11 +16,9 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 @Slf4j
 @Component
@@ -46,7 +44,8 @@ public class KafkaConsumer {
       byte[] value = record.value();
       log.info("Topic name: " + topic);
       log.info("Consumed message key: " + new String(record.key(), StandardCharsets.UTF_8));
-      log.info("Consumed message value (before) decode: " + new String(value, StandardCharsets.UTF_8));
+      log.info(
+          "Consumed message value (before) decode: " + new String(value, StandardCharsets.UTF_8));
 
       // Create a reader for the Avro schema
       DatumReader<GenericRecord> reader = new GenericDatumReader<>(schema);

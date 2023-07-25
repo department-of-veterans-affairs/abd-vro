@@ -1,7 +1,7 @@
 package gov.va.vro.services.bie.config;
 
 import gov.va.vro.services.bie.service.AmqpMessageSender;
-import gov.va.vro.services.bie.service.kafka.KafkaConsumerCreator;
+import gov.va.vro.services.bie.service.kafka.KafkaConsumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -15,7 +15,7 @@ class KafkaConsumerCreatorTest {
   @Mock private AmqpMessageSender amqpMessageSender;
 
   private BieProperties bieProperties;
-  private KafkaConsumerCreator kafkaConsumerCreator;
+  private KafkaConsumer kafkaConsumer;
 
   @BeforeEach
   void setUp() {
