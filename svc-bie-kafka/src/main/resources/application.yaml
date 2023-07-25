@@ -15,15 +15,15 @@ spring:
     consumer:
       group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-group}"
       # TODO: Uncomment the following lines after completion of https://github.com/department-of-veterans-affairs/abd-vro/issues/1823
-#      security:
-#        protocol: SSL
-#      ssl:
-#        keystore-location: "file:${KEYSTORE_FILE}"
-#        keystore-password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
-#        key-store-type: "PKCS12"
-#        truststore-location: "file:${TRUSTSTORE_FILE}"
-#        truststore-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
-#        trust-store-type: "PKCS12"
+      security:
+        protocol: SSL
+      ssl:
+        keystore-location: "file:${KEYSTORE_FILE}"
+        keystore-password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
+        key-store-type: "PKCS12"
+        truststore-location: "file:${TRUSTSTORE_FILE}"
+        truststore-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
+        trust-store-type: "PKCS12"
     bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:localhost:9092}"
 
 ## Specify bie properties

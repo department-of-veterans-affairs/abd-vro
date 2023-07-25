@@ -68,12 +68,30 @@ services:
       - "9094:9094"
     environment:
       <<: *common-vars
-      # for development only; TODO: Update with BIE-like authentication
-      ALLOW_PLAINTEXT_LISTENER: 'yes'
+      #DOING: # for development only; TODO: Update with BIE-like authentication
+      # ALLOW_PLAINTEXT_LISTENER: 'yes'
       KAFKA_ADVERTISED_HOST_NAME: mock-bie-kafka
-      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
-      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://mock-bie-kafka:9092,EXTERNAL://localhost:9094
+      # Refer to "Security" section of https://hub.docker.com/r/bitnami/kafka/
+      KAFKA_CFG_LISTENERS: SASL_SSL://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      KAFKA_CFG_ADVERTISED_LISTENERS: SASL_SSL://mock-bie-kafka:9092,EXTERNAL://localhost:9094
       KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+
+      # Irrelevant since no Zookeeper
+      # Users that will be created into Zookeeper when using SASL for client communications
+      #KAFKA_CLIENT_USERS: user
+      #KAFKA_CLIENT_PASSWORDS: bitnami
+
+      KAFKA_CERTIFICATE_PASSWORD: mockCertificatePwd123
+      KAFKA_TLS_TYPE: PEM
+
+      # BIE_KAFKA_KEYSTORE_INBASE64: ${BIE_KAFKA_KEYSTORE_INBASE64}
+      # BIE_KAFKA_KEYSTORE_PASSWORD: ${BIE_KAFKA_KEYSTORE_PASSWORD}
+      # BIE_KAFKA_TRUSTSTORE_INBASE64: ${BIE_KAFKA_TRUSTSTORE_INBASE64}
+      # BIE_KAFKA_TRUSTSTORE_PASSWORD: ${BIE_KAFKA_TRUSTSTORE_PASSWORD}
+    volumes:
+      - './kafka.keystore.pem:/opt/bitnami/kafka/config/certs/kafka.keystore.pem:ro'
+      - './kafka.keystore.key:/opt/bitnami/kafka/config/certs/kafka.keystore.key:ro'
+      - './kafka.truststore.pem:/opt/bitnami/kafka/config/certs/kafka.truststore.pem:ro'
     networks:
       - vro_intranet
 
