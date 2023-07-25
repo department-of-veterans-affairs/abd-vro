@@ -13,8 +13,8 @@ spring:
   kafka:
     consumer:
       group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-tst-vro1}"
-      key-deserializer: "io.confluent.kafka.serializers.KafkaAvroDeserializer"
-      value-deserializer: "io.confluent.kafka.serializers.KafkaAvroDeserializer"
+      key-deserializer: "org.apache.kafka.common.serialization.LongDeserializer"
+      value-deserializer: "org.apache.kafka.common.serialization.ByteArrayDeserializer"
       security:
         protocol: SSL
       ssl:
