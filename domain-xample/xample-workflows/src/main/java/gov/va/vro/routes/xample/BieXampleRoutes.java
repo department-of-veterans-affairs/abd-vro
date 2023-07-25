@@ -1,5 +1,6 @@
 package gov.va.vro.routes.xample;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.camel.OnExceptionHelper;
 import gov.va.vro.camel.RabbitMqCamelUtils;
 import gov.va.vro.model.biekafka.BieMessagePayload;
@@ -7,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.endpoint.EndpointRouteBuilder;
-import org.apache.camel.model.dataformat.JsonLibrary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -51,9 +51,14 @@ public class BieXampleRoutes extends EndpointRouteBuilder {
               exchange.getMessage().setBody(body);
             })
         .log("Saved Contention Event to DB  ${exchange.pattern}: body ${body.getClass()}")
-        .marshal()
-        .json(JsonLibrary.Jackson)
-        .log("ReceivedMessageEventBody: ${body}");
+        .process(
+            exchange -> {
+              final BieMessagePayload body = exchange.getMessage().getBody(BieMessagePayload.class);
+              final ObjectMapper objectMapper = new ObjectMapper();
+              final String jsonBody = objectMapper.writeValueAsString(body);
+              exchange.setProperty("jsonBody", jsonBody);
+            })
+        .log("ReceivedMessageEventBody: ${exchangeProperty.jsonBody}");
   }
 
   void configureExceptionHandling() {
