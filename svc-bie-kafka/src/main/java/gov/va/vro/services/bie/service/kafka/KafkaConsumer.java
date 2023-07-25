@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 @Slf4j
@@ -44,11 +45,11 @@ public class KafkaConsumer {
     try {
       byte[] value = record.value();
       log.info("Topic name: " + topic);
-      log.info("Consumed message key: " + Arrays.toString(record.key()));
-      log.info("Consumed message value (before) decode: " + Arrays.toString(value));
+      log.info("Consumed message key: " + new String(record.key(), StandardCharsets.UTF_8));
+      log.info("Consumed message value (before) decode: " + new String(value, StandardCharsets.UTF_8));
 
       // Create a reader for the Avro schema
-      DatumReader<GenericRecord> reader = new GenericDatumReader<>(this.schema);
+      DatumReader<GenericRecord> reader = new GenericDatumReader<>(schema);
       // Create a decoder for the Avro-encoded data
       Decoder decoder = DecoderFactory.get().binaryDecoder(value, null);
       // Deserialize the data
