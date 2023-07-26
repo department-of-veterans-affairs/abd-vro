@@ -23,22 +23,21 @@ public class BieXampleRoutes extends EndpointRouteBuilder {
 
   @Autowired final DbHelper dbHelper;
 
-  @Value("#{'${bie.queues}'.split(' ')}")
-  private final List<String> queues;
+  @Value("#{'${bie.exchanges}'.split(' ')}")
+  private final List<String> exchanges;
 
   @Override
   public void configure() {
     configureExceptionHandling();
-    for (String queue : queues) {
-      configureRouteToSaveContentionEventToDbFromQueue(queue);
+    for (String exchange : exchanges) {
+      configureRouteToSaveContentionEventToDbFromQueue(exchange);
     }
   }
 
-  void configureRouteToSaveContentionEventToDbFromQueue(final String queue) {
-    final String exchangeName = queue;
-    final String routingKey = queue;
-    RabbitMqCamelUtils.fromRabbitmqFanoutExchange(this, exchangeName, routingKey)
-        .routeId(queue + "-saveToDb-route")
+  void configureRouteToSaveContentionEventToDbFromQueue(final String exchangeName) {
+    final String queueName = "saveToDB-"+exchangeName;
+    RabbitMqCamelUtils.fromRabbitmqFanoutExchange(this, exchangeName, queueName)
+        .routeId(exchangeName + "-saveToDb-route")
         .log("Received ${headers} ${body.getClass()}: ${body}")
         .convertBodyTo(BieMessagePayload.class)
         .log("Converted to ${body.getClass()}: ${body}")

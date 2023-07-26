@@ -52,7 +52,7 @@ spring.config.import: >
 
 ## Specify bie properties
 bie:
-  queues: >-
+  exchanges: >-
     bie-events-contention-associated
     bie-events-contention-updated
     bie-events-contention-classified
