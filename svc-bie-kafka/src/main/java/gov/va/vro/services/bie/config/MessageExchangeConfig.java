@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Configuration
-public class MessageQueueConfig {
+public class MessageExchangeConfig {
 
   private static final boolean IS_DURABLE = true;
   private static final boolean IS_AUTO_DELETED = true;
@@ -28,7 +28,7 @@ public class MessageQueueConfig {
   @Bean
   Declarables topicBindings(final BieProperties bieProperties) {
     final List<AbstractDeclarable> list =
-        bieProperties.getKafkaTopicToAmqpQueueMap().values().stream()
+        bieProperties.getKafkaTopicToAmqpExchangeMap().values().stream()
             .map(
                 topic -> {
                   final FanoutExchange fanoutExchange =

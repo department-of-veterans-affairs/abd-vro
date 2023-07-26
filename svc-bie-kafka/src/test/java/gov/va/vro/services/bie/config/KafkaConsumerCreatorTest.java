@@ -29,7 +29,7 @@ class KafkaConsumerCreatorTest {
 
   @Test
   void whenTopicMapIsEmpty_ShouldCreateNoListeners() {
-    bieProperties.setKafkaTopicToAmqpQueueMap(Map.of());
+    bieProperties.setKafkaTopicToAmqpExchangeMap(Map.of());
 
     kafkaConsumerCreator =
         new KafkaConsumerCreator(consumerFactory, amqpMessageSender, bieProperties);
@@ -39,7 +39,7 @@ class KafkaConsumerCreatorTest {
 
   @Test
   void whenTopicMapIsNotEmpty_ShouldCreateListeners() {
-    bieProperties.setKafkaTopicToAmqpQueueMap(Map.of("kafkaTopic", "rabbitQueue"));
+    bieProperties.setKafkaTopicToAmqpExchangeMap(Map.of("kafkaTopic", "rabbitExchange"));
 
     kafkaConsumerCreator =
         new KafkaConsumerCreator(consumerFactory, amqpMessageSender, bieProperties);
