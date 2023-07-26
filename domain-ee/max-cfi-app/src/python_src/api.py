@@ -43,7 +43,8 @@ def get_health_status():
 def get_max_ratings(
         claim_for_increase: MaxRatingsForClaimForIncreaseRequest, ) -> MaxRatingsForClaimForIncreaseResponse:
     ratings = []
-    for dc in set(claim_for_increase.diagnostic_codes):
+    for dc_ in set(claim_for_increase.diagnostic_codes):
+        dc = validate_diagnostic_code(dc_)
         max_rating = get_max_rating(dc)
         if max_rating:
             rating = {
@@ -60,3 +61,12 @@ def get_max_ratings(
 
     logging.info(f"event=getMaxRating response={response}")
     return response
+
+
+# Rough boundaries of diagnostic codes as shown by document at
+# (https://www.ecfr.gov/current/title-38/part-4/appendix-Appendix B to Part 4)
+# TODO should be replaced with map of valid diagnostic codes and checked to see if the dc is in map.
+def validate_diagnostic_code(dc: int) -> int:
+    if dc < 5000 or dc > 10000:
+        raise HTTPException(status_code=400, detail=f"The diagnostic code received is invalid: dc={dc}")
+    return dc

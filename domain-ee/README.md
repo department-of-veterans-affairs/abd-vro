@@ -65,9 +65,10 @@ This should result in a response with the following body:
 
 * Each diagnostic code in the request should yield an item in the ratings array of the response body.
 * If any of the diagnostic codes are not found, the response will yield a `404` status code.
+* Diagnostic codes that fall outside the inclusive range [5000, 10000] will yield a `400`.
 * An invalid request such as missing/invalid field will result in `422` status code.
-* Duplicate entries in the diagnostic codes array will yield a single result in the ratings array corresponding to that
-  diagnostic code.
+* Duplicate entries in the diagnostic codes array will yield `422` status code.
+* A request with no diagnostic codes or more than 100 diagnostic codes will yield a `422` status code.
 
 ## Unit tests
 
