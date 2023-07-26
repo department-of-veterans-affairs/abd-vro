@@ -3,6 +3,7 @@ package gov.va.vro.bip.service;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 
 /**
  * Custom Bip Exception.
@@ -13,7 +14,7 @@ import org.springframework.http.HttpStatus;
 @Setter
 public class BipException extends RuntimeException {
 
-  private HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+  private HttpStatusCode status = HttpStatus.INTERNAL_SERVER_ERROR;
 
   public BipException(String message) {
     super(message);
@@ -23,7 +24,7 @@ public class BipException extends RuntimeException {
     super(message, cause);
   }
 
-  public BipException(HttpStatus status, String message) {
+  public BipException(HttpStatusCode status, String message) {
     super(message);
     this.status = status;
   }

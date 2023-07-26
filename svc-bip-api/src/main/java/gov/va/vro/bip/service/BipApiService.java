@@ -224,6 +224,7 @@ public class BipApiService implements IBipApiService {
     claims.put("iss", bipApiProps.getClaimIssuer());
     byte[] signSecretBytes = bipApiProps.getClaimSecret().getBytes(StandardCharsets.UTF_8);
     Key signingKey = new SecretKeySpec(signSecretBytes, SignatureAlgorithm.HS256.getJcaName());
+
     return Jwts.builder()
         .setSubject("Claim")
         .setIssuedAt(Calendar.getInstance().getTime())
