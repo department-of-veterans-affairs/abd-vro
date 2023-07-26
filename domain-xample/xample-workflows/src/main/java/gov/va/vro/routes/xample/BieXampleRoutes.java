@@ -35,7 +35,7 @@ public class BieXampleRoutes extends EndpointRouteBuilder {
   }
 
   void configureRouteToSaveContentionEventToDbFromQueue(final String exchangeName) {
-    final String queueName = "saveToDB-"+exchangeName;
+    final String queueName = "saveToDB-" + exchangeName;
     RabbitMqCamelUtils.fromRabbitmqFanoutExchange(this, exchangeName, queueName)
         .routeId(exchangeName + "-saveToDb-route")
         .log("Received ${headers} ${body.getClass()}: ${body}")
