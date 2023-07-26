@@ -1,5 +1,6 @@
 package gov.va.vro.routes.xample;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.camel.OnExceptionHelper;
 import gov.va.vro.camel.RabbitMqCamelUtils;
 import gov.va.vro.model.biekafka.BieMessagePayload;
@@ -49,7 +50,14 @@ public class BieXampleRoutes extends EndpointRouteBuilder {
               body.setStatus(200);
               exchange.getMessage().setBody(body);
             })
-        .log("Saved Contention Event to DB  ${exchange.pattern}: body ${body.getClass()}: ${body}");
+        .log("Saved Contention Event to DB  ${exchange.pattern}: body ${body.getClass()}")
+        .process(
+            exchange -> {
+              final BieMessagePayload body = exchange.getMessage().getBody(BieMessagePayload.class);
+              final ObjectMapper objectMapper = new ObjectMapper();
+              final String jsonBody = objectMapper.writeValueAsString(body);
+              log.info("ReceivedMessageEventBody: " + jsonBody);
+            });
   }
 
   void configureExceptionHandling() {
