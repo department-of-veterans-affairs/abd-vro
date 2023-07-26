@@ -152,6 +152,7 @@ services:
       <<: *common-vars
       VRO_APP_HOSTNAME: app
       VRO_CC_HOSTNAME: cc-app
+      VRO_MAX_CFI_APP_HOSTNAME: max-cfi-app
     networks:
       - intranet
 
