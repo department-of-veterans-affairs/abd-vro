@@ -2,6 +2,7 @@ package gov.va.vro.services.bie;
 
 import gov.va.vro.services.bie.config.BieProperties;
 import lombok.val;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.FanoutExchange;
@@ -27,6 +28,11 @@ public class IntegrationTestConfig {
     // Pick a random kafka topic
     val topics = bieProperties.getKafkaTopicToAmqpExchangeMap().keySet().stream().toList();
     return topics.get(new Random().nextInt(topics.size()));
+  }
+
+  @Bean
+  public NewTopic newKafkaTopic() {
+    return new NewTopic(kafkaTopic(), 1, (short) 1);
   }
 
   String mqExchangeName() {

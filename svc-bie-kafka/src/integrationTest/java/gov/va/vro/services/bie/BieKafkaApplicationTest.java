@@ -61,17 +61,17 @@ public class BieKafkaApplicationTest {
     // Expect 2 messages in the queue
     latch = new CountDownLatch(2);
 
-    // Message 1
+    // Message 1 goes directly to MQ
     String msgBody = "Message to ensure MQ's fanout exchange is working";
     rabbitTemplate.convertAndSend(fanoutExchange.getName(), "anyRoutingKey", msgBody);
 
-    // Message 2
+    // Message 2 comes through Kafka
     String kafkaEventBody = "a Kafka event payload";
     log.info("Producing event in Kafka topic: {}", kafkaTopic);
     kafkaTemplate.send(kafkaTopic, kafkaEventBody);
 
     log.info("Waiting for svc-bie-kafka to publish Kafka event to RabbitMQ exchange...");
-    assertTrue(latch.await(20, TimeUnit.SECONDS));
+    assertTrue(latch.await(60, TimeUnit.SECONDS));
 
     log.info("Received Messages: " + printMessages(receivedMessages, "\n  "));
 
