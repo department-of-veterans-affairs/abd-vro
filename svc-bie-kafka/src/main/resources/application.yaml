@@ -52,7 +52,3 @@ management:
       enabled: true
       probes:
         enabled: true
-
-avro:
-  schema:
-    path: /avro/ContentionAssociatedToClaim.avsc
