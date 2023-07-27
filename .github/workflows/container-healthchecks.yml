@@ -17,6 +17,11 @@ env:
   LH_ACCESS_CLIENT_ID: ${{ secrets.LH_ACCESS_CLIENT_ID }}
   LH_PRIVATE_KEY: ${{ secrets.LH_PRIVATE_KEY }}
   SLACK_EXCEPTION_WEBHOOK: "http://mock-slack:20100/slack-messages"
+  BIE_KAFKA_KEYSTORE_INBASE64:   ${{ secrets.BIE_KAFKA_KEYSTORE_INBASE64 }}
+  BIE_KAFKA_KEYSTORE_PASSWORD:   ${{ secrets.BIE_KAFKA_KEYSTORE_PASSWORD }}
+  BIE_KAFKA_TRUSTSTORE_INBASE64: ${{ secrets.BIE_KAFKA_TRUSTSTORE_INBASE64 }}
+  BIE_KAFKA_TRUSTSTORE_PASSWORD: ${{ secrets.BIE_KAFKA_TRUSTSTORE_PASSWORD }}
+
 jobs:
   container-healthcheck:
     if: github.repository == 'department-of-veterans-affairs/abd-vro' &&
@@ -93,10 +98,14 @@ jobs:
         run: |
           for C_NAME in $(docker container ls --format '{{.Names}}' | grep -v '-service1'); do
             echo "## Searching $C_NAME container logs"
-            if docker logs "$C_NAME" 2>&1 | grep 'ERROR\|error'; then
+            if docker logs "$C_NAME" 2>&1 | grep 'ERROR'; then
               echo "::error::Unexpected ERROR in $C_NAME container logs"
+              ERROR_IN_LOGS=true
             fi
           done
+          if [ "$ERROR_IN_LOGS" ]; then
+            exit 4
+          fi
 
       - name: "Collect docker logs"
         if: always()
