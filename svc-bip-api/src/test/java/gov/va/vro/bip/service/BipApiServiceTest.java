@@ -44,7 +44,7 @@ public class BipApiServiceTest {
   private static final String CONTENTION = "/claims/%s/contentions";
   private static final String HTTPS = "https://";
   private static final String CLAIM_URL = "claims.bip.va.gov";
-  private static final String CLAIM_SECRET = "secret";
+  private static final String CLAIM_SECRET = "thesecretissecurenowthatitislongenough2184vnrwma";
   private static final String CLAIM_USERID = "userid";
   private static final String CLAIM_ISSUER = "issuer";
   private static final String STATION_ID = "280";

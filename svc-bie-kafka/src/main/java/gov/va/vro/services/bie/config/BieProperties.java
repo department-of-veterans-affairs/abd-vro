@@ -15,8 +15,8 @@ public class BieProperties {
 
   /**
    * Map of entries where the keys are the kafka topics to which this app will subscribe. The value
-   * is the corresponding RabbitMQ exchange/queue upon which the payload will be put. These values
-   * are separated by a colon ":" character.
+   * is the corresponding RabbitMQ exchange upon which the payload will be put. These values are
+   * separated by a colon ":" character.
    */
-  private Map<String, String> kafkaTopicToAmqpQueueMap;
+  private Map<String, String> kafkaTopicToAmqpExchangeMap;
 }

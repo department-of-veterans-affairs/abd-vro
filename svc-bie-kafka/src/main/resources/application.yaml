@@ -33,9 +33,9 @@ kafka:
     prefix: TST
 ## Specify bie properties
 bie:
-  kafka-topic-to-amqp-queue-map:
+  kafka-topic-to-amqp-exchange-map:
     # Map of entries where the keys are the kafka topics to which this app will subscribe. The value is the corresponding
-    # RabbitMQ exchange/queue upon which the payload will be put. These values are separated by a colon ":" character.
+    # RabbitMQ exchange upon which the payload will be put. These values are separated by a colon ":" character.
     TST_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02: bie-events-contention-associated
     TST_CONTENTION_BIE_CONTENTION_UPDATED_V02: bie-events-contention-updated
     TST_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02: bie-events-contention-classified

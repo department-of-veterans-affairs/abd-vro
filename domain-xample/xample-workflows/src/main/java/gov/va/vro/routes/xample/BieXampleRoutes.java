@@ -1,5 +1,6 @@
 package gov.va.vro.routes.xample;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.camel.OnExceptionHelper;
 import gov.va.vro.camel.RabbitMqCamelUtils;
 import gov.va.vro.model.biekafka.BieMessagePayload;
@@ -22,22 +23,21 @@ public class BieXampleRoutes extends EndpointRouteBuilder {
 
   @Autowired final DbHelper dbHelper;
 
-  @Value("#{'${bie.queues}'.split(' ')}")
-  private final List<String> queues;
+  @Value("#{'${bie.exchanges}'.split(' ')}")
+  private final List<String> exchanges;
 
   @Override
   public void configure() {
     configureExceptionHandling();
-    for (String queue : queues) {
-      configureRouteToSaveContentionEventToDbFromQueue(queue);
+    for (String exchange : exchanges) {
+      configureRouteToSaveContentionEventToDbFromQueue(exchange);
     }
   }
 
-  void configureRouteToSaveContentionEventToDbFromQueue(final String queue) {
-    final String exchangeName = queue;
-    final String routingKey = queue;
-    RabbitMqCamelUtils.fromRabbitmqFanoutExchange(this, exchangeName, routingKey)
-        .routeId(queue + "-saveToDb-route")
+  void configureRouteToSaveContentionEventToDbFromQueue(final String exchangeName) {
+    final String queueName = "saveToDB-" + exchangeName;
+    RabbitMqCamelUtils.fromRabbitmqFanoutExchange(this, exchangeName, queueName)
+        .routeId(exchangeName + "-saveToDb-route")
         .log("Received ${headers} ${body.getClass()}: ${body}")
         .convertBodyTo(BieMessagePayload.class)
         .log("Converted to ${body.getClass()}: ${body}")
@@ -49,7 +49,14 @@ public class BieXampleRoutes extends EndpointRouteBuilder {
               body.setStatus(200);
               exchange.getMessage().setBody(body);
             })
-        .log("Saved Contention Event to DB  ${exchange.pattern}: body ${body.getClass()}: ${body}");
+        .log("Saved Contention Event to DB  ${exchange.pattern}: body ${body.getClass()}")
+        .process(
+            exchange -> {
+              final BieMessagePayload body = exchange.getMessage().getBody(BieMessagePayload.class);
+              final ObjectMapper objectMapper = new ObjectMapper();
+              final String jsonBody = objectMapper.writeValueAsString(body);
+              log.info("ReceivedMessageEventBody: " + jsonBody);
+            });
   }
 
   void configureExceptionHandling() {

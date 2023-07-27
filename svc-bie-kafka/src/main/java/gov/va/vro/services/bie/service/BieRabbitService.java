@@ -16,14 +16,15 @@ public class BieRabbitService implements AmqpMessageSender {
   private final RabbitTemplate rabbitTemplate;
 
   @Override
-  public void send(final String exchange, final String queue, final String message) {
+  public void send(final String exchange, final String routingKey, final String message) {
     final BieMessagePayload bieMessagePayload =
         BieMessagePayload.builder()
-            .event(queue)
+            .event(routingKey)
             .notifiedAt(LocalDateTime.now().toString())
             .eventDetails(message)
             .build();
-    rabbitTemplate.convertAndSend(exchange, queue, bieMessagePayload);
-    log.info("event=messageSent exchange={} topic={} msg={}", exchange, queue, bieMessagePayload);
+    rabbitTemplate.convertAndSend(exchange, routingKey, bieMessagePayload);
+    log.debug(
+        "event=messageSent exchange={} topic={} msg={}", exchange, routingKey, bieMessagePayload);
   }
 }
