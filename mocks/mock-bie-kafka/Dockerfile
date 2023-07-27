@@ -1,3 +1,4 @@
+# BIE's Kafka version is 3.3.x
 FROM bitnami/kafka:3.3
 
 # Settings are for development only

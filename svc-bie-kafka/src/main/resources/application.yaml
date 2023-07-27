@@ -10,11 +10,11 @@ spring:
     username: "${RABBITMQ_PLACEHOLDERS_USERNAME:guest}"
     password: "${RABBITMQ_PLACEHOLDERS_USERPASSWORD:guest}"
 
-  # Specify where Spring connects to Kafka
+  # Specify how Spring connects to Kafka
   kafka:
     consumer:
       group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-group}"
-      # TODO: Uncomment the following lines after completion of https://github.com/department-of-veterans-affairs/abd-vro/issues/1823
+      # Comment out the following line to connect without SSL
       security:
         protocol: SSL
       ssl:

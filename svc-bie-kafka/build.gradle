@@ -3,7 +3,7 @@ plugins {
   id 'local.std.java.library-conventions'
   id 'jvm-test-suite'
 
-  id 'local.test.verbose'
+  // id 'local.test.verbose'
 }
 
 ext {

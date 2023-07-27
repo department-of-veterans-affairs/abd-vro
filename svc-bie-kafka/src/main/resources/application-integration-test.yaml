@@ -7,7 +7,7 @@ spring:
     bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:localhost:9094}"
     properties:
       ssl:
-        # Disable hostname verification to avoid error for 'localhost'
+        # Disable hostname verification to avoid error for 'localhost' by setting to empty string
         endpoint:
           identification:
             algorithm:
