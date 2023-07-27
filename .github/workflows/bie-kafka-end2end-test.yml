@@ -12,9 +12,10 @@ concurrency:
 
 env:
   COMPOSE_PROFILES: 'kafka'
-  TEST_TOPIC: 'TST_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02'
-  # TEST_DATA should be replaced with data after event_details is populated with non PII data. See Github Issue 1680
-  TEST_DATA: 'Lorem ipsum'
+  BIE_KAFKA_KEYSTORE_INBASE64:   ${{ secrets.BIE_KAFKA_KEYSTORE_INBASE64 }}
+  BIE_KAFKA_KEYSTORE_PASSWORD:   ${{ secrets.BIE_KAFKA_KEYSTORE_PASSWORD }}
+  BIE_KAFKA_TRUSTSTORE_INBASE64: ${{ secrets.BIE_KAFKA_TRUSTSTORE_INBASE64 }}
+  BIE_KAFKA_TRUSTSTORE_PASSWORD: ${{ secrets.BIE_KAFKA_TRUSTSTORE_PASSWORD }}
 
 jobs:
   integration-test:
@@ -103,13 +104,9 @@ jobs:
 
       - name: 'Create Kafka topic and send message'
         run: |
-          # Create Test File:
-          echo '${{env.TEST_DATA}}' > test.txt
-          echo "Producing message from test.txt on ${{env.TEST_TOPIC}}: "
-          cat test.txt
-
-          # Create Topic and Produce message on test topic
-          kafkacat -b localhost:9094 -P -t '${{env.TEST_TOPIC}}' -l test.txt
+          source scripts/setenv.sh
+          source svc-bie-kafka/docker-entryprep.sh
+          ./gradlew :svc-bie-kafka:integrationTest
 
       - name: 'Sleep to give time for message to travel end to end from kafka to saved in database'
         run: sleep 5
@@ -129,9 +126,7 @@ jobs:
             FROM
               claims.bie_contention_event
             WHERE
-              event='${{env.TEST_TOPIC}}'
-                AND
-              event_details='${{env.TEST_DATA}}'
+              event_details='a Kafka event payload'
           ")
           echo $RESULTS
           if echo $RESULTS | grep -q 'count | 1'

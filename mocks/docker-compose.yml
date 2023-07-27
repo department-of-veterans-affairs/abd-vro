@@ -91,6 +91,7 @@ services:
 
       # Set up SSL -- see "Security" section of https://hub.docker.com/r/bitnami/kafka/
       KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:SSL,CONTROLLER:SSL,EXTERNAL:SSL
+      KAFKA_CFG_SSL_CLIENT_AUTH: required
 
     volumes:
       # - './kafka.keystore.pem:/opt/bitnami/kafka/config/certs/kafka.keystore.pem:ro'
@@ -98,6 +99,7 @@ services:
       # - './kafka.truststore.pem:/opt/bitnami/kafka/config/certs/kafka.truststore.pem:ro'
       # - './kafka.keystore.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro'
       # - './kafka.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro'
+      # FIXME: populate ./config
       - './config:/bitnami/kafka/config'
     networks:
       - vro_intranet

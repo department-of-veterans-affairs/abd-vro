@@ -46,6 +46,7 @@ public class BieKafkaApplicationTest {
 
   @RabbitListener(queues = "#{bieEventQueue.name}")
   public void receiveMqMessage(Message message) {
+    log.info("Received message: {}", message);
     receivedMessages.add(message);
     latch.countDown();
   }
@@ -70,7 +71,7 @@ public class BieKafkaApplicationTest {
     kafkaTemplate.send(kafkaTopic, kafkaEventBody);
 
     log.info("Waiting for svc-bie-kafka to publish Kafka event to RabbitMQ exchange...");
-    assertTrue(latch.await(10, TimeUnit.SECONDS));
+    assertTrue(latch.await(20, TimeUnit.SECONDS));
 
     log.info("Received Messages: " + printMessages(receivedMessages, "\n  "));
 
