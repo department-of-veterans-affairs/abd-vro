@@ -1,19 +1,28 @@
 package gov.va.vro.services.bie;
 
-import static gov.va.vro.services.bie.IntegrationTestConfig.MQ_QUEUE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -28,35 +37,51 @@ import java.util.stream.Collectors;
 @Slf4j
 public class BieKafkaApplicationTest {
 
+  @Autowired private FanoutExchange fanoutExchange;
   @Autowired private RabbitTemplate rabbitTemplate;
+  @Autowired private ObjectMapper objectMapper;
 
-  List<Message> receivedMessages = new ArrayList<>();
+  private List<Message> receivedMessages = new ArrayList<>();
 
-  @RabbitListener(queues = "#{queue1.name}")
+  // Expect 2 messages in the queue
+  CountDownLatch latch = new CountDownLatch(2);
+
+  @RabbitListener(queues = "#{bieEventQueue.name}")
   public void receiveMqMessage(Message message) {
-    log.info("===========Received: " + message);
     receivedMessages.add(message);
+    latch.countDown();
   }
 
   @Autowired private KafkaTemplate<String, String> kafkaTemplate;
 
-  private static final String KAFKA_TOPIC = "TST_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02";
-  static final String MQ_EXCHANGE = "bie-events-contention-associated";
-  String message = "=========integration test message";
+  @Value("#{kafkaTopic}")
+  private String kafkaTopic;
 
   @Test
-  public void sendMessage() throws InterruptedException {
-    rabbitTemplate.convertAndSend(MQ_EXCHANGE, "doesn't matter", "========Test mq message");
+  public void sendEventToKafkaTopic() throws InterruptedException, IOException {
+    String msgBody = "Message to ensure MQ's fanout exchange is working";
+    rabbitTemplate.convertAndSend(fanoutExchange.getName(), "anyRoutingKey", msgBody);
 
-    log.info("Sleeping...");
-    Thread.sleep(10000);
-    kafkaTemplate.send(KAFKA_TOPIC, message);
-    Thread.sleep(10000);
-    log.info("Received Messages: " + printMessages(receivedMessages));
+    String kafkaEventBody = "a Kafka event payload";
+    log.info("Producing event in Kafka topic: {}", kafkaTopic);
+    kafkaTemplate.send(kafkaTopic, kafkaEventBody);
+
+    log.info("Wait for svc-bie-kafka to publish Kafka event to RabbitMQ exchange...");
+    assertTrue(latch.await(10, TimeUnit.SECONDS));
+
+    log.info("Received Messages: " + printMessages(receivedMessages, "\n  "));
+    assertEquals(2, receivedMessages.size());
+
+    assertEquals(msgBody, objectMapper.readValue(receivedMessages.get(0).getBody(), String.class));
+
+    // Read Kafka event as a generic JSON object
+    val typeRef = new TypeReference<HashMap<String, Object>>() {};
+    val jsonObj = objectMapper.readValue(receivedMessages.get(1).getBody(), typeRef);
+    assertEquals(kafkaEventBody, jsonObj.get("eventDetails"));
   }
 
-  String printMessages(List<Message> messages) {
-    String delimiter = "\n  ";
-    return delimiter+messages.stream().map(Object::toString).collect(Collectors.joining(delimiter)).toString();
+  static String printMessages(List<Message> messages, String delimiter) {
+    return delimiter
+        + messages.stream().map(Object::toString).collect(Collectors.joining(delimiter)).toString();
   }
 }
