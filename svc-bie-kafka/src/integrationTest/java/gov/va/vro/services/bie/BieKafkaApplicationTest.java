@@ -42,9 +42,7 @@ public class BieKafkaApplicationTest {
   @Autowired private ObjectMapper objectMapper;
 
   private List<Message> receivedMessages = new ArrayList<>();
-
-  // Expect 2 messages in the queue
-  CountDownLatch latch = new CountDownLatch(2);
+  private CountDownLatch latch;
 
   @RabbitListener(queues = "#{bieEventQueue.name}")
   public void receiveMqMessage(Message message) {
@@ -59,24 +57,31 @@ public class BieKafkaApplicationTest {
 
   @Test
   public void sendEventToKafkaTopic() throws InterruptedException, IOException {
+    // Expect 2 messages in the queue
+    latch = new CountDownLatch(2);
+
+    // Message 1
     String msgBody = "Message to ensure MQ's fanout exchange is working";
     rabbitTemplate.convertAndSend(fanoutExchange.getName(), "anyRoutingKey", msgBody);
 
+    // Message 2
     String kafkaEventBody = "a Kafka event payload";
     log.info("Producing event in Kafka topic: {}", kafkaTopic);
     kafkaTemplate.send(kafkaTopic, kafkaEventBody);
 
-    log.info("Wait for svc-bie-kafka to publish Kafka event to RabbitMQ exchange...");
+    log.info("Waiting for svc-bie-kafka to publish Kafka event to RabbitMQ exchange...");
     assertTrue(latch.await(10, TimeUnit.SECONDS));
 
     log.info("Received Messages: " + printMessages(receivedMessages, "\n  "));
-    assertEquals(2, receivedMessages.size());
 
+    // Check message 1
     assertEquals(msgBody, objectMapper.readValue(receivedMessages.get(0).getBody(), String.class));
 
+    // Check message 2
     // Read Kafka event as a generic JSON object
-    val typeRef = new TypeReference<HashMap<String, Object>>() {};
-    val jsonObj = objectMapper.readValue(receivedMessages.get(1).getBody(), typeRef);
+    val jsonObj =
+        objectMapper.readValue(
+            receivedMessages.get(1).getBody(), new TypeReference<HashMap<String, Object>>() {});
     assertEquals(kafkaEventBody, jsonObj.get("eventDetails"));
   }
 
