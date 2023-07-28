@@ -1,6 +1,7 @@
 package gov.va.vro.services.bie.service.kafka;
 
 import gov.va.vro.services.bie.config.BieProperties;
+import gov.va.vro.services.bie.model.BieKafkaException;
 import gov.va.vro.services.bie.service.AmqpMessageSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,6 @@ public class KafkaConsumer {
         "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_DELETED_V02"
       })
   public void consume(ConsumerRecord<byte[], byte[]> record) {
-    try {
       String messageKey = new String(record.key(), StandardCharsets.UTF_8);
       String messageValue = new String(record.value(), StandardCharsets.UTF_8);
       String topicName = record.topic();
@@ -37,8 +37,5 @@ public class KafkaConsumer {
 
       amqpMessageSender.send(
           bieProperties.getKafkaTopicToAmqpExchangeMap().get(topicName), topicName, messageValue);
-    } catch (Exception e) {
-      log.error("Exception occurred while processing message: " + e.getMessage());
-    }
   }
 }

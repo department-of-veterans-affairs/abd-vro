@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.core.ConsumerFactory;
 
 @ExtendWith(MockitoExtension.class)
-class KafkaConsumerCreatorTest {
+class KafkaConsumerTest {
 
   @Mock private ConsumerFactory<?, ?> consumerFactory;
   @Mock private AmqpMessageSender amqpMessageSender;
