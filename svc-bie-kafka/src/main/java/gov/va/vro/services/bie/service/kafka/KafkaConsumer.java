@@ -2,6 +2,7 @@ package gov.va.vro.services.bie.service.kafka;
 
 import gov.va.vro.services.bie.config.BieProperties;
 import gov.va.vro.services.bie.service.AmqpMessageSender;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,11 @@ import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class KafkaConsumer {
-  @Autowired AmqpMessageSender amqpMessageSender;
-  @Autowired BieProperties bieProperties;
+  private final AmqpMessageSender amqpMessageSender;
+  private final BieProperties bieProperties;
 
   @KafkaListener(
       topics = {
@@ -30,9 +32,9 @@ public class KafkaConsumer {
       String messageValue = new String(record.value(), StandardCharsets.UTF_8);
       String topicName = record.topic();
 
-      log.info("Topic name: " + topicName);
-      log.info("Consumed message key: " + messageKey);
-      log.info("Consumed message value (before) decode: " + messageValue);
+      log.info("Topic name: {}", topicName);
+      log.info("Consumed message key: {}", messageKey);
+      log.info("Consumed message value (before) decode: {}", messageValue);
 
       amqpMessageSender.send(
           bieProperties.getKafkaTopicToAmqpExchangeMap().get(topicName), topicName, messageValue);
