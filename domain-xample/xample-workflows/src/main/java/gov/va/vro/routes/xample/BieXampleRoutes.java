@@ -64,7 +64,7 @@ public class BieXampleRoutes extends EndpointRouteBuilder {
         (exchange, cause) -> {
           var body = exchange.getMessage().getBody(BieMessagePayload.class);
           body.setStatus(500);
-          body.setStatusMessage(cause.toString());
+          //          body.setStatusMessage(cause.toString());
           exchange.getMessage().setBody(body);
           return body;
         };

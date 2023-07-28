@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.Map;
+
 @Setter
 @Getter
 @Builder(toBuilder = true)
@@ -13,8 +15,12 @@ import lombok.ToString;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BieMessagePayload {
   private Integer status;
-  private String statusMessage;
-  private String event;
-  private String eventDetails;
-  private String notifiedAt;
+  private ContentionKafkaEventType eventType;
+  private long claimId;
+  private long contentionId;
+  private String diagnosticTypeCode;
+  private String contentionClassificationName;
+  private Map<String, Object> eventDetails;
+  private Long notifiedAt;
+  private Long occurredAt;
 }

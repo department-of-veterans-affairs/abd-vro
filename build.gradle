@@ -173,3 +173,27 @@ tasks.named("dockerComposeDown").configure {
   mustRunAfter ':domain-xample:dockerComposeDown'
   mustRunAfter ':domain-cc:dockerComposeDown'
 }
+
+task kafkaServicesUp {
+  dependsOn ':dockerComposeUp', ':app:dockerComposeUp', ':domain-xample:dockerComposeUp'
+  doLast {
+    // Setting an environment variable for the exec task
+    exec {
+      environment 'COMPOSE_PROFILES', 'kafka'
+      commandLine './gradlew', '-p', 'mocks', ':dockerComposeUp'
+    }
+    println 'Started Kafka related containers!'
+  }
+}
+
+task kafkaServicesDown {
+  dependsOn ':dockerComposeDown', ':app:dockerComposeDown', ':domain-xample:dockerComposeDown'
+  doLast {
+    // Setting an environment variable for the exec task
+    exec {
+      environment 'COMPOSE_PROFILES', 'kafka'
+      commandLine './gradlew', '-p', 'mocks', ':dockerComposeDown'
+    }
+    println 'Started Kafka related containers!'
+  }
+}
