@@ -23,11 +23,9 @@ COPY requirements.txt ./
 # Install python packages using a long timeout so that builds won't fail when pypi.org is slow
 RUN pip install --default-timeout=100 --no-cache-dir -r requirements.txt
 
-ARG ENTRYPOINT_FILE=docker-entrypoint.sh
-# Workaround to copy ENTRYPOINT_FILE that may not exist
 # https://stackoverflow.com/a/46801962
 # Copy script that runs docker-entrypoint.sh if it exists
-COPY set-env-secrets.src entrypoint-wrapper.sh ${ENTRYPOINT_FILE}* ./
+COPY set-env-secrets.src entrypoint-wrapper.sh docker-entry*.sh ./
 
 # Copy application code, which changes more often,
 # along with files specified in local.python.container-service-convention

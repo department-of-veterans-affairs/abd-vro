@@ -7,8 +7,7 @@ RUN apk update && \
     rm -rf /var/cache/apk/*
 
 WORKDIR /app
-ARG ENTRYPOINT_FILE=docker-entrypoint.sh
-COPY set-env-secrets.src entrypoint-wrapper.sh ${ENTRYPOINT_FILE}* ./
+COPY set-env-secrets.src entrypoint-wrapper.sh docker-entry*.sh ./
 
 ARG JAR_FILE
 ENV JAR_FILENAME=${JAR_FILE}
