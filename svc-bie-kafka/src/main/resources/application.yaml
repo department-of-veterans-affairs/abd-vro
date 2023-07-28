@@ -14,6 +14,7 @@ spring:
   kafka:
     consumer:
       group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-group}"
+      spring.kafka.consumer.value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       # TODO: Uncomment the following lines after completion of https://github.com/department-of-veterans-affairs/abd-vro/issues/1823
 #      security:
 #        protocol: SSL

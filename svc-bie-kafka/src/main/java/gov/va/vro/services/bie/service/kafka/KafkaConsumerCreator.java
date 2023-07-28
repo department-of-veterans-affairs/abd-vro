@@ -1,5 +1,6 @@
 package gov.va.vro.services.bie.service.kafka;
 
+import gov.va.vro.model.biekafka.BieMessagePayload;
 import gov.va.vro.services.bie.config.BieProperties;
 import gov.va.vro.services.bie.service.AmqpMessageSender;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +45,11 @@ public class KafkaConsumerCreator {
                         "event=messageReceivedFromKafka topic={} msg={}",
                         data.topic(),
                         data.value());
-                    amqpMessageSender.send(amqpExchange, data.topic(), data.value());
+                    final BieMessagePayload payload = BieMessagePayload.builder().build();
+                    payload.setClaimId(data.value());
+                    payload.setEvent(data.topic());
+                    payload.setNotifiedAt(String.valueOf(data.value()));
+                    amqpMessageSender.send(amqpExchange, data.topic(), payload);
                   });
           listeners.add(new KafkaMessageListenerContainer<>(consumerFactory, containerProps));
         });
