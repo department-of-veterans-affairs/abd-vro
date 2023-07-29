@@ -12,21 +12,18 @@ LOOKUP_TABLE = get_lookup_table()
 app = FastAPI(
     title="Contention Classification",
     description="Mapping VA.gov disability form contentions to actual classifications defined in the [Benefits Reference Data API](https://developer.va.gov/explore/benefits/docs/benefits_reference_data) for use in downstream VA systems.",
-    contact={
-        "name": "Premal Shah",
-        "email": "premal.shah@va.gov"
-    },
+    contact={"name": "Premal Shah", "email": "premal.shah@va.gov"},
     version="v0.2",
     license={
         "name": "CCO 1.0",
-        "url": "https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md"
+        "url": "https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md",
     },
     servers=[
         {
             "url": "/contention-classification",
             "description": "Contention Classification Default",
         },
-    ]
+    ],
 )
 
 logging.basicConfig(
@@ -47,7 +44,7 @@ def get_health_status():
 
 @app.post("/classifier")
 def get_classification(
-        claim_for_increase: ClaimForIncrease,
+    claim_for_increase: ClaimForIncrease,
 ) -> Optional[PredictedClassification]:
     classification_code = LOOKUP_TABLE.get(claim_for_increase.diagnostic_code, None)
     if classification_code:
