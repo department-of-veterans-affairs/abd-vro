@@ -1,6 +1,21 @@
 spring:
   # Specify where Spring connects to Kafka
   kafka:
+    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:kafka.dev.bip.va.gov:443}"
+    properties:
+      security.protocol: SSL
+      schema.registry.url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://schemaregistry.dev.bip.va.gov:443}"
+      specific.avro.reader: false
+    ssl:
+      protocol: SSL
+      key-store-location: "file:${KEYSTORE_FILE}"
+      key-store-password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
+      key-store-type: "PKCS12"
+      trust-store-location: "file:${TRUSTSTORE_FILE}"
+      trust-store-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
+      trust-store-type: "PKCS12"
     consumer:
       group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-tst-vro}"
-    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:kafka.dev.bip.va.gov:443}"
+kafka:
+  topic:
+    prefix: TST
