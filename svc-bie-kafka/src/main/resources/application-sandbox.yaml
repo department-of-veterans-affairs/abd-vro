@@ -1,0 +1,9 @@
+spring:
+  # Specify where Spring connects to Kafka
+  kafka:
+    consumer:
+      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-uat-ivv-vro}"
+    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:kafka.stage.bip.va.gov:443}"
+kafka:
+  topic:
+    prefix: UAT

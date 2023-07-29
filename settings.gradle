@@ -16,13 +16,13 @@ pluginManagement {
   includeBuild 'gradle-plugins'
 }
 
-
 dependencyResolutionManagement {
   repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
   repositories {
     // https://docs.gradle.org/current/userguide/declaring_repositories.html#sec:case-for-maven-local
     // Not recommended: mavenLocal()
     maven { url "https://repo1.maven.org/maven2/" }
+    maven { url "https://packages.confluent.io/maven/" }
     mavenCentral()
   }
 }

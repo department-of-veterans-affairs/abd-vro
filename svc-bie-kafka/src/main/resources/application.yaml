@@ -9,23 +9,28 @@ spring:
     port: 5672
     username: "${RABBITMQ_PLACEHOLDERS_USERNAME:guest}"
     password: "${RABBITMQ_PLACEHOLDERS_USERPASSWORD:guest}"
-
   # Specify where Spring connects to Kafka
   kafka:
     consumer:
-      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-group}"
-      # TODO: Uncomment the following lines after completion of https://github.com/department-of-veterans-affairs/abd-vro/issues/1823
-#      security:
-#        protocol: SSL
-#      ssl:
-#        keystore-location: "file:${KEYSTORE_FILE}"
-#        keystore-password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
-#        key-store-type: "PKCS12"
-#        truststore-location: "file:${TRUSTSTORE_FILE}"
-#        truststore-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
-#        trust-store-type: "PKCS12"
+      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-tst-vro}"
+      key-deserializer: "org.apache.kafka.common.serialization.ByteArrayDeserializer"
+      value-deserializer: "org.apache.kafka.common.serialization.ByteArrayDeserializer"
+      security:
+        protocol: SSL
+      ssl:
+        key-store-location: "file:${KEYSTORE_FILE}"
+        key-store-password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
+        key-store-type: "PKCS12"
+        trust-store-location: "file:${TRUSTSTORE_FILE}"
+        trust-store-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
+        trust-store-type: "PKCS12"
     bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:localhost:9092}"
+    properties:
+      specific.avro.reader: false
 
+kafka:
+  topic:
+    prefix: TST
 ## Specify bie properties
 bie:
   kafka-topic-to-amqp-exchange-map:
@@ -33,9 +38,9 @@ bie:
     # RabbitMQ exchange upon which the payload will be put. These values are separated by a colon ":" character.
     TST_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02: bie-events-contention-associated
     TST_CONTENTION_BIE_CONTENTION_UPDATED_V02: bie-events-contention-updated
-    TST_CONTENTION_BIE_CONTENTION_CLASSIFIED: bie-events-contention-classified
-    TST_CONTENTION_BIE_CONTENTION_COMPLETED: bie-events-contention-completed
-    TST_CONTENTION_BIE_CONTENTION_DELETED: bie-events-contention-deleted
+    TST_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02: bie-events-contention-classified
+    TST_CONTENTION_BIE_CONTENTION_COMPLETED_V02: bie-events-contention-completed
+    TST_CONTENTION_BIE_CONTENTION_DELETED_V02: bie-events-contention-deleted
 
 ## Actuator for health check
 management:
