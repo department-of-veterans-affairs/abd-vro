@@ -88,6 +88,7 @@ def test_v2_table_diagnostic_code(client: TestClient):
         == BENIGN_GROWTH_BRAIN_CLASSIFICATION["classification_name"]
     )
 
+
 def test_v3_table_diagnostic_code(client: TestClient):
     json_post_dict = {
         "diagnostic_code": DRUG_INDUCED_PULMONARY_PNEMONIA_CLASSIFICATION["diagnostic_code"],
@@ -105,5 +106,3 @@ def test_v3_table_diagnostic_code(client: TestClient):
         response.json()["classification_name"]
         == DRUG_INDUCED_PULMONARY_PNEMONIA_CLASSIFICATION["classification_name"]
     )
-
-6829
