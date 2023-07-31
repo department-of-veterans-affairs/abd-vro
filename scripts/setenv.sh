@@ -79,6 +79,20 @@ exportFile(){
   eval "export $1=${FILE_VALUE}"
 }
 
+decodeSecretToFile(){
+  if [ -f "$2" ]; then
+    >&2 echo "Not overwriting file: $2 already exists."
+  else
+    local VAR_VALUE=$(getSecret $1)
+    if [ "$VAR_VALUE" ]; then
+      >&2 echo "Creating $2"
+      echo "$VAR_VALUE" | base64 -d -o "$2"
+    else
+      >&2 echo "Not creating file $2 with empty content!"
+    fi
+  fi
+}
+
 ###
 ### Settings for local development ###
 
@@ -178,3 +192,6 @@ exportSecretIfUnset BIE_KAFKA_TRUSTSTORE_INBASE64
 exportSecretIfUnset BIE_KAFKA_KEYSTORE_INBASE64
 exportSecretIfUnset BIE_KAFKA_KEYSTORE_PASSWORD
 exportSecretIfUnset BIE_KAFKA_TRUSTSTORE_PASSWORD
+
+decodeSecretToFile BIE_KAFKA_MOCK_KEYSTORE_JKS_INBASE64 "mocks/mock-bie-kafka/kafka.keystore.jks"
+decodeSecretToFile BIE_KAFKA_MOCK_TRUSTSTORE_JKS_INBASE64 "mocks/mock-bie-kafka/kafka.truststore.jks"

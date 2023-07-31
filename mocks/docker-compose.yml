@@ -82,7 +82,7 @@ services:
       # Caution: Empty string '' and "" don't work; however ' ' or " " does work
       KAFKA_CFG_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: " "
 
-      # For development without having to deal with connecting via SSL
+      # For development without having to deal with connecting via SSL, use port 9092 or do the following.
       # To disable SSL, uncomment the following and comment out the next SSL section
       # ALLOW_PLAINTEXT_LISTENER: 'yes'
       # KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
@@ -95,10 +95,9 @@ services:
       KAFKA_CERTIFICATE_PASSWORD: mockKafka
 
     volumes:
-      # cp kafka-certs/keystore/kafka.keystore.jks mocks/
-      # cp kafka-certs/truststore/kafka.truststore.jks mocks/
-      - './kafka.keystore.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro'
-      - './kafka.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro'
+      # scripts/setenv.sh creates jks files from env variables
+      - './mock-bie-kafka/kafka.keystore.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro'
+      - './mock-bie-kafka/kafka.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro'
     networks:
       - vro_intranet
 

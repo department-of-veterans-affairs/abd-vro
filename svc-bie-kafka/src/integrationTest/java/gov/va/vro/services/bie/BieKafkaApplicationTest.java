@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
  */
 @SpringBootTest
 @ActiveProfiles("integration-test")
-// @ContextConfiguration(classes = {BieProperties.class, IntegrationTestConfig.class})
 @Slf4j
 public class BieKafkaApplicationTest {
 

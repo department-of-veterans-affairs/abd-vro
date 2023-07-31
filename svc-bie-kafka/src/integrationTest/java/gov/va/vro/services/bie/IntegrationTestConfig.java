@@ -21,20 +21,8 @@ public class IntegrationTestConfig {
 
   // ###### Kafka configuration:
 
-  @Autowired KafkaAdmin kafkaAdmin;
-
-  public void createNewKafkaTopics() {
-    val newTopics =
-        bieProperties.getKafkaTopicToAmqpExchangeMap().keySet().stream()
-            .map(topic -> new NewTopic(topic, 1, (short) 1))
-            .toArray(NewTopic[]::new);
-    log.info("====== Creating Kafka topics: {}", Arrays.toString(newTopics));
-    kafkaAdmin.createOrModifyTopics(newTopics);
-  }
-
   @Bean
   String kafkaTopic() {
-    //    createNewKafkaTopics();
     // Pick a random kafka topic
     val topics = bieProperties.getKafkaTopicToAmqpExchangeMap().keySet().stream().toList();
     return topics.get(new Random().nextInt(topics.size()));

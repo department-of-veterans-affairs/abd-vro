@@ -104,3 +104,9 @@ test.pdf
 test.html
 *_toc.xsl
 !base_toc.xsl
+
+## BIE Kafka files for testing
+mocks/mock-bie-kafka/kafka.keystore.jks
+mocks/mock-bie-kafka/kafka.truststore.jks
+svc-bie-kafka/keystore.p12
+svc-bie-kafka/truststore.p12

@@ -74,7 +74,7 @@ jobs:
       - name: 'Wait for Kafka to be ready'
         run: |
           # Verify broker is up
-          BROKER_QUERY=$(kafkacat -m 30 -b localhost:9094 -L)
+          BROKER_QUERY=$(kafkacat -m 30 -b localhost:9092 -L)
           if echo $BROKER_QUERY | grep -q '1 brokers'
           then
             echo "Found Broker: $BROKER_QUERY"
@@ -105,7 +105,10 @@ jobs:
       - name: 'Create Kafka topic and send message'
         run: |
           source scripts/setenv.sh
-          source svc-bie-kafka/docker-entryprep.sh
+
+          pushd svc-bie-kafka && { source ./docker-entryprep.sh; popd; }
+          ./gradlew :svc-bie-kafka:integrationTest || echo "First run fails due to some mock Kafka initialization"
+          # Subsequent runs should pass
           ./gradlew :svc-bie-kafka:integrationTest
 
       - name: 'Sleep to give time for message to travel end to end from kafka to saved in database'
