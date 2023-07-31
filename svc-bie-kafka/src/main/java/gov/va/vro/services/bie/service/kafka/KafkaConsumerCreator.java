@@ -40,13 +40,14 @@ public class KafkaConsumerCreator {
           final ContainerProperties containerProps = new ContainerProperties(kafkaTopic);
           containerProps.setAckMode(ContainerProperties.AckMode.RECORD);
           containerProps.setMessageListener(
-              (MessageListener<Integer, String>)
+              (MessageListener<Integer, byte[]>)
                   data -> {
                     log.debug(
                         "event=messageReceivedFromKafka topic={} msg={}",
                         data.topic(),
                         data.value());
-                    amqpMessageSender.send(amqpExchange, data.topic(), data.value());
+                    String mqMessageBody = new String(data.value());
+                    amqpMessageSender.send(amqpExchange, data.topic(), mqMessageBody);
                   });
           listeners.add(new KafkaMessageListenerContainer<>(consumerFactory, containerProps));
         });
