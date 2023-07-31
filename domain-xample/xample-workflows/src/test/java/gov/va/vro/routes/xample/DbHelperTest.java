@@ -11,7 +11,6 @@ import gov.va.vro.persistence.repository.ClaimRepository;
 import gov.va.vro.persistence.repository.ContentionEventRepository;
 import gov.va.vro.persistence.repository.VeteranRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -26,7 +25,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 
 @ExtendWith(MockitoExtension.class)
-@Disabled
 public class DbHelperTest {
 
   @Mock private ClaimRepository claimRepository;
@@ -61,10 +59,6 @@ public class DbHelperTest {
 
   @Test
   void saveContentionEvent() {
-    final LocalDateTime notifiedAt = LocalDateTime.now();
-    final String eventDetails = "Lorem ipsum";
-    final ContentionEvent event = ContentionEvent.CONTENTION_CLASSIFIED;
-
     final BieMessagePayload bieMessagePayload = BieMessagePayloadFactory.create();
     final ContentionEventEntity entity = dbHelper.saveContentionEvent(bieMessagePayload);
 
@@ -79,6 +73,5 @@ public class DbHelperTest {
     assertEquals(dbHelper.convertTime(bieMessagePayload.getOccurredAt()), entity.getOccurredAt());
     assertEquals(dbHelper.convertTime(bieMessagePayload.getNotifiedAt()), entity.getNotifiedAt());
     assertEquals(bieMessagePayload.getEventDetails(), entity.getEventDetails());
-    assertEquals(notifiedAt, entity.getNotifiedAt());
   }
 }
