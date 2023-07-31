@@ -107,9 +107,11 @@ jobs:
           source scripts/setenv.sh
 
           pushd svc-bie-kafka && { source ./docker-entryprep.sh; popd; }
-          ./gradlew :svc-bie-kafka:integrationTest || echo "First run fails due to some mock Kafka initialization"
-          # Subsequent runs should pass
-          ./gradlew :svc-bie-kafka:integrationTest
+          if ! ./gradlew :svc-bie-kafka:integrationTest; then
+            echo "First run could fail due to some mock Kafka initialization"
+            # Subsequent runs should pass
+            ./gradlew :svc-bie-kafka:integrationTest
+          fi
 
       - name: 'Sleep to give time for message to travel end to end from kafka to saved in database'
         run: sleep 5

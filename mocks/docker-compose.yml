@@ -69,13 +69,19 @@ services:
     environment:
       <<: *common-vars
       # For debugging
-      BITNAMI_DEBUG: true
+      BITNAMI_DEBUG: 'true'
       KAFKA_ADVERTISED_HOST_NAME: mock-bie-kafka
       # Purpose of EXTERNAL port 9094: see https://github.com/bitnami/containers/blob/main/bitnami/kafka/README.md#accessing-apache-kafka-with-internal-and-external-clients
       KAFKA_CFG_LISTENERS: INTERNAL://:9092,CONTROLLER://:9093,EXTERNAL://:9094
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://mock-bie-kafka:9092,EXTERNAL://localhost:9094
       KAFKA_CFG_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
-      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: true
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: 'true'
+
+      # Kafka Kraft configurations
+      KAFKA_CFG_NODE_ID: 0
+      KAFKA_CFG_PROCESS_ROLES: controller,broker
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 0@mock-bie-kafka:9093
 
       # https://github.com/bitnami/containers/blob/main/bitnami/kafka/README.md
       # https://stackoverflow.com/a/72018409
