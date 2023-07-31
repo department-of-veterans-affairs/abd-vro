@@ -29,7 +29,6 @@ dependencyResolutionManagement {
 
 rootProject.name = 'abd_vro'
 
-//include ':docs'
 include ':scripts'
 
 include ':api-gateway'
