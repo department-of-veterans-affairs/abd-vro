@@ -15,11 +15,13 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BieMessagePayload {
   private Integer status;
-  private ContentionKafkaEventType eventType;
+  private String statusMessage;
+  private ContentionEvent eventType;
   private long claimId;
   private long contentionId;
-  private String diagnosticTypeCode;
+  private String contentionClassificationCode;
   private String contentionClassificationName;
+  private String diagnosticTypeCode;
   private Map<String, Object> eventDetails;
   private Long notifiedAt;
   private Long occurredAt;
