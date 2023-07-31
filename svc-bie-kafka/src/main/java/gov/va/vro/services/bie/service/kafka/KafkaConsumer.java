@@ -32,6 +32,7 @@ public class KafkaConsumer {
 
     log.info("Topic name: {}", topicName);
     log.info("Consumed message key: {}", messageKey);
+    // TODO: Ensure no PII values are logged
     log.info("Consumed message value (before) decode: {}", messageValue);
 
     amqpMessageSender.send(
