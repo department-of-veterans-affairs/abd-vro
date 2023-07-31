@@ -2,7 +2,7 @@ package gov.va.vro.services.bie.service.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.biekafka.BieMessagePayload;
-import gov.va.vro.model.biekafka.ContentionKafkaEventType;
+import gov.va.vro.model.biekafka.ContentionEvent;
 import gov.va.vro.services.bie.config.BieProperties;
 import gov.va.vro.services.bie.service.AmqpMessageSender;
 import lombok.RequiredArgsConstructor;
@@ -23,19 +23,19 @@ public class KafkaConsumer {
   private final AmqpMessageSender amqpMessageSender;
   private final BieProperties bieProperties;
 
-  public ContentionKafkaEventType mapTopicToEvent(String topic) {
+  public ContentionEvent mapTopicToEvent(String topic) {
 
-    log.info("TOPIC" + ContentionKafkaEventType.CONTENTION_ASSOCIATED_TO_CLAIM.getTopicName());
-    if (ContentionKafkaEventType.CONTENTION_ASSOCIATED_TO_CLAIM.getTopicName().equals(topic)) {
-      return ContentionKafkaEventType.CONTENTION_ASSOCIATED_TO_CLAIM;
-    } else if (ContentionKafkaEventType.CONTENTION_UPDATED.getTopicName().equals(topic)) {
-      return ContentionKafkaEventType.CONTENTION_UPDATED;
-    } else if (ContentionKafkaEventType.CONTENTION_CLASSIFIED.getTopicName().equals(topic)) {
-      return ContentionKafkaEventType.CONTENTION_CLASSIFIED;
-    } else if (ContentionKafkaEventType.CONTENTION_COMPLETED.getTopicName().equals(topic)) {
-      return ContentionKafkaEventType.CONTENTION_COMPLETED;
-    } else if (ContentionKafkaEventType.CONTENTION_DELETED.getTopicName().equals(topic)) {
-      return ContentionKafkaEventType.CONTENTION_DELETED;
+    log.info("TOPIC" + ContentionEvent.CONTENTION_ASSOCIATED_TO_CLAIM.getTopicName());
+    if (ContentionEvent.CONTENTION_ASSOCIATED_TO_CLAIM.getTopicName().equals(topic)) {
+      return ContentionEvent.CONTENTION_ASSOCIATED_TO_CLAIM;
+    } else if (ContentionEvent.CONTENTION_UPDATED.getTopicName().equals(topic)) {
+      return ContentionEvent.CONTENTION_UPDATED;
+    } else if (ContentionEvent.CONTENTION_CLASSIFIED.getTopicName().equals(topic)) {
+      return ContentionEvent.CONTENTION_CLASSIFIED;
+    } else if (ContentionEvent.CONTENTION_COMPLETED.getTopicName().equals(topic)) {
+      return ContentionEvent.CONTENTION_COMPLETED;
+    } else if (ContentionEvent.CONTENTION_DELETED.getTopicName().equals(topic)) {
+      return ContentionEvent.CONTENTION_DELETED;
     } else {
       throw new IllegalArgumentException("Unrecognized topic: " + topic);
     }
@@ -65,7 +65,12 @@ public class KafkaConsumer {
 
       final var keysToRemove =
           Arrays.asList(
-              "ClaimId", "DiagnosticTypeCode", "ContentionClassificationName", "EventTime", "ContentionId");
+              "ClaimId",
+              "DiagnosticTypeCode",
+              "ContentionId",
+              "ContentionClassificationName",
+              "ContentionClassificationCode",
+              "EventTime");
       Map<String, Object> eventDetails =
           jsonBody.entrySet().stream()
               .filter(entry -> !keysToRemove.contains(entry.getKey()))
@@ -73,11 +78,12 @@ public class KafkaConsumer {
 
       BieMessagePayload payload =
           BieMessagePayload.builder()
-              .eventType(ContentionKafkaEventType.valueOf(mapTopicToEvent(topicName).toString()))
+              .eventType(ContentionEvent.valueOf(mapTopicToEvent(topicName).toString()))
               .claimId((long) jsonBody.get("ClaimId"))
               .contentionId((long) jsonBody.get("ContentionId"))
-              .diagnosticTypeCode((String) jsonBody.get("DiagnosticTypeCode"))
               .contentionClassificationName((String) jsonBody.get("ContentionClassificationName"))
+              .contentionClassificationCode((String) jsonBody.get("ContentionClassificationCode"))
+              .diagnosticTypeCode((String) jsonBody.get("DiagnosticTypeCode"))
               .occurredAt((Long) jsonBody.get("EventTime"))
               .notifiedAt(record.timestamp())
               .status(200)

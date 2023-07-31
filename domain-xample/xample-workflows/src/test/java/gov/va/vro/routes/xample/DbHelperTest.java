@@ -1,13 +1,8 @@
 package gov.va.vro.routes.xample;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.lenient;
-
 import gov.va.vro.model.biekafka.BieMessagePayload;
-import gov.va.vro.model.biekafka.ContentionKafkaEventType;
+import gov.va.vro.model.biekafka.ContentionEvent;
+import gov.va.vro.model.biekafka.test.BieMessagePayloadFactory;
 import gov.va.vro.model.xample.SomeDtoModel;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEventEntity;
@@ -23,6 +18,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 
 @ExtendWith(MockitoExtension.class)
 @Disabled
@@ -62,18 +63,22 @@ public class DbHelperTest {
   void saveContentionEvent() {
     final LocalDateTime notifiedAt = LocalDateTime.now();
     final String eventDetails = "Lorem ipsum";
-    final ContentionKafkaEventType event = ContentionKafkaEventType.CONTENTION_CLASSIFIED;
+    final ContentionEvent event = ContentionEvent.CONTENTION_CLASSIFIED;
 
-    final BieMessagePayload item =
-        BieMessagePayload.builder()
-            .eventType(ContentionKafkaEventType.CONTENTION_CLASSIFIED)
-            //            .eventDetails(eventDetails)
-            //            .notifiedAt(notifiedAt.toString())
-            .build();
-    final ContentionEventEntity entity = dbHelper.saveContentionEvent(item);
+    final BieMessagePayload bieMessagePayload = BieMessagePayloadFactory.create();
+    final ContentionEventEntity entity = dbHelper.saveContentionEvent(bieMessagePayload);
+
     assertNotNull(entity);
-    assertEquals(event, entity.getEventType());
-    assertEquals(eventDetails, entity.getEventDetails());
+    assertEquals(bieMessagePayload.getEventType().toString(), entity.getEventType());
+    assertEquals(bieMessagePayload.getClaimId(), entity.getClaimId());
+    assertEquals(bieMessagePayload.getContentionId(), entity.getContentionId());
+    assertEquals(
+        bieMessagePayload.getContentionClassificationCode(),
+        entity.getContentionClassificationCode());
+    assertEquals(bieMessagePayload.getDiagnosticTypeCode(), entity.getDiagnosticTypeCode());
+    assertEquals(dbHelper.convertTime(bieMessagePayload.getOccurredAt()), entity.getOccurredAt());
+    assertEquals(dbHelper.convertTime(bieMessagePayload.getNotifiedAt()), entity.getNotifiedAt());
+    assertEquals(bieMessagePayload.getEventDetails(), entity.getEventDetails());
     assertEquals(notifiedAt, entity.getNotifiedAt());
   }
 }

@@ -4,11 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
 
-import java.time.LocalDateTime;
-import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.Map;
 
 @Entity
 @Getter
@@ -31,16 +31,13 @@ public class ContentionEventEntity extends BaseEntity {
   @Column(name = "contention_id")
   private Long contentionId;
 
+  @Column(name = "contention_classification_code")
+  private String contentionClassificationCode;
+
   @Column(name = "diagnostic_type_code")
   private String diagnosticTypeCode;
-
-  @Column(name = "contention_classification_name")
-  private String contentionClassificationName;
 
   @Column(name = "event_details", columnDefinition = "jsonb")
   @Type(type = "jsonb")
   private Map<String, Object> eventDetails;
-
-  // TODO: Non-PII event details to be extracted from eventDetails into their own fields.
-  // See ticket #1680 https://github.com/department-of-veterans-affairs/abd-vro/issues/1680
 }

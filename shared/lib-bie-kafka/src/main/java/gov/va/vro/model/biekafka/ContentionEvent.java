@@ -1,6 +1,6 @@
 package gov.va.vro.model.biekafka;
 
-public enum ContentionKafkaEventType {
+public enum ContentionEvent {
   CONTENTION_ASSOCIATED_TO_CLAIM("CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02"),
   CONTENTION_UPDATED("CONTENTION_BIE_CONTENTION_UPDATED_V02"),
   CONTENTION_CLASSIFIED("CONTENTION_BIE_CONTENTION_CLASSIFIED_V02"),
@@ -9,7 +9,7 @@ public enum ContentionKafkaEventType {
 
   private final String topicName;
 
-  ContentionKafkaEventType(String topicName) {
+  ContentionEvent(String topicName) {
     this.topicName = topicName;
   }
 
