@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
  */
 @SpringBootTest
 @ActiveProfiles("integration-test")
+// @ContextConfiguration(classes = {BieProperties.class, IntegrationTestConfig.class})
 @Slf4j
 public class BieKafkaApplicationTest {
 
@@ -56,6 +57,24 @@ public class BieKafkaApplicationTest {
   @Value("#{kafkaTopic}")
   private String kafkaTopic;
 
+  //  @Test
+  public void sendMessageToMq() throws InterruptedException, IOException {
+    // Expect 1 messages in the queue
+    latch = new CountDownLatch(1);
+
+    // Message 1 goes directly to MQ
+    String msgBody = "Message to ensure MQ's fanout exchange is working";
+    rabbitTemplate.convertAndSend(fanoutExchange.getName(), "anyRoutingKey", msgBody);
+
+    log.info("Waiting for svc-bie-kafka to publish Kafka event to RabbitMQ exchange...");
+    assertTrue(latch.await(60, TimeUnit.SECONDS));
+
+    log.info("Received Messages: " + printMessages(receivedMessages, "\n  "));
+
+    // Check message 1
+    assertEquals(msgBody, objectMapper.readValue(receivedMessages.get(0).getBody(), String.class));
+  }
+
   @Test
   public void sendEventToKafkaTopic() throws InterruptedException, IOException {
     // Expect 2 messages in the queue
@@ -71,7 +90,7 @@ public class BieKafkaApplicationTest {
     kafkaTemplate.send(kafkaTopic, kafkaEventBody);
 
     log.info("Waiting for svc-bie-kafka to publish Kafka event to RabbitMQ exchange...");
-    assertTrue(latch.await(60, TimeUnit.SECONDS));
+    assertTrue(latch.await(30, TimeUnit.SECONDS));
 
     log.info("Received Messages: " + printMessages(receivedMessages, "\n  "));
 

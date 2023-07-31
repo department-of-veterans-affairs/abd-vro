@@ -36,6 +36,7 @@ public class KafkaConsumerCreator {
       final Map<String, String> topicMap) {
     topicMap.forEach(
         (kafkaTopic, amqpExchange) -> {
+          log.info("====== Creating Kafka consumer for topic: {}", kafkaTopic);
           final ContainerProperties containerProps = new ContainerProperties(kafkaTopic);
           containerProps.setAckMode(ContainerProperties.AckMode.RECORD);
           containerProps.setMessageListener(

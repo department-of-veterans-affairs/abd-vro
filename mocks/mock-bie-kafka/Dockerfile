@@ -14,9 +14,9 @@ FROM bitnami/kafka:3.3
 # Start the kafka client in the Docker Compose network and connect to `mock-bie-kafka:9094`
 
 ## For debugging this container, uncomment the following:
-# ENTRYPOINT ["tail", "-f", "/dev/null"]
+#ENTRYPOINT ["tail", "-f", "/dev/null"]
 # Then run:
-#   COMPOSE_PROFILES="kafka" g :dockerComposeUp
+#   COMPOSE_PROFILES="kafka" ./gradlew :dockerComposeUp
 #   docker-compose exec mock-bie-kafka bash
 # And at the shell prompt:
 #   /opt/bitnami/scripts/kafka/entrypoint.sh /opt/bitnami/scripts/kafka/run.sh

@@ -20,7 +20,6 @@ spring:
       ssl:
         keystore-location: "file:${KEYSTORE_FILE}"
         keystore-password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
-        # TODO: PEM
         key-store-type: "PKCS12"
         truststore-location: "file:${TRUSTSTORE_FILE}"
         truststore-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"

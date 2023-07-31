@@ -72,9 +72,10 @@ services:
       BITNAMI_DEBUG: true
       KAFKA_ADVERTISED_HOST_NAME: mock-bie-kafka
       # Purpose of EXTERNAL port 9094: see https://github.com/bitnami/containers/blob/main/bitnami/kafka/README.md#accessing-apache-kafka-with-internal-and-external-clients
-      KAFKA_CFG_LISTENERS: INTERNAL://:9092,CONTROLLER://:9093
-      KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://mock-bie-kafka:9092
+      KAFKA_CFG_LISTENERS: INTERNAL://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://mock-bie-kafka:9092,EXTERNAL://localhost:9094
       KAFKA_CFG_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: true
 
       # https://github.com/bitnami/containers/blob/main/bitnami/kafka/README.md
       # https://stackoverflow.com/a/72018409
@@ -87,31 +88,17 @@ services:
       # KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
 
       # Set up SSL -- see "Security" section of https://hub.docker.com/r/bitnami/kafka/
-      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:SSL,CONTROLLER:SSL
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:SSL
       KAFKA_CFG_SSL_CLIENT_AUTH: required
       # PEM https://medium.com/analytics-vidhya/how-to-use-pem-certificates-with-apache-kafka-f3b444a00816
-      KAFKA_TLS_TYPE: PEM
+      KAFKA_TLS_TYPE: JKS
       KAFKA_CERTIFICATE_PASSWORD: mockKafka
-      KAFKA_CLIENT_USERS: user
-      KAFKA_CLIENT_PASSWORDS: password
-#      KAFKA_SSL_KEY_PASSWORD: mockKafka
-#      KAFKA_SSL_KEYSTORE_LOCATION: /opt/bitnami/kafka/config/certs/kafka.keystore.pem
-#      KAFKA_SSL_KEYSTORE_TYPE: PEM
-#      KAFKA_SSL_TRUSTSTORE_LOCATION: /opt/bitnami/kafka/config/certs/kafka.truststore.pem
-#      KAFKA_SSL_TRUSTSTORE_TYPE: PEM
 
     volumes:
-      # cp kafka-certs/keystore/keystore.pem.1 mocks/config/certs/kafka.keystore.pem
-      # cp kafka-certs/truststore/truststore.pem.1 mocks/config/certs/kafka.truststore.pem
-      # cp kafka-certs/truststore/ca-key mocks/config/certs/kafka.keystore.key
-      # ??? cp kafka-certs/truststore/ca-cert mocks/config/certs/kafka.keystore.key
-      # openssl pkcs8 -topk8 -in kafka-certs/truststore/ca-key -out mocks/config/certs/kafka.keystore.key
-      # NOPE: openssl pkcs8 -topk8 -inform PEM -outform PEM -in kafka-certs/truststore/truststore.pem -out mocks/config/certs/kafka.truststore.pem
-      - './config/certs/kafka.keystore.key:/opt/bitnami/kafka/config/certs/kafka.keystore.key:ro'
-      - './config/certs/kafka.keystore.pem:/opt/bitnami/kafka/config/certs/kafka.keystore.pem:ro'
-      - './config/certs/kafka.truststore.pem:/opt/bitnami/kafka/config/certs/kafka.truststore.pem:ro'
-      # FIXME: populate ./config with PEM
-      #- './config:/bitnami/kafka/config'
+      # cp kafka-certs/keystore/kafka.keystore.jks mocks/
+      # cp kafka-certs/truststore/kafka.truststore.jks mocks/
+      - './kafka.keystore.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro'
+      - './kafka.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro'
     networks:
       - vro_intranet
 
