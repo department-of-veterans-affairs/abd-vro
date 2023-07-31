@@ -67,8 +67,9 @@ public class BieKafkaApplicationTest {
 
     // Message 2 comes through Kafka
     val kafkaEventBody = "a Kafka event payload";
+    val key = "some key";
     log.info("Producing event in Kafka topic: {}", kafkaTopic);
-    kafkaTemplate.send(kafkaTopic, kafkaEventBody.getBytes());
+    kafkaTemplate.send(kafkaTopic, key.getBytes(), kafkaEventBody.getBytes());
 
     log.info("Waiting for svc-bie-kafka to publish Kafka event to RabbitMQ exchange...");
     assertTrue(latch.await(30, TimeUnit.SECONDS));
