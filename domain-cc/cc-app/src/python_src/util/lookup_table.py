@@ -33,7 +33,7 @@ def get_lookup_table():
     with open(filename, "r") as f:
         csv_reader = csv.reader(f)
         for index, csv_line in enumerate(csv_reader):
-            if index == 0 or index == 1:
+            if index == 0:
                 continue
             diagnostic_code, _, classification_code, _, _, _ = csv_line
             diagnostic_code = int(diagnostic_code)
