@@ -3,8 +3,14 @@ spring:
   kafka:
     bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:kafka.dev.bip.va.gov:443}"
     properties:
-      security.protocol: SSL
       schema.registry.url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://schemaregistry.dev.bip.va.gov:443}"
+      schema.registry.ssl.protocol: SSL
+      schema.registry.ssl.keystore.location: "file:${TRUSTSTORE_FILE}"
+      schema.registry.ssl.keystore.password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
+      schema.registry.ssl.keystore.type: "PKCS12"
+      schema.registry.ssl.truststore.location: "file:${TRUSTSTORE_FILE}"
+      schema.registry.ssl.truststore.password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
+      schema.registry.ssl.truststore.type: "PKCS12"
       specific.avro.reader: false
     ssl:
       protocol: SSL
