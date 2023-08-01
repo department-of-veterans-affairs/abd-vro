@@ -8,9 +8,6 @@ on:
 
   # Trigger when called by another GitHub Action
   workflow_call:
-    secrets:
-      ACCESS_TOKEN_GRADLE_BUILD:
-        required: true
     inputs:
       run_all_tests:
         required: false

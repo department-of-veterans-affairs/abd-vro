@@ -15,25 +15,22 @@ env:
   TEST_TOPIC: 'TST_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02'
   # TEST_DATA should be replaced with data after event_details is populated with non PII data. See Github Issue 1680
   TEST_DATA: 'Lorem ipsum'
+  VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"
 
 jobs:
   integration-test:
     runs-on: ubuntu-latest
     steps:
-      - name: 'Install kcat and postgresql'
-        run: |
-          sudo apt-get update
-          sudo apt-get install kafkacat
-          which kafkacat
-
-          sudo apt-get install postgresql
-          which psql
-
       - name: 'Checkout source code'
         uses: actions/checkout@v3
 
-      - name: 'Build the images'
-        uses: ./.github/actions/build-images
+      - name: "Checkout abd-vro-dev-secrets repo"
+        uses: actions/checkout@v3
+        with:
+          # Checkout using a PAT so that we can access the internal repo
+          token: ${{ secrets.ACCESS_TOKEN_CHECKOUT_INTERNAL_REPO }}
+          repository: 'department-of-veterans-affairs/abd-vro-dev-secrets'
+          path: "${{ env.VRO_DEV_SECRETS_FOLDER }}"
 
       - name: 'Set RABBITMQ_BASIC_AUTH'
         run: |
@@ -44,6 +41,9 @@ jobs:
           echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}" >> $GITHUB_ENV
 
           export -p | sed 's/declare -x //'
+
+      - name: 'Build the images'
+        uses: ./.github/actions/build-images
 
       - name: 'Start the containers'
         run: |
@@ -69,6 +69,15 @@ jobs:
           timeout: 2000
           # Quit after 60 seconds
           retries: 30
+
+      - name: 'Install kafkacat and postgresql'
+        run: |
+          sudo apt-get update
+          sudo apt-get install kafkacat
+          which kafkacat
+
+          sudo apt-get install postgresql
+          which psql
 
       - name: 'Wait for Kafka to be ready'
         run: |
@@ -132,6 +141,7 @@ jobs:
               event='${{env.TEST_TOPIC}}'
                 AND
               event_details='${{env.TEST_DATA}}'
+              event_details='Lorem ipsum'
           ")
           echo $RESULTS
           if echo $RESULTS | grep -q 'count | 1'
