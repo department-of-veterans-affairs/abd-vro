@@ -105,7 +105,7 @@ test.html
 *_toc.xsl
 !base_toc.xsl
 
-## BIE Kafka files for testing
+### BIE Kafka generated files
 mocks/mock-bie-kafka/kafka.keystore.jks
 mocks/mock-bie-kafka/kafka.truststore.jks
 svc-bie-kafka/keystore.p12

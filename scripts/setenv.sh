@@ -10,7 +10,6 @@ fi
 
 # Find checkout of abd-vro-dev-secrets GH repo
 findSecretsDir(){
-  local VRO_DEV_SECRETS_FOLDER
   [ "$1" ] && VRO_DEV_SECRETS_FOLDER="$1"
   : ${VRO_DEV_SECRETS_FOLDER:=$PWD/../abd-vro-dev-secrets}
   if SECRETS_DIR=$(cd -- "${VRO_DEV_SECRETS_FOLDER}/local" && pwd); then
@@ -24,12 +23,7 @@ findSecretsDir(){
   fi
 }
 
-# $CI is set by GitHub Action -- https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
-if [ "$CI" ]; then
-  echo "Relying on Action to set environment variable secrets"
-else
-  findSecretsDir "$1" || return 11
-fi
+findSecretsDir "$1" || return 11
 
 ###
 # Before adding configuration settings in this file, prefer to add them to application*.yml (for Java)
@@ -61,7 +55,14 @@ exportSecretIfUnset(){
   if [ "${VAR_VALUE}" ]; then
     >&2 echo "Not overriding: $1 already set."
   else
-    eval "export $1=\$(getSecret $1)"
+    VAR_VALUE=$(getSecret "$1")
+    eval "export $1=\"$VAR_VALUE\""
+  fi
+  # When running in a GH Action, mask the secret
+  if [ "${CI}" ] && [ "${VAR_VALUE}" ]; then
+    echo "${VAR_VALUE}" | while read -r LINE; do
+      echo "::add-mask::${LINE}"
+    done
   fi
 }
 
@@ -83,10 +84,10 @@ decodeSecretToFile(){
   if [ -f "$2" ]; then
     >&2 echo "Not overwriting file: $2 already exists."
   else
-    local VAR_VALUE=$(getSecret $1)
+    local VAR_VALUE=$(getSecret "$1")
     if [ "$VAR_VALUE" ]; then
       >&2 echo "Creating $2"
-      echo "$VAR_VALUE" | base64 -d -o "$2"
+      echo "$VAR_VALUE" | base64 -d > "$2"
     else
       >&2 echo "Not creating file $2 with empty content!"
     fi
