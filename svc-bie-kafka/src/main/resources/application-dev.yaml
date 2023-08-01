@@ -5,7 +5,7 @@ spring:
     properties:
       schema.registry.url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://schemaregistry.dev.bip.va.gov:443}"
       schema.registry.ssl.protocol: SSL
-      schema.registry.ssl.keystore.location: "file:${TRUSTSTORE_FILE}"
+      schema.registry.ssl.keystore.location: "file:${KEYSTORE_FILE}"
       schema.registry.ssl.keystore.password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
       schema.registry.ssl.keystore.type: "PKCS12"
       schema.registry.ssl.truststore.location: "file:${TRUSTSTORE_FILE}"
