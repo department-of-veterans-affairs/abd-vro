@@ -4,6 +4,7 @@ import gov.va.vro.services.bie.config.BieProperties;
 import gov.va.vro.services.bie.service.AmqpMessageSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -25,16 +26,14 @@ public class KafkaConsumer {
         "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_COMPLETED_V02",
         "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_DELETED_V02"
       })
-  public void consume(ConsumerRecord<byte[], byte[]> record) {
-    String messageKey = new String(record.key(), StandardCharsets.UTF_8);
-    String messageValue = new String(record.value(), StandardCharsets.UTF_8);
+  public void consume(ConsumerRecord<String, GenericRecord> record) {
     String topicName = record.topic();
+    GenericRecord messageValue = record.value();
 
     log.info("Topic name: {}", topicName);
-    log.info("Consumed message key: {}", messageKey);
-    log.info("Consumed message value (before) decode: {}", messageValue);
+    log.info("Consumed message value (before) decode: {}", messageValue.toString());
 
     amqpMessageSender.send(
-        bieProperties.getKafkaTopicToAmqpExchangeMap().get(topicName), topicName, messageValue);
+        bieProperties.getKafkaTopicToAmqpExchangeMap().get(topicName), topicName, messageValue.toString());
   }
 }
