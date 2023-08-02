@@ -9,8 +9,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.StandardCharsets;
-
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -34,6 +32,8 @@ public class KafkaConsumer {
     log.info("Consumed message value (before) decode: {}", messageValue.toString());
 
     amqpMessageSender.send(
-        bieProperties.getKafkaTopicToAmqpExchangeMap().get(topicName), topicName, messageValue.toString());
+        bieProperties.getKafkaTopicToAmqpExchangeMap().get(topicName),
+        topicName,
+        messageValue.toString());
   }
 }
