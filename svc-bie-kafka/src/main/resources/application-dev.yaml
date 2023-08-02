@@ -19,4 +19,4 @@ spring:
       trust-store-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
       trust-store-type: "PKCS12"
     consumer:
-      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-dev-vro}"
+      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-tst-vro}"
