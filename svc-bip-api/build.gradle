@@ -7,12 +7,6 @@ plugins {
   id 'jvm-test-suite'
 }
 
-
-
-repositories {
-  mavenCentral()
-}
-
 ext {
   // TODO: improve test code coverage so that the following can be increased or removed
   jacoco_minimum_coverage = 0.4
