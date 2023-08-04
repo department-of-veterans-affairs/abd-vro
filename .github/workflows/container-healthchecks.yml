@@ -14,13 +14,8 @@ concurrency:
   group: containerHealthChecks-${{ github.ref }}
 
 env:
-  LH_ACCESS_CLIENT_ID: ${{ secrets.LH_ACCESS_CLIENT_ID }}
-  LH_PRIVATE_KEY: ${{ secrets.LH_PRIVATE_KEY }}
   SLACK_EXCEPTION_WEBHOOK: "http://mock-slack:20100/slack-messages"
-  BIE_KAFKA_KEYSTORE_INBASE64:   ${{ secrets.BIE_KAFKA_KEYSTORE_INBASE64 }}
-  BIE_KAFKA_KEYSTORE_PASSWORD:   ${{ secrets.BIE_KAFKA_KEYSTORE_PASSWORD }}
-  BIE_KAFKA_TRUSTSTORE_INBASE64: ${{ secrets.BIE_KAFKA_TRUSTSTORE_INBASE64 }}
-  BIE_KAFKA_TRUSTSTORE_PASSWORD: ${{ secrets.BIE_KAFKA_TRUSTSTORE_PASSWORD }}
+  VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"
 
 jobs:
   container-healthcheck:
@@ -31,6 +26,14 @@ jobs:
     steps:
       - name: "Checkout source code"
         uses: actions/checkout@v3
+
+      - name: "Checkout abd-vro-dev-secrets repo"
+        uses: actions/checkout@v3
+        with:
+          # Checkout using a PAT so that we can access the internal repo
+          token: ${{ secrets.ACCESS_TOKEN_CHECKOUT_INTERNAL_REPO }}
+          repository: 'department-of-veterans-affairs/abd-vro-dev-secrets'
+          path: "${{ env.VRO_DEV_SECRETS_FOLDER }}"
 
       - name: "Docker build"
         uses: ./.github/actions/build-images
