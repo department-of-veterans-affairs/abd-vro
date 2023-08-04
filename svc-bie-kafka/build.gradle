@@ -5,7 +5,10 @@ plugins {
 
 ext {
   // skip kafka consumer test for now. will follow up with another PR to address the test coverage
-  jacocoExclude = ['**/*Application.*', 'gov/va/vro/services/bie/service/kafka/**']
+  jacocoExclude = [
+    '**/*Application.*',
+    'gov/va/vro/services/bie/service/kafka/**'
+  ]
 }
 
 jacocoTestReport {
