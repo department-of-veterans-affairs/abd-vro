@@ -31,9 +31,9 @@ def test_max_rating_with_one_dc(client: TestClient):
     response_json = response.json()
 
     ratings = response_json["ratings"]
-    assert (len(ratings) == 1)
-    assert (ratings[0]["diagnostic_code"] == TINNITUS["diagnostic_code"])
-    assert (ratings[0]["max_rating"] == TINNITUS["max_rating"])
+    assert len(ratings) == 1
+    assert ratings[0]["diagnostic_code"] == TINNITUS["diagnostic_code"]
+    assert ratings[0]["max_rating"] == TINNITUS["max_rating"]
 
 
 def test_max_rating_with_duplicate_dc(client: TestClient):
@@ -61,7 +61,7 @@ def test_max_rating_with_unmapped_dc(client: TestClient):
     response_json = response.json()
 
     ratings = response_json["ratings"]
-    assert (len(ratings) == 0)
+    assert len(ratings) == 0
 
 
 def test_max_rating_with_value_below_range(client: TestClient):

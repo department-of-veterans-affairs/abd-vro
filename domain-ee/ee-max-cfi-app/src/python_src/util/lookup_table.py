@@ -26,7 +26,4 @@ MAX_RATINGS_BY_CODE = get_max_ratings_by_code()
 
 
 def get_max_rating(classification_code):
-    try:
-        return MAX_RATINGS_BY_CODE[classification_code]
-    except KeyError:
-        return None
+    return MAX_RATINGS_BY_CODE.get(classification_code)

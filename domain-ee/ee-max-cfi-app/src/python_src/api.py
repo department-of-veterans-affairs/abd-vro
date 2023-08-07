@@ -33,7 +33,7 @@ logging.basicConfig(
 
 @app.get("/health")
 def get_health_status():
-    if not len(MAX_RATINGS_BY_CODE):
+    if not MAX_RATINGS_BY_CODE:
         raise HTTPException(status_code=500, detail="Max Rating by Diagnostic Code Lookup table is empty.")
 
     return {"status": "ok"}
@@ -43,8 +43,8 @@ def get_health_status():
 def get_max_ratings(
         claim_for_increase: MaxRatingsForClaimForIncreaseRequest, ) -> MaxRatingsForClaimForIncreaseResponse:
     ratings = []
-    for dc_ in set(claim_for_increase.diagnostic_codes):
-        dc = validate_diagnostic_code(dc_)
+    for dc in set(claim_for_increase.diagnostic_codes):
+        validate_diagnostic_code(dc)
         max_rating = get_max_rating(dc)
         if max_rating:
             rating = {
@@ -64,7 +64,6 @@ def get_max_ratings(
 # Rough boundaries of diagnostic codes as shown by document at
 # (https://www.ecfr.gov/current/title-38/part-4/appendix-Appendix B to Part 4)
 # TODO should be replaced with map of valid diagnostic codes and checked to see if the dc is in map.
-def validate_diagnostic_code(dc: int) -> int:
+def validate_diagnostic_code(dc: int):
     if dc < 5000 or dc > 10000:
         raise HTTPException(status_code=400, detail=f"The diagnostic code received is invalid: dc={dc}")
-    return dc
