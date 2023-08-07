@@ -24,16 +24,20 @@ public class KafkaConsumer {
         "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_COMPLETED_V02",
         "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_DELETED_V02"
       })
-  public void consume(ConsumerRecord<String, GenericRecord> record) {
+  public void consume(ConsumerRecord<String, Object> record) {
+    String messageValue = null;
     String topicName = record.topic();
-    GenericRecord messageValue = record.value();
+
+    if (record.value() instanceof GenericRecord value) {
+      messageValue = value.toString();
+    } else if (record.value() instanceof String stringValue) {
+      messageValue = stringValue;
+    }
 
     log.info("Topic name: {}", topicName);
-    log.info("Consumed message value (before) decode: {}", messageValue.toString());
+    log.info("Consumed message value (before) decode: {}", messageValue);
 
     amqpMessageSender.send(
-        bieProperties.getKafkaTopicToAmqpExchangeMap().get(topicName),
-        topicName,
-        messageValue.toString());
+        bieProperties.getKafkaTopicToAmqpExchangeMap().get(topicName), topicName, messageValue);
   }
 }
