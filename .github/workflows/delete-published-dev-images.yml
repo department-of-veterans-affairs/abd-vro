@@ -45,7 +45,7 @@ jobs:
         - dev_vro-svc-bie-kafka
         - dev_vro-xample-workflows
         - dev_vro-cc-app
-        - dev_vro-max-cfi-app
+        - dev_vro-ee-max-cfi-app
     runs-on: ubuntu-latest
     steps:
     - name: "Delete old images in GHCR"

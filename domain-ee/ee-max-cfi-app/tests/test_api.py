@@ -4,7 +4,7 @@ MAX_RATING = "/max-ratings"
 
 TINNITUS = {
     "diagnostic_code": 6260,
-    "max_rating": 0.10
+    "max_rating": 10
 }
 
 TUBERCULOSIS = {"diagnostic_code": 7710}
@@ -56,7 +56,12 @@ def test_max_rating_with_unmapped_dc(client: TestClient):
     }
 
     response = client.post(MAX_RATING, json=json_post_dict)
-    assert response.status_code == 404
+
+    assert response.status_code == 200
+    response_json = response.json()
+
+    ratings = response_json["ratings"]
+    assert (len(ratings) == 0)
 
 
 def test_max_rating_with_value_below_range(client: TestClient):

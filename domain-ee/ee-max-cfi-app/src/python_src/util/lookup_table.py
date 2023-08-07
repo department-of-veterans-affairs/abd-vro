@@ -16,7 +16,7 @@ def get_max_ratings_by_code():
                 continue
             diagnostic_code, rated_issue_name, max_rating = csv_line
             diagnostic_code = int(diagnostic_code)
-            max_rating = float(max_rating)
+            max_rating = int(max_rating)
 
             diagnostic_code_to_max_rating[diagnostic_code] = max_rating
     return diagnostic_code_to_max_rating

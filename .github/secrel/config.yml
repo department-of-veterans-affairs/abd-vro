@@ -12,4 +12,4 @@ languages:
     version: 3.9
     requirements:
       - ./domain-cc/cc-app/src/requirements.txt
-      - ./domain-ee/max-cfi-app/src/requirements.txt
+      - ./domain-ee/ee-max-cfi-app/src/requirements.txt

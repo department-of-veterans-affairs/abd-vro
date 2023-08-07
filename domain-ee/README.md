@@ -55,7 +55,7 @@ This should result in a response with the following body:
     "ratings": [
         {
             "diagnostic_code": 6260,
-            "max_rating": 0.1
+            "max_rating": 10
         }
     ]
 }
@@ -63,12 +63,23 @@ This should result in a response with the following body:
 
 ### Notes on usage:
 
-* Each diagnostic code in the request should yield an item in the ratings array of the response body.
-* If any of the diagnostic codes are not found, the response will yield a `404` status code.
-* Diagnostic codes that fall outside the inclusive range [5000, 10000] will yield a `400`.
+#### Requests
+
+* The `diagnostic_codes` array in the request are integers within the range of `5000 - 10000`.
+    * Any request with an any entry that falls outside the range `5000 - 10000` will yield a `400`.
 * An invalid request such as missing/invalid field will result in `422` status code.
-* Duplicate entries in the diagnostic codes array will yield `422` status code.
-* A request with no diagnostic codes or more than 100 diagnostic codes will yield a `422` status code.
+* Duplicate entries in the `diagnostic_codes` array will yield `422` status code.
+* An empty `diagnostic_codes` array or more than 100 entries in `diagnostic_codes` array will yield a `422` status code.
+
+#### Response
+
+* The response contains a `ratings` array where each item contains a `diagnostic_code` and the associated `max_rating`.
+    * The `diagnostic_code` corresponds to an entry in the requests `diagnostic_codes` array.
+    * The `max_rating` item is a percentage expressed as an integer in the range of `0 - 100`.
+* Each entry in `diagnostic_codes` array of the request with an associated max rating will yield an item in
+  the `ratings` array of the response body.
+* If any entry of the `diagnostic_codes` is not found, the response `ratings` array will not contain the corresponding
+  item.
 
 ## Unit tests
 

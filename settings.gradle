@@ -53,4 +53,4 @@ include ':domain-xample:svc-xample-j'
 include ':domain-xample:svc-hoppy-usage'
 
 include ':domain-cc:cc-app'
-include ':domain-ee:max-cfi-app'
+include ':domain-ee:ee-max-cfi-app'

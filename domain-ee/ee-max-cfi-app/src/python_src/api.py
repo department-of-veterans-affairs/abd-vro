@@ -52,8 +52,6 @@ def get_max_ratings(
                 "max_rating": max_rating,
             }
             ratings.append(rating)
-        else:
-            raise HTTPException(status_code=404, detail=f"Could not find max rating for diagnostic_code={dc}")
 
     response = {
         "ratings": ratings

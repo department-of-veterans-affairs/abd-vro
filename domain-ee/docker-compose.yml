@@ -26,8 +26,8 @@ x-common-sde-security: &common-sde-security
 services:
   # Containers with the `svc-` prefix are microservices to support domain workflows.
 
-  max-cfi-app:
-    image: va/abd_vro-max-cfi-app:latest
+  ee-max-cfi-app:
+    image: va/abd_vro-ee-max-cfi-app:latest
     <<: [*common-sde-security, *common-security-opt]
     environment:
       <<: *common-vars
