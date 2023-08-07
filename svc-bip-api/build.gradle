@@ -50,3 +50,6 @@ testing {
     }
   }
 }
+ext {
+  jacocoExclude = ['**/*model*']
+}
