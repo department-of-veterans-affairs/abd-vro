@@ -1,13 +1,13 @@
 spring:
   kafka:
-    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:kafka.dev.bip.va.gov:443}"
+    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:kafka.stage.bip.va.gov:443}"
     properties:
-      schema.registry.url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://schemaregistry.dev.bip.va.gov:443}"
+      schema.registry.url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://schemaregistry.stage.bip.va.gov:443}"
       schema.registry.ssl.protocol: SSL
-      schema.registry.ssl.keystore.location: "${KEYSTORE_FILE}"
+      schema.registry.ssl.keystore.location: "file:${KEYSTORE_FILE}"
       schema.registry.ssl.keystore.password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
       schema.registry.ssl.keystore.type: "PKCS12"
-      schema.registry.ssl.truststore.location: "${TRUSTSTORE_FILE}"
+      schema.registry.ssl.truststore.location: "file:${TRUSTSTORE_FILE}"
       schema.registry.ssl.truststore.password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
       schema.registry.ssl.truststore.type: "PKCS12"
     ssl:
@@ -19,4 +19,7 @@ spring:
       trust-store-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
       trust-store-type: "PKCS12"
     consumer:
-      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-tst-vro}"
+      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-ivv-vro}"
+kafka:
+  topic:
+    prefix: IVV

@@ -1,6 +1,6 @@
 buildscript {
   dependencies {
-    classpath "org.yaml:snakeyaml:2.0"
+    classpath "org.yaml:snakeyaml:2.1"
   }
   // There's a conflict between versions of jgit between spotless and axion release plugin
   configurations.classpath {
@@ -12,7 +12,7 @@ buildscript {
 
 plugins {
   id 'local.std.base-project-conventions'
-  id 'pl.allegro.tech.build.axion-release' version '1.15.3'
+  id 'pl.allegro.tech.build.axion-release' version '1.15.4'
 
   // Set versions for these plugins (but don't apply) so we don't have to repeat the versions in subprojects
   id "org.springframework.boot" version "${spring_boot_version}" apply false

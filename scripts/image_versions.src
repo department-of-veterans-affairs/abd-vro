@@ -17,3 +17,4 @@ export console_VER="v3.2.5"
 # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Container-Image-Versions
 # Wed Jul 12 17:45:45 UTC 2023 -- v3.3.1
 # Tue Jul 25 13:50:24 UTC 2023 -- v3.3.2
+# Mon Jul 31 17:42:17 UTC 2023 -- v3.4.0
