@@ -4,7 +4,7 @@ labels:
 resources:
   requests:
     cpu: 150m
-    memory: 1024i
+    memory: 1024Mi
   limits:
     cpu: 2000m
     memory: 4096Mi
