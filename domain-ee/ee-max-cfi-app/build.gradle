@@ -1,0 +1,4 @@
+plugins {
+  id 'local.python.app-conventions'
+  id 'local.python.container-service-conventions'
+}
