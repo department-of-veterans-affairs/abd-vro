@@ -1,5 +1,7 @@
 package gov.va.vro.services.bie.service.kafka;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import gov.va.vro.services.bie.config.BieProperties;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -16,8 +18,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import java.io.File;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @DirtiesContext
