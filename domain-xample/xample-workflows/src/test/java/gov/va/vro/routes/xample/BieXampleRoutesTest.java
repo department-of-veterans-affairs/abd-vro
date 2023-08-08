@@ -1,5 +1,7 @@
 package gov.va.vro.routes.xample;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import gov.va.vro.model.biekafka.BieMessagePayload;
 import gov.va.vro.model.biekafka.test.BieMessagePayloadFactory;
 import lombok.SneakyThrows;
@@ -16,8 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)

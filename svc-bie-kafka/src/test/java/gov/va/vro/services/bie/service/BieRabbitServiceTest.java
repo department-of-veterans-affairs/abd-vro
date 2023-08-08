@@ -1,5 +1,9 @@
 package gov.va.vro.services.bie.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+
 import gov.va.vro.model.biekafka.BieMessagePayload;
 import gov.va.vro.model.biekafka.test.BieMessagePayloadFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,10 +15,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class BieRabbitServiceTest {

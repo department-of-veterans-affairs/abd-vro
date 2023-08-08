@@ -57,7 +57,8 @@ public class DbHelper {
     contentionEventEntity.setEventType(bieMessagePayload.getEventType().toString());
     contentionEventEntity.setEventDetails(bieMessagePayload.getEventDetails());
     contentionEventEntity.setNotifiedAt(convertTime(bieMessagePayload.getNotifiedAt()));
-    contentionEventEntity.setContentionClassificationCode(bieMessagePayload.getContentionClassificationCode());
+    contentionEventEntity.setContentionClassificationCode(
+        bieMessagePayload.getContentionClassificationCode());
     contentionEventEntity.setDiagnosticTypeCode(bieMessagePayload.getDiagnosticTypeCode());
     contentionEventEntity.setOccurredAt(convertTime(bieMessagePayload.getOccurredAt()));
 
