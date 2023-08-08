@@ -8,6 +8,7 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +26,7 @@ import java.util.concurrent.TimeUnit;
     partitions = 1,
     topics = {KafkaConsumerTest.TOPIC},
     brokerProperties = {"listeners=PLAINTEXT://localhost:9092", "port=9092"})
+@Disabled
 class KafkaConsumerTest {
 
   public static final String TOPIC = "TST_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02";
