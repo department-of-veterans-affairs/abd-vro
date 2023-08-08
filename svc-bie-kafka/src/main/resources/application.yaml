@@ -12,13 +12,14 @@ spring:
 
   # Specify how Spring connects to Kafka
   kafka:
-    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS}"
+    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:localhost:9092}"
     properties:
+      schema.registry.url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://schemaregistry.dev.bip.va.gov:443}"
       specific.avro.reader: false
     consumer:
-      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-group}"
-      key-deserializer: "org.apache.kafka.common.serialization.ByteArrayDeserializer"
-      value-deserializer: "org.apache.kafka.common.serialization.ByteArrayDeserializer"
+      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-tst-vro}"
+      key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+      value-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
       # Comment out the following line to connect without SSL
       security.protocol: SSL
       ssl:

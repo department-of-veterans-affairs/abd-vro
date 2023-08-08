@@ -4,11 +4,10 @@ import gov.va.vro.services.bie.config.BieProperties;
 import gov.va.vro.services.bie.service.AmqpMessageSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-
-import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,13 +24,18 @@ public class KafkaConsumer {
         "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_COMPLETED_V02",
         "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_DELETED_V02"
       })
-  public void consume(ConsumerRecord<byte[], byte[]> record) {
-    String messageKey = new String(record.key(), StandardCharsets.UTF_8);
-    String messageValue = new String(record.value(), StandardCharsets.UTF_8);
+  public void consume(ConsumerRecord<String, Object> record) {
+    String messageValue = null;
     String topicName = record.topic();
 
+    if (record.value() instanceof GenericRecord value) {
+      messageValue = value.toString();
+    } else if (record.value() instanceof String stringValue) {
+      messageValue = stringValue;
+    }
+
     log.info("Topic name: {}", topicName);
-    log.info("Consumed message key: {}", messageKey);
+    log.info("Consumed message key: {}", record.key());
     // TODO: Ensure no PII values are logged
     log.info("Consumed message value (before) decode: {}", messageValue);
 
