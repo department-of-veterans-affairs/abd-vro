@@ -1,6 +1,6 @@
 package gov.va.vro.services.bie.service.kafka;
 
-import gov.va.vro.model.biekafka.BieMessagePayload;
+import com.fasterxml.jackson.core.JsonProcessingException;import com.fasterxml.jackson.databind.ObjectMapper;import gov.va.vro.model.biekafka.BieMessagePayload;
 import gov.va.vro.model.biekafka.ContentionEvent;
 import gov.va.vro.services.bie.config.BieProperties;
 import gov.va.vro.services.bie.service.AmqpMessageSender;
@@ -72,17 +72,24 @@ public class KafkaConsumer {
       log.info("Topic name: {}", topicName);
       if (record.value() instanceof GenericRecord) {
         payload = this.handleGenericRecord(record);
-        log.info("Sending BieMessagePayload to Amqp Message Sender: {}", payload.toString());
+        log.info("Sending GenericRecord BieMessagePayload to Amqp Message Sender: {}", payload.toString());
 
       } else if (record.value() instanceof String stringPayload) {
-        payload = stringPayload;
-        log.info("Consumed message value (before) decode: {}", stringPayload);
+        log.info("Consumed message string value (before) json conversion: {}", stringPayload);
+        payload = this.handleStringRecord(record);
+        log.info("Sending String BieMessagePayload to Amqp Message Sender: {}", payload.toString());
       }
       amqpMessageSender.send(
           bieProperties.getKafkaTopicToAmqpExchangeMap().get(topicName), topicName, payload);
     } catch (Exception e) {
       log.error("Exception occurred while processing message: " + e.getMessage());
     }
+  }
+
+  private BieMessagePayload handleStringRecord(ConsumerRecord<String, Object> record) throws JsonProcessingException {
+    ObjectMapper objectMapper = new ObjectMapper();
+    String messageValue = (String) record.value();
+    return objectMapper.readValue(messageValue, BieMessagePayload.class);
   }
 
   private BieMessagePayload handleGenericRecord(ConsumerRecord<String, Object> record) {
