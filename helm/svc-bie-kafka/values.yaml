@@ -1,6 +1,11 @@
 labels:
   app: vro-svc-bie-kafka
 
+biekafka:
+  envVars:
+    - name: JAVA_OPTS
+      value: "-Xmx2G -Xms1G"
+
 resources:
   requests:
     cpu: 150m

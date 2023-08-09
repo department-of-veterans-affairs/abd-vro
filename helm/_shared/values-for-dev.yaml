@@ -6,3 +6,8 @@ global:
   # Refer to https://animated-carnival-57b3e7f5.pages.github.io/container-platform/routing-traffic/
   endpoint: dev.lighthouse.va.gov
   imagePrefix: dev_
+
+biekafka:
+  envVars:
+    - name: JAVA_OPTS
+      value: "-Xmx2G -Xms1G"
