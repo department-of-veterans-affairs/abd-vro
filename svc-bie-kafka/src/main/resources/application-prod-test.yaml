@@ -20,6 +20,8 @@ spring:
       trust-store-type: "PKCS12"
     consumer:
       group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-pre-vro}"
+      key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+      value-deserializer: "io.confluent.kafka.serializers.KafkaAvroDeserializer"
 kafka:
   topic:
     prefix: PRE
