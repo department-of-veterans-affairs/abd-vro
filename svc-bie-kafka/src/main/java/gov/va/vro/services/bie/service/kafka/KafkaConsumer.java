@@ -63,55 +63,61 @@ public class KafkaConsumer {
         "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_COMPLETED_V02",
         "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_DELETED_V02"
       })
-  public void consume(ConsumerRecord<String, GenericRecord> record) {
+  public void consume(ConsumerRecord<String, Object> record) {
     try {
-      GenericRecord messageValue = record.value();
       String topicName = record.topic();
-      log.info("Consumed message value (before) decode: {}", messageValue);
-
-      String KEY_DIAGNOSTIC_TYPE_CODE = "DiagnosticTypeCode";
-      String KEY_CLAIM_ID = "ClaimId";
-      String KEY_CONTENTION_ID = "ContentionId";
-      String KEY_CONTENTION_CLASSIFICATION_NAME = "ContentionClassificationName";
-      String KEY_CONTENTION_CLASSIFICATION_CODE = "ContentionClassificationCode";
-      String KEY_EVENT_TIME = "EventTime";
-
-      final Set<String> keysToRemove =
-          Set.of(
-              KEY_CLAIM_ID,
-              KEY_CONTENTION_ID,
-              KEY_CONTENTION_CLASSIFICATION_NAME,
-              KEY_CONTENTION_CLASSIFICATION_CODE,
-              KEY_DIAGNOSTIC_TYPE_CODE,
-              KEY_EVENT_TIME);
-
-      Map<String, Object> eventDetails = recordToMapIgnoringFields(messageValue, keysToRemove);
-
-      BieMessagePayload payload =
-          BieMessagePayload.builder()
-              .eventType(ContentionEvent.valueOf(mapTopicToEvent(topicName).toString()))
-              .claimId((long) messageValue.get(KEY_CLAIM_ID))
-              .contentionId((long) messageValue.get(KEY_CONTENTION_ID))
-              .contentionClassificationName(
-                  (String) messageValue.get(KEY_CONTENTION_CLASSIFICATION_NAME))
-              .contentionClassificationCode(
-                  (String) messageValue.get(KEY_CONTENTION_CLASSIFICATION_CODE))
-              .diagnosticTypeCode((String) messageValue.get(KEY_DIAGNOSTIC_TYPE_CODE))
-              .occurredAt((Long) messageValue.get(KEY_EVENT_TIME))
-              .notifiedAt(record.timestamp())
-              .status(200)
-              .eventDetails(eventDetails)
-              .build();
-
-      log.info("Payload: {}", payload);
 
       log.info("Topic name: {}", topicName);
-      log.info("Consumed message value (before) decode: {}", messageValue);
+      if (record.value() instanceof GenericRecord) {
+        BieMessagePayload payload = this.handleGenericRecord(record);
 
-      amqpMessageSender.send(
-          bieProperties.getKafkaTopicToAmqpExchangeMap().get(topicName), topicName, payload);
+        log.info("Sending BieMessagePayload to Amqp Message Sender: {}", payload.toString());
+        amqpMessageSender.send(
+            bieProperties.getKafkaTopicToAmqpExchangeMap().get(topicName), topicName, payload);
+      } else if (record.value() instanceof String stringPayload) {
+        log.info("Consumed message value (before) decode: {}", stringPayload);
+      }
     } catch (Exception e) {
       log.error("Exception occurred while processing message: " + e.getMessage());
     }
+  }
+
+  private BieMessagePayload handleGenericRecord(ConsumerRecord<String, Object> record) {
+    String KEY_DIAGNOSTIC_TYPE_CODE = "DiagnosticTypeCode";
+    String KEY_CLAIM_ID = "ClaimId";
+    String KEY_CONTENTION_ID = "ContentionId";
+    String KEY_CONTENTION_CLASSIFICATION_NAME = "ContentionClassificationName";
+    String KEY_CONTENTION_CLASSIFICATION_CODE = "ContentionClassificationCode";
+    String KEY_EVENT_TIME = "EventTime";
+
+    GenericRecord messageValue = (GenericRecord) record.value();
+    final Set<String> keysToRemove =
+        Set.of(
+            KEY_CLAIM_ID,
+            KEY_CONTENTION_ID,
+            KEY_CONTENTION_CLASSIFICATION_NAME,
+            KEY_CONTENTION_CLASSIFICATION_CODE,
+            KEY_DIAGNOSTIC_TYPE_CODE,
+            KEY_EVENT_TIME);
+
+    Map<String, Object> eventDetails = recordToMapIgnoringFields(messageValue, keysToRemove);
+
+    BieMessagePayload payload =
+        BieMessagePayload.builder()
+            .eventType(ContentionEvent.valueOf(mapTopicToEvent(record.topic()).toString()))
+            .claimId((long) messageValue.get(KEY_CLAIM_ID))
+            .contentionId((long) messageValue.get(KEY_CONTENTION_ID))
+            .contentionClassificationName(
+                (String) messageValue.get(KEY_CONTENTION_CLASSIFICATION_NAME))
+            .contentionClassificationCode(
+                (String) messageValue.get(KEY_CONTENTION_CLASSIFICATION_CODE))
+            .diagnosticTypeCode((String) messageValue.get(KEY_DIAGNOSTIC_TYPE_CODE))
+            .occurredAt((Long) messageValue.get(KEY_EVENT_TIME))
+            .notifiedAt(record.timestamp())
+            .status(200)
+            .eventDetails(eventDetails)
+            .build();
+
+    return payload;
   }
 }

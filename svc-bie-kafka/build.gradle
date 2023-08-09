@@ -1,7 +1,6 @@
 plugins {
   id 'local.java.container-spring-conventions'
   id 'local.std.java.library-conventions'
-  id 'com.github.davidmc24.gradle.plugin.avro' version '1.8.0'
 }
 
 ext {
@@ -19,8 +18,6 @@ dependencies {
   implementation 'org.apache.avro:avro:1.11.2'
   implementation 'io.confluent:kafka-avro-serializer:7.4.0'
   implementation 'org.apache.kafka:connect-api:3.5.1'
-  implementation 'org.apache.kafka:kafka_2.13:3.5.1'
-
   // RabbitMQ
   implementation 'org.springframework.boot:spring-boot-starter-amqp'
   implementation 'org.springframework.kafka:spring-kafka'
@@ -32,8 +29,4 @@ dependencies {
   //testImplementation 'org.slf4j:slf4j-simple:2.0.7'
   testImplementation 'org.springframework.amqp:spring-rabbit-test'
   testImplementation 'org.springframework.kafka:spring-kafka-test'
-}
-
-generateAvroJava {
-  source("${projectDir}/src/main/resources/avro")
 }

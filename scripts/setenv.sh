@@ -9,27 +9,34 @@ if [[ $0 == $BASH_SOURCE ]]; then
 fi
 
 # Find checkout of abd-vro-dev-secrets GH repo
+# If $1 is provided, use that.
+# Else if VRO_DEV_SECRETS_FOLDER is set, use that.
+# Else try default location but don't return error if it can't be found
+#   so that GH Actions that don't rely on secrets don't fail
 findSecretsDir(){
-  local VRO_DEV_SECRETS_FOLDER
-  [ "$1" ] && VRO_DEV_SECRETS_FOLDER="$1"
-  : ${VRO_DEV_SECRETS_FOLDER:=$PWD/../abd-vro-dev-secrets}
-  if SECRETS_DIR=$(cd -- "${VRO_DEV_SECRETS_FOLDER}/local" && pwd); then
+  if [ "$1" ]; then
+    SECRETS_REPO_FOLDER="$1"
+  elif [ "$VRO_DEV_SECRETS_FOLDER" ]; then
+    SECRETS_REPO_FOLDER="$VRO_DEV_SECRETS_FOLDER"
+  else
+    SECRETS_REPO_FOLDER="$PWD/../abd-vro-dev-secrets"
+    DEFAULT_SECRETS_REPO_FOLDER=true
+  fi
+
+  if SECRETS_DIR=$(cd -- "${SECRETS_REPO_FOLDER}/local" &> /dev/null && pwd); then
     echo "Using secrets in $SECRETS_DIR"
+  elif [ "$DEFAULT_SECRETS_REPO_FOLDER" = "true" ]; then
+    echo "Not loading secrets since cannot find a checkout of abd-vro-dev-secrets."
   else
     echo "Cannot find a checkout of https://github.com/department-of-veterans-affairs/abd-vro-dev-secrets!
-    Expecting it to be at $VRO_DEV_SECRETS_FOLDER.
+    Expecting it to be at: $SECRETS_REPO_FOLDER.
     Alternatively, export the VRO_DEV_SECRETS_FOLDER environment variable to point to its location
     or run this script with the folder location as the first argument."
     return 11
   fi
 }
 
-# $CI is set by GitHub Action -- https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
-if [ "$CI" ]; then
-  echo "Relying on Action to set environment variable secrets"
-else
-  findSecretsDir "$1" || return 11
-fi
+findSecretsDir "$1" || return 11
 
 ###
 # Before adding configuration settings in this file, prefer to add them to application*.yml (for Java)
@@ -49,10 +56,10 @@ echo "Setting up environment variables for VRO local development and testing"
 
 getSecret(){
   if [ "$SECRETS_DIR" ]; then
-    >&2 echo "- retrieving $1"
+    >&2 echo "- retrieving secret $1"
     cat "$SECRETS_DIR/$1"
   else
-    >&2 echo "- Error: environment variable is not set: $1"
+    >&2 echo "- not setting secret $1"
   fi
 }
 
@@ -61,7 +68,14 @@ exportSecretIfUnset(){
   if [ "${VAR_VALUE}" ]; then
     >&2 echo "Not overriding: $1 already set."
   else
-    eval "export $1=\$(getSecret $1)"
+    VAR_VALUE=$(getSecret "$1")
+    eval "export $1=\"$VAR_VALUE\""
+  fi
+  # When running in a GH Action, mask the secret
+  if [ "${CI}" ] && [ "${VAR_VALUE}" ]; then
+    echo "${VAR_VALUE}" | while read -r LINE; do
+      echo "::add-mask::${LINE}"
+    done
   fi
 }
 
@@ -77,6 +91,20 @@ exportIfUnset(){
 exportFile(){
   local FILE_VALUE=$(eval cat "$2")
   eval "export $1=${FILE_VALUE}"
+}
+
+decodeSecretToFile(){
+  if [ -f "$2" ]; then
+    >&2 echo "Not overwriting file: $2 already exists."
+  else
+    local VAR_VALUE=$(getSecret "$1")
+    if [ "$VAR_VALUE" ]; then
+      >&2 echo "Creating $2"
+      echo "$VAR_VALUE" | base64 -d > "$2"
+    else
+      >&2 echo "Not creating file $2 with empty content!"
+    fi
+  fi
 }
 
 ###

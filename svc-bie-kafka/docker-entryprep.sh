@@ -8,7 +8,7 @@ getEnvVarValue(){
 for ENV_VAR in \
   BIE_KAFKA_KEYSTORE_INBASE64 BIE_KAFKA_KEYSTORE_PASSWORD \
   BIE_KAFKA_TRUSTSTORE_INBASE64 BIE_KAFKA_TRUSTSTORE_PASSWORD; do
-  if [ "$(getEnvVarValue "$ENV_VAR")" == "" ]; then
+  if [ "$(getEnvVarValue "$ENV_VAR")" = "" ]; then
     >&2 echo "ERROR: Missing expected environment variable: $ENV_VAR"
   fi
 done

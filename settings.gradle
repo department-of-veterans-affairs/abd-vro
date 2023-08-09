@@ -29,7 +29,6 @@ dependencyResolutionManagement {
 
 rootProject.name = 'abd_vro'
 
-//include ':docs'
 include ':scripts'
 
 include ':api-gateway'
@@ -53,3 +52,4 @@ include ':domain-xample:svc-xample-j'
 include ':domain-xample:svc-hoppy-usage'
 
 include ':domain-cc:cc-app'
+include ':domain-ee:ee-max-cfi-app'
