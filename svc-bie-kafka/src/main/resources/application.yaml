@@ -28,11 +28,6 @@ spring:
         partition:
           fetch:
             bytes: 1048576
-#      fetch-min-bytes: 1048576
-#      max-partition-fetch-bytes: 2097152
-#      max-poll-records: 100
-#      receive-buffer-bytes: 16384
-#      send-buffer-bytes: 16384
       auto-offset-reset: latest
 kafka:
   topic:
