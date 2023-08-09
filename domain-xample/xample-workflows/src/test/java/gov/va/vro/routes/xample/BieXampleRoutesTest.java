@@ -68,8 +68,7 @@ class BieXampleRoutesTest extends CamelTestSupport {
     assertThat(response.getContentionClassificationName())
         .isEqualTo(testItem.getContentionClassificationName());
     assertThat(response.getContentionId()).isEqualTo(testItem.getContentionId());
-    assertThat(response.getContentionTypeCode())
-        .isEqualTo(testItem.getContentionTypeCode());
+    assertThat(response.getContentionTypeCode()).isEqualTo(testItem.getContentionTypeCode());
     assertThat(response.getDiagnosticTypeCode()).isEqualTo(testItem.getDiagnosticTypeCode());
     assertThat(response.getEventDetails()).isEqualTo(testItem.getEventDetails());
     assertMockEndpointsSatisfied();

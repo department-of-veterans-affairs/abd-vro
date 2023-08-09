@@ -1,6 +1,8 @@
 package gov.va.vro.services.bie.service.kafka;
 
-import com.fasterxml.jackson.core.JsonProcessingException;import com.fasterxml.jackson.databind.ObjectMapper;import gov.va.vro.model.biekafka.BieMessagePayload;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.model.biekafka.BieMessagePayload;
 import gov.va.vro.model.biekafka.ContentionEvent;
 import gov.va.vro.services.bie.config.BieProperties;
 import gov.va.vro.services.bie.service.AmqpMessageSender;
@@ -72,7 +74,9 @@ public class KafkaConsumer {
       log.info("Topic name: {}", topicName);
       if (record.value() instanceof GenericRecord) {
         payload = this.handleGenericRecord(record);
-        log.info("Sending GenericRecord BieMessagePayload to Amqp Message Sender: {}", payload.toString());
+        log.info(
+            "Sending GenericRecord BieMessagePayload to Amqp Message Sender: {}",
+            payload.toString());
 
       } else if (record.value() instanceof String stringPayload) {
         log.info("Consumed message string value (before) json conversion: {}", stringPayload);
@@ -86,7 +90,8 @@ public class KafkaConsumer {
     }
   }
 
-  private BieMessagePayload handleStringRecord(ConsumerRecord<String, Object> record) throws JsonProcessingException {
+  private BieMessagePayload handleStringRecord(ConsumerRecord<String, Object> record)
+      throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
     String messageValue = (String) record.value();
     return objectMapper.readValue(messageValue, BieMessagePayload.class);
@@ -119,8 +124,7 @@ public class KafkaConsumer {
             .contentionId((long) messageValue.get(KEY_CONTENTION_ID))
             .contentionClassificationName(
                 (String) messageValue.get(KEY_CONTENTION_CLASSIFICATION_NAME))
-            .contentionTypeCode(
-                (String) messageValue.get(KEY_CONTENTION_TYPE_CODE))
+            .contentionTypeCode((String) messageValue.get(KEY_CONTENTION_TYPE_CODE))
             .diagnosticTypeCode((String) messageValue.get(KEY_DIAGNOSTIC_TYPE_CODE))
             .occurredAt((Long) messageValue.get(KEY_EVENT_TIME))
             .notifiedAt(record.timestamp())
