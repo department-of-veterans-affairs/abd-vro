@@ -64,19 +64,22 @@ public class KafkaConsumer {
         "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_DELETED_V02"
       })
   public void consume(ConsumerRecord<String, Object> record) {
+    // TODO: Object needs to be converted to GenericRecord once local Kafka schema registry
+    //  mocks are implemented for testing purposes.
     try {
       String topicName = record.topic();
-
+      Object payload = null;
       log.info("Topic name: {}", topicName);
       if (record.value() instanceof GenericRecord) {
-        BieMessagePayload payload = this.handleGenericRecord(record);
-
+        payload = this.handleGenericRecord(record);
         log.info("Sending BieMessagePayload to Amqp Message Sender: {}", payload.toString());
-        amqpMessageSender.send(
-            bieProperties.getKafkaTopicToAmqpExchangeMap().get(topicName), topicName, payload);
+
       } else if (record.value() instanceof String stringPayload) {
+        payload = stringPayload;
         log.info("Consumed message value (before) decode: {}", stringPayload);
       }
+      amqpMessageSender.send(
+          bieProperties.getKafkaTopicToAmqpExchangeMap().get(topicName), topicName, payload);
     } catch (Exception e) {
       log.error("Exception occurred while processing message: " + e.getMessage());
     }

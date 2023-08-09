@@ -4,5 +4,5 @@ import gov.va.vro.model.biekafka.BieMessagePayload;
 
 public interface AmqpMessageSender {
 
-  void send(String exchange, String routingKey, BieMessagePayload message);
+  void send(String exchange, String routingKey, Object message);
 }
