@@ -19,11 +19,6 @@ jacocoTestReport {
   }
 }
 
-repositories {
-  mavenCentral()
-  maven { url "https://packages.confluent.io/maven/" }
-}
-
 dependencies {
   implementation project(":shared:lib-bie-kafka")
   // avro schema and kafka
