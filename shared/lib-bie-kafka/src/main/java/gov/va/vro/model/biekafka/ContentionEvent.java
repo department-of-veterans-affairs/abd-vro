@@ -14,6 +14,6 @@ public enum ContentionEvent {
   }
 
   public String getTopicName() {
-    return "TST_" + topicName;
+    return topicName;
   }
 }

@@ -13,6 +13,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -25,21 +26,13 @@ public class KafkaConsumer {
   private final BieProperties bieProperties;
 
   public ContentionEvent mapTopicToEvent(String topic) {
+    // remove first word prefix from topic seperated by _
+    String noPrefixTopic = topic.substring(topic.indexOf("_") + 1);
 
-    log.info("TOPIC" + ContentionEvent.CONTENTION_ASSOCIATED_TO_CLAIM.getTopicName());
-    if (ContentionEvent.CONTENTION_ASSOCIATED_TO_CLAIM.getTopicName().equals(topic)) {
-      return ContentionEvent.CONTENTION_ASSOCIATED_TO_CLAIM;
-    } else if (ContentionEvent.CONTENTION_UPDATED.getTopicName().equals(topic)) {
-      return ContentionEvent.CONTENTION_UPDATED;
-    } else if (ContentionEvent.CONTENTION_CLASSIFIED.getTopicName().equals(topic)) {
-      return ContentionEvent.CONTENTION_CLASSIFIED;
-    } else if (ContentionEvent.CONTENTION_COMPLETED.getTopicName().equals(topic)) {
-      return ContentionEvent.CONTENTION_COMPLETED;
-    } else if (ContentionEvent.CONTENTION_DELETED.getTopicName().equals(topic)) {
-      return ContentionEvent.CONTENTION_DELETED;
-    } else {
-      throw new IllegalArgumentException("Unrecognized topic: " + topic);
-    }
+    return Arrays.stream(ContentionEvent.values())
+        .filter(event -> event.getTopicName().equals(noPrefixTopic))
+        .findFirst()
+        .orElseThrow(() -> new IllegalArgumentException("Unrecognized topic: " + noPrefixTopic));
   }
 
   public static Map<String, Object> recordToMapIgnoringFields(
