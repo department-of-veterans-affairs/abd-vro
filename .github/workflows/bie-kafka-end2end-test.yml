@@ -14,7 +14,10 @@ env:
   COMPOSE_PROFILES: 'kafka'
   TEST_TOPIC: 'TST_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02'
   # TEST_DATA should be replaced with data after event_details is populated with non PII data. See Github Issue 1680
-  TEST_DATA: 'Lorem ipsum'
+  TEST_DATA: '{"status": 200, "eventType": "CONTENTION_ASSOCIATED_TO_CLAIM", 
+    "claimId": 5507812988990716409, "contentionClassificationName": "ullam", "contentionId": 117557612742328633,
+    "contentionTypeCode": "o19h11hy25", "diagnosticTypeCode": "2q53t87h21", "notifiedAt": 1691518734917, "VeteranParticipantId": 742554848,
+    "occurredAt": 1548612264653 }'
   VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"
 
 jobs:

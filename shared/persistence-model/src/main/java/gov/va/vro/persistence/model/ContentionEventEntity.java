@@ -31,8 +31,8 @@ public class ContentionEventEntity extends BaseEntity {
   @Column(name = "contention_id")
   private Long contentionId;
 
-  @Column(name = "contention_classification_code")
-  private String contentionClassificationCode;
+  @Column(name = "contention_type_code")
+  private String contentionTypeCode;
 
   @Column(name = "diagnostic_type_code")
   private String diagnosticTypeCode;

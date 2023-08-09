@@ -19,7 +19,7 @@ public class BieMessagePayload {
   private ContentionEvent eventType;
   private long claimId;
   private long contentionId;
-  private String contentionClassificationCode;
+  private String contentionTypeCode;
   private String contentionClassificationName;
   private String diagnosticTypeCode;
   private Map<String, Object> eventDetails;

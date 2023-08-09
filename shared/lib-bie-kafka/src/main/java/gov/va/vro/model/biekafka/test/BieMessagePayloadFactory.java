@@ -16,7 +16,7 @@ public class BieMessagePayloadFactory {
         .eventType(ContentionEvent.CONTENTION_ASSOCIATED_TO_CLAIM)
         .claimId(faker.random().nextLong())
         .contentionClassificationName(faker.lorem().word())
-        .contentionClassificationCode(faker.lorem().characters(10))
+        .contentionTypeCode(faker.lorem().characters(10))
         .contentionId(faker.random().nextLong())
         .diagnosticTypeCode(faker.lorem().characters(10))
         .occurredAt(faker.date().past(60, TimeUnit.DAYS).getTime())
