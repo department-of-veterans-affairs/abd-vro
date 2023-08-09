@@ -13,6 +13,7 @@ concurrency:
 env:
   COMPOSE_PROFILES: 'kafka'
   TEST_TOPIC: 'TST_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02'
+  EVENT_TYPE: 'CONTENTION_ASSOCIATED_TO_CLAIM'
   # TEST_DATA should be replaced with data after event_details is populated with non PII data. See Github Issue 1680
   TEST_DATA: '{"status": 200, "eventType": "CONTENTION_ASSOCIATED_TO_CLAIM", 
     "claimId": 5507812988990716409, "contentionClassificationName": "ullam", "contentionId": 117557612742328633,
@@ -141,9 +142,7 @@ jobs:
             FROM
               claims.bie_contention_event
             WHERE
-              event='${{env.TEST_TOPIC}}'
-                AND
-              event_details='Lorem ipsum'
+              event_type='${{env.EVENT_TYPE}}'
           ")
           echo $RESULTS
           if echo $RESULTS | grep -q 'count | 1'
