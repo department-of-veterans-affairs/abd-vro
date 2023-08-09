@@ -20,10 +20,10 @@ public class KafkaConsumer {
   @KafkaListener(
       topics = {
         "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02",
-//        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_UPDATED_V02",
-//        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02",
-//        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_COMPLETED_V02",
-//        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_DELETED_V02"
+        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_UPDATED_V02",
+        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02",
+        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_COMPLETED_V02",
+        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_DELETED_V02"
       })
   public void consume(ConsumerRecord<GenericRecord, GenericRecord> record) {
     GenericRecord messageValue = record.value();
@@ -34,7 +34,7 @@ public class KafkaConsumer {
     log.info("Consumed message key: {}", messageKey.toString());
     log.info("Consumed message value (before) decode: {}", messageValue.toString());
 
-    amqpMessageSender.send(
-        bieProperties.getKafkaTopicToAmqpExchangeMap().get(topicName), topicName, messageValue.toString());
+//    amqpMessageSender.send(
+//        bieProperties.getKafkaTopicToAmqpExchangeMap().get(topicName), topicName, messageValue.toString());
   }
 }
