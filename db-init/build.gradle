@@ -17,9 +17,9 @@ dependencies {
 }
 
 flyway {
-  url = 'jdbc:postgresql://vro_user:vro_user_pw@localhost:5432/claims'
+  url = 'jdbc:postgresql://vro:not-the-password@localhost:5432/claims'
   user = 'vro_user'
-  password = 'vro_user_pw'
+  password = 'not-the-password'
   locations = [
     "filesystem:${project.buildDir}/docker/database/migrations"
   ]
