@@ -8,4 +8,4 @@ CREATE TABLE IF NOT EXISTS "bie_contention_event" (
     created_at timestamp NOT NULL,
     updated_at timestamp NOT NULL,
     PRIMARY KEY(id)
-    );
+);
