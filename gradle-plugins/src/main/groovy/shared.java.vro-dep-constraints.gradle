@@ -34,8 +34,6 @@ dependencies {
         implementation "com.squareup.okhttp3:okhttp:4.10.0"
         implementation "org.yaml:snakeyaml:${snakeyaml_version}"
         implementation "org.thymeleaf:thymeleaf:3.1.2.RELEASE"      // Fix for Security vulnerability
-        implementation "org.springframework.hateoas:spring-hateoas:2.1.1" // Fix for Security vulnerability
-        implementation "org.glassfish:jakarta.el:3.0.4"
 
         // for mockserver-netty and hapi-fhir
         implementation 'org.apache.commons:commons-text:1.10.0'
