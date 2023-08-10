@@ -5,6 +5,7 @@ biekafka:
   envVars:
     - name: JAVA_OPTS
       value: "-Xmx2G -Xms1G"
+      default: "-Xmx2G -Xms1G"
 
 resources:
   requests:
