@@ -19,15 +19,6 @@ spring:
       group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-tst-vro}"
       key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
       value-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
-      fetch:
-        max:
-          bytes: 10485760
-      max:
-        poll:
-          records: 500
-        partition:
-          fetch:
-            bytes: 1048576
       auto-offset-reset: latest
 kafka:
   topic:
