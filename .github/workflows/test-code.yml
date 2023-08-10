@@ -149,6 +149,13 @@ jobs:
         with:
           files: domain-cc/**
 
+      - name: "Get changed files"
+        if: '! inputs.run_all_tests'
+        id: changed-files-specific
+        uses: tj-actions/changed-files@v35
+        with:
+          files: domain-ee/**
+
       - name: "Install Python"
         if: inputs.run_all_tests || steps.changed-files-specific.outputs.any_changed == 'true'
         uses: actions/setup-python@v4
@@ -160,3 +167,8 @@ jobs:
         if: inputs.run_all_tests || steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
           ./gradlew :domain-cc:test
+
+      - name: "Run contention classification tests"
+        if: inputs.run_all_tests || steps.changed-files-specific.outputs.any_changed == 'true'
+        run: |
+          ./gradlew :domain-ee:test

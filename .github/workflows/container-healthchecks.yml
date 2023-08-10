@@ -59,6 +59,12 @@ jobs:
           source scripts/setenv.sh
           ./gradlew :domain-cc:dockerComposeUp
 
+      - name: "Start containers: domain-ee"
+        shell: bash
+        run: |
+          source scripts/setenv.sh
+          ./gradlew :domain-ee:dockerComposeUp
+
       - name: "Wait for containers to start"
         run: |
           STATUS="..."

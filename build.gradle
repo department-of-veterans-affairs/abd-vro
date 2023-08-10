@@ -122,6 +122,7 @@ scmVersion {
     'svc-lighthouse-api': null,
     // Once stable, set a version and move to previous section
     'domain-cc'  : null,
+    'domain-ee'  : null,
   ]
 
   def setHelmChartAppVersions = { currentVersion ->
@@ -172,4 +173,5 @@ tasks.named("dockerComposeDown").configure {
   mustRunAfter ':app:dockerComposeDown'
   mustRunAfter ':domain-xample:dockerComposeDown'
   mustRunAfter ':domain-cc:dockerComposeDown'
+  mustRunAfter ':domain-ee:dockerComposeDown'
 }
