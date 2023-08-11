@@ -31,8 +31,6 @@ class Contention(Base):
     id = Column(Integer, primary_key=True, index=True)
     diagnostic_code = Column(Integer, nullable=True)
     classification_code = Column(Integer, nullable=True)
-    # classification_code = Column(String, nullable=True)
-    # created_at: datetime = Field(default_factory=func.now())
 
     claim_id = Column(Integer, ForeignKey("claim.id"))
     claim = relationship("Claim", back_populates="contentions")

@@ -3,6 +3,7 @@ import sys
 from typing import Optional
 
 from fastapi import Depends, FastAPI, HTTPException
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from . import database_models
@@ -108,3 +109,14 @@ async def batch_classify(
     db.commit()
 
     return classifications
+
+@app.get("/test")
+async def testthing(
+    db: Session = Depends(get_db)
+):
+    result = db.execute(select(database_models.Claim).order_by(database_models.Claim.vets_api_claim_id))
+    record = result.fetchone()
+    # result = db.execute(select(database_models.Claim).where(database_models.Claim.vets_api_claim_id == 1))
+    print(f'repr(result): {repr(record)}')
+    # print(f'db result: {record.id}')
+    return repr(record)
