@@ -17,8 +17,8 @@ spring:
       properties:
         security.protocol: SSL
         ssl.keystore.type: PKCS12
-        ssl.keystore.location: "file:${KEYSTORE_FILE}"
+        ssl.keystore.location: "${KEYSTORE_FILE}"
         ssl.keystore.password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
         ssl.truststore.type: PKCS12
-        ssl.truststore.location: "file:${TRUSTSTORE_FILE}"
+        ssl.truststore.location: "${TRUSTSTORE_FILE}"
         ssl.truststore.password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
