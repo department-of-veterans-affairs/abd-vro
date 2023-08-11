@@ -19,7 +19,7 @@ spec:
     route:
     - destination:
         # Should match metadata.name in helm/charts/domain-cc/templates/service.yaml
-        host: {{ .Values.global.hostnamePrefix }}-cc-app
+        host: {{ .Values.global.hostnamePrefix }}-ee-app
         port:
           number: 8120
     headers:

@@ -5,8 +5,8 @@ type: application
 
 # numbers, lowercase, and dashes only
 # https://helm.sh/docs/chart_best_practices/conventions/#chart-names
-name: domain-cc-chart
-description: Workflows and microservices for the Contention Classification domain
+name: domain-ee-chart
+description: Workflows and microservices for the Employee Experience domain
 
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.

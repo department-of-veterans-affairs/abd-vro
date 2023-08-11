@@ -20,7 +20,7 @@ spec:
       {{- include "vro.imagePullSecrets" . | nindent 6 }}
       containers:
         - name: cc-app{{ include "vro.containerSuffix" . }}
-          image: {{ include "vro.imageRegistryPath" . }}vro-cc-app:{{ include "vro.imageTag" . }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-ee-app:{{ include "vro.imageTag" . }}
           ports:
             - containerPort: {{ .Values.service.ccApp.sourcePort }}
               protocol: TCP

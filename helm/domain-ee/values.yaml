@@ -1,5 +1,5 @@
 labels:
-  app: domain-cc-app
+  app: domain-ee-app
 
 serviceUriPrefix: contention-classification
 
