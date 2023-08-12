@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vro-domain-cc
+  name: vro-domain-ee
   labels: {{- toYaml .Values.labels | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
@@ -19,7 +19,7 @@ spec:
     spec:
       {{- include "vro.imagePullSecrets" . | nindent 6 }}
       containers:
-        - name: cc-app{{ include "vro.containerSuffix" . }}
+        - name: ee-app{{ include "vro.containerSuffix" . }}
           image: {{ include "vro.imageRegistryPath" . }}vro-ee-app:{{ include "vro.imageTag" . }}
           ports:
             - containerPort: {{ .Values.service.ccApp.sourcePort }}

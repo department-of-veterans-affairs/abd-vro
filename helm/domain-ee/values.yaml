@@ -1,7 +1,7 @@
 labels:
   app: domain-ee-app
 
-serviceUriPrefix: contention-classification
+serviceUriPrefix: employee-experience
 
 replicaCount: 1
 
