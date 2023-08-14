@@ -1,0 +1,26 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+plugins {
+  id 'org.springframework.boot'
+  id 'local.std.java.library-conventions'
+  id 'org.jetbrains.kotlin.jvm' version '1.8.22'
+  id 'org.jetbrains.kotlin.plugin.spring' version '1.8.22'
+}
+
+dependencies {
+  // RabbitMQ
+  implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
+  // Kotlin logging
+  implementation 'io.github.microutils:kotlin-logging-jvm:2.0.11'
+  implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.6'
+}
+
+spotless {
+  // https://github.com/diffplug/spotless/blob/main/plugin-gradle/README.md#kotlin
+  kotlin {
+    toggleOffOn()
+    indentWithSpaces(2)
+    ktfmt().googleStyle()
+  }
+}
