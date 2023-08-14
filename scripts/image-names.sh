@@ -9,6 +9,7 @@ gradleFolder() {
   case "$1" in
     pdfgenerator|featuretoggle|assessclaim*) echo "./domain-rrd/service-python/$1";;
     cc-app) echo "domain-cc/$1";;
+    ee-max-cfi-app) echo "domain-ee/$1";;
     *) echo "./$1";;
   esac
 }
@@ -35,7 +36,8 @@ IMAGES=( console postgres \
   api-gateway app db-init \
   svc-bgs-api svc-lighthouse-api svc-bie-kafka \
   xample-workflows \
-  cc-app )
+  cc-app \
+  ee-max-cfi-app )
 echo
 echo "=== ${#IMAGES[@]} VRO images"
 for INDEX in "${!IMAGES[@]}"; do
