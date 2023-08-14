@@ -24,10 +24,15 @@ spec:
           env:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
             {{- include "vro.mqClient.envVars" . | nindent 12 }}
+            {{- range $envVar := .Values.biekafka.envVars }}
+            - name: {{ $envVar.name }}
+              value: {{ default $envVar.value $envVar.default }}
+            {{- end }}
             - name: VRO_SECRETS_BIE_KAFKA
               valueFrom:
                 secretKeyRef:
                   name: vro-secrets-bie-kafka
                   key: VRO_SECRETS_BIE_KAFKA
+
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
