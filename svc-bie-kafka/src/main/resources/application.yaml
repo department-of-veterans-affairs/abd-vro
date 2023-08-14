@@ -20,6 +20,7 @@ spring:
       group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-tst-vro}"
       key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
       value-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+      auto-offset-reset: latest
       # Comment out the following line to connect without SSL
       security.protocol: SSL
       ssl:
