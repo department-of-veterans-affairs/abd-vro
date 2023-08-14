@@ -23,7 +23,7 @@ findSecretsDir(){
     DEFAULT_SECRETS_REPO_FOLDER=true
   fi
 
-  if SECRETS_DIR=$(cd -- "${VRO_DEV_SECRETS_FOLDER}/local" &> /dev/null && pwd); then
+  if SECRETS_DIR=$(cd -- "${SECRETS_REPO_FOLDER}/local" &> /dev/null && pwd); then
     echo "Using secrets in $SECRETS_DIR"
   elif [ "$DEFAULT_SECRETS_REPO_FOLDER" = "true" ]; then
     echo "Not loading secrets since cannot find a checkout of abd-vro-dev-secrets."

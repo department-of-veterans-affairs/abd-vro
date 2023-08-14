@@ -33,3 +33,9 @@ spring.cloud.gateway:
     - Path=/contention-classification/**
     filters:
     - StripPrefix=1
+  - id: max-cfi-route
+    uri: http://${VRO_MAX_CFI_APP_HOSTNAME:localhost}:8130
+    predicates:
+    - Path=/cfi/**
+    filters:
+    - StripPrefix=1

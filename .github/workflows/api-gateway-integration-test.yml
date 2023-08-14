@@ -34,6 +34,9 @@ jobs:
           # Run CC:
           ./gradlew :domain-cc:dockerComposeUp
 
+          # Run EE:
+          ./gradlew :domain-ee:dockerComposeUp
+
           # Run Xample:
           ./gradlew :domain-xample:dockerComposeUp
 
@@ -90,6 +93,13 @@ jobs:
         uses: indiesdev/curl@v1.1
         with:
           url: "http://localhost:8060/contention-classification/openapi.json"
+          method: "GET"
+          accept: 200
+
+      - name: "Max CFI API Docs- Request"
+        uses: indiesdev/curl@v1.1
+        with:
+          url: "http://localhost:8060/cfi/openapi.json"
           method: "GET"
           accept: 200
 
