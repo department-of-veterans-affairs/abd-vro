@@ -19,6 +19,5 @@
 # Mon Jul 31 17:42:17 UTC 2023 -- v3.4.0
 # Tue Aug 15 18:14:47 UTC 2023 -- v3.4.1
 postgres_VER="v3.4.1"
-apigateway_VER="v3.4.1"
 dbinit_VER="v3.4.1"
 svclighthouseapi_VER="v3.4.1"
