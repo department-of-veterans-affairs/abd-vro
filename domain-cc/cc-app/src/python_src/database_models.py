@@ -20,10 +20,9 @@ class Claim(Base):
 
     contentions = relationship("Contention", back_populates="claim")
 
-    # @property
-    # def is_claim_for_increase(self) -> bool:
-    #     # TODO update to check all related objects, break if any contain diagnostic_code
-    #     return self.diagnostic_code is not None
+    @property
+    def is_claim_for_increase(self) -> bool:
+        return any(contention.diagnostic_code is not None for contention in self.contentions)
 
 
 class Contention(Base):
