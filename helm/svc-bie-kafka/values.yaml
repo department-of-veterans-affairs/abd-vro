@@ -1,13 +1,19 @@
 labels:
   app: vro-svc-bie-kafka
 
+biekafka:
+  envVars:
+    - name: JAVA_OPTS
+      value: "-Xmx2G -Xms1G"
+      default: "-Xmx2G -Xms1G"
+
 resources:
   requests:
     cpu: 150m
-    memory: 512Mi
-  limits:
-    cpu: 1000m
     memory: 1024Mi
+  limits:
+    cpu: 2000m
+    memory: 4096Mi
 
 replicaCount: 1
 
