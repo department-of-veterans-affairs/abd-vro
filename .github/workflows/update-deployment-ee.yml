@@ -55,7 +55,7 @@ on:
         default: false
 
 jobs:
-  update-cc-deployment:
+  update-ee-deployment:
     uses: ./.github/workflows/update-deployment.yml
     secrets: inherit
     with:
