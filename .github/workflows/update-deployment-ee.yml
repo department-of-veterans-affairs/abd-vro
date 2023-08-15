@@ -1,5 +1,5 @@
 name: "2. (Internal) Update Deployment - ee"
-# For Partner Team CC to deploy updates to their application
+# For Partner Team EE to deploy updates to their application
 run-name: "${{inputs.target_env}}: Update deployment domain-ee ${{inputs.image_tag}}"
 
 on:
