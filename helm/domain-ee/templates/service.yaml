@@ -7,8 +7,8 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - port: {{ .Values.service.ccApp.sourcePort }}
-      targetPort: {{ .Values.service.ccApp.targetPort }}
+    - port: {{ .Values.service.eeApp.sourcePort }}
+      targetPort: {{ .Values.service.eeApp.targetPort }}
       protocol: TCP
       name: http
   # Forward requests to the port to pods matching the selector labels

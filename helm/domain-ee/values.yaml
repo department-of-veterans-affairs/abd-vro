@@ -12,6 +12,6 @@ replicaCount: 1
 #   targetCPUUtilizationPercentage: 80
 
 service:
-  ccApp:
-    sourcePort: 8120
-    targetPort: 8120
+  eeApp:
+    sourcePort: 8130
+    targetPort: 8130

@@ -21,7 +21,7 @@ spec:
         # Should match metadata.name in helm/charts/domain-cc/templates/service.yaml
         host: {{ .Values.global.hostnamePrefix }}-ee-app
         port:
-          number: 8120
+          number: 8130
     headers:
       response:
           remove:
