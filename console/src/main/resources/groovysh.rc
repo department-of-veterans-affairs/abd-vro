@@ -1,8 +1,0 @@
-// This file will be run when the VRO Console Shell starts up
-println "Running groovysh.rc"
-
-getAnyClaim = {
-    claimsT.findAll()[0]  // findOne() doesn't work
-}
-
-:show variables
