@@ -7,7 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from . import database_models
-from .database import Base, engine, get_db
+from .database import engine, get_db
 from .pydantic_models import (
     ClaimForIncrease,
     MultiContentionClasimForIncreaseSubmission,
@@ -16,7 +16,7 @@ from .pydantic_models import (
 from .util.lookup_table import get_classification_name, get_lookup_table
 
 LOOKUP_TABLE = get_lookup_table()
-Base.metadata.create_all(bind=engine)
+database_models.Base.metadata.create_all(bind=engine)
 app = FastAPI(
     title="Contention Classification",
     description="Mapping VA.gov disability form contentions to actual classifications defined in the [Benefits Reference Data API](https://developer.va.gov/explore/benefits/docs/benefits_reference_data) for use in downstream VA systems.",
