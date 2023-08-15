@@ -5,15 +5,17 @@
 
 # Array of VRO images
 # shellcheck disable=SC2034
+
 VRO_IMAGES_ARR=( console postgres api-gateway app db-init svc-bgs-api svc-lighthouse-api svc-bie-kafka xample-workflows cc-app ee-max-cfi-app )
+
 # Usage: for IMG in ${VRO_IMAGES_ARR[@]}; do echo "- $IMG"; done
 export VRO_IMAGES="console postgres api-gateway app db-init svc-bgs-api svc-lighthouse-api svc-bie-kafka xample-workflows cc-app ee-max-cfi-app"
 
 # Array of variable prefixes
 # shellcheck disable=SC2034
+
 VAR_PREFIXES_ARR=( console postgres apigateway app dbinit svcbgsapi svclighthouseapi svcbiekafka xampleworkflows ccapp eemaxcfiapp )
 export VAR_PREFIXES="console postgres apigateway app dbinit svcbgsapi svclighthouseapi svcbiekafka xampleworkflows ccapp eemaxcfiapp"
-
 
 LAST_RELEASE_VERSION=$(tail -1 versions.txt)
 
@@ -39,8 +41,8 @@ imageTagExists(){
     "https://ghcr.io/v2/department-of-veterans-affairs/abd-vro-internal/$1/manifests/$2"
 }
 
-  # Note: Bash arrays cannot be exported; use this workaround to
-  #       set the array variable from the string first if needed:
+# Note: Bash arrays cannot be exported; use this workaround to
+#       set the array variable from the string first if needed:
 # IFS=' ' read -ra VAR_PREFIXES_ARR <<< $VAR_PREFIXES
 #       Then use it like normal:
 # for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
