@@ -50,24 +50,3 @@ affinity:
       # https://stackoverflow.com/a/68276317
       topologyKey: kubernetes.io/hostname
 {{- end }}
-
-{{/*
-   This is needed for example, when the postgres StatefulSet is deleted and redeployed.
-   This affinity will cause the StatefulSet to be deployed in the same node as the console pod,
-   which has mounted the EBS postgres data volume.
-   Without this, the StatefulSet can be created on a different node and will error b/c an EBS
-   volume cannot be mounted on multiple nodes simultaneously.
-*/}}
-{{- define "vro.volume.console.affinity" -}}
-affinity:
-  podAffinity:
-    # Don't use requiredDuringSchedulingIgnoredDuringExecution in case console is not running
-    preferredDuringSchedulingIgnoredDuringExecution:
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchLabels:
-            # app label's value must match the labels in postgres/values.yaml
-            app: vro-console
-        topologyKey: kubernetes.io/hostname
-{{- end }}

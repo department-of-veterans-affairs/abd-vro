@@ -33,7 +33,6 @@ include ':scripts'
 
 include ':api-gateway'
 include ':app'
-include ':console'
 include ':db-init'
 include ':postgres'
 include ':shared:persistence-model'
