@@ -149,7 +149,7 @@ jobs:
         with:
           files: domain-cc/**
 
-      - name: "Get changed files"
+      - name: "Get changed domain-ee files"
         if: '! inputs.run_all_tests'
         id: ee-changed-files-specific
         uses: tj-actions/changed-files@v35
