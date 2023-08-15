@@ -5,15 +5,6 @@
 
 # Be consistent about naming our images. This script helps us understand inconsistencies.
 
-gradleFolder() {
-  case "$1" in
-    pdfgenerator|featuretoggle|assessclaim*) echo "./domain-rrd/service-python/$1";;
-    cc-app) echo "domain-cc/$1";;
-    ee-max-cfi-app) echo "domain-ee/$1";;
-    *) echo "./$1";;
-  esac
-}
-
 # These are used in docker-compose.yml files
 gradleImageName() {
   echo "va/abd_vro-$1"
