@@ -66,6 +66,17 @@ pip install -r dev-requirements.txt
 # MAKE SURE you are in adb-vro/domain-cc to get the right pre-commit-config.yaml installed
 pre-commit install
 ```
+### Database Changes
+When changing schema (database_models.py), you'll want to generate a new migration file:
+```
+alembic revision --autogenerate -m "<message describing change>"
+```
+This will generate a new migration file under versions/ with the changes to your model(s).
+
+Apply the migrations
+```
+alembic upgrade head
+
 
 ## Building docs
 ```
