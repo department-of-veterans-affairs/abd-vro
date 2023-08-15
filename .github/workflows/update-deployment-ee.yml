@@ -1,4 +1,4 @@
-name: "2. (Internal) Update Deployment - ee"
+name: "2. (Internal) Update Deployment - EE"
 # For Partner Team EE to deploy updates to their application
 run-name: "${{inputs.target_env}}: Update deployment domain-ee ${{inputs.image_tag}}"
 
