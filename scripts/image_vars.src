@@ -5,14 +5,14 @@
 
 # Array of VRO images
 # shellcheck disable=SC2034
-VRO_IMAGES_ARR=( console postgres api-gateway app db-init svc-bgs-api svc-lighthouse-api svc-bie-kafka xample-workflows cc-app )
+VRO_IMAGES_ARR=( console postgres api-gateway app db-init svc-bgs-api svc-lighthouse-api svc-bie-kafka xample-workflows cc-app ee-max-cfi-app )
 # Usage: for IMG in ${VRO_IMAGES_ARR[@]}; do echo "- $IMG"; done
-export VRO_IMAGES="console postgres api-gateway app db-init svc-bgs-api svc-lighthouse-api svc-bie-kafka xample-workflows cc-app"
+export VRO_IMAGES="console postgres api-gateway app db-init svc-bgs-api svc-lighthouse-api svc-bie-kafka xample-workflows cc-app ee-max-cfi-app"
 
 # Array of variable prefixes
 # shellcheck disable=SC2034
-VAR_PREFIXES_ARR=( console postgres apigateway app dbinit svcbgsapi svclighthouseapi svcbiekafka xampleworkflows ccapp )
-export VAR_PREFIXES="console postgres apigateway app dbinit svcbgsapi svclighthouseapi svcbiekafka xampleworkflows ccapp"
+VAR_PREFIXES_ARR=( console postgres apigateway app dbinit svcbgsapi svclighthouseapi svcbiekafka xampleworkflows ccapp eemaxcfiapp )
+export VAR_PREFIXES="console postgres apigateway app dbinit svcbgsapi svclighthouseapi svcbiekafka xampleworkflows ccapp eemaxcfiapp"
 
 LAST_RELEASE_VERSION=$(tail -1 versions.txt)
 
@@ -104,6 +104,11 @@ export xampleworkflows_VER="$LAST_RELEASE_VERSION"
 export ccapp_GRADLE_IMG="va/abd_vro-cc-app"
 export ccapp_IMG="vro-cc-app"
 export ccapp_VER="$LAST_RELEASE_VERSION"
+
+# --- ee-max-cfi-app in folder domain-ee/ee-max-cfi-app
+export eemaxcfiapp_GRADLE_IMG="va/abd_vro-ee-max-cfi-app"
+export eemaxcfiapp_IMG="vro-ee-max-cfi-app"
+export eemaxcfiapp_VER="$LAST_RELEASE_VERSION"
 
 
 ########################################
