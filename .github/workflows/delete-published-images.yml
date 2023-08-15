@@ -43,7 +43,6 @@ jobs:
         repo:
         - abd-vro-internal
         package:
-        - vro-console
         - vro-postgres
         - vro-api-gateway
         - vro-app
@@ -53,6 +52,7 @@ jobs:
         - vro-svc-bie-kafka
         - vro-xample-workflows
         - vro-cc-app
+        - vro-ee-max-cfi-app
     runs-on: ubuntu-latest
     steps:
     - name: "Delete old images in GHCR"

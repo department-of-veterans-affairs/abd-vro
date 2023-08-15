@@ -16,25 +16,23 @@ pluginManagement {
   includeBuild 'gradle-plugins'
 }
 
-
 dependencyResolutionManagement {
   repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
   repositories {
     // https://docs.gradle.org/current/userguide/declaring_repositories.html#sec:case-for-maven-local
     // Not recommended: mavenLocal()
     maven { url "https://repo1.maven.org/maven2/" }
+    maven { url "https://packages.confluent.io/maven/" }
     mavenCentral()
   }
 }
 
 rootProject.name = 'abd_vro'
 
-//include ':docs'
 include ':scripts'
 
 include ':api-gateway'
 include ':app'
-include ':console'
 include ':db-init'
 include ':postgres'
 include ':shared:persistence-model'
@@ -53,3 +51,4 @@ include ':domain-xample:svc-xample-j'
 include ':domain-xample:svc-hoppy-usage'
 
 include ':domain-cc:cc-app'
+include ':domain-ee:ee-max-cfi-app'
