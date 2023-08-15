@@ -43,7 +43,6 @@ jobs:
         repo:
         - abd-vro-internal
         package:
-        - vro-console
         - vro-postgres
         - vro-api-gateway
         - vro-app
