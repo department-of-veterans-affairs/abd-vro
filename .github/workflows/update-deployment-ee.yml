@@ -1,0 +1,66 @@
+name: "2. (Internal) Update Deployment - ee"
+# For Partner Team CC to deploy updates to their application
+run-name: "${{inputs.target_env}}: Update deployment domain-ee ${{inputs.image_tag}}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_env:
+        description: 'Target LHDI environment'
+        required: true
+        default: 'dev'
+        type: choice
+        # Partner Teams are not allowed to deploy to prod
+        options:
+        - dev
+        - qa
+        - sandbox
+        - prod-test
+
+      image_tag:
+        description: 'Image tag: first 7 of commit hash, "latest", "v1.2.3", or "release-1.2.3"'
+        required: true
+        default: 'latest'
+        type: string
+
+      # Other deployment options
+      rollback:
+        description: 'If deploy fails, rollback to previous? (Always true for prod)'
+        required: true
+        type: boolean
+        default: false
+      shutdown:
+        description: '(As a last resort) Shut down chart completely, then redeploy'
+        required: true
+        type: boolean
+        default: false
+
+  # Allow other workflows to call this one
+  workflow_call:
+    inputs:
+      target_env:
+        required: true
+        type: string
+      image_tag:
+        required: true
+        type: string
+
+      rollback:
+        required: false
+        type: boolean
+        default: false
+      shutdown:
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  update-cc-deployment:
+    uses: ./.github/workflows/update-deployment.yml
+    secrets: inherit
+    with:
+      target_env: ${{ inputs.target_env }}
+      helm_chart: domain-ee
+      image_tag: ${{ inputs.image_tag }}
+      rollback: ${{ inputs.rollback }}
+      shutdown: ${{ inputs.shutdown }}
