@@ -155,21 +155,3 @@ services:
       VRO_MAX_CFI_APP_HOSTNAME: ee-max-cfi-app
     networks:
       - intranet
-
-  console:
-    profiles: ["all","console"]
-    image: va/abd_vro-console:latest
-    # <<: *common-security-opt
-    <<: *common-sde-security
-    # stdin and tty are needed for user interaction
-    stdin_open: true
-    tty: true
-    environment:
-      <<: [*postgres-vars, *rabbitmq-placeholder-vars, *redis-placeholder-vars]
-    depends_on:
-      <<: *svc-depends-on
-    volumes:
-      - pgdata:/persist/postgres
-      - tracking:/persist/tracking
-    networks:
-      - intranet

@@ -202,7 +202,44 @@ export BIP_STATION_ID=456
 ###
 ### Integration with BIE's Kafka ###
 ##
+# Truststore:
+# - All of the brokers can use the same truststore file.
+# Keystore:
+# - Each broker gets its own unique keystore.
+# - For example, the FQDN of the mock Kafka broker is mock-bie-kafka
+# - The alias for the keytool is set to localhost, so local connections on the broker can authenticate using SSL.
+#
+# To create the trust and key stores for the mock Kafka service,
+# 1. Generate SSL certs using the `kafka-generate-ssl.sh` script from https://github.com/confluentinc/confluent-platform-security-tools/blob/master/kafka-generate-ssl.sh
+# (Refer to "Security" section of https://hub.docker.com/r/bitnami/kafka/)
+#   - When prompted to enter a password/passcode, use the same one for all.
+#   - Set the Common Name or FQDN values (`mock-bie-kafka`) to your Apache Kafka container hostname...
+#     Use this FQDN when prompted "What is your first and last name?"
+#   - We'll use the following files created by the script:
+#     - `keystore/kafka.keystore.jks`
+#     - `truststore/kafka.truststore.jks`
+# 3. Save the contents of the jks files as base64-encoded files in the abd-vro-dev-secrets repo and commit the changes:
+#   > cat keystore/kafka.keystore.jks     | base64 > abd-vro-dev-secrets/local/BIE_KAFKA_MOCK_KEYSTORE_JKS_INBASE64
+#   > cat truststore/kafka.truststore.jks | base64 > abd-vro-dev-secrets/local/BIE_KAFKA_MOCK_TRUSTSTORE_JKS_INBASE64
+#   - The contents will be loaded into environment variables and saved for use by the mock BIE Kafka:
+decodeSecretToFile BIE_KAFKA_MOCK_KEYSTORE_JKS_INBASE64 "mocks/mock-bie-kafka/kafka.keystore.jks"
+decodeSecretToFile BIE_KAFKA_MOCK_TRUSTSTORE_JKS_INBASE64 "mocks/mock-bie-kafka/kafka.truststore.jks"
+
+# To create certs for the Kafka microservice:
+# 5. Convert jks files to p12 files:
+#   > keytool -importkeystore -srckeystore kafka.truststore.jks -destkeystore truststore.p12 -srcstoretype jks -deststoretype pkcs12
+#   > keytool -importkeystore -srckeystore kafka.keystore.jks   -destkeystore keystore.p12   -srcstoretype jks -deststoretype pkcs12
+# 6. Save the contents of the jks files as base64-encoded files in the abd-vro-dev-secrets repo and commit the changes:
+#   > cat keystore.p12     | base64 > abd-vro-dev-secrets/local/BIE_KAFKA_KEYSTORE_INBASE64
+#   > cat truststore.p12 | base64 > abd-vro-dev-secrets/local/BIE_KAFKA_TRUSTSTORE_INBASE64
+#   - The contents will be loaded into environment variables and saved for use by the Kafka microservice:
 exportSecretIfUnset BIE_KAFKA_TRUSTSTORE_INBASE64
 exportSecretIfUnset BIE_KAFKA_KEYSTORE_INBASE64
+# 7. Save the passwords in the abd-vro-dev-secrets repo and commit the changes:
 exportSecretIfUnset BIE_KAFKA_KEYSTORE_PASSWORD
 exportSecretIfUnset BIE_KAFKA_TRUSTSTORE_PASSWORD
+#   - The above 4 environment variables will referenced by svc-bie-kafka/docker-entryprep.sh and application.yaml files.
+#
+# 8. Ensure GitHub Action workflow `bie-kafka-end2end-test.yml`` works.
+# 9. Clean up: The files created by `kafka-generate-ssl.sh` and the `p12` files can be deleted.
+#    Nothing needs to be committed to the public abd-vro repo.
