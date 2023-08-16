@@ -5,6 +5,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic_models import (MaxRatingsForClaimForIncreaseRequest,
                              MaxRatingsForClaimForIncreaseResponse)
 from util.lookup_table import MAX_RATINGS_BY_CODE, get_max_rating
+from util.sanitizer import sanitize
 
 app = FastAPI(
     title="Max Ratings for CFI",
@@ -43,12 +44,12 @@ def get_health_status():
 def get_max_ratings(
         claim_for_increase: MaxRatingsForClaimForIncreaseRequest, ) -> MaxRatingsForClaimForIncreaseResponse:
     ratings = []
-    for dc in set(claim_for_increase.diagnostic_codes):
+    for dc in claim_for_increase.diagnostic_codes:
         validate_diagnostic_code(dc)
         max_rating = get_max_rating(dc)
         if max_rating:
             rating = {
-                "diagnostic_code": dc,
+                "diagnostic_code": sanitize(dc),
                 "max_rating": max_rating,
             }
             ratings.append(rating)
@@ -57,7 +58,7 @@ def get_max_ratings(
         "ratings": ratings
     }
 
-    logging.info(f"event=getMaxRating response={response}")
+    logging.info(f"event=getMaxRating ratings={ratings}")
     return response
 
 

@@ -7,7 +7,7 @@ class MaxRatingsForClaimForIncreaseRequest(BaseModel):
 
 class Rating(BaseModel):
     diagnostic_code: int
-    max_rating: float
+    max_rating: int
 
 
 class MaxRatingsForClaimForIncreaseResponse(BaseModel):
