@@ -26,7 +26,8 @@ IMAGES=( postgres \
   api-gateway app db-init \
   svc-bgs-api svc-lighthouse-api svc-bie-kafka \
   xample-workflows \
-  cc-app )
+  cc-app \
+  ee-max-cfi-app )
 echo
 echo "=== ${#IMAGES[@]} VRO images"
 for INDEX in "${!IMAGES[@]}"; do
