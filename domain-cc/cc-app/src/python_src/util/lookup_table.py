@@ -11,7 +11,7 @@ TABLE_NAME = f"Contention Classification Diagnostic Codes Lookup table master sh
 # sourced from Lighthouse Benefits Reference Data /disabilities endpoint:
 # https://developer.va.gov/explore/benefits/docs/benefits_reference_data?version=current
 BRD_CLASSIFICATIONS_PATH = os.path.join(
-    os.path.dirname(__file__), "data", "lh_brd_classification_ids.json"
+    os.path.dirname(__file__), "data", "dc_lookup_table", "lh_brd_classification_ids.json"
 )
 
 
@@ -28,7 +28,7 @@ CLASSIFICATION_NAMES_BY_CODE = get_classification_names_by_code()
 
 
 def get_lookup_table():
-    filename = os.path.join(os.path.dirname(__file__), "data", TABLE_NAME)
+    filename = os.path.join(os.path.dirname(__file__), "data", "dc_lookup_table", TABLE_NAME)
     diagnostic_code_to_classification_code = {}
     with open(filename, "r") as f:
         csv_reader = csv.reader(f)
