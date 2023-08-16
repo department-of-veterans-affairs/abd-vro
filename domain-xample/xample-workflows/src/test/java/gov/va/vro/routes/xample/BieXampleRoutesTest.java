@@ -70,7 +70,6 @@ class BieXampleRoutesTest extends CamelTestSupport {
     assertThat(response.getContentionId()).isEqualTo(testItem.getContentionId());
     assertThat(response.getContentionTypeCode()).isEqualTo(testItem.getContentionTypeCode());
     assertThat(response.getDiagnosticTypeCode()).isEqualTo(testItem.getDiagnosticTypeCode());
-    assertThat(response.getEventDetails()).isEqualTo(testItem.getEventDetails());
     assertMockEndpointsSatisfied();
   }
 
@@ -84,7 +83,6 @@ class BieXampleRoutesTest extends CamelTestSupport {
     final BieMessagePayload response =
         template.requestBody(STARTING_URI, testItem, BieMessagePayload.class);
     assertThat(response.getEventType()).isEqualTo(testItem.getEventType());
-    assertThat(response.getEventDetails()).isEqualTo(testItem.getEventDetails());
     assertThat(response.getStatus()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     assertThat(response.getStatusMessage()).isEqualTo(exception.toString());
 

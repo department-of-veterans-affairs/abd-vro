@@ -36,8 +36,4 @@ public class ContentionEventEntity extends BaseEntity {
 
   @Column(name = "diagnostic_type_code")
   private String diagnosticTypeCode;
-
-  @Column(name = "event_details", columnDefinition = "jsonb")
-  @Type(type = "jsonb")
-  private Map<String, Object> eventDetails;
 }

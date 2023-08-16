@@ -12,7 +12,6 @@ CREATE TABLE IF NOT EXISTS "bie_contention_event"
     contention_id                  BIGINT,
     diagnostic_type_code           VARCHAR(255),
     contention_classification_code VARCHAR(255),
-    event_details                  JSONB,
     created_at                     TIMESTAMP NOT NULL,
     updated_at                     TIMESTAMP NOT NULL,
     PRIMARY KEY(id)

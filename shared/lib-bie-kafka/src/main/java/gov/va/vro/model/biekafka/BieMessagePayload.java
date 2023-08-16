@@ -22,7 +22,6 @@ public class BieMessagePayload {
   private String contentionTypeCode;
   private String contentionClassificationName;
   private String diagnosticTypeCode;
-  private Map<String, Object> eventDetails;
   private Long notifiedAt;
   private Long occurredAt;
 }

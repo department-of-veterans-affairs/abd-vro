@@ -14,8 +14,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 @Slf4j
@@ -33,21 +31,6 @@ public class KafkaConsumer {
         .filter(event -> event.getTopicName().equals(noPrefixTopic))
         .findFirst()
         .orElseThrow(() -> new IllegalArgumentException("Unrecognized topic: " + noPrefixTopic));
-  }
-
-  public static Map<String, Object> recordToMapIgnoringFields(
-      GenericRecord record, Set<String> ignoredFields) {
-    Map<String, Object> map = new HashMap<>();
-    record
-        .getSchema()
-        .getFields()
-        .forEach(
-            field -> {
-              if (!ignoredFields.contains(field.name())) {
-                map.put(field.name(), record.get(field.name()));
-              }
-            });
-    return map;
   }
 
   @KafkaListener(
@@ -108,23 +91,17 @@ public class KafkaConsumer {
             KEY_DIAGNOSTIC_TYPE_CODE,
             KEY_EVENT_TIME);
 
-    Map<String, Object> eventDetails = recordToMapIgnoringFields(messageValue, keysToRemove);
-
-    BieMessagePayload payload =
-        BieMessagePayload.builder()
-            .eventType(ContentionEvent.valueOf(mapTopicToEvent(record.topic()).toString()))
-            .claimId((long) messageValue.get(KEY_CLAIM_ID))
-            .contentionId((long) messageValue.get(KEY_CONTENTION_ID))
-            .contentionClassificationName(
-                (String) messageValue.get(KEY_CONTENTION_CLASSIFICATION_NAME))
-            .contentionTypeCode((String) messageValue.get(KEY_CONTENTION_TYPE_CODE))
-            .diagnosticTypeCode((String) messageValue.get(KEY_DIAGNOSTIC_TYPE_CODE))
-            .occurredAt((Long) messageValue.get(KEY_EVENT_TIME))
-            .notifiedAt(record.timestamp())
-            .status(200)
-            .eventDetails(eventDetails)
-            .build();
-
-    return payload;
+    return BieMessagePayload.builder()
+        .eventType(ContentionEvent.valueOf(mapTopicToEvent(record.topic()).toString()))
+        .claimId((long) messageValue.get(KEY_CLAIM_ID))
+        .contentionId((long) messageValue.get(KEY_CONTENTION_ID))
+        .contentionClassificationName(
+            (String) messageValue.get(KEY_CONTENTION_CLASSIFICATION_NAME))
+        .contentionTypeCode((String) messageValue.get(KEY_CONTENTION_TYPE_CODE))
+        .diagnosticTypeCode((String) messageValue.get(KEY_DIAGNOSTIC_TYPE_CODE))
+        .occurredAt((Long) messageValue.get(KEY_EVENT_TIME))
+        .notifiedAt(record.timestamp())
+        .status(200)
+        .build();
   }
 }

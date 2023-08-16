@@ -50,7 +50,6 @@ class BieRabbitServiceTest {
           .isEqualTo(payload.getContentionClassificationName());
       assertThat(value.getDiagnosticTypeCode()).isEqualTo(payload.getDiagnosticTypeCode());
       assertThat(value.getNotifiedAt()).isEqualTo(payload.getNotifiedAt());
-      assertThat(value.getEventDetails()).isEqualTo(payload.getEventDetails());
     }
   }
 }
