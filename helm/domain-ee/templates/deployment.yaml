@@ -20,7 +20,7 @@ spec:
       {{- include "vro.imagePullSecrets" . | nindent 6 }}
       containers:
         - name: ee-app{{ include "vro.containerSuffix" . }}
-          image: {{ include "vro.imageRegistryPath" . }}ee-max-cfi-app:{{ include "vro.imageTag" . }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-ee-max-cfi-app:{{ include "vro.imageTag" . }}
           ports:
             - containerPort: {{ .Values.service.eeApp.sourcePort }}
               protocol: TCP
