@@ -51,7 +51,6 @@ class DropdownLookupTable(LookupTable):
 
 class DiagnosticCodeLookupTable(LookupTable):
     """Lookup table for mapping diagnostic codes to contention classification codes"""
-
     CSV_FILEPATH = os.path.join(
         os.path.dirname(__file__), "data", "dc_lookup_table", dc_table_name
     )
