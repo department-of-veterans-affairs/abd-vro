@@ -5,9 +5,12 @@ from typing import Optional
 from fastapi import FastAPI, HTTPException
 
 from .pydantic_models import ClaimForIncrease, PredictedClassification
-from .util.lookup_table import get_classification_name, get_lookup_table
+from .util.lookup_table import DropdownLookupTable, DiagnosticCodeLookupTable
+from .util.brd_classification_codes import get_classification_name
 
-LOOKUP_TABLE = get_lookup_table()
+dc_lookup_table = DiagnosticCodeLookupTable()
+dropdown_lookup_table = DropdownLookupTable()
+
 
 app = FastAPI(
     title="Contention Classification",
@@ -36,7 +39,7 @@ logging.basicConfig(
 
 @app.get("/health")
 def get_health_status():
-    if not len(LOOKUP_TABLE):
+    if not len(dc_lookup_table):
         raise HTTPException(status_code=500, detail="Lookup table is empty")
 
     return {"status": "ok"}
@@ -46,7 +49,7 @@ def get_health_status():
 def get_classification(
     claim_for_increase: ClaimForIncrease,
 ) -> Optional[PredictedClassification]:
-    classification_code = LOOKUP_TABLE.get(claim_for_increase.diagnostic_code, None)
+    classification_code = dc_lookup_table.get(claim_for_increase.diagnostic_code, None)
     if classification_code:
         classification_name = get_classification_name(classification_code)
         classification = {
