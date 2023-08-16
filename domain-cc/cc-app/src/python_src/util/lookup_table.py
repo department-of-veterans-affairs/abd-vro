@@ -30,22 +30,13 @@ CLASSIFICATION_NAMES_BY_CODE = get_classification_names_by_code()
 def get_lookup_table():
     filename = os.path.join(os.path.dirname(__file__), "data", TABLE_NAME)
     diagnostic_code_to_classification_code = {}
-    with open(filename, "r") as f:
-        csv_reader = csv.reader(f)
-        for index, csv_line in enumerate(csv_reader):
-            if index == 0:
-                continue
-            diagnostic_code, _, classification_code, _, _, _ = csv_line
-            diagnostic_code = int(diagnostic_code)
-            try:
-                classification_code = int(
-                    json.loads(classification_code)[0]
-                )  # for v0.1
-            except TypeError:
-                classification_code = int(json.loads(classification_code))  # for v0.2+
-            diagnostic_code_to_classification_code[
-                diagnostic_code
-            ] = classification_code
+    with open(filename, "r") as fh:
+        csv_reader = csv.DictReader(fh)
+        for csv_line in csv_reader:
+            diagnostic_code = int(csv_line["CNTNTN_CLSFCN_CLMNT_TXT_ID"])
+            classification_code = int(csv_line["CNTNTN_CLSFCN_ID"])
+            diagnostic_code_to_classification_code[diagnostic_code] = classification_code
+
     return diagnostic_code_to_classification_code
 
 
