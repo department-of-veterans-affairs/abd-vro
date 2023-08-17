@@ -1,5 +1,7 @@
 package gov.va.vro.services.bie.service.kafka;
 
+import static gov.va.vro.services.bie.service.kafka.MessageHelper.mapTopicToEvent;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.biekafka.BieMessagePayload;
@@ -13,7 +15,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.Set;
 
 @Slf4j
@@ -22,16 +23,6 @@ import java.util.Set;
 public class KafkaConsumer {
   private final AmqpMessageSender amqpMessageSender;
   private final BieProperties bieProperties;
-
-  public ContentionEvent mapTopicToEvent(String topic) {
-    // remove first word prefix from topic seperated by _
-    String noPrefixTopic = topic.substring(topic.indexOf("_") + 1);
-
-    return Arrays.stream(ContentionEvent.values())
-        .filter(event -> event.getTopicName().equals(noPrefixTopic))
-        .findFirst()
-        .orElseThrow(() -> new IllegalArgumentException("Unrecognized topic: " + noPrefixTopic));
-  }
 
   @KafkaListener(
       topics = {
