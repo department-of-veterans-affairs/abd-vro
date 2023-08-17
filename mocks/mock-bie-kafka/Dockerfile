@@ -1,9 +1,6 @@
 # BIE's Kafka version is 3.3.x
 FROM bitnami/kafka:3.3
 
-# Settings are for development only
-ENV ALLOW_PLAINTEXT_LISTENER=yes
-
 # To build: ./gradlew -p mocks :mock-bie-kafka:docker
 # Start container: docker run --rm -it -p 9092:9092 va/vro_mocks-mock-bie-kafka
 # To test: https://docs.confluent.io/platform/current/clients/kafkacat-usage.html

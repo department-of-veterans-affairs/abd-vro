@@ -10,18 +10,18 @@ spring:
       schema.registry.ssl.truststore.location: "file:${TRUSTSTORE_FILE}"
       schema.registry.ssl.truststore.password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
       schema.registry.ssl.truststore.type: "PKCS12"
-    ssl:
-      protocol: SSL
-      key-store-location: "file:${KEYSTORE_FILE}"
-      key-store-password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
-      key-store-type: "PKCS12"
-      trust-store-location: "file:${TRUSTSTORE_FILE}"
-      trust-store-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
-      trust-store-type: "PKCS12"
     consumer:
       group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-pre-vro}"
       key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
       value-deserializer: "io.confluent.kafka.serializers.KafkaAvroDeserializer"
+      properties:
+        security.protocol: SSL
+        ssl.keystore.type: PKCS12
+        ssl.keystore.location: "${KEYSTORE_FILE}"
+        ssl.keystore.password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
+        ssl.truststore.type: PKCS12
+        ssl.truststore.location: "${TRUSTSTORE_FILE}"
+        ssl.truststore.password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
 kafka:
   topic:
     prefix: PRE

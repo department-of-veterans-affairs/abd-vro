@@ -110,9 +110,6 @@ scmVersion {
     'redis'      : (String) platformHelmValues.get("redis-chart").get("imageTag"),
     'rabbitmq'   : (String) platformHelmValues.get("rabbitmq-chart").get("imageTag"),
 
-    // Stable versions -- changes occasionally
-    'console'    : '2.5.0',
-
     // These change often (i.e., with each release)
     // A null value will result in the currentVersion being used
     '..'         : null, // '..' will resolve to helm/Charts.yaml
@@ -122,6 +119,7 @@ scmVersion {
     'svc-lighthouse-api': null,
     // Once stable, set a version and move to previous section
     'domain-cc'  : null,
+    'domain-ee'  : null,
   ]
 
   def setHelmChartAppVersions = { currentVersion ->
@@ -172,6 +170,7 @@ tasks.named("dockerComposeDown").configure {
   mustRunAfter ':app:dockerComposeDown'
   mustRunAfter ':domain-xample:dockerComposeDown'
   mustRunAfter ':domain-cc:dockerComposeDown'
+  mustRunAfter ':domain-ee:dockerComposeDown'
 }
 
 task kafkaServicesUp {

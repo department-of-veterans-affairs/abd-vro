@@ -10,11 +10,15 @@
 : ${REDIS_VER:=7}
 # Manually pin these images; they don't need to be automatically updated
 # Use the `export myimage_VER="v1.2.3"` syntax so that they will be ignored by `image-version.sh`
-export console_VER="v3.2.5"
+# export console_VER="v3.2.5"
 
 # The following are pinned versions of images;
 # they are automatically pinned and unpinned by scripts/image-version.sh.
 # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Container-Image-Versions
 # Wed Jul 12 17:45:45 UTC 2023 -- v3.3.1
-# Tue Jul 25 13:50:24 UTC 2023 -- v3.3.2
 # Mon Jul 31 17:42:17 UTC 2023 -- v3.4.0
+# Tue Aug 15 18:14:47 UTC 2023 -- v3.4.1
+postgres_VER="v3.4.1"
+dbinit_VER="v3.4.1"
+svclighthouseapi_VER="v3.4.1"
+# Tue Aug 15 21:04:51 UTC 2023 -- v3.4.2

@@ -56,3 +56,11 @@ jobs:
       target_env: ${{ inputs.target_env || 'dev' }}
       helm_chart: domain-cc
       image_tag: ${{ inputs.image_tag || 'latest' }}
+
+  deploy-domain-ee:
+    uses: ./.github/workflows/update-deployment.yml
+    secrets: inherit
+    with:
+      target_env: ${{ inputs.target_env || 'dev' }}
+      helm_chart: domain-ee
+      image_tag: ${{ inputs.image_tag || 'latest' }}

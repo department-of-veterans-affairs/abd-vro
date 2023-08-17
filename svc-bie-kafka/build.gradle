@@ -1,6 +1,9 @@
 plugins {
   id 'local.java.container-spring-conventions'
   id 'local.std.java.library-conventions'
+  id 'jvm-test-suite'
+
+  // id 'local.test.verbose'
 }
 
 ext {
@@ -36,4 +39,23 @@ dependencies {
   //testImplementation 'org.slf4j:slf4j-simple:2.0.7'
   testImplementation 'org.springframework.amqp:spring-rabbit-test'
   testImplementation 'org.springframework.kafka:spring-kafka-test'
+}
+
+// https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html#sec:jvm_test_suite_usage
+testing {
+  suites {
+    integrationTest(JvmTestSuite) {
+      dependencies {
+        implementation project(":svc-bie-kafka")
+        implementation project(":shared:lib-bie-kafka")
+
+        implementation 'org.springframework.kafka:spring-kafka'
+
+        implementation "org.springframework.boot:spring-boot-starter-test"
+
+        implementation "org.springframework.boot:spring-boot-starter-amqp"
+        implementation "com.fasterxml.jackson.core:jackson-databind"
+      }
+    }
+  }
 }

@@ -9,7 +9,8 @@ spring:
     port: 5672
     username: "${RABBITMQ_PLACEHOLDERS_USERNAME:guest}"
     password: "${RABBITMQ_PLACEHOLDERS_USERPASSWORD:guest}"
-  # Specify where Spring connects to Kafka
+
+  # Specify how Spring connects to Kafka
   kafka:
     bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:localhost:9092}"
     properties:
@@ -19,6 +20,16 @@ spring:
       group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-tst-vro}"
       key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
       value-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+      auto-offset-reset: latest
+      # Comment out the following line to connect without SSL
+      security.protocol: SSL
+      ssl:
+        keystore-location: "file:${KEYSTORE_FILE}"
+        keystore-password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
+        key-store-type: "PKCS12"
+        truststore-location: "file:${TRUSTSTORE_FILE}"
+        truststore-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
+        trust-store-type: "PKCS12"
 
 kafka:
   topic:
