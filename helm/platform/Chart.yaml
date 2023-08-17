@@ -26,8 +26,6 @@ appVersion: "3.5.8"
 # https://levelup.gitconnected.com/helm-data-sharing-between-parent-and-child-chart-c4487a452d4e
 dependencies:
   # name must match the subchart's Chart.yaml's name
-  - name: postgres-chart
-    condition: postgres.enabled
   - name: rabbitmq-chart
     condition: rabbitmq.enabled
   - name: redis-chart
