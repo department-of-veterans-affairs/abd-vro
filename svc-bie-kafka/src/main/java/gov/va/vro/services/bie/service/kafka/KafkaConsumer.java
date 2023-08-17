@@ -34,11 +34,6 @@ public class KafkaConsumer {
       messageValue = stringValue;
     }
 
-    log.info("Topic name: {}", topicName);
-    log.info("Consumed message key: {}", record.key());
-    // TODO: Ensure no PII values are logged
-    log.info("Consumed message value (before) decode: {}", messageValue);
-
     amqpMessageSender.send(
         bieProperties.getKafkaTopicToAmqpExchangeMap().get(topicName), topicName, messageValue);
   }
