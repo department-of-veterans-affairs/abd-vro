@@ -8,6 +8,6 @@ ext {
 
 dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-amqp'
-  testImplementation 'net.datafaker:datafaker:2.0.1'
+  implementation 'net.datafaker:datafaker:2.0.1'
   implementation "com.google.guava:guava"
 }
