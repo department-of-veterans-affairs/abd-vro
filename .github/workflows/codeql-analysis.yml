@@ -8,8 +8,6 @@ on:
 
   pull_request:
     branches: [main, develop, domain-*]
-    # Limit to certain PR event types since this action is slow
-    types: [ready_for_review, review_requested]
 
   schedule:
     - cron: 31 6 * * 5
@@ -23,6 +21,9 @@ on:
 jobs:
   analyze:
     name: Analyze
+    # https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request
+    if: github.event_name != 'pull_request' ||
+      (github.event_name == 'pull_request' && !github.event.pull_request.draft )
     runs-on: ubuntu-latest
     concurrency: ${{ github.workflow }}-${{ matrix.language }}-${{ github.ref }}
     permissions:
