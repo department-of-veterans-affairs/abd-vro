@@ -7,6 +7,10 @@
 # Sets environment variable secrets
 [ -e set-env-secrets.src ] && . ./set-env-secrets.src
 
+if [ -e /app/docker-entryprep.sh ]; then
+  . /app/docker-entryprep.sh "$@"
+fi
+
 # Run docker-entrypoint.sh if it exists, otherwise run jar file
 if [ -e /app/docker-entrypoint.sh ]; then
   exec /app/docker-entrypoint.sh "$@"

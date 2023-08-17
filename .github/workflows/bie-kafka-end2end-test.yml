@@ -1,0 +1,171 @@
+name: 'CI: BIE Kafka End-2-End Test'
+
+on:
+  # Allow manual triggering
+  workflow_dispatch:
+
+  # Allow being called by another GitHub Action
+  workflow_call:
+
+concurrency:
+  group: bieKafkaEnd2EndTestWithMock-${{ github.ref }}
+
+env:
+  COMPOSE_PROFILES: 'kafka'
+  VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout source code'
+        uses: actions/checkout@v3
+
+      - name: "Checkout abd-vro-dev-secrets repo"
+        uses: actions/checkout@v3
+        with:
+          # Checkout using a PAT so that we can access the internal repo
+          token: ${{ secrets.ACCESS_TOKEN_CHECKOUT_INTERNAL_REPO }}
+          repository: 'department-of-veterans-affairs/abd-vro-dev-secrets'
+          path: "${{ env.VRO_DEV_SECRETS_FOLDER }}"
+
+      - name: 'Set RABBITMQ_BASIC_AUTH'
+        run: |
+          source scripts/setenv.sh
+
+          # create basic auth token for RabbitMQ and export to github environment
+          BASIC_AUTH=`echo "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" | base64`
+          echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}" >> $GITHUB_ENV
+
+          export -p | sed 's/declare -x //'
+
+      - name: 'Build the images'
+        uses: ./.github/actions/build-images
+
+      - name: 'Start the containers'
+        run: |
+          source scripts/setenv.sh
+          export -p | sed 's/declare -x //'
+
+          ./gradlew :dockerComposeUp
+
+          ./gradlew -p mocks :mock-bie-kafka:docker
+          ./gradlew -p mocks :dockerComposeUp
+
+          ./gradlew :domain-xample:dockerComposeUp
+          ./gradlew :app:dockerComposeUp
+
+      - name: 'Wait for RabbitMQ to be ready'
+        uses: indiesdev/curl@v1.1
+        with:
+          url: 'http://localhost:15672/api/vhosts'
+          method: 'GET'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          accept: 200
+          # Retry every 2 seconds
+          timeout: 2000
+          # Quit after 60 seconds
+          retries: 30
+
+      - name: 'Install kafkacat and postgresql'
+        run: |
+          sudo apt-get update
+          sudo apt-get install kafkacat
+          which kafkacat
+
+          sudo apt-get install postgresql
+          which psql
+
+      - name: 'Wait for Kafka to be ready'
+        run: |
+          # Verify broker is up
+          BROKER_QUERY=$(kafkacat -m 30 -b localhost:9092 -L)
+          if echo $BROKER_QUERY | grep -q '1 brokers'
+          then
+            echo "Found Broker: $BROKER_QUERY"
+          else
+            echo "Count not find Kafka broker"
+          fi
+
+      - name: 'Wait for xample-workflow to be ready'
+        uses: nev7n/wait_for_response@v1
+        with:
+          url: 'http://localhost:10021/actuator/health'
+          responseCode: 200
+          # Retry every 2 seconds
+          interval: 2000
+          # Quit after 60 seconds
+          timeout: 60000
+
+      - name: 'Wait for svc-bie-kafka to be ready'
+        uses: nev7n/wait_for_response@v1
+        with:
+          url: 'http://localhost:10301/actuator/health'
+          responseCode: 200
+          # Retry every 2 seconds
+          interval: 2000
+          # Quit after 60 seconds
+          timeout: 60000
+
+      - name: 'Create Kafka topic and send message'
+        run: |
+          source scripts/setenv.sh
+
+          pushd svc-bie-kafka && { source ./docker-entryprep.sh; popd; }
+          if ! ./gradlew :svc-bie-kafka:integrationTest; then
+            echo "First run could fail due to some mock Kafka initialization"
+            # Subsequent runs should pass
+            ./gradlew :svc-bie-kafka:integrationTest
+          fi
+
+      - name: 'Sleep to give time for message to travel end to end from kafka to saved in database'
+        run: sleep 5
+
+      - name: 'Check for saved DB entry in Postgres'
+        run: |
+          source scripts/setenv.sh
+
+          psql postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/vro -c \
+          "SELECT *
+            FROM
+              claims.bie_contention_event
+          "
+
+          RESULTS=$(psql postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/vro -x -c \
+          "SELECT COUNT(*)
+            FROM
+              claims.bie_contention_event
+            WHERE
+              event_details='Lorem ipsum'
+          ")
+          echo $RESULTS
+          if echo $RESULTS | grep -q 'count | 1'
+          then
+            echo "Found record in DB."
+          else
+            echo "Could not find record in DB."
+            exit 10
+          fi
+
+      - name: "Collect docker logs"
+        if: always()
+        uses: jwalton/gh-docker-logs@v2
+        with:
+          dest: './bie-kafka-end2end-test-with-mock-container-logs'
+
+      - name: "Upload artifact"
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: bie-kafka-end2end-test-with-mock-container-logs
+          path: ./bie-kafka-end2end-test-with-mock-container-logs/**
+          retention-days: 14
+
+
+      - name: 'Clean shutdown of all containers'
+        if: always()
+        shell: bash
+        run: |
+          docker ps
+          COMPOSE_PROFILES="all" ./gradlew dockerComposeDown
+          ./gradlew -p mocks :dockerComposeDown

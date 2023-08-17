@@ -77,7 +77,6 @@ platformChartArgs(){
     $(helmArgsForSubchart rabbitmq "$RABBITMQ_VER") \
     $(helmArgsForSubchart redis "$REDIS_VER") \
     $(helmArgsForSubchart postgres "$postgres_VER") \
-    $(helmArgsForSubchart console "$console_VER") \
   "
   echo "Platform HELM_ARGS: $HELM_ARGS"
 }

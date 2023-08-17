@@ -10,6 +10,7 @@ on:
         type: choice
         options:
         - domain-cc
+        - domain-ee
 
 jobs:
   fast-forward-develop:

@@ -27,6 +27,7 @@ on:
         - svc-bie-kafka
         - svc-lighthouse-api
         - api-gateway
+        - domain-ee
 
       image_tag:
         description: 'Image tag: first 7 of commit hash, "latest", "v1.2.3", or "release-1.2.3"'

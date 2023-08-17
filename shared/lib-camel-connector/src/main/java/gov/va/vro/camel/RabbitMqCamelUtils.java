@@ -44,8 +44,8 @@ public class RabbitMqCamelUtils {
   }
 
   public static RouteDefinition fromRabbitmqFanoutExchange(
-      RouteBuilder builder, String fanoutExchange, String routingKey) {
-    return fromRabbitmq(builder, rabbitmqFanoutConsumerEndpoint(fanoutExchange, routingKey));
+      RouteBuilder builder, String fanoutExchange, String queueName) {
+    return fromRabbitmq(builder, rabbitmqFanoutConsumerEndpoint(fanoutExchange, queueName));
   }
 
   public static RouteDefinition fromRabbitmq(RouteBuilder builder, String rabbitMqUri) {

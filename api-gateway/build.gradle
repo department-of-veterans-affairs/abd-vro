@@ -11,7 +11,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
   // Spring Cloud
-  implementation 'org.springframework.cloud:spring-cloud-starter-gateway:4.0.6'
+  implementation 'org.springframework.cloud:spring-cloud-starter-gateway:4.0.7'
   if (osdetector.classifier == "osx-aarch_64") {
     // Fix MacOS error: Unable to load io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider,
     // which may result in incorrect DNS resolutions.
@@ -20,10 +20,10 @@ dependencies {
   }
 
   // Swagger UI for WebFlux
-  implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.1.0'
+  implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.2.0'
 
   constraints {
     // To address Snyk alert on DoS vulnerability
-    implementation 'org.springframework.boot:spring-boot-autoconfigure:3.1.1'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure:3.1.2'
   }
 }
