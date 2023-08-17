@@ -95,8 +95,7 @@ public class KafkaConsumer {
         .eventType(ContentionEvent.valueOf(mapTopicToEvent(record.topic()).toString()))
         .claimId((long) messageValue.get(KEY_CLAIM_ID))
         .contentionId((long) messageValue.get(KEY_CONTENTION_ID))
-        .contentionClassificationName(
-            (String) messageValue.get(KEY_CONTENTION_CLASSIFICATION_NAME))
+        .contentionClassificationName((String) messageValue.get(KEY_CONTENTION_CLASSIFICATION_NAME))
         .contentionTypeCode((String) messageValue.get(KEY_CONTENTION_TYPE_CODE))
         .diagnosticTypeCode((String) messageValue.get(KEY_DIAGNOSTIC_TYPE_CODE))
         .occurredAt((Long) messageValue.get(KEY_EVENT_TIME))

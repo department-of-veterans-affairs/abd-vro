@@ -1,6 +1,5 @@
 package gov.va.vro.model.biekafka.test;
 
-import com.google.common.collect.ImmutableMap;
 import gov.va.vro.model.biekafka.BieMessagePayload;
 import gov.va.vro.model.biekafka.ContentionEvent;
 import net.datafaker.Faker;
