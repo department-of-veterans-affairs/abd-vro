@@ -8,7 +8,7 @@ on:
 
   pull_request:
     branches: [main, develop, domain-*]
-    types: [ready_for_review, synchronize]
+    types: [ready_for_review, synchronize, opened, reopened]
   schedule:
     - cron: 31 6 * * 5
 
