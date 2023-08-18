@@ -20,5 +20,4 @@
 # Tue Aug 15 18:14:47 UTC 2023 -- v3.4.1
 postgres_VER="v3.4.1"
 dbinit_VER="v3.4.1"
-svclighthouseapi_VER="v3.4.1"
 # Tue Aug 15 21:04:51 UTC 2023 -- v3.4.2
