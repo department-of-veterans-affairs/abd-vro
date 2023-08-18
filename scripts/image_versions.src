@@ -21,3 +21,12 @@
 postgres_VER="v3.4.1"
 dbinit_VER="v3.4.1"
 # Tue Aug 15 21:04:51 UTC 2023 -- v3.4.2
+# Fri Aug 18 18:35:18 UTC 2023 -- v3.4.3
+apigateway_VER="v3.4.3"
+app_VER="v3.4.3"
+svcbgsapi_VER="v3.4.3"
+svclighthouseapi_VER="v3.4.3"
+svcbiekafka_VER="v3.4.3"
+xampleworkflows_VER="v3.4.3"
+ccapp_VER="v3.4.3"
+eemaxcfiapp_VER="v3.4.3"
