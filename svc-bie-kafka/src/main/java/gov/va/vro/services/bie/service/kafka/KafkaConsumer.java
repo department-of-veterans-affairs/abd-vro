@@ -53,8 +53,8 @@ public class KafkaConsumer {
           .filter(value::hasField)
           .forEach(field -> newRecord.put(field, value.get(field)));
 
-      messageValue = value.toString();
-      log.info("Kafka message value {}", messageValue);
+      messageValue = newRecord.toString();
+      log.info("Kafka message value {}", newRecord);
     } else if (record.value() instanceof String stringValue) {
       messageValue = stringValue;
     }
