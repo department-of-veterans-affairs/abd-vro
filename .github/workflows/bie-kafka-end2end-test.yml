@@ -12,8 +12,9 @@ concurrency:
 
 env:
   COMPOSE_PROFILES: 'kafka'
+  # Maps to the value of the BieKafkaApplicationTest run by ./gradlew :svc-bie-kafka:integrationTest
+  EVENT_TYPE: 'CONTENTION_CLASSIFIED'
   VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"
-
 jobs:
   integration-test:
     runs-on: ubuntu-latest
@@ -136,7 +137,7 @@ jobs:
             FROM
               claims.bie_contention_event
             WHERE
-              event_details='Lorem ipsum'
+              event_type='${{env.EVENT_TYPE}}'
           ")
           echo $RESULTS
           if echo $RESULTS | grep -q 'count | 1'

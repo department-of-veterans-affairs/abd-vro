@@ -10,8 +10,8 @@ spring:
         # Disable hostname verification to avoid error for 'localhost' by setting to empty string
         endpoint.identification.algorithm:
     producer:
-      key-serializer: "org.apache.kafka.common.serialization.ByteArraySerializer"
-      value-serializer: "org.apache.kafka.common.serialization.ByteArraySerializer"
+      key-serializer: "org.apache.kafka.common.serialization.StringSerializer"
+      value-serializer: "org.apache.kafka.common.serialization.StringSerializer"
       security.protocol: SSL
       ssl:
         keystore-location: "file:${KEYSTORE_FILE}"
