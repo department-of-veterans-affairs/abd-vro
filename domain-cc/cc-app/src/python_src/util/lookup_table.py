@@ -1,15 +1,13 @@
 import csv
-import json
 import os
 from abc import ABC
-from typing import Any
 
 from .table_version import TABLE_VERSION
 from .dropdown_table_version import DROPDOWN_TABLE_VERSION
 
-# csv file exported from DC Lookup v0.1
 # https://docs.google.com/spreadsheets/d/18Mwnn9-cvJIRRupQyQ2zLYOBm3bd0pr4kKlsZtFiyc0/edit#gid=1711756762
 dc_table_name = f"Contention Classification Diagnostic Codes Lookup table master sheet - DC Lookup {TABLE_VERSION}.csv"
+# https://docs.google.com/spreadsheets/d/1A5JuYwn39mHE5Mk1HazN-mxCL2TENPeyUPHHhH10g_I/edit#gid=819850041
 dropdown_table_name = f"Contention dropdown to classification master - Dropdown Lookup {DROPDOWN_TABLE_VERSION}.csv"
 
 
@@ -66,7 +64,6 @@ class DiagnosticCodeLookupTable(LookupTable):
 
 def get_lookup_table(filepath, input_key, output_key):
     classification_code_mappings = {}
-    first_time = False
     with open(filepath, "r") as fh:
         csv_reader = csv.DictReader(fh)
         for csv_line in csv_reader:
