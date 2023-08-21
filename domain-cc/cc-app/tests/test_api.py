@@ -22,6 +22,7 @@ def test_classification(client: TestClient):
         "diagnostic_code": TUBERCULOSIS_CLASSIFICATION["diagnostic_code"],
         "claim_id": 100,
         "form526_submission_id": 500,
+        "claim_type": "claim_for_increase",
     }
 
     response = client.post("/classifier", json=json_post_dict)
@@ -108,3 +109,36 @@ def test_v3_table_diagnostic_code(client: TestClient):
         response.json()["classification_name"]
         == DRUG_INDUCED_PULMONARY_PNEMONIA_CLASSIFICATION["classification_name"]
     )
+
+def test_classification_dropdown_cfi(client: TestClient):
+    json_post_dict = {
+        "diagnostic_code": 999999999,
+        "claim_id": 100,
+        "form526_submission_id": 500,
+        "contention_text": "Tuberculosis",
+        "claim_type": "claim_for_increase",
+    }
+
+    response = client.post("/v2/classifier", json=json_post_dict)
+    assert response.status_code == 200
+    assert (
+            response.json()["classification_code"]
+            == 6890
+    )
+
+
+def test_classification_dropdown_new(client: TestClient):
+    json_post_dict = {
+        "claim_id": 100,
+        "form526_submission_id": 500,
+        "contention_text": "Tuberculosis",
+        "claim_type": "new",
+    }
+
+    response = client.post("/v2/classifier", json=json_post_dict)
+    assert response.status_code == 200
+    assert (
+            response.json()["classification_code"]
+            == 6890
+    )
+
