@@ -5,8 +5,8 @@ from typing import Optional
 from fastapi import FastAPI, HTTPException
 
 from .pydantic_models import ClaimForIncrease, PredictedClassification
-from .util.lookup_table import DropdownLookupTable, DiagnosticCodeLookupTable
 from .util.brd_classification_codes import get_classification_name
+from .util.lookup_table import DiagnosticCodeLookupTable, DropdownLookupTable
 
 dc_lookup_table = DiagnosticCodeLookupTable()
 dropdown_lookup_table = DropdownLookupTable()

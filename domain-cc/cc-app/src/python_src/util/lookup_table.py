@@ -2,8 +2,8 @@ import csv
 import os
 from abc import ABC
 
-from .table_version import TABLE_VERSION
 from .dropdown_table_version import DROPDOWN_TABLE_VERSION
+from .table_version import TABLE_VERSION
 
 # https://docs.google.com/spreadsheets/d/18Mwnn9-cvJIRRupQyQ2zLYOBm3bd0pr4kKlsZtFiyc0/edit#gid=1711756762
 dc_table_name = f"Contention Classification Diagnostic Codes Lookup table master sheet - DC Lookup {TABLE_VERSION}.csv"

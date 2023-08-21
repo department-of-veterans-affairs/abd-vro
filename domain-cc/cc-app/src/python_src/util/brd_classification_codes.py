@@ -1,5 +1,5 @@
-import os
 import json
+import os
 
 # sourced from Lighthouse Benefits Reference Data /disabilities endpoint:
 # https://developer.va.gov/explore/benefits/docs/benefits_reference_data?version=current
