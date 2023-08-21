@@ -12,8 +12,10 @@ from .dropdown_table_version import DROPDOWN_TABLE_VERSION
 dc_table_name = f"Contention Classification Diagnostic Codes Lookup table master sheet - DC Lookup {TABLE_VERSION}.csv"
 dropdown_table_name = f"Contention dropdown to classification master - Dropdown Lookup {DROPDOWN_TABLE_VERSION}.csv"
 
+
 class LookupTable(ABC):
-    """ Generalized lookup table for mapping input strings to contention classification codes """
+    """Generalized lookup table for mapping input strings to contention classification codes"""
+
     CSV_FILEPATH = None
     input_key = None
     output_key = None
@@ -21,7 +23,9 @@ class LookupTable(ABC):
     def __init__(self):
         if not self.CSV_FILEPATH:
             raise NotImplementedError("csv_filepath must be set in child class")
-        self.mappings = get_lookup_table(self.CSV_FILEPATH, input_key=self.input_key, output_key=self.output_key)
+        self.mappings = get_lookup_table(
+            self.CSV_FILEPATH, input_key=self.input_key, output_key=self.output_key
+        )
 
     def __len__(self):
         return len(self.mappings)
@@ -29,9 +33,13 @@ class LookupTable(ABC):
     def get(self, input_str, fallback=None):
         return self.mappings.get(input_str, fallback)
 
+
 class DropdownLookupTable(LookupTable):
-    """ Lookup table for mapping dropdown values to contention classification codes """
-    CSV_FILEPATH = os.path.join(os.path.dirname(__file__), "data", "dropdown_lookup_table", dropdown_table_name)
+    """Lookup table for mapping dropdown values to contention classification codes"""
+
+    CSV_FILEPATH = os.path.join(
+        os.path.dirname(__file__), "data", "dropdown_lookup_table", dropdown_table_name
+    )
     input_key = "CONTENTION_TEXT"
     output_key = "CLASSIFICATION_CODE"
 
@@ -42,14 +50,19 @@ class DropdownLookupTable(LookupTable):
         input_str = input_str.strip().lower()
         return self.mappings.get(input_str, fallback)
 
+
 class DiagnosticCodeLookupTable(LookupTable):
-    """ Lookup table for mapping diagnostic codes to contention classification codes """
-    CSV_FILEPATH = os.path.join(os.path.dirname(__file__), "data", "dc_lookup_table", dc_table_name)
+    """Lookup table for mapping diagnostic codes to contention classification codes"""
+
+    CSV_FILEPATH = os.path.join(
+        os.path.dirname(__file__), "data", "dc_lookup_table", dc_table_name
+    )
     input_key = "DIAGNOSTIC_CODE"
     output_key = "CLASSIFICATION_CODE"
 
     def __init__(self):
         super().__init__()
+
 
 def get_lookup_table(filepath, input_key, output_key):
     classification_code_mappings = {}
@@ -65,9 +78,7 @@ def get_lookup_table(filepath, input_key, output_key):
                 classification_code = int(csv_line[output_key])
                 classification_code_mappings[text_to_convert] = classification_code
             except KeyError:
-                print(f'csv_line: {csv_line}')
+                print(f"csv_line: {csv_line}")
                 raise
 
     return classification_code_mappings
-
-
