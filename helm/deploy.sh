@@ -21,6 +21,7 @@ fi
 RELEASE_NAME="vro-$HELM_CHART"
 NAMESPACE=va-abd-rrd-${TARGET_ENV}
 : ${GITHUB_SHA:=$(git rev-parse HEAD)}
+: ${TRIGGERING_ACTOR:=$USER}
 
 #echo -e "TARGET_ENV=$TARGET_ENV \t HELM_CHART=HELM_CHART \t IMAGE_TAG=$IMAGE_TAG"
 #echo -e "RELEASE_NAME=$RELEASE_NAME \t NAMESPACE=$NAMESPACE \t GITHUB_SHA=$GITHUB_SHA"
@@ -110,6 +111,7 @@ helm upgrade "$RELEASE_NAME" "helm/$HELM_CHART" -n "${NAMESPACE}" \
   --install --reset-values \
   --set-string "global.imageTag=${IMAGE_TAG}" \
   --set-string "global.commitSha=${GITHUB_SHA}" \
+  --set-string "global.triggeringActor=${TRIGGERING_ACTOR}" \
   ${HELM_ARGS}
 set +x
 
