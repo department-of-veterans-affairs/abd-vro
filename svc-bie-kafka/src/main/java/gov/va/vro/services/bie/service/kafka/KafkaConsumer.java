@@ -10,14 +10,12 @@ import gov.va.vro.services.bie.config.BieProperties;
 import gov.va.vro.services.bie.service.AmqpMessageSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
-import java.util.Arrays;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -67,7 +65,6 @@ public class KafkaConsumer {
           bieProperties.getKafkaTopicToAmqpExchangeMap().get(topicName), topicName, payload);
     } catch (Exception e) {
       log.error("Exception occurred while processing message: " + e.getMessage());
-
     }
   }
 
