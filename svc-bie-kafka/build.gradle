@@ -24,6 +24,7 @@ jacocoTestReport {
 
 dependencies {
   implementation project(":shared:lib-bie-kafka")
+
   // avro schema and kafka
   implementation 'org.apache.avro:avro:1.11.2'
   implementation 'io.confluent:kafka-avro-serializer:7.4.0'
