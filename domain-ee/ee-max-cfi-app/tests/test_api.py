@@ -94,9 +94,18 @@ def test_missing_params(client: TestClient):
     assert response.status_code == 422
 
 
-def test_unprocessable_content(client: TestClient):
+def test_unprocessable_content_request_does_not_have_array(client: TestClient):
     json_post_dict = {
         "diagnostic_codes": 6510,  # Should be an array
+    }
+
+    response = client.post(MAX_RATING, json=json_post_dict)
+    assert response.status_code == 422
+
+
+def test_unprocessable_content_request_array_has_non_int_value(client: TestClient):
+    json_post_dict = {
+        "diagnostic_codes": ["6510"],  # Should be an int
     }
 
     response = client.post(MAX_RATING, json=json_post_dict)
