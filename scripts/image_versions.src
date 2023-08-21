@@ -24,4 +24,3 @@ dbinit_VER="v3.4.1"
 # Fri Aug 18 18:35:18 UTC 2023 -- v3.4.3
 apigateway_VER="v3.4.3"
 svclighthouseapi_VER="v3.4.3"
-ccapp_VER="v3.4.3"
