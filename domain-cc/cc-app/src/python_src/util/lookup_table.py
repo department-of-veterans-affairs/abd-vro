@@ -32,8 +32,8 @@ class LookupTable(ABC):
 class DropdownLookupTable(LookupTable):
     """ Lookup table for mapping dropdown values to contention classification codes """
     CSV_FILEPATH = os.path.join(os.path.dirname(__file__), "data", "dropdown_lookup_table", dropdown_table_name)
-    input_key = "VAGOV_CNTNTN_CLSFCN_TXT"
-    output_key = "CNTNTN_CLSFCN_ID"
+    input_key = "CONTENTION_TEXT"
+    output_key = "CLASSIFICATION_CODE"
 
     def __init__(self):
         super().__init__()
@@ -53,6 +53,7 @@ class DiagnosticCodeLookupTable(LookupTable):
 
 def get_lookup_table(filepath, input_key, output_key):
     classification_code_mappings = {}
+    first_time = False
     with open(filepath, "r") as fh:
         csv_reader = csv.DictReader(fh)
         for csv_line in csv_reader:
