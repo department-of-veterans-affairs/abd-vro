@@ -150,6 +150,7 @@ jobs:
           echo "::group::Prepping for Helm chart: ${{inputs.helm_chart}}"
           export K8S_INFO=true
           export WAIT_TIMEOUT=10m
+          export TRIGGERING_ACTOR="${{github.triggering_actor}}"
 
           # Load default values for *_VER environment variables, which pin image versions
           source scripts/image_vars.src
