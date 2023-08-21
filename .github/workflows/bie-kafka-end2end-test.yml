@@ -12,7 +12,6 @@ concurrency:
 
 env:
   COMPOSE_PROFILES: 'kafka'
-  EVENT_TYPE: 'CONTENTION_ASSOCIATED_TO_CLAIM'
   VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"
 
 jobs:
@@ -137,7 +136,7 @@ jobs:
             FROM
               claims.bie_contention_event
             WHERE
-              event_type='${{env.EVENT_TYPE}}'
+              event_details='Lorem ipsum'
           ")
           echo $RESULTS
           if echo $RESULTS | grep -q 'count | 1'
