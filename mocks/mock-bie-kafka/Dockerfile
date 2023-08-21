@@ -16,7 +16,8 @@ FROM bitnami/kafka:3.3
 ## For debugging this container, uncomment the following:
 #ENTRYPOINT ["tail", "-f", "/dev/null"]
 # Then run:
-#   COMPOSE_PROFILES="kafka" ./gradlew :dockerComposeUp
+#   cd mocks
+#   COMPOSE_PROFILES="kafka" ./gradlew :mock-bie-kafka:docker :dockerComposeUp
 #   docker-compose exec mock-bie-kafka bash
 # And at the shell prompt:
 #   /opt/bitnami/scripts/kafka/entrypoint.sh /opt/bitnami/scripts/kafka/run.sh
