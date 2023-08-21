@@ -33,8 +33,8 @@ def get_lookup_table():
     with open(filename, "r") as fh:
         csv_reader = csv.DictReader(fh)
         for csv_line in csv_reader:
-            diagnostic_code = int(csv_line["CNTNTN_CLSFCN_CLMNT_TXT_ID"])
-            classification_code = int(csv_line["CNTNTN_CLSFCN_ID"])
+            diagnostic_code = int(csv_line["DIAGNOSTIC_CODE"])
+            classification_code = int(csv_line["CLASSIFICATION_CODE"])
             diagnostic_code_to_classification_code[diagnostic_code] = classification_code
 
     return diagnostic_code_to_classification_code

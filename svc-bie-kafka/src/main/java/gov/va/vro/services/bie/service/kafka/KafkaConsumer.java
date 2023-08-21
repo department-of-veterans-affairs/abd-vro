@@ -10,12 +10,14 @@ import gov.va.vro.services.bie.config.BieProperties;
 import gov.va.vro.services.bie.service.AmqpMessageSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
+import java.util.Arrays;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,6 +25,21 @@ import java.util.Set;
 public class KafkaConsumer {
   private final AmqpMessageSender amqpMessageSender;
   private final BieProperties bieProperties;
+  private final String KEY_DIAGNOSTIC_TYPE_CODE = "DiagnosticTypeCode";
+  private final String KEY_CLAIM_ID = "ClaimId";
+  private final String KEY_CONTENTION_ID = "ContentionId";
+  private final String KEY_CONTENTION_CLASSIFICATION_NAME = "ContentionClassificationName";
+  private final String KEY_CONTENTION_TYPE_CODE = "ContentionTypeCode";
+  private final String KEY_EVENT_TIME = "EventTime";
+  private final String[] INCLUDED_FIELDS =
+      new String[] {
+        KEY_DIAGNOSTIC_TYPE_CODE,
+        KEY_CLAIM_ID,
+        KEY_CONTENTION_ID,
+        KEY_CONTENTION_CLASSIFICATION_NAME,
+        KEY_CONTENTION_TYPE_CODE,
+        KEY_EVENT_TIME
+      };
 
   @KafkaListener(
       topics = {
@@ -41,10 +58,6 @@ public class KafkaConsumer {
       log.info("Topic name: {}", topicName);
       if (record.value() instanceof GenericRecord) {
         payload = this.handleGenericRecord(record);
-        log.info(
-            "Sending GenericRecord BieMessagePayload to Amqp Message Sender: {}",
-            payload.toString());
-
       } else if (record.value() instanceof String stringPayload) {
         log.info("Consumed message string value (before) json conversion: {}", stringPayload);
         payload = this.handleStringRecord(record);
@@ -54,6 +67,7 @@ public class KafkaConsumer {
           bieProperties.getKafkaTopicToAmqpExchangeMap().get(topicName), topicName, payload);
     } catch (Exception e) {
       log.error("Exception occurred while processing message: " + e.getMessage());
+
     }
   }
 

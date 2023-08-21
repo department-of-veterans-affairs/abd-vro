@@ -1,4 +1,4 @@
-CNTNTN_CLSFCN_CLMNT_TXT_ID,CLMANT_TXT,CNTNTN_CLSFCN_ID,CNTNTN_CLSFCN_TXT
+DIAGNOSTIC_CODE,CONTENTION_TEXT,CLASSIFICATION_CODE,CLASSIFICATION_TEXT
 5260,"Limitation of flexion, knee",8997,Musculoskeletal - Knee
 6260,Tinnitus,3140,Hearing Loss
 5271,Limitation of motion of the ankle,8991,Musculoskeletal - Ankle
