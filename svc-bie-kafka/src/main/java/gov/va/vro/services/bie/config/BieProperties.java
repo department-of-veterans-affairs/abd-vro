@@ -2,7 +2,6 @@ package gov.va.vro.services.bie.config;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -22,8 +21,7 @@ public class BieProperties {
    */
   private Map<String, String> kafkaTopicToAmqpExchangeMap;
 
-  @Value("${kafka.topic.prefix}")
-  String topicPrefix;
+  String kakfaTopicPrefix;
 
   @Getter private Map<String, String> topicToExchangeMap;
 
@@ -31,7 +29,7 @@ public class BieProperties {
   public void addPrefixToTopicNames() {
     topicToExchangeMap =
         kafkaTopicToAmqpExchangeMap.entrySet().stream()
-            .collect(Collectors.toMap(e -> topicPrefix + e.getKey(), Map.Entry::getValue));
+            .collect(Collectors.toMap(e -> kakfaTopicPrefix + e.getKey(), Map.Entry::getValue));
   }
 
   public String[] topicNames() {

@@ -22,7 +22,7 @@ class MessageExchangeConfigTest {
   void setUp() {
     bieProperties = new BieProperties();
     bieProperties.setKafkaTopicToAmqpExchangeMap(Map.of());
-    bieProperties.topicPrefix = "TST_";
+    bieProperties.kakfaTopicPrefix = "TST_";
     bieProperties.addPrefixToTopicNames();
   }
 
