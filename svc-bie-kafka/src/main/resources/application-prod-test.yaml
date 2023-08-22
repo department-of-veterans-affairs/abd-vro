@@ -1,10 +1,10 @@
 spring:
   kafka:
-    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:kafka.prod.bip.va.gov:443}"
+    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:kafka.preprod.bip.va.gov:443}"
     properties:
       schema:
         registry:
-          url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://schemaregistry.prod.bip.va.gov:443}"
+          url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://schemaregistry.preprod.bip.va.gov:443}"
           ssl:
             protocol: SSL
             keystore:
