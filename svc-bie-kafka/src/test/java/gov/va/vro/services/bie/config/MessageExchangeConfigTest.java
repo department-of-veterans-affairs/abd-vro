@@ -1,6 +1,7 @@
 package gov.va.vro.services.bie.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +23,7 @@ class MessageExchangeConfigTest {
     bieProperties = new BieProperties();
     bieProperties.setKafkaTopicToAmqpExchangeMap(Map.of());
     bieProperties.topicPrefix = "TST_";
-    bieProperties.addTopicPrefix();
+    bieProperties.addPrefixToTopicNames();
   }
 
   @Test
@@ -37,7 +38,9 @@ class MessageExchangeConfigTest {
   @Test
   void createTopicBindingsWithNonEmptyTopicMap_ShouldReturnEmptyListOfDeclarables() {
     bieProperties.setKafkaTopicToAmqpExchangeMap(Map.of("kafkaTopic", "rabbitExchange"));
-    bieProperties.addTopicPrefix();
+    bieProperties.addPrefixToTopicNames();
+
+    assertArrayEquals(bieProperties.topicNames(), new String[] {"TST_kafkaTopic"});
 
     final MessageExchangeConfig config = new MessageExchangeConfig();
     final Declarables declarables = config.topicBindings(bieProperties);

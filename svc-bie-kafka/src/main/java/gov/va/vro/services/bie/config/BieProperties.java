@@ -28,7 +28,7 @@ public class BieProperties {
   @Getter private Map<String, String> topicToExchangeMap;
 
   @PostConstruct
-  public void addTopicPrefix() {
+  public void addPrefixToTopicNames() {
     topicToExchangeMap =
         kafkaTopicToAmqpExchangeMap.entrySet().stream()
             .collect(Collectors.toMap(e -> topicPrefix + e.getKey(), Map.Entry::getValue));
