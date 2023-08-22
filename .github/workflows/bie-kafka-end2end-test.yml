@@ -137,7 +137,7 @@ jobs:
             FROM
               claims.bie_contention_event
             WHERE
-              event_type='${{env.EVENT_TYPE}}'
+              event_type=${{env.EVENT_TYPE}}
           ")
           echo $RESULTS
           if echo $RESULTS | grep -q 'count | 1'
