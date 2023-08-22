@@ -6,6 +6,7 @@ import org.springframework.amqp.core.Declarables;
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,6 +21,9 @@ public class MessageExchangeConfig {
   private static final boolean IS_DURABLE = true;
   private static final boolean IS_AUTO_DELETED = true;
 
+  @Value("${kafka.topic.prefix}")
+  private String kafkaTopicPrefix;
+
   @Bean
   public MessageConverter messageConverter() {
     return new Jackson2JsonMessageConverter();
@@ -32,7 +36,7 @@ public class MessageExchangeConfig {
             .map(
                 topic -> {
                   final FanoutExchange fanoutExchange =
-                      new FanoutExchange(topic, IS_DURABLE, IS_AUTO_DELETED);
+                      new FanoutExchange(kafkaTopicPrefix + "_" + topic, IS_DURABLE, IS_AUTO_DELETED);
                   log.info("event=setUpMQ exchange={}", fanoutExchange);
                   return List.of(fanoutExchange);
                 })
