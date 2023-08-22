@@ -32,8 +32,8 @@ on:
 jobs:
   delete_releases:
     # Deletions in public repo will be automatically propagated to internal repo when mirror.yml runs, at which point:
-    # - Git tag deletions will delete tags in internal repo
-    # - Deleted tags will result in GitHub releases disappearing in internal repo: https://github.com/department-of-veterans-affairs/abd-vro-internal/releases
+    # - Git release tags (associated with GitHub pre-releases) will be deleted in the internal repo
+    # - Tag deletions will result in GitHub releases disappearing in internal repo: https://github.com/department-of-veterans-affairs/abd-vro-internal/releases
     #   but the number of releases (shown on the front page) is incorrect (i.e., there are orphaned GH releases)
     #   Submitted bug report to GitHub: https://support.github.com/ticket/personal/0/2247467
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
