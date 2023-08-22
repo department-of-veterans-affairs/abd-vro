@@ -33,17 +33,17 @@ spring:
 
 kafka:
   topic:
-    prefix: TST
+    prefix: "TST_"
 ## Specify bie properties
 bie:
   kafka-topic-to-amqp-exchange-map:
     # Map of entries where the keys are the kafka topics to which this app will subscribe. The value is the corresponding
     # RabbitMQ exchange upon which the payload will be put. These values are separated by a colon ":" character.
-    TST_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02: bie-events-contention-associated
-    TST_CONTENTION_BIE_CONTENTION_UPDATED_V02: bie-events-contention-updated
-    TST_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02: bie-events-contention-classified
-    TST_CONTENTION_BIE_CONTENTION_COMPLETED_V02: bie-events-contention-completed
-    TST_CONTENTION_BIE_CONTENTION_DELETED_V02: bie-events-contention-deleted
+    CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02: bie-events-contention-associated
+    CONTENTION_BIE_CONTENTION_UPDATED_V02: bie-events-contention-updated
+    CONTENTION_BIE_CONTENTION_CLASSIFIED_V02: bie-events-contention-classified
+    CONTENTION_BIE_CONTENTION_COMPLETED_V02: bie-events-contention-completed
+    CONTENTION_BIE_CONTENTION_DELETED_V02: bie-events-contention-deleted
 
 ## Actuator for health check
 management:
