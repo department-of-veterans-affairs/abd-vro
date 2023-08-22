@@ -33,3 +33,13 @@ spring:
 kafka:
   topic:
     prefix: PRE
+## Specify bie properties
+bie:
+  kafka-topic-to-amqp-exchange-map:
+    # Map of entries where the keys are the kafka topics to which this app will subscribe. The value is the corresponding
+    # RabbitMQ exchange upon which the payload will be put. These values are separated by a colon ":" character.
+    PRE_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02: bie-events-contention-associated-to-claim
+    PRE_CONTENTION_BIE_CONTENTION_UPDATED_V02: bie-events-contention-updated
+    PRE_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02: bie-events-contention-classified
+    PRE_CONTENTION_BIE_CONTENTION_COMPLETED_V02: bie-events-contention-completed
+    PRE_CONTENTION_BIE_CONTENTION_DELETED_V02: bie-events-contention-deleted
