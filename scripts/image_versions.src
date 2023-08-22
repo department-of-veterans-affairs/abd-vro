@@ -26,9 +26,3 @@ svclighthouseapi_VER="v3.4.3"
 # Tue Aug 22 15:10:09 UTC 2023 -- v3.4.4
 dbinit_VER="v3.4.4"
 # Tue Aug 22 15:48:51 UTC 2023 -- v3.4.5
-app_VER="v3.4.5"
-svcbgsapi_VER="v3.4.5"
-svcbiekafka_VER="v3.4.5"
-xampleworkflows_VER="v3.4.5"
-ccapp_VER="v3.4.5"
-eemaxcfiapp_VER="v3.4.5"
