@@ -168,7 +168,7 @@ allprojects {
 tasks.named("dockerComposeDown").configure {
   // Shut down subprojects' containers before Platform containers, volumes, and network
   mustRunAfter ':app:dockerComposeDown'
-  mustRunAfter ':domain-xample:dockerComposeDown'
-  mustRunAfter ':domain-cc:dockerComposeDown'
-  mustRunAfter ':domain-ee:dockerComposeDown'
+
+  def domainProjects = subprojects.findAll { it.name.startsWith('domain-') }
+  mustRunAfter domainProjects*.name.collect { it + ':dockerComposeDown'}
 }
