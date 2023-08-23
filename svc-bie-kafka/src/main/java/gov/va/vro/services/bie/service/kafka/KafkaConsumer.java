@@ -61,6 +61,7 @@ public class KafkaConsumer {
         payload = this.handleStringRecord(record);
         log.info("Sending String BieMessagePayload to Amqp Message Sender: {}", payload.toString());
       }
+
       amqpMessageSender.send(
           bieProperties.getKafkaTopicToAmqpExchangeMap().get(topicName), topicName, payload);
     } catch (Exception e) {

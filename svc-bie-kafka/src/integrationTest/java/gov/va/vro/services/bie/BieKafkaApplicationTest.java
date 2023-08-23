@@ -66,7 +66,7 @@ public class BieKafkaApplicationTest {
 
     // Message 2 comes through Kafka
     String kafkaEventBody =
-        "{\"eventType\": \"CONTENTION_CLASSIFIED\", \"contentionId\": \"4562323232\", \"contentionTypeCode\": \"123\", \"contentionClassificationName\": \"some name\", \"claimId\": \"1232323232\", \"diagnosticTypeCode\": \"some code\", \"occurredAt\": \"1692649506\", \"notifiedAt\": \"1692649506\", \"status\": \"200\"}";
+        "{\"contentionId\": \"4562323232\", \"contentionTypeCode\": \"123\", \"contentionClassificationName\": \"some name\", \"claimId\": \"1232323232\", \"diagnosticTypeCode\": \"some code\", \"occurredAt\": \"1692649506\", \"notifiedAt\": \"1692649506\", \"status\": \"200\"}";
 
     val key = "some key";
     log.info("Producing event in Kafka topic: {}", kafkaTopic);
