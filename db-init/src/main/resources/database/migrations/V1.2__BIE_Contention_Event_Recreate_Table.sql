@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS "bie_contention_event"
     diagnostic_type_code VARCHAR(255),
 
     -- Code classifying the contention
-    contention_classification_code VARCHAR(255),
+    contention_type_code VARCHAR(255),
 
     -- Timestamp when the record was created in the database
     created_at TIMESTAMP NOT NULL,
