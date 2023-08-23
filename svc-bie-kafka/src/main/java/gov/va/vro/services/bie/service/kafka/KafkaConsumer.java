@@ -73,7 +73,10 @@ public class KafkaConsumer {
       throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
     String messageValue = (String) record.value();
-    return objectMapper.readValue(messageValue, BieMessagePayload.class);
+    BieMessagePayload payload = objectMapper.readValue(messageValue, BieMessagePayload.class);
+    payload.setEventType(ContentionEvent.valueOf(mapTopicToEvent(record.topic()).toString()));
+
+    return payload;
   }
 
   private BieMessagePayload handleGenericRecord(ConsumerRecord<String, Object> record) {

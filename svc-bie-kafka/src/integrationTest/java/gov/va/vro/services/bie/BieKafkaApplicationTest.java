@@ -1,10 +1,12 @@
 package gov.va.vro.services.bie;
 
+import static gov.va.vro.services.bie.service.kafka.MessageHelper.mapTopicToEvent;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.biekafka.BieMessagePayload;
+import gov.va.vro.model.biekafka.ContentionEvent;
 import gov.va.vro.model.biekafka.test.BieMessagePayloadFactory;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -80,6 +82,7 @@ public class BieKafkaApplicationTest {
 
     // Check message 2
     val kafkaSentMessage = objectMapper.readValue(kafkaEventBody, BieMessagePayload.class);
+    kafkaSentMessage.setEventType(ContentionEvent.valueOf(mapTopicToEvent(kafkaTopic).toString()));
     assertEquals(kafkaSentMessage, receivedMessages.get(1));
   }
 }
