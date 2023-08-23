@@ -34,14 +34,7 @@ public class KafkaConsumer {
         KEY_EVENT_TIME
       };
 
-  @KafkaListener(
-      topics = {
-        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02",
-        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_UPDATED_V02",
-        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02",
-        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_COMPLETED_V02",
-        "#{'${kafka.topic.prefix}'}_CONTENTION_BIE_CONTENTION_DELETED_V02"
-      })
+  @KafkaListener(topics = "#{bieProperties.topicNames()}")
   public void consume(ConsumerRecord<String, Object> record) {
     String messageValue = null;
     String topicName = record.topic();
@@ -60,6 +53,6 @@ public class KafkaConsumer {
     }
 
     amqpMessageSender.send(
-        bieProperties.getKafkaTopicToAmqpExchangeMap().get(topicName), topicName, messageValue);
+        bieProperties.getTopicToExchangeMap().get(topicName), topicName, messageValue);
   }
 }

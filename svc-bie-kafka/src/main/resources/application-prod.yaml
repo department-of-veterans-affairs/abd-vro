@@ -31,6 +31,5 @@ spring:
             location: "${TRUSTSTORE_FILE}"
             password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
 
-kafka:
-  topic:
-    prefix: PROD
+bie:
+  kakfa-topic-prefix: "PROD_"

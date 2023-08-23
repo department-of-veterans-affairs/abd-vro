@@ -6,11 +6,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
 
 @Component
 @ConfigurationProperties(prefix = "bie")
 @Setter
-@Getter
 public class BieProperties {
 
   /**
@@ -19,4 +20,19 @@ public class BieProperties {
    * separated by a colon ":" character.
    */
   private Map<String, String> kafkaTopicToAmqpExchangeMap;
+
+  String kakfaTopicPrefix;
+
+  @Getter private Map<String, String> topicToExchangeMap;
+
+  @PostConstruct
+  public void addPrefixToTopicNames() {
+    topicToExchangeMap =
+        kafkaTopicToAmqpExchangeMap.entrySet().stream()
+            .collect(Collectors.toMap(e -> kakfaTopicPrefix + e.getKey(), Map.Entry::getValue));
+  }
+
+  public String[] topicNames() {
+    return topicToExchangeMap.keySet().stream().toArray(String[]::new);
+  }
 }
