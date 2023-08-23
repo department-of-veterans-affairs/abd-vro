@@ -13,7 +13,7 @@ concurrency:
 env:
   COMPOSE_PROFILES: 'kafka'
   # Maps to the value of the BieKafkaApplicationTest run by ./gradlew :svc-bie-kafka:integrationTest
-  EVENT_TYPE: 'CONTENTION_CLASSIFIED'
+  CONTENTION_ID: 1234567890
   VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"
 jobs:
   integration-test:
@@ -116,7 +116,7 @@ jobs:
           if ! ./gradlew :svc-bie-kafka:integrationTest --info; then
             echo "First run could fail due to some mock Kafka initialization"
             # Subsequent runs should pass
-            ./gradlew :svc-bie-kafka:integrationTest --info
+            ./gradlew :svc-bie-kafka:integrationTest
           fi
 
       - name: 'Sleep to give time for message to travel end to end from kafka to saved in database'
@@ -137,7 +137,7 @@ jobs:
             FROM
               claims.bie_contention_event
             WHERE
-              event_type='${{env.EVENT_TYPE}}'
+              contention_id=${{env.CONTENTION_ID}}
           ")
           echo $RESULTS
           if echo $RESULTS | grep -q 'count | 1'

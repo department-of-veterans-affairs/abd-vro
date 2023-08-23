@@ -67,12 +67,17 @@ public class BieKafkaApplicationTest {
     rabbitTemplate.convertAndSend(fanoutExchange.getName(), "anyRoutingKey", msgBody);
 
     // Message 2 comes through Kafka
-    String kafkaEventBody =
-        "{\"contentionId\": \"4562323232\", \"contentionTypeCode\": \"123\", \"contentionClassificationName\": \"some name\", \"claimId\": \"1232323232\", \"diagnosticTypeCode\": \"some code\", \"occurredAt\": \"1692649506\", \"notifiedAt\": \"1692649506\", \"status\": \"200\"}";
+    BieMessagePayload kafkaEventBody = BieMessagePayloadFactory.create();
+    kafkaEventBody.setEventType(null);
+    kafkaEventBody.setContentionId(1234567890);
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    val kafkaSentMessage = objectMapper.writeValueAsString(kafkaEventBody);
+    log.info("kafkaEventBody: {}", kafkaSentMessage);
 
     val key = "some key";
     log.info("Producing event in Kafka topic: {}", kafkaTopic);
-    kafkaTemplate.send(kafkaTopic, key, kafkaEventBody);
+    kafkaTemplate.send(kafkaTopic, key, kafkaSentMessage);
 
     log.info("Waiting for svc-bie-kafka to publish Kafka event to RabbitMQ exchange...");
     assertTrue(latch.await(10, TimeUnit.SECONDS));
@@ -81,8 +86,7 @@ public class BieKafkaApplicationTest {
     assertEquals(msgBody, receivedMessages.get(0));
 
     // Check message 2
-    val kafkaSentMessage = objectMapper.readValue(kafkaEventBody, BieMessagePayload.class);
-    kafkaSentMessage.setEventType(ContentionEvent.valueOf(mapTopicToEvent(kafkaTopic).toString()));
-    assertEquals(kafkaSentMessage, receivedMessages.get(1));
+    kafkaEventBody.setEventType(ContentionEvent.valueOf(mapTopicToEvent(kafkaTopic).toString()));
+    assertEquals(kafkaEventBody, receivedMessages.get(1));
   }
 }
