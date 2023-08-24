@@ -1,6 +1,7 @@
 package gov.va.vro.services.bie.service.kafka;
 
-import static gov.va.vro.services.bie.service.kafka.MessageHelper.mapTopicToEvent;
+import static gov.va.vro.services.bie.service.kafka.MessageHelper.*;
+import static gov.va.vro.services.bie.service.kafka.MessageHelper.generateRabbitMQChannelName;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,6 +42,7 @@ public class KafkaConsumer {
 
   @KafkaListener(topics = "#{bieProperties.topicNames()}")
   public void consume(ConsumerRecord<String, Object> record) {
+
     // TODO: Object needs to be converted to GenericRecord once local Kafka schema registry
     //  mocks are implemented for testing purposes.
     try {
@@ -55,8 +57,7 @@ public class KafkaConsumer {
         log.info("Sending String BieMessagePayload to Amqp Message Sender: {}", payload.toString());
       }
 
-      amqpMessageSender.send(
-          bieProperties.getTopicToExchangeMap().get(topicName), topicName, payload);
+      amqpMessageSender.send(generateRabbitMQChannelName(topicName), topicName, payload);
     } catch (Exception e) {
       log.error("Exception occurred while processing message: " + e.getMessage());
     }

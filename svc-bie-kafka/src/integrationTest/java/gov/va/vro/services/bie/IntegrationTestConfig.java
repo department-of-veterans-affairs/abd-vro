@@ -1,5 +1,7 @@
 package gov.va.vro.services.bie;
 
+import static gov.va.vro.services.bie.service.kafka.MessageHelper.generateRabbitMQChannelName;
+
 import gov.va.vro.services.bie.config.BieProperties;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -33,7 +35,7 @@ public class IntegrationTestConfig {
   }
 
   String mqExchangeName() {
-    return bieProperties.getTopicToExchangeMap().get(kafkaTopic());
+    return generateRabbitMQChannelName(kafkaTopic());
   }
 
   @Bean

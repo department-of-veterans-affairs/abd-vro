@@ -14,4 +14,9 @@ public class MessageHelper {
         .findFirst()
         .orElseThrow(() -> new IllegalArgumentException("Unrecognized topic: " + noPrefixTopic));
   }
+
+  public static String generateRabbitMQChannelName(String topic) {
+    return String.format(
+        "bie-events-%s", mapTopicToEvent(topic).toString().toLowerCase().replace("_", "-"));
+  }
 }

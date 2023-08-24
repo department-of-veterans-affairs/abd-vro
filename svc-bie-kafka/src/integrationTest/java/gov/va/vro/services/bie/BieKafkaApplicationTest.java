@@ -40,7 +40,6 @@ public class BieKafkaApplicationTest {
 
   @Autowired private FanoutExchange fanoutExchange;
   @Autowired private RabbitTemplate rabbitTemplate;
-  @Autowired private ObjectMapper objectMapper;
 
   private final List<BieMessagePayload> receivedMessages = new ArrayList<>();
   private CountDownLatch latch;

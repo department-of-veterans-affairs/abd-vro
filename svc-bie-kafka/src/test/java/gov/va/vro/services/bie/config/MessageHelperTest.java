@@ -1,5 +1,6 @@
 package gov.va.vro.services.bie.config;
 
+import static gov.va.vro.services.bie.service.kafka.MessageHelper.generateRabbitMQChannelName;
 import static gov.va.vro.services.bie.service.kafka.MessageHelper.mapTopicToEvent;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -30,6 +31,28 @@ public class MessageHelperTest {
         IllegalArgumentException.class,
         () -> {
           mapTopicToEvent(topic);
+        });
+  }
+
+  @ParameterizedTest
+  @CsvSource({
+    "TST_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02, bie-events-contention-associated-to-claim",
+    "TST_CONTENTION_BIE_CONTENTION_UPDATED_V02, bie-events-contention-updated",
+    "TST_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02, bie-events-contention-classified",
+    "TST_CONTENTION_BIE_CONTENTION_COMPLETED_V02, bie-events-contention-completed",
+    "TST_CONTENTION_BIE_CONTENTION_DELETED_V02, bie-events-contention-deleted"
+  })
+  public void testGenerateRabbitMQChannelName_channelNames(String inputTopic, String bieChannel) {
+    assertEquals(bieChannel, generateRabbitMQChannelName(inputTopic));
+  }
+
+  @Test
+  public void testGenerateRabbitMQChannelName_unrecognizedTopic() {
+    String topic = "prefix_UNKNOWN_TOPIC";
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          generateRabbitMQChannelName(topic);
         });
   }
 }

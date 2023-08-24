@@ -2,14 +2,12 @@ package gov.va.vro.services.bie.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.core.Declarables;
-import org.springframework.amqp.core.Exchange;
 
 import java.util.Map;
 
@@ -36,19 +34,16 @@ class MessageExchangeConfigTest {
   }
 
   @Test
-  void createTopicBindingsWithNonEmptyTopicMap_ShouldReturnEmptyListOfDeclarables() {
-    bieProperties.setKafkaTopicToAmqpExchangeMap(Map.of("kafkaTopic", "rabbitExchange"));
-    bieProperties.addPrefixToTopicNames();
-
-    assertArrayEquals(bieProperties.topicNames(), new String[] {"TST_kafkaTopic"});
-
-    final MessageExchangeConfig config = new MessageExchangeConfig();
-    final Declarables declarables = config.topicBindings(bieProperties);
-
-    assertThat(declarables).isNotNull();
-    assertThat(declarables.getDeclarables()).hasSize(1);
-    assertThat(declarables.getDeclarablesByType(Exchange.class)).hasSize(1);
-    assertEquals(
-        (declarables.getDeclarablesByType(Exchange.class).get(0)).getName(), "rabbitExchange");
+  void topicNames() {
+    final String[] topicNames = bieProperties.topicNames();
+    assertArrayEquals(
+        new String[] {
+          "TST_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02",
+          "TST_CONTENTION_BIE_CONTENTION_UPDATED_V02",
+          "TST_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02",
+          "TST_CONTENTION_BIE_CONTENTION_COMPLETED_V02",
+          "TST_CONTENTION_BIE_CONTENTION_DELETED_V02"
+        },
+        topicNames);
   }
 }

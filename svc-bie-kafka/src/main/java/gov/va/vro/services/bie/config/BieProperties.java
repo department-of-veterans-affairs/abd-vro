@@ -1,10 +1,12 @@
 package gov.va.vro.services.bie.config;
 
+import gov.va.vro.model.biekafka.ContentionEvent;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
@@ -21,7 +23,7 @@ public class BieProperties {
    */
   private Map<String, String> kafkaTopicToAmqpExchangeMap;
 
-  String kakfaTopicPrefix;
+  @Getter String kakfaTopicPrefix;
 
   @Getter private Map<String, String> topicToExchangeMap;
 
@@ -33,6 +35,8 @@ public class BieProperties {
   }
 
   public String[] topicNames() {
-    return topicToExchangeMap.keySet().stream().toArray(String[]::new);
+    return Arrays.stream(ContentionEvent.values())
+        .map(contention -> kakfaTopicPrefix + contention.getTopicName())
+        .toArray(String[]::new);
   }
 }
