@@ -17,10 +17,6 @@ on:
   # Allow manual triggering
   workflow_dispatch:
 
-concurrency:
-  group: lintAndTest-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   test-java:
     runs-on: ubuntu-latest

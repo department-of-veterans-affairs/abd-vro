@@ -7,9 +7,6 @@ on:
   # Allow being called by another GitHub Action
   workflow_call:
 
-concurrency:
-  group: bieKafkaEnd2EndTestWithMock-${{ github.ref }}
-
 env:
   COMPOSE_PROFILES: 'kafka'
   VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"

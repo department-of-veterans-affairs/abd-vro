@@ -1,4 +1,4 @@
-name: "8. Mirroring"
+name: "8. Mirror repo"
 
 on:
   # Don't mirror every commit to a PR; mirror-on-test-success.yml mirrors when the PR's testing passes
@@ -19,11 +19,6 @@ on:
 
   # Allow manual triggering
   workflow_dispatch:
-
-# Don't need more than one of these mirroring workflows; run the latest one.
-concurrency:
-  group: git-mirror
-  cancel-in-progress: true
 
 jobs:
   to_internal_repo:

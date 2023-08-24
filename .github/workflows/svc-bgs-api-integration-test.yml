@@ -7,9 +7,6 @@ on:
   # Allow being called by another GitHub Action
   workflow_call:
 
-concurrency:
-  group: svcBgsApiIntegrationTest-${{ github.ref }}
-
 env:
   COMPOSE_PROFILES: 'svc'
   CORRELATION_ID: '1234'
@@ -27,7 +24,7 @@ jobs:
       - name: 'Start the containers'
         run: |
           source scripts/setenv.sh
-          
+
           # create basic auth token for RabbitMQ and export to github environment
           BASIC_AUTH=`echo "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" | base64`
           echo "RABBITMQ_PLACEHOLDERS_USERNAME=${RABBITMQ_PLACEHOLDERS_USERNAME}" >> $GITHUB_ENV
@@ -152,9 +149,9 @@ jobs:
             echo "Unexpected correlation_id: Expected ${{env.CORRELATION_ID}}. Found ${{ fromJson(steps.addNoteResponse.outputs.response).data[0].properties.correlation_id }}"
             CHECKS_FAILED=true
           fi
-          
+
           echo "Skip checking payload until bgs-api is connected..."
-                    
+
           if $CHECKS_FAILED; then
             echo "Some checks failed."
             exit 10
