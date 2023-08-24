@@ -51,7 +51,7 @@ jobs:
           ./gradlew -p mocks :dockerComposeUp
 
           ./gradlew :domain-xample:dockerComposeUp
-          ./gradlew :app:dockerComposeUp
+          ./gradlew :app:dockerComposeUp --info
 
       - name: 'Wait for RabbitMQ to be ready'
         uses: indiesdev/curl@v1.1
