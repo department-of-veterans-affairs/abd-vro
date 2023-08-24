@@ -34,6 +34,7 @@ jobs:
             ./gradlew release -Prelease.forceVersion="${{ inputs.version }}"
           fi
 
+      # Pin version numbers AFTER creating the new version
       - name: "Pin unpinned image versions"
         run: |
           scripts/image-version.sh pin
