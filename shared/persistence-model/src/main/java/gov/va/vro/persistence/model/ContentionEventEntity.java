@@ -24,10 +24,10 @@ public class ContentionEventEntity extends BaseEntity {
   private String eventType;
 
   @Column(name = "claim_id")
-  private Long claimId;
+  private long claimId;
 
   @Column(name = "contention_id")
-  private Long contentionId;
+  private long contentionId;
 
   @Column(name = "contention_type_code")
   private String contentionTypeCode;

@@ -1,8 +1,5 @@
 package gov.va.vro.services.bie.service.kafka;
 
-import static gov.va.vro.services.bie.service.kafka.MessageHelper.*;
-import static gov.va.vro.services.bie.service.kafka.MessageHelper.generateRabbitMQChannelName;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.biekafka.BieMessagePayload;
@@ -37,10 +34,11 @@ public class KafkaConsumer {
       } else if (record.value() instanceof String stringPayload) {
         log.info("Consumed message string value (before) json conversion: {}", stringPayload);
         payload = this.handleStringRecord(record);
-        log.info("Sending String BieMessagePayload to Amqp Message Sender: {}", payload.toString());
+        log.info("Sending String BieMessagePayload to Amqp Message Sender: {}", payload);
       }
 
-      amqpMessageSender.send(generateRabbitMQChannelName(topicName), topicName, payload);
+      amqpMessageSender.send(
+          ContentionEvent.generateRabbitMQChannelName(topicName), topicName, payload);
     } catch (Exception e) {
       log.error("Exception occurred while processing message: " + e.getMessage());
     }
@@ -51,7 +49,8 @@ public class KafkaConsumer {
     ObjectMapper objectMapper = new ObjectMapper();
     String messageValue = (String) record.value();
     BieMessagePayload payload = objectMapper.readValue(messageValue, BieMessagePayload.class);
-    payload.setEventType(ContentionEvent.valueOf(mapTopicToEvent(record.topic()).toString()));
+    payload.setEventType(
+        ContentionEvent.valueOf(ContentionEvent.mapTopicToEvent(record.topic()).toString()));
 
     return payload;
   }
@@ -66,7 +65,8 @@ public class KafkaConsumer {
     String KEY_EVENT_TIME = "EventTime";
 
     return BieMessagePayload.builder()
-        .eventType(ContentionEvent.valueOf(mapTopicToEvent(record.topic()).toString()))
+        .eventType(
+            ContentionEvent.valueOf(ContentionEvent.mapTopicToEvent(record.topic()).toString()))
         .claimId((long) messageValue.get(KEY_CLAIM_ID))
         .contentionId((long) messageValue.get(KEY_CONTENTION_ID))
         .contentionClassificationName((String) messageValue.get(KEY_CONTENTION_CLASSIFICATION_NAME))

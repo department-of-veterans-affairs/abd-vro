@@ -1,7 +1,6 @@
 package gov.va.vro.services.bie.config;
 
-import static gov.va.vro.services.bie.service.kafka.MessageHelper.generateRabbitMQChannelName;
-
+import gov.va.vro.model.biekafka.ContentionEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AbstractDeclarable;
 import org.springframework.amqp.core.Declarables;
@@ -36,7 +35,9 @@ public class MessageExchangeConfig {
                 topic -> {
                   final FanoutExchange fanoutExchange =
                       new FanoutExchange(
-                          generateRabbitMQChannelName(topic), IS_DURABLE, IS_AUTO_DELETED);
+                          ContentionEvent.generateRabbitMQChannelName(topic),
+                          IS_DURABLE,
+                          IS_AUTO_DELETED);
                   log.info("event=setUpMQ exchange={}", fanoutExchange);
                   return List.of(fanoutExchange);
                 })

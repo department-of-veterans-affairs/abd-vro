@@ -10,7 +10,6 @@ on:
 env:
   COMPOSE_PROFILES: 'kafka'
   # Maps to the value of the BieKafkaApplicationTest run by ./gradlew :svc-bie-kafka:integrationTest
-  CONTENTION_ID: 1234567890
   VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"
 jobs:
   integration-test:
@@ -134,7 +133,8 @@ jobs:
             FROM
               claims.bie_contention_event
             WHERE
-              contention_id=${{env.CONTENTION_ID}}
+              -- This is the contention id used in BieKafkaApplicationTest
+              contention_id=1234567890
           ")
           echo $RESULTS
           if echo $RESULTS | grep -q 'count | 1'

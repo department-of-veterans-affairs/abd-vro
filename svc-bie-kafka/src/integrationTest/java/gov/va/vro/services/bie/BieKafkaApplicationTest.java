@@ -1,6 +1,5 @@
 package gov.va.vro.services.bie;
 
-import static gov.va.vro.services.bie.service.kafka.MessageHelper.mapTopicToEvent;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -85,7 +84,8 @@ public class BieKafkaApplicationTest {
     assertEquals(msgBody, receivedMessages.get(0));
 
     // Check message 2
-    kafkaEventBody.setEventType(ContentionEvent.valueOf(mapTopicToEvent(kafkaTopic).toString()));
+    kafkaEventBody.setEventType(
+        ContentionEvent.valueOf(ContentionEvent.mapTopicToEvent(kafkaTopic).toString()));
     assertEquals(kafkaEventBody, receivedMessages.get(1));
   }
 }

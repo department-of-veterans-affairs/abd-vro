@@ -1,7 +1,6 @@
 package gov.va.vro.services.bie.config;
 
-import static gov.va.vro.services.bie.service.kafka.MessageHelper.generateRabbitMQChannelName;
-import static gov.va.vro.services.bie.service.kafka.MessageHelper.mapTopicToEvent;
+import static gov.va.vro.model.biekafka.ContentionEvent.mapTopicToEvent;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -43,7 +42,7 @@ public class MessageHelperTest {
     "TST_CONTENTION_BIE_CONTENTION_DELETED_V02, bie-events-contention-deleted"
   })
   public void testGenerateRabbitMQChannelName_channelNames(String inputTopic, String bieChannel) {
-    assertEquals(bieChannel, generateRabbitMQChannelName(inputTopic));
+    assertEquals(bieChannel, ContentionEvent.generateRabbitMQChannelName(inputTopic));
   }
 
   @Test
@@ -52,7 +51,7 @@ public class MessageHelperTest {
     assertThrows(
         IllegalArgumentException.class,
         () -> {
-          generateRabbitMQChannelName(topic);
+          ContentionEvent.generateRabbitMQChannelName(topic);
         });
   }
 }
