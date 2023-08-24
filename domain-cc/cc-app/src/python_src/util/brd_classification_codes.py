@@ -21,7 +21,4 @@ CLASSIFICATION_NAMES_BY_CODE = get_classification_names_by_code()
 
 
 def get_classification_name(classification_code):
-    try:
-        return CLASSIFICATION_NAMES_BY_CODE[classification_code]
-    except KeyError:
-        return None
+    return CLASSIFICATION_NAMES_BY_CODE.get(classification_code)
