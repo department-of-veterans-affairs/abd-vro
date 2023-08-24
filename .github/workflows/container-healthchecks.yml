@@ -10,9 +10,6 @@ on:
   pull_request:
     branches: [ develop ]
 
-concurrency:
-  group: containerHealthChecks-${{ github.ref }}
-
 env:
   SLACK_EXCEPTION_WEBHOOK: "http://mock-slack:20100/slack-messages"
   VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"

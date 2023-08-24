@@ -1,4 +1,4 @@
-name: "8. Mirroring on passing tests"
+name: "8. Mirror after passing tests"
 
 on:
   workflow_run:

@@ -7,9 +7,6 @@ on:
   # Allow being called by another GitHub Action
   workflow_call:
 
-concurrency:
-  group: bieKafkaEnd2EndTestWithMock-${{ github.ref }}
-
 env:
   COMPOSE_PROFILES: 'kafka'
   # Maps to the value of the BieKafkaApplicationTest run by ./gradlew :svc-bie-kafka:integrationTest
