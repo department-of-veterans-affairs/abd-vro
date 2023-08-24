@@ -69,7 +69,7 @@ jobs:
           ENV: "end2end-test"
         run: |
           docker ps
-          ./gradlew :domain-rrd:rrd-app-test:end2EndTest --info
+          ./gradlew :domain-rrd:rrd-app-test:end2EndTest
 
       - name: "Collect docker logs on failure"
         if: always()

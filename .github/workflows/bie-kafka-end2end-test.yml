@@ -50,7 +50,7 @@ jobs:
           ./gradlew -p mocks :dockerComposeUp
 
           ./gradlew :domain-xample:dockerComposeUp
-          ./gradlew :app:dockerComposeUp --info
+          ./gradlew :app:dockerComposeUp
 
       - name: 'Wait for RabbitMQ to be ready'
         uses: indiesdev/curl@v1.1
@@ -109,7 +109,7 @@ jobs:
           source scripts/setenv.sh
 
           pushd svc-bie-kafka && { source ./docker-entryprep.sh; popd; }
-          if ! ./gradlew :svc-bie-kafka:integrationTest --info; then
+          if ! ./gradlew :svc-bie-kafka:integrationTest; then
             echo "First run could fail due to some mock Kafka initialization"
             # Subsequent runs should pass
             ./gradlew :svc-bie-kafka:integrationTest
