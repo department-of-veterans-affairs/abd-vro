@@ -9,8 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.core.Declarables;
 
-import java.util.Map;
-
 @ExtendWith(MockitoExtension.class)
 class MessageExchangeConfigTest {
 
@@ -19,9 +17,7 @@ class MessageExchangeConfigTest {
   @BeforeEach
   void setUp() {
     bieProperties = new BieProperties();
-    bieProperties.setKafkaTopicToAmqpExchangeMap(Map.of());
     bieProperties.kakfaTopicPrefix = "TST_";
-    bieProperties.addPrefixToTopicNames();
   }
 
   @Test

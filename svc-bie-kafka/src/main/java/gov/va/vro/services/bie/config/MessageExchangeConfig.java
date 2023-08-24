@@ -1,5 +1,7 @@
 package gov.va.vro.services.bie.config;
 
+import static gov.va.vro.services.bie.service.kafka.MessageHelper.generateRabbitMQChannelName;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AbstractDeclarable;
 import org.springframework.amqp.core.Declarables;
@@ -9,6 +11,7 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,11 +31,12 @@ public class MessageExchangeConfig {
   @Bean
   Declarables topicBindings(final BieProperties bieProperties) {
     final List<AbstractDeclarable> list =
-        bieProperties.getTopicToExchangeMap().values().stream()
+        Arrays.stream(bieProperties.topicNames())
             .map(
                 topic -> {
                   final FanoutExchange fanoutExchange =
-                      new FanoutExchange(topic, IS_DURABLE, IS_AUTO_DELETED);
+                      new FanoutExchange(
+                          generateRabbitMQChannelName(topic), IS_DURABLE, IS_AUTO_DELETED);
                   log.info("event=setUpMQ exchange={}", fanoutExchange);
                   return List.of(fanoutExchange);
                 })
