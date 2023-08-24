@@ -21,12 +21,12 @@ class MessageExchangeConfigTest {
   }
 
   @Test
-  void createTopicBindingsWithEmptyTopicMap_ShouldReturnEmptyListOfDeclarables() {
+  void createTopicBindingsWithContentionEvents_ShouldReturnNumberOfEvents() {
     final MessageExchangeConfig config = new MessageExchangeConfig();
     final Declarables declarables = config.topicBindings(bieProperties);
 
     assertThat(declarables).isNotNull();
-    assertThat(declarables.getDeclarables()).hasSize(0);
+    assertThat(declarables.getDeclarables()).hasSize(bieProperties.topicNames().length);
   }
 
   @Test
