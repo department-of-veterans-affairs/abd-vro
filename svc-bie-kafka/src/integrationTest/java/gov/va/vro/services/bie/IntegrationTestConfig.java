@@ -21,8 +21,8 @@ public class IntegrationTestConfig {
   @Bean
   String kafkaTopic() {
     // Pick a random kafka topic
-    val topics = bieProperties.getKafkaTopicToAmqpExchangeMap().keySet().stream().toList();
-    return topics.get(new Random().nextInt(topics.size()));
+    val topics = bieProperties.topicNames();
+    return topics[new Random().nextInt(topics.length)];
   }
 
   // ###### MQ configuration:
@@ -33,7 +33,7 @@ public class IntegrationTestConfig {
   }
 
   String mqExchangeName() {
-    return bieProperties.getKafkaTopicToAmqpExchangeMap().get(kafkaTopic());
+    return bieProperties.getTopicToExchangeMap().get(kafkaTopic());
   }
 
   @Bean

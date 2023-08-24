@@ -30,6 +30,6 @@ spring:
             type: PKCS12
             location: "${TRUSTSTORE_FILE}"
             password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
-kafka:
-  topic:
-    prefix: IVV
+
+bie:
+  kakfa-topic-prefix: "IVV_"

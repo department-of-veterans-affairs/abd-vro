@@ -28,7 +28,7 @@ public class MessageExchangeConfig {
   @Bean
   Declarables topicBindings(final BieProperties bieProperties) {
     final List<AbstractDeclarable> list =
-        bieProperties.getKafkaTopicToAmqpExchangeMap().values().stream()
+        bieProperties.getTopicToExchangeMap().values().stream()
             .map(
                 topic -> {
                   final FanoutExchange fanoutExchange =

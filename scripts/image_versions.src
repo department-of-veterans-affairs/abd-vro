@@ -15,20 +15,12 @@
 # The following are pinned versions of images;
 # they are automatically pinned and unpinned by scripts/image-version.sh.
 # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Container-Image-Versions
-# Wed Jul 12 17:45:45 UTC 2023 -- v3.3.1
 # Mon Jul 31 17:42:17 UTC 2023 -- v3.4.0
 # Tue Aug 15 18:14:47 UTC 2023 -- v3.4.1
 postgres_VER="v3.4.1"
-# Tue Aug 15 21:04:51 UTC 2023 -- v3.4.2
 # Fri Aug 18 18:35:18 UTC 2023 -- v3.4.3
 apigateway_VER="v3.4.3"
 svclighthouseapi_VER="v3.4.3"
 # Tue Aug 22 15:10:09 UTC 2023 -- v3.4.4
 dbinit_VER="v3.4.4"
 # Tue Aug 22 15:48:51 UTC 2023 -- v3.4.5
-app_VER="v3.4.5"
-svcbgsapi_VER="v3.4.5"
-svcbiekafka_VER="v3.4.5"
-xampleworkflows_VER="v3.4.5"
-ccapp_VER="v3.4.5"
-eemaxcfiapp_VER="v3.4.5"
