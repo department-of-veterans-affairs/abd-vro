@@ -1,492 +1,490 @@
-CONTENTION_ID,CONTENTION_TEXT,CLASSIFICATION_CODE,CLASSIFICATION_TEXT
-8876,filariasis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-8916,aids,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-6850,tinnitus,3140,Hearing Loss
-6440,sleep apnea,9012,Respiratory
-410,anxiety condition,8989,Mental Disorders
-3140,Hearing Loss,3140,Hearing Loss
-2030,depression,8989,Mental Disorders
-4300,migraine,9007,Neurological other System
-3130,headaches,9007,Neurological other System
-3460,hypertension,8979,Heart/Veins/Arteries
-3700,"knee condition, left",8997,Musculoskeletal - Knee
-3710,"knee condition, right",8997,Musculoskeletal - Knee
-2850,GERD,8968,Digestive
-6420,sinusitis,9012,Respiratory
-2680,foot pain,8994,Musculoskeletal - Foot
-3570,irritable bowel syndrome,8968,Digestive
-8998,Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine),8998,Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine)
-3370,high blood pressure,8979,Heart/Veins/Arteries
-5690,rhinitis,9012,Respiratory
-3690,"knee condition, bilateral",8997,Musculoskeletal - Knee
-9010,Post Traumatic Stress Disorder (PTSD) Combat - Mental Disorders,9010,Post Traumatic Stress Disorder (PTSD) Combat - Mental Disorders
-5340,plantar fasciitis,8994,Musculoskeletal - Foot
-6310,"shoulder condition, right",9002,Musculoskeletal - Shoulder
-4050,major depression,8989,Mental Disorders
-540,asthma,9012,Respiratory
-7290,PTSD personal trauma,9011,Post Traumatic Stress Disorder (PTSD) Personal Trauma - Mental Disorders
-490,arthritis,8992,Musculoskeletal - Arthritis
-5710,ringing in ears,3140,Hearing Loss
-6300,"shoulder condition, left",9002,Musculoskeletal - Shoulder
-8999,Musculoskeletal - Neck/Upper Back (Cervical Spine),8999,Musculoskeletal - Neck/Upper Back (Cervical Spine)
-9011,Post Traumatic Stress Disorder (PTSD) Personal Trauma - Mental Disorders,9011,Post Traumatic Stress Disorder (PTSD) Personal Trauma - Mental Disorders
-2600,"flatfoot, bilateral",8994,Musculoskeletal - Foot
-2220,ears-ringing,3140,Hearing Loss
-380,"ankle condition, right",8991,Musculoskeletal - Ankle
-6270,shin splints,8997,Musculoskeletal - Knee
-1680,chronic fatigue syndrome,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-3380,"hip condition, bilateral",8996,Musculoskeletal - Hip
-3400,"hip condition, right",8996,Musculoskeletal - Hip
-8974,Eye (Vision),8974,Eye (Vision)
-370,"ankle condition, left",8991,Musculoskeletal - Ankle
-1420,carpal tunnel syndrome,9006,Neurological - Cranial/Peripheral Nerves
-9020,Traumatic Brain Injury,9020,Traumatic Brain Injury
-6290,"shoulder condition, bilateral",9002,Musculoskeletal - Shoulder
-3390,"hip condition, left",8996,Musculoskeletal - Hip
-360,"ankle condition, bilateral",8991,Musculoskeletal - Ankle
-3260,hemorrhoids,8968,Digestive
-180,allergies,9012,Respiratory
-170,alcohol abuse,8989,Mental Disorders
-6410,sinus condition,9012,Respiratory
-3730,knee strain,8997,Musculoskeletal - Knee
-3920,low back strain,8998,Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine)
-2060,diabetes,8973,Endocrine
-7230,"wrist condition, right",9004,Musculoskeletal - Wrist
-860,bronchitis,9012,Respiratory
-570,athlete's foot,9016,Skin
-2650,"foot condition, bilateral",8994,Musculoskeletal - Foot
-9012,Respiratory,9012,Respiratory
-1990,degenerative arthritis,8992,Musculoskeletal - Arthritis
-6340,shoulder strain,9002,Musculoskeletal - Shoulder
-2810,gastrointestinal problems,8968,Digestive
-3950,lung condition,9012,Respiratory
-3170,heart condition,8979,Heart/Veins/Arteries
-2540,fibromyalgia,9007,Neurological other System
-7220,"wrist condition, left",9004,Musculoskeletal - Wrist
-7210,"wrist condition, bilateral",9004,Musculoskeletal - Wrist
-390,ankle sprain,8991,Musculoskeletal - Ankle
-2270,"elbow condition, right",8993,Musculoskeletal - Elbow
-3100,"hand condition, right",8995,Musculoskeletal - Hand
-670,bipolar disorder,8989,Mental Disorders
-3590,jaw condition,8967,Dental and Oral
-8967,Dental and Oral,8967,Dental and Oral
-3080,"hand condition, bilateral",8995,Musculoskeletal - Hand
-2670,"foot condition, right",8994,Musculoskeletal - Foot
-2660,"foot condition, left",8994,Musculoskeletal - Foot
-6510,stomach condition,8968,Digestive
-2250,"elbow condition, bilateral",8993,Musculoskeletal - Elbow
-1200,cancer - prostate,8935,Cancer - Genitourinary
-3940,lumbar strain,8998,Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine)
-2260,"elbow condition, left",8993,Musculoskeletal - Elbow
-8997,Musculoskeletal - Knee,8997,Musculoskeletal - Knee
-3480,hypothyroidism,8973,Endocrine
-9014,"Scars (Head, Face, Or Neck)",9014,"Scars (Head, Face, Or Neck)"
-3090,"hand condition, left",8995,Musculoskeletal - Hand
-4240,mental disorder,8989,Mental Disorders
-2440,"eye condition, bilateral",8974,Eye (Vision)
-2610,"flatfoot, left",8994,Musculoskeletal - Foot
-1700,chronic obstructive pulmonary disease,9012,Respiratory
-1550,cervical strain,8999,Musculoskeletal - Neck/Upper Back (Cervical Spine)
-2620,"flatfoot, right",8994,Musculoskeletal - Foot
-9002,Musculoskeletal - Shoulder,9002,Musculoskeletal - Shoulder
-3150,"hearing loss, sensorineural",3140,Hearing Loss
-3000,gout,8992,Musculoskeletal - Arthritis
-6880,tooth condition,8967,Dental and Oral
-150,agoraphobia,8989,Mental Disorders
-7110,vision,8974,Eye (Vision)
-8989,Mental Disorders,8989,Mental Disorders
-9013,Scars (Extremities and Trunk),9013,Scars (Extremities and Trunk)
-2790,gastritis,8968,Digestive
-3910,low back sprain,8998,Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine)
-3720,knee sprain,8997,Musculoskeletal - Knee
-5610,Respiratory complaints,9012,Respiratory
-6990,Unemployability,6990,Unemployability
-400,ankle strain,8991,Musculoskeletal - Ankle
-8996,Musculoskeletal - Hip,8996,Musculoskeletal - Hip
-3660,kidney stone(s),8975,Genitourinary
-700,bladder condition,8975,Genitourinary
-780,bowel condition,8968,Digestive
-3640,kidney disease,8975,Genitourinary
-510,"arthritis, due to trauma",8992,Musculoskeletal - Arthritis
-2230,eating disorder,8970,Eating Disorders
-10,abnormal heart,8979,Heart/Veins/Arteries
-3320,"hernia, hiatal",8968,Digestive
-7250,wrist strain,9004,Musculoskeletal - Wrist
-8991,Musculoskeletal - Ankle,8991,Musculoskeletal - Ankle
-8976,Gulf War Unexplained Chronic Multi-Symptom Illness,8976,Gulf War Unexplained Chronic Multi-Symptom Illness
-4900,"osteoarthritis, post-traumatic",8992,Musculoskeletal - Arthritis
-2490,"fallen arches, bilateral",8994,Musculoskeletal - Foot
-500,"arthritis, degenerative",8992,Musculoskeletal - Arthritis
-3180,heart disease,8979,Heart/Veins/Arteries
-3330,"hernia, inguinal",8968,Digestive
-1250,Cancer - Skin,1250,Cancer - Skin
-2450,"eye condition, left",8974,Eye (Vision)
-6980,undiagnosed illness as a Gulf War veteran,8977,Gulf War Undiagnosed Illness
-2460,"eye condition, right",8974,Eye (Vision)
-3850,liver condition,8968,Digestive
-4640,"neuropathy, peripheral",9006,Neurological - Cranial/Peripheral Nerves
-5570,rectal bleeding,8968,Digestive
-6460,"smell, loss of sense of",8969,Ear Disease and Other Sense Organs
-6820,thyroid condition,8973,Endocrine
-2320,emphysema,9012,Respiratory
-4220,menstrual disorders,8978,Gynecological
-6330,shoulder sprain,9002,Musculoskeletal - Shoulder
-2430,esophageal condition,8968,Digestive
-2800,gastroenteritis,8968,Digestive
-5740,sarcoidosis,9012,Respiratory
-8919,hip replacement,8996,Musculoskeletal - Hip
-5270,personality disorder,8989,Mental Disorders
-5160,Parkinson's disease,9007,Neurological other System
-8992,Musculoskeletal - Arthritis,8992,Musculoskeletal - Arthritis
-2290,elbow strain,8993,Musculoskeletal - Elbow
-2130,diverticulitis,8968,Digestive
-4210,meniere's disease,8969,Ear Disease and Other Sense Organs
-1900,coronary artery disease,8979,Heart/Veins/Arteries
-330,"anemia, primary",8981,Hemic and Lymphatic
-3500,hysterectomy,8978,Gynecological
-8970,Eating Disorders,8970,Eating Disorders
-2080,diabetes mellitus,8973,Endocrine
-9016,Skin,9016,Skin
-5120,paranoid reaction,8989,Mental Disorders
-5390,pneumonia,9012,Respiratory
-8966,Cyst/Benign Growth - Skin,8966,Cyst/Benign Growth - Skin
-7240,wrist sprain,9004,Musculoskeletal - Wrist
-3050,"gums, sore",8967,Dental and Oral
-6840,tinea pedis,9016,Skin
-5450,primary anemia,8981,Hemic and Lymphatic
-3470,hyperthyroidism,8973,Endocrine
-6970,ulcer condition,8968,Digestive
-8977,Gulf War Undiagnosed Illness,8977,Gulf War Undiagnosed Illness
-1840,conjunctivitis,8974,Eye (Vision)
-2360,endometriosis,8978,Gynecological
-8968,Digestive,8968,Digestive
-8995,Musculoskeletal - Hand,8995,Musculoskeletal - Hand
-1830,congestive heart failure,8979,Heart/Veins/Arteries
-8918,knee replacement,8997,Musculoskeletal - Knee
-450,arrhythmia,8979,Heart/Veins/Arteries
-2210,ear infection,8969,Ear Disease and Other Sense Organs
-8993,Musculoskeletal - Elbow,8993,Musculoskeletal - Elbow
-8994,Musculoskeletal - Foot,8994,Musculoskeletal - Foot
-1090,cancer - kidney,8933,Cancer - Endocrine
-2010,dementia,8989,Mental Disorders
-2870,"glaucoma, bilateral",8974,Eye (Vision)
-3870,loose teeth,8967,Dental and Oral
-4760,non-specific respiratory condition,9012,Respiratory
-9017,Special Monthly Compensation - Aid and Attendence/Housebound,9017,Special Monthly Compensation - Aid and Attendance/Housebound
-5470,"prostate gland (injuries, infections, hypertrophy)",8975,Genitourinary
-9004,Musculoskeletal - Wrist,9004,Musculoskeletal - Wrist
-9018,Special Monthly Compensation - Anatomical Loss/Loss Of Use,9018,Special Monthly Compensation - Anatomical Loss/Loss Of Use
-4360,muscle injury,9005,Musculoskeletal and Muscle Injuries
-6390,signs or symptoms involving respiratory system,9012,Respiratory
-8988,Leg Condition - Neurological other System,8988,Leg Condition - Neurological other System
-1720,chronic renal disease,8975,Genitourinary
-4120,manic-depressive reaction,8989,Mental Disorders
-5310,phobias,8989,Mental Disorders
-5370,pleurisy,6890,Tuberculosis
-6650,"taste, loss of sense of",8969,Ear Disease and Other Sense Organs
-1780,colitis,8968,Digestive
-6890,Tuberculosis,6890,Tuberculosis
-9005,Musculoskeletal and Muscle Injuries,9005,Musculoskeletal and Muscle Injuries
-1130,cancer - lung,1230,Cancer - Respiratory
-1040,cancer - colon,8932,Cancer - Digestive
-1440,cataract,8974,Eye (Vision)
-2190,dysthymic disorder,8989,Mental Disorders
-520,asbestosis (asbestos disease),9012,Respiratory
-1300,cancer - thyroid,8933,Cancer - Endocrine
-3650,kidney failure,8975,Genitourinary
-1010,cancer - breast,8937,Cancer - Gynecological
-3580,irritable colon,8968,Digestive
-1790,"colon syndrome, irritable",8968,Digestive
-6170,schizophrenia,8989,Mental Disorders
-2470,eye disease,8974,Eye (Vision)
-2570,"fibrosis, interstitial pulmonary",9012,Respiratory
-650,Bell's palsy,9007,Neurological other System
-1740,clavicle,9002,Musculoskeletal - Shoulder
-4230,mental disease,8989,Mental Disorders
-8987,Leg Condition - Heart/Veins/Arteries,8987,Leg Condition - Heart/Veins/Arteries
-4030,lymphomas,8939,Cancer - Hemic and Lymphatic
-350,angina,8979,Heart/Veins/Arteries
-3190,heart failure,8979,Heart/Veins/Arteries
-4680,Non-Hodgkin's lymphoma (NHL),8939,Cancer - Hemic and Lymphatic
-8951,Cyst/Benign Growth - Gynecological,8951,Cyst/Benign Growth - Gynecological
-8975,Genitourinary,8975,Genitourinary
-1290,cancer - testicle,8935,Cancer - Genitourinary
-2280,elbow sprain,8993,Musculoskeletal - Elbow
-5080,pancreatitis,8968,Digestive
-249481,Dental and Oral - Musculoskeletal,249481,Dental and Oral - Musculoskeletal
-7060,vaginitis,8978,Gynecological
-1730,cirrhosis of liver,8968,Digestive
-5640,"retina (scars, atrophy, or irregularities of)",8974,Eye (Vision)
-7120,visually impaired,8974,Eye (Vision)
-4690,non-specific digestive complaints,8968,Digestive
-4330,multiple sclerosis,9007,Neurological other System
-7000,"uterus (disease, injury, or adhesions of)",8978,Gynecological
-8955,Cyst/Benign Growth - Musculoskeletal - Hand,8955,Cyst/Benign Growth - Musculoskeletal - Hand
-1690,chronic lymphocytic leukemia,8939,Cancer - Hemic and Lymphatic
-2400,epilepsy,9007,Neurological other System
-900,burn(s),9013,Scars (Extremities and Trunk)
-5520,psychosis,8989,Mental Disorders
-8962,Cyst/Benign Growth - Musculoskeletal - Wrist,8962,Cyst/Benign Growth - Musculoskeletal - Wrist
-5600,renal failure,8975,Genitourinary
-7300,hepatitis C,8968,Digestive
-2770,gallstone(s),8968,Digestive
-3350,"hernia, ventral",8968,Digestive
-4710,non-specific genitourinary complaints,8975,Genitourinary
-5000,otitis media,3140,Hearing Loss
-8929,Arm Condition - Neurological other System,8929,Arm Condition - Neurological other System
-8958,Cyst/Benign Growth - Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine),8958,Cyst/Benign Growth - Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine)
-9006,Neurological - Cranial/Peripheral Nerves,9006,Neurological - Cranial/Peripheral Nerves
-2020,dental abscesses,8967,Dental and Oral
-2040,depressive neurosis,8989,Mental Disorders
-4000,Lyme disease,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-4430,"myeloma, multiple",8939,Cancer - Hemic and Lymphatic
-8973,Endocrine,8973,Endocrine
-680,Birth Defect in Child,680,Birth Defect in Child
-920,CAD,8979,Heart/Veins/Arteries
-3830,leukemia,8939,Cancer - Hemic and Lymphatic
-4700,non-specific ear condition,8969,Ear Disease and Other Sense Organs
-1890,coronary artery bypass,8979,Heart/Veins/Arteries
-8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-9001,Musculoskeletal - Other,9001,Musculoskeletal - Other
-20,abnormal mitral valve,8979,Heart/Veins/Arteries
-1070,cancer - gastrointestinal tract,8932,Cancer - Digestive
-1170,cancer - pancreas,8932,Cancer - Digestive
-8935,Cancer - Genitourinary,8935,Cancer - Genitourinary
-300,amputation - toe (toes),9003,Musculoskeletal - Toe Amputations
-720,blindness (including light perception only),8974,Eye (Vision)
-840,"breast condition, right",8978,Gynecological
-3410,HIV,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-5530,psychotic depressive reaction,8989,Mental Disorders
-8957,Cyst/Benign Growth - Musculoskeletal - Knee,8957,Cyst/Benign Growth - Musculoskeletal - Knee
-820,"breast condition, bilateral",8978,Gynecological
-850,bronchiectasis,9012,Respiratory
-5040,ovary (removal of),8978,Gynecological
-5680,rheumatism,8992,Musculoskeletal - Arthritis
-6320,shoulder replacement,9002,Musculoskeletal - Shoulder
-7030,uterus (removal of),8978,Gynecological
-7070,valvular heart disease,8979,Heart/Veins/Arteries
-9009,Pension - Aid and Attendance/Housebound,9009,Pension - Aid and Attendance/Housebound
-249482,Musculoskeletal - Bones,249482,Musculoskeletal - Bones
-830,"breast condition, left",8978,Gynecological
-6120,scapula,9002,Musculoskeletal - Shoulder
-8943,Cold Injury Residuals,8943,Cold Injury Residuals
-8959,Cyst/Benign Growth - Musculoskeletal - Neck/Upper Back (Cervical Spine),8959,Cyst/Benign Growth - Musculoskeletal - Neck/Upper Back (Cervical Spine)
-8979,Heart/Veins/Arteries,8979,Heart/Veins/Arteries
-1120,cancer - liver,8932,Cancer - Digestive
-1140,cancer - lymph nodes,8939,Cancer - Hemic and Lymphatic
-5630,retina (detachment of),8974,Eye (Vision)
-6350,sickle cell anemia,8981,Hemic and Lymphatic
-50,"abscess, kidney",8975,Genitourinary
-2890,"glaucoma, right",8974,Eye (Vision)
-3560,iritis,8974,Eye (Vision)
-4310,Morton's disease,8994,Musculoskeletal - Foot
-5190,peptic ulcer disease,8968,Digestive
-8926,Aneurysm - Heart/Veins/Arteries,8926,Aneurysm - Heart/Veins/Arteries
-1860,corneal opacities,8974,Eye (Vision)
-3680,"kidney, removal of",8975,Genitourinary
-4060,malaria,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-7020,uterus (prolapse),8978,Gynecological
-8945,Cyst/Benign Growth - Dental and Oral,8945,Cyst/Benign Growth - Dental and Oral
-9000,Musculoskeletal - Osteomyelitis,9000,Musculoskeletal - Osteomyelitis
-250,amputation - below knee,8990,Musculoskeletal - Amputations
-480,arteriosclerotic heart disease,8979,Heart/Veins/Arteries
-1970,cystitis,8975,Genitourinary
-2880,"glaucoma, left",8974,Eye (Vision)
-3420,Hodgkin's disease,8939,Cancer - Hemic and Lymphatic
-5200,pericarditis,8979,Heart/Veins/Arteries
-8949,Cyst/Benign Growth - Eye (Vision),8949,Cyst/Benign Growth - Eye (Vision)
-8978,Gynecological,8978,Gynecological
-249480,Cyst/Benign Growth - Hemic and Lymphatic,249480,Cyst/Benign Growth - Hemic and Lymphatic
-590,avitaminosis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-1000,cancer - brain,8942,Cancer - Neurological other System
-1310,cancer - tongue,8931,Cancer - Dental and Oral
-1570,CHF,8979,Heart/Veins/Arteries
-1640,cholecystitis,8968,Digestive
-4390,myasthenia gravis,9007,Neurological other System
-5030,"ovary (disease, injury, or adhesions of)",8978,Gynecological
-5650,retinitis,8974,Eye (Vision)
-6620,syphilis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-6780,thrombocytopenia,8981,Hemic and Lymphatic
-8921,Adhesions - Gynecological,8921,Adhesions - Gynecological
-8954,Cyst/Benign Growth - Musculoskeletal - Foot,8954,Cyst/Benign Growth - Musculoskeletal - Foot
-8960,Cyst/Benign Growth - Musculoskeletal - Other,8960,Cyst/Benign Growth - Musculoskeletal - Other
-8961,Cyst/Benign Growth - Musculoskeletal - Shoulder,8961,Cyst/Benign Growth - Musculoskeletal - Shoulder
-460,arteriosclerosis,8979,Heart/Veins/Arteries
-550,atherosclerosis,8979,Heart/Veins/Arteries
-4410,myelitis (a spinal cord condition),9007,Neurological other System
-4450,myocarditis,8979,Heart/Veins/Arteries
-5460,progressive muscular atrophy,9007,Neurological other System
-6630,syringomyelia,9007,Neurological other System
-6640,systemic lupus,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-8950,Cyst/Benign Growth - Genitourinary,8950,Cyst/Benign Growth - Genitourinary
-8963,Cyst/Benign Growth - Musculoskeletal and Muscle Injuries,8963,Cyst/Benign Growth - Musculoskeletal and Muscle Injuries
-8980,Helpless Child,8980,Helpless Child
-8984,Herpes - Eye (Vision),8974,Eye (Vision)
-9007,Neurological other System,9007,Neurological other System
-60,"abscess, liver",8968,Digestive
-100,Addison's disease,8973,Endocrine
-1450,"cataracts, posterior subcapsular",8974,Eye (Vision)
-2120,discoid lupus,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-3630,keratitis,8974,Eye (Vision)
-3740,labyrinthitis,8969,Ear Disease and Other Sense Organs
-3990,"lupus, systemic",8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-4420,myeloma,8939,Cancer - Hemic and Lymphatic
-5010,otosclerosis,3140,Hearing Loss
-5140,parathyroid adenoma,8973,Endocrine
-5540,psychotic reaction,8989,Mental Disorders
-8925,Administrative Issue,8925,Administrative Issue
-8948,Cyst/Benign Growth - Endocrine,8948,Cyst/Benign Growth - Endocrine
-8953,Cyst/Benign Growth - Musculoskeletal - Elbow,8953,Cyst/Benign Growth - Musculoskeletal - Elbow
-8982,Hemorrhage - Eye (Vision),8982,Hemorrhage - Eye (Vision)
-260,amputation - foot (feet),8990,Musculoskeletal - Amputations
-290,amputation - single finger,8990,Musculoskeletal - Amputations
-790,brain hemorrhage,8972,Embolism/Infarction - Neurological other System
-3010,grand mal epilepsy,9007,Neurological other System
-3310,"hernia, femoral",8968,Digestive
-4010,lymphogranulomatosis,8939,Cancer - Hemic and Lymphatic
-4020,Lymphoma - except Hodgkin's disease,8939,Cancer - Hemic and Lymphatic
-4540,nephritis,8975,Genitourinary
-7150,vulvovaginitis,8978,Gynecological
-8944,Competency,8944,Competency
-8947,Cyst/Benign Growth - Ear Disease and Other Sense Organs,8947,Cyst/Benign Growth - Ear Disease and Other Sense Organs
-9021,"Wound, Bullet/Shell Fragment",9021,"Wound, Bullet/Shell Fragment"
-230,amputation - above knee,8990,Musculoskeletal - Amputations
-310,amyotrophic lateral sclerosis,9007,Neurological other System
-580,"atrophy, progressive muscular",9007,Neurological other System
-1100,cancer - larynx,1230,Cancer - Respiratory
-1110,cancer - lip,8931,Cancer - Dental and Oral
-1560,cervicitis,8978,Gynecological
-2070,diabetes insipidus,8973,Endocrine
-5280,petit mal epilepsy,9007,Neurological other System
-5510,psychoses,8989,Mental Disorders
-7010,uterus (displacement of),8978,Gynecological
-7040,uveitis,8974,Eye (Vision)
-8920,Adhesions - Digestive,8920,Adhesions - Digestive
-8927,Aneurysm - Neurological other System,8927,Aneurysm - Neurological other System
-8937,Cancer - Gynecological,8937,Cancer - Gynecological
-8939,Cancer - Hemic and Lymphatic,8939,Cancer - Hemic and Lymphatic
-8946,Cyst/Benign Growth - Digestive,8946,Cyst/Benign Growth - Digestive
-8956,Cyst/Benign Growth - Musculoskeletal - Hip,8956,Cyst/Benign Growth - Musculoskeletal - Hip
-8969,Ear Disease and Other Sense Organs,8969,Ear Disease and Other Sense Organs
-9003,Musculoskeletal - Toe Amputations,9003,Musculoskeletal - Toe Amputations
-249475,Cancer - Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine),249475,Cancer - Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine)
-280,amputation - multiple fingers,8990,Musculoskeletal - Amputations
-710,bladder stone(s),8975,Genitourinary
-1210,cancer - rectum,8932,Cancer - Digestive
-1230,Cancer - Respiratory,1230,Cancer - Respiratory
-1280,cancer - stomach,8932,Cancer - Digestive
-1320,cancer - trachea,1230,Cancer - Respiratory
-1360,cancer - urinary tract,8935,Cancer - Genitourinary
-1850,cor pulmonale,8979,Heart/Veins/Arteries
-1920,Cushing's syndrome,8973,Endocrine
-3670,kidney transplant,8975,Genitourinary
-4130,mastoiditis,8969,Ear Disease and Other Sense Organs
-8933,Cancer - Endocrine,8933,Cancer - Endocrine
-8965,Cyst/Benign Growth - Respiratory,8965,Cyst/Benign Growth - Respiratory
-8971,Embolism/Infarction - Heart/Veins/Arteries,8971,Embolism/Infarction - Heart/Veins/Arteries
-249476,Cancer - Musculoskeletal - Neck/Upper Back (Cervical Spine),249476,Cancer - Musculoskeletal - Neck/Upper Back (Cervical Spine)
-40,"abscess, brain",9007,Neurological other System
-270,amputation - leg(s),8990,Musculoskeletal - Amputations
-530,ASHD,8979,Heart/Veins/Arteries
-800,brain thrombosis,8972,Embolism/Infarction - Neurological other System
-940,calculus - bladder,8975,Genitourinary
-1060,cancer - gall bladder,8932,Cancer - Digestive
-1080,cancer - gum,8931,Cancer - Dental and Oral
-1160,cancer - ovarian,8937,Cancer - Gynecological
-1330,cancer - ureters,8935,Cancer - Genitourinary
-1370,cancer - urogenital system (except prostate),8935,Cancer - Genitourinary
-1670,choroiditis,8974,Eye (Vision)
-1760,coccidiodomycosis,9012,Respiratory
-1880,coronary accident,8979,Heart/Veins/Arteries
-2180,dysentery,8968,Digestive
-2330,"encephalitis, lethargica residuals",9007,Neurological other System
-2420,erythematosus lupus,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-3890,Lou Gehrig's disease,9007,Neurological other System
-3970,"lupus, discoid",8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-5060,palsy,9007,Neurological other System
-5330,plague,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-5430,posterior subcapsular cataracts,8974,Eye (Vision)
-5660,rheumatic fever,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-5730,salpingitis,8978,Gynecological
-8928,Arm Condition - Heart/Veins/Arteries,8928,Arm Condition - Heart/Veins/Arteries
-8941,Cancer - Musculoskeletal and Muscle Injuries,8941,Cancer - Musculoskeletal and Muscle Injuries
-8952,Cyst/Benign Growth - Musculoskeletal - Ankle,8952,Cyst/Benign Growth - Musculoskeletal - Ankle
-8964,Cyst/Benign Growth - Neurological other System,8964,Cyst/Benign Growth - Neurological other System
-8972,Embolism/Infarction - Neurological other System,8972,Embolism/Infarction - Neurological other System
-8981,Hemic and Lymphatic,8981,Hemic and Lymphatic
-9008,Pension,9008,Pension
-9015,Service Connected Death,9015,Service Connected Death
-9019,Spina Bifida,9019,Spina Bifida
-249479,Cyst/Benign Growth - Heart/Veins/Arteries,249479,Cyst/Benign Growth - Heart/Veins/Arteries
-80,acromegaly,8973,Endocrine
-90,acute nonlymphocytic leukemia,8939,Cancer - Hemic and Lymphatic
-160,AIDS,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-200,alveolar abscesses,8967,Dental and Oral
-210,amebiasis,8968,Digestive
-240,"amputation - arm, forearm, hand",8990,Musculoskeletal - Amputations
-470,arteriosclerosis obliterans,8979,Heart/Veins/Arteries
-660,beriberi (including beriberi heart disease),8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-690,blackwater fever,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-740,Boeck's disease,9012,Respiratory
-880,Buerger's disease,8979,Heart/Veins/Arteries
-890,bulbar palsy,9007,Neurological other System
-930,Caisson disease,8930,Caisson
-980,cancer - bile ducts,8932,Cancer - Digestive
-1020,cancer - bronchus,1230,Cancer - Respiratory
-1260,cancer - small intestine,8932,Cancer - Digestive
-1340,cancer - urethra,8935,Cancer - Genitourinary
-1630,cholangitis,8968,Digestive
-1650,cholera,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-1660,choriocarcinoma,8937,Cancer - Gynecological
-1710,chronic organic brain syndrome,9007,Neurological other System
-1820,comedocarcinoma,8937,Cancer - Gynecological
-1870,coronary,8979,Heart/Veins/Arteries
-1940,cyclitis,8974,Eye (Vision)
-2150,dracontiasis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-2160,dracunculiasis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-2310,"embolism, brain",8972,Embolism/Infarction - Neurological other System
-2340,endocarditis,8979,Heart/Veins/Arteries
-2380,enucleation,8974,Eye (Vision)
-2580,filariasis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-2900,glomerulonephritis,8975,Genitourinary
-3110,Hansen's disease,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-3210,helminthiasis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-3280,hepatocarcinoma,8932,Cancer - Digestive
-3290,hepatoma,8932,Cancer - Digestive
-3430,human immunodeficiency virus,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-3620,kala-azar,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-3750,laryngectomy,9012,Respiratory
-3820,leprosy,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-3840,leukosarcoma,8939,Cancer - Hemic and Lymphatic
-3860,loiasis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-4040,lymphosarcoma,8939,Cancer - Hemic and Lymphatic
-4270,mesotheliomas of peritoneum,8932,Cancer - Digestive
-5070,"palsy, bulbar",9007,Neurological other System
-5170,pellagra,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-5490,psychomotor epilepsy,9007,Neurological other System
-5580,removal of kidneys,8975,Genitourinary
-6160,schistosomiasis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-6210,scleritis,8974,Eye (Vision)
-6800,"thrombosis, brain",8972,Embolism/Infarction - Neurological other System
-7270,yellow fever,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
-8922,Adhesions - Heart/Veins/Arteries,8922,Adhesions - Heart/Veins/Arteries
-8923,Adhesions - Neurological other System,8923,Adhesions - Neurological other System
-8924,Adhesions - Respiratory,8924,Adhesions - Respiratory
-8930,Caisson,8930,Caisson
-8931,Cancer - Dental and Oral,8931,Cancer - Dental and Oral
-8932,Cancer - Digestive,8932,Cancer - Digestive
-8934,Cancer - Eye (Vision),8934,Cancer - Eye (Vision)
-8938,Cancer - Heart/Veins/Arteries,8938,Cancer - Heart/Veins/Arteries
-8940,Cancer - Musculoskeletal - Other,8940,Cancer - Musculoskeletal - Other
-8942,Cancer - Neurological other System,8942,Cancer - Neurological other System
-8983,Hemorrhage - Neurological other System,8983,Hemorrhage - Neurological other System
-8990,Musculoskeletal - Amputations,8990,Musculoskeletal - Amputations
-249468,Cancer - Ear Disease and Other Sense Organs,249468,Cancer - Ear Disease and Other Sense Organs
-249469,Cancer - Musculoskeletal - Ankle,249469,Cancer - Musculoskeletal - Ankle
-249470,Cancer - Musculoskeletal - Elbow,249470,Cancer - Musculoskeletal - Elbow
-249471,Cancer - Musculoskeletal - Hand,249471,Cancer - Musculoskeletal - Hand
-249472,Cancer - Musculoskeletal - Foot,249472,Cancer - Musculoskeletal - Foot
-249473,Cancer - Musculoskeletal - Knee,249473,Cancer - Musculoskeletal - Knee
-249474,Cancer - Musculoskeletal - Hip,249474,Cancer - Musculoskeletal - Hip
-249477,Cancer - Musculoskeletal - Shoulder,249477,Cancer - Musculoskeletal - Shoulder
-249478,Cancer - Musculoskeletal - Wrist,249478,Cancer - Musculoskeletal - Wrist
+VAGOV_CNTNTN_CLSFCN_ID,VAGOV_CNTNTN_CLSFCN_TXT,CNTNTN_CLSFCN_ID,CNTNTN_CLSFCN_TXT,Karla Notes,Shall we include in first classifier for existing dropdown items?
+80,acromegaly,8973,Endocrine,,
+90,acute nonlymphocytic leukemia,8939,Cancer - Hemic and Lymphatic,,
+6850,tinnitus,3140,Hearing Loss,,
+6440,sleep apnea,9012,Respiratory,,
+410,anxiety condition,8989,Mental Disorders,,
+3140,Hearing Loss,3140,Hearing Loss,,
+2030,depression,8989,Mental Disorders,,
+4300,migraine,9007,Neurological other System,,
+3460,hypertension,8979,Heart/Veins/Arteries,,
+3700,"knee condition, left",8997,Musculoskeletal - Knee,,
+3710,"knee condition, right",8997,Musculoskeletal - Knee,,
+2850,GERD,8968,Digestive,,
+6420,sinusitis,9012,Respiratory,,
+2680,foot pain,8994,Musculoskeletal - Foot,,
+3570,irritable bowel syndrome,8968,Digestive,,
+8998,Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine),8998,Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine),,
+3370,high blood pressure,8979,Heart/Veins/Arteries,,
+3690,"knee condition, bilateral",8997,Musculoskeletal - Knee,,
+5690,rhinitis,9012,Respiratory,,
+9010,Post Traumatic Stress Disorder (PTSD) Combat - Mental Disorders,9010,Post Traumatic Stress Disorder (PTSD) Combat - Mental Disorders,,
+5340,plantar fasciitis,8994,Musculoskeletal - Foot,,
+6310,"shoulder condition, right",9002,Musculoskeletal - Shoulder,,
+4050,major depression,8989,Mental Disorders,,
+540,asthma,9012,Respiratory,,
+7290,PTSD personal trauma,9011,Post Traumatic Stress Disorder (PTSD) Personal Trauma - Mental Disorders,,
+490,arthritis,8992,Musculoskeletal - Arthritis,,
+5710,ringing in ears,3140,Hearing Loss,,
+6300,"shoulder condition, left",9002,Musculoskeletal - Shoulder,,
+8999,Musculoskeletal - Neck/Upper Back (Cervical Spine),8999,Musculoskeletal - Neck/Upper Back (Cervical Spine),,
+9011,Post Traumatic Stress Disorder (PTSD) Personal Trauma - Mental Disorders,9011,Post Traumatic Stress Disorder (PTSD) Personal Trauma - Mental Disorders,This one is on column 7,This is an actual classification
+2600,"flatfoot, bilateral",8994,Musculoskeletal - Foot,,
+2220,ears-ringing,3140,Hearing Loss,,
+380,"ankle condition, right",8991,Musculoskeletal - Ankle,,
+6270,shin splints,8997,Musculoskeletal - Knee,,
+1680,chronic fatigue syndrome,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+3380,"hip condition, bilateral",8996,Musculoskeletal - Hip,,
+3400,"hip condition, right",8996,Musculoskeletal - Hip,,
+8974,Eye (Vision),8974,Eye (Vision),,
+370,"ankle condition, left",8991,Musculoskeletal - Ankle,,
+1420,carpal tunnel syndrome,9006,Neurological - Cranial/Peripheral Nerves,,
+9020,Traumatic Brain Injury,9020,Traumatic Brain Injury,,
+6290,"shoulder condition, bilateral",9002,Musculoskeletal - Shoulder,,
+3390,"hip condition, left",8996,Musculoskeletal - Hip,,
+360,"ankle condition, bilateral",8991,Musculoskeletal - Ankle,,
+3260,hemorrhoids,8968,Digestive,,
+180,allergies,9012,Respiratory,,
+170,alcohol abuse,8989,Mental Disorders,,
+6410,sinus condition,9012,Respiratory,,
+3730,knee strain,8997,Musculoskeletal - Knee,,
+3920,low back strain,8998,Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine),,
+2060,diabetes,8973,Endocrine,,
+7230,"wrist condition, right",9004,Musculoskeletal - Wrist,,
+860,bronchitis,9012,Respiratory,,
+570,athlete's foot,9016,Skin,,
+2650,"foot condition, bilateral",8994,Musculoskeletal - Foot,,
+1990,degenerative arthritis,8992,Musculoskeletal - Arthritis,,
+6340,shoulder strain,9002,Musculoskeletal - Shoulder,,
+2810,gastrointestinal problems,8968,Digestive,,
+3950,lung condition,9012,Respiratory,,
+3170,heart condition,8979,Heart/Veins/Arteries,,
+2540,fibromyalgia,9007,Neurological other System,,
+7220,"wrist condition, left",9004,Musculoskeletal - Wrist,,
+7210,"wrist condition, bilateral",9004,Musculoskeletal - Wrist,,
+390,ankle sprain,8991,Musculoskeletal - Ankle,,
+2270,"elbow condition, right",8993,Musculoskeletal - Elbow,,
+3100,"hand condition, right",8995,Musculoskeletal - Hand,,
+670,bipolar disorder,8989,Mental Disorders,,
+3590,jaw condition,8967,Dental and Oral,,
+3080,"hand condition, bilateral",8995,Musculoskeletal - Hand,,
+8967,Dental and Oral,8967,Dental and Oral,,
+2670,"foot condition, right",8994,Musculoskeletal - Foot,,
+2660,"foot condition, left",8994,Musculoskeletal - Foot,,
+6510,stomach condition,8968,Digestive,,
+2250,"elbow condition, bilateral",8993,Musculoskeletal - Elbow,,
+1200,cancer - prostate,8935,Cancer - Genitourinary,,
+2260,"elbow condition, left",8993,Musculoskeletal - Elbow,,
+8997,Musculoskeletal - Knee,8997,Musculoskeletal - Knee,,
+3480,hypothyroidism,8973,Endocrine,,
+9014,"Scars (Head, Face, Or Neck)",9014,"Scars (Head, Face, Or Neck)",,
+3090,"hand condition, left",8995,Musculoskeletal - Hand,,
+4240,mental disorder,8989,Mental Disorders,,
+2440,"eye condition, bilateral",8974,Eye (Vision),,
+2610,"flatfoot, left",8994,Musculoskeletal - Foot,,
+9012,Respiratory,9012,Respiratory,"This is a symptom, it can be releated to chest or sinuses more info is needed",This is an actual classification
+1700,chronic obstructive pulmonary disease,9012,Respiratory,,
+1550,cervical strain,8999,Musculoskeletal - Neck/Upper Back (Cervical Spine),,
+2620,"flatfoot, right",8994,Musculoskeletal - Foot,,
+3150,"hearing loss, sensorineural",3140,Hearing Loss,,
+9002,Musculoskeletal - Shoulder,9002,Musculoskeletal - Shoulder,,
+3000,gout,8992,Musculoskeletal - Arthritis,,
+6880,tooth condition,8967,Dental and Oral,,
+150,agoraphobia,8989,Mental Disorders,,
+7110,vision,8974,Eye (Vision),Need more info than just vision,I would classify even though this suggestion should be removed later on
+8989,Mental Disorders,8989,Mental Disorders,,
+9013,Scars (Extremities and Trunk),9013,Scars (Extremities and Trunk),,
+2790,gastritis,8968,Digestive,,
+3910,low back sprain,8998,Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine),,
+3720,knee sprain,8997,Musculoskeletal - Knee,Would be beneficial to have left or right,Right suggested classification?
+5610,Respiratory complaints,9012,Respiratory,,
+6990,Unemployability,6990,Unemployability,,
+400,ankle strain,8991,Musculoskeletal - Ankle,Would be beneficial to have left or right,Right suggested classification?
+8996,Musculoskeletal - Hip,8996,Musculoskeletal - Hip,,
+3660,kidney stone(s),8975,Genitourinary,,
+700,bladder condition,8975,Genitourinary,,
+780,bowel condition,8968,Digestive,,
+3640,kidney disease,8975,Genitourinary,,
+510,"arthritis, due to trauma",8992,Musculoskeletal - Arthritis,Would be beneficial to have left or right,Right suggested classification?
+2230,eating disorder,8970,Eating Disorders,,
+10,abnormal heart,8979,Heart/Veins/Arteries,,
+3320,"hernia, hiatal",8968,Digestive,,
+7250,wrist strain,9004,Musculoskeletal - Wrist,,
+8991,Musculoskeletal - Ankle,8991,Musculoskeletal - Ankle,,
+8976,Gulf War Unexplained Chronic Multi-Symptom Illness,8976,Gulf War Unexplained Chronic Multi-Symptom Illness,Would need more info- need a contention,This is an actual classification
+4900,"osteoarthritis, post-traumatic",8992,Musculoskeletal - Arthritis,,
+2490,"fallen arches, bilateral",8994,Musculoskeletal - Foot,,
+500,"arthritis, degenerative",8992,Musculoskeletal - Arthritis,,
+3180,heart disease,8979,Heart/Veins/Arteries,,
+2450,"eye condition, left",8974,Eye (Vision),,
+3330,"hernia, inguinal",8968,Digestive,,
+1250,Cancer - Skin,1250,Cancer - Skin,,
+6980,undiagnosed illness as a Gulf War veteran,8977,Gulf War Undiagnosed Illness,Would need more info- need a contention,Right suggested classification?
+2460,"eye condition, right",8974,Eye (Vision),,
+3850,liver condition,8968,Digestive,,
+4640,"neuropathy, peripheral",9006,Neurological - Cranial/Peripheral Nerves,,
+5570,rectal bleeding,8968,Digestive,,
+6460,"smell, loss of sense of",8969,Ear Disease and Other Sense Organs,,
+6820,thyroid condition,8973,Endocrine,,
+2320,emphysema,9012,Respiratory,,
+4220,menstrual disorders,8978,Gynecological,Would need more info- need a contention,Right suggested classification?
+6330,shoulder sprain,9002,Musculoskeletal - Shoulder,,
+2430,esophageal condition,8968,Digestive,,
+2800,gastroenteritis,8968,Digestive,,
+8919,hip replacement,8996,Musculoskeletal - Hip,,
+5270,personality disorder,8989,Mental Disorders,,
+5740,sarcoidosis,9012,Respiratory,,
+5160,Parkinson's disease,9007,Neurological other System,,
+8992,Musculoskeletal - Arthritis,8992,Musculoskeletal - Arthritis,,
+2290,elbow strain,8993,Musculoskeletal - Elbow,,
+2130,diverticulitis,8968,Digestive,,
+4210,meniere's disease,8969,Ear Disease and Other Sense Organs,,
+1900,coronary artery disease,8979,Heart/Veins/Arteries,,
+330,"anemia, primary",8981,Hemic and Lymphatic,,
+3500,hysterectomy,8978,Gynecological,,
+8970,Eating Disorders,8970,Eating Disorders,,
+2080,diabetes mellitus,8973,Endocrine,,
+5120,paranoid reaction,8989,Mental Disorders,,
+5390,pneumonia,9012,Respiratory,,
+8966,Cyst/Benign Growth - Skin,8966,Cyst/Benign Growth - Skin,,
+9016,Skin,9016,Skin,,
+7240,wrist sprain,9004,Musculoskeletal - Wrist,,
+3050,"gums, sore",8967,Dental and Oral,,
+6840,tinea pedis,9016,Skin,,
+5450,primary anemia,8981,Hemic and Lymphatic,,
+3470,hyperthyroidism,8973,Endocrine,,
+6970,ulcer condition,8968,Digestive,,
+8977,Gulf War Undiagnosed Illness,8977,Gulf War Undiagnosed Illness,,
+1840,conjunctivitis,8974,Eye (Vision),,
+2360,endometriosis,8978,Gynecological,,
+8968,Digestive,8968,Digestive,,
+8995,Musculoskeletal - Hand,8995,Musculoskeletal - Hand,,
+1830,congestive heart failure,8979,Heart/Veins/Arteries,,
+8918,knee replacement,8997,Musculoskeletal - Knee,,
+450,arrhythmia,8979,Heart/Veins/Arteries,,
+2210,ear infection,8969,Ear Disease and Other Sense Organs,,
+8993,Musculoskeletal - Elbow,8993,Musculoskeletal - Elbow,,
+8994,Musculoskeletal - Foot,8994,Musculoskeletal - Foot,,
+1090,cancer - kidney,8933,Cancer - Endocrine,,
+2010,dementia,8989,Mental Disorders,,
+2870,"glaucoma, bilateral",8974,Eye (Vision),,
+3870,loose teeth,8967,Dental and Oral,,
+4760,non-specific respiratory condition,9012,Respiratory,,
+5470,"prostate gland (injuries, infections, hypertrophy)",8975,Genitourinary,,
+9004,Musculoskeletal - Wrist,9004,Musculoskeletal - Wrist,,
+9017,Special Monthly Compensation - Aid and Attendence/Housebound,9017,Special Monthly Compensation - Aid and Attendance/Housebound,,
+9018,Special Monthly Compensation - Anatomical Loss/Loss Of Use,9018,Special Monthly Compensation - Anatomical Loss/Loss Of Use,,
+4360,muscle injury,9005,Musculoskeletal and Muscle Injuries,,
+6390,signs or symptoms involving respiratory system,9012,Respiratory,,
+8988,Leg Condition - Neurological other System,8988,Leg Condition - Neurological other System,,
+1720,chronic renal disease,8975,Genitourinary,,
+4120,manic-depressive reaction,8989,Mental Disorders,,
+5310,phobias,8989,Mental Disorders,,
+5370,pleurisy,6890,Tuberculosis,,
+6650,"taste, loss of sense of",8969,Ear Disease and Other Sense Organs,,
+1780,colitis,8968,Digestive,,
+6890,Tuberculosis,6890,Tuberculosis,,
+9005,Musculoskeletal and Muscle Injuries,9005,Musculoskeletal and Muscle Injuries,,
+1130,cancer - lung,1230,Cancer - Respiratory,,
+1040,cancer - colon,8932,Cancer - Digestive,,
+1440,cataract,8974,Eye (Vision),,
+2190,dysthymic disorder,8989,Mental Disorders,,
+520,asbestosis (asbestos disease),9012,Respiratory,,
+1300,cancer - thyroid,8933,Cancer - Endocrine,,
+3650,kidney failure,8975,Genitourinary,,
+1010,cancer - breast,8937,Cancer - Gynecological,,
+3580,irritable colon,8968,Digestive,,
+1790,"colon syndrome, irritable",8968,Digestive,,
+6170,schizophrenia,8989,Mental Disorders,,
+2470,eye disease,8974,Eye (Vision),,
+2570,"fibrosis, interstitial pulmonary",9012,Respiratory,,
+650,Bell's palsy,9007,Neurological other System,,
+1740,clavicle,9002,Musculoskeletal - Shoulder,,
+4230,mental disease,8989,Mental Disorders,,
+4030,lymphomas,8939,Cancer - Hemic and Lymphatic,,
+8987,Leg Condition - Heart/Veins/Arteries,8987,Leg Condition - Heart/Veins/Arteries,,
+350,angina,8979,Heart/Veins/Arteries,,
+3190,heart failure,8979,Heart/Veins/Arteries,,
+4680,Non-Hodgkin's lymphoma (NHL),8939,Cancer - Hemic and Lymphatic,,
+8951,Cyst/Benign Growth - Gynecological,8951,Cyst/Benign Growth - Gynecological,,
+8975,Genitourinary,8975,Genitourinary,,
+1290,cancer - testicle,8935,Cancer - Genitourinary,,
+2280,elbow sprain,8993,Musculoskeletal - Elbow,,
+5080,pancreatitis,8968,Digestive,,
+249481,Dental and Oral - Musculoskeletal,249481,Dental and Oral - Musculoskeletal,,
+7060,vaginitis,8978,Gynecological,,
+1730,cirrhosis of liver,8968,Digestive,,
+5640,"retina (scars, atrophy, or irregularities of)",8974,Eye (Vision),,
+7120,visually impaired,8974,Eye (Vision),,
+4690,non-specific digestive complaints,8968,Digestive,,
+4330,multiple sclerosis,9007,Neurological other System,,
+7000,"uterus (disease, injury, or adhesions of)",8978,Gynecological,,
+8955,Cyst/Benign Growth - Musculoskeletal - Hand,8955,Cyst/Benign Growth - Musculoskeletal - Hand,,
+1690,chronic lymphocytic leukemia,8939,Cancer - Hemic and Lymphatic,,
+2400,epilepsy,9007,Neurological other System,,
+900,burn(s),9013,Scars (Extremities and Trunk),,
+5520,psychosis,8989,Mental Disorders,,
+8962,Cyst/Benign Growth - Musculoskeletal - Wrist,8962,Cyst/Benign Growth - Musculoskeletal - Wrist,,
+5600,renal failure,8975,Genitourinary,,
+7300,hepatitis C,8968,Digestive,,
+2770,gallstone(s),8968,Digestive,,
+3350,"hernia, ventral",8968,Digestive,,
+4710,non-specific genitourinary complaints,8975,Genitourinary,,
+5000,otitis media,3140,Hearing Loss,,
+8929,Arm Condition - Neurological other System,8929,Arm Condition - Neurological other System,,
+8958,Cyst/Benign Growth - Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine),8958,Cyst/Benign Growth - Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine),,
+9006,Neurological - Cranial/Peripheral Nerves,9006,Neurological - Cranial/Peripheral Nerves,,
+2020,dental abscesses,8967,Dental and Oral,,
+2040,depressive neurosis,8989,Mental Disorders,,
+4000,Lyme disease,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+4430,"myeloma, multiple",8939,Cancer - Hemic and Lymphatic,,
+8973,Endocrine,8973,Endocrine,,
+680,Birth Defect in Child,680,Birth Defect in Child,,
+3830,leukemia,8939,Cancer - Hemic and Lymphatic,,
+4700,non-specific ear condition,8969,Ear Disease and Other Sense Organs,,
+920,CAD,8979,Heart/Veins/Arteries,,
+1890,coronary artery bypass,8979,Heart/Veins/Arteries,,
+8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+9001,Musculoskeletal - Other,9001,Musculoskeletal - Other,,
+20,abnormal mitral valve,8979,Heart/Veins/Arteries,,
+1070,cancer - gastrointestinal tract,8932,Cancer - Digestive,,
+1170,cancer - pancreas,8932,Cancer - Digestive,,
+300,amputation - toe (toes),9003,Musculoskeletal - Toe Amputations,,
+720,blindness (including light perception only),8974,Eye (Vision),,
+840,"breast condition, right",8978,Gynecological,,
+3410,HIV,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+5530,psychotic depressive reaction,8989,Mental Disorders,,
+8957,Cyst/Benign Growth - Musculoskeletal - Knee,8957,Cyst/Benign Growth - Musculoskeletal - Knee,,
+820,"breast condition, bilateral",8978,Gynecological,,
+850,bronchiectasis,9012,Respiratory,,
+5040,ovary (removal of),8978,Gynecological,,
+5680,rheumatism,8992,Musculoskeletal - Arthritis,,
+6320,shoulder replacement,9002,Musculoskeletal - Shoulder,,
+7030,uterus (removal of),8978,Gynecological,,
+7070,valvular heart disease,8979,Heart/Veins/Arteries,,
+9009,Pension - Aid and Attendance/Housebound,9009,Pension - Aid and Attendance/Housebound,,
+249482,Musculoskeletal - Bones,249482,Musculoskeletal - Bones,,
+830,"breast condition, left",8978,Gynecological,,
+6120,scapula,9002,Musculoskeletal - Shoulder,,
+8943,Cold Injury Residuals,8943,Cold Injury Residuals,,
+8959,Cyst/Benign Growth - Musculoskeletal - Neck/Upper Back (Cervical Spine),8959,Cyst/Benign Growth - Musculoskeletal - Neck/Upper Back (Cervical Spine),,
+8979,Heart/Veins/Arteries,8979,Heart/Veins/Arteries,,
+1120,cancer - liver,8932,Cancer - Digestive,,
+1140,cancer - lymph nodes,8939,Cancer - Hemic and Lymphatic,,
+5630,retina (detachment of),8974,Eye (Vision),,
+6350,sickle cell anemia,8981,Hemic and Lymphatic,,
+50,"abscess, kidney",8975,Genitourinary,,
+2890,"glaucoma, right",8974,Eye (Vision),,
+3560,iritis,8974,Eye (Vision),,
+4310,Morton's disease,8994,Musculoskeletal - Foot,,
+5190,peptic ulcer disease,8968,Digestive,,
+8926,Aneurysm - Heart/Veins/Arteries,8926,Aneurysm - Heart/Veins/Arteries,,
+1860,corneal opacities,8974,Eye (Vision),,
+3680,"kidney, removal of",8975,Genitourinary,,
+4060,malaria,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+7020,uterus (prolapse),8978,Gynecological,,
+8945,Cyst/Benign Growth - Dental and Oral,8945,Cyst/Benign Growth - Dental and Oral,,
+9000,Musculoskeletal - Osteomyelitis,9000,Musculoskeletal - Osteomyelitis,,
+250,amputation - below knee,8990,Musculoskeletal - Amputations,,
+480,arteriosclerotic heart disease,8979,Heart/Veins/Arteries,,
+2880,"glaucoma, left",8974,Eye (Vision),,
+3420,Hodgkin's disease,8939,Cancer - Hemic and Lymphatic,,
+5200,pericarditis,8979,Heart/Veins/Arteries,,
+8949,Cyst/Benign Growth - Eye (Vision),8949,Cyst/Benign Growth - Eye (Vision),,
+8978,Gynecological,8978,Gynecological,,
+249480,Cyst/Benign Growth - Hemic and Lymphatic,249480,Cyst/Benign Growth - Hemic and Lymphatic,,
+590,avitaminosis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+1000,cancer - brain,8942,Cancer - Neurological other System,,
+1310,cancer - tongue,8931,Cancer - Dental and Oral,,
+1570,CHF,8979,Heart/Veins/Arteries,,
+1640,cholecystitis,8968,Digestive,,
+1970,cystitis,8975,Genitourinary,,
+4390,myasthenia gravis,9007,Neurological other System,,
+5030,"ovary (disease, injury, or adhesions of)",8978,Gynecological,,
+5650,retinitis,8974,Eye (Vision),,
+6620,syphilis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+6780,thrombocytopenia,8981,Hemic and Lymphatic,,
+8921,Adhesions - Gynecological,8921,Adhesions - Gynecological,,
+8954,Cyst/Benign Growth - Musculoskeletal - Foot,8954,Cyst/Benign Growth - Musculoskeletal - Foot,,
+8960,Cyst/Benign Growth - Musculoskeletal - Other,8960,Cyst/Benign Growth - Musculoskeletal - Other,,
+8961,Cyst/Benign Growth - Musculoskeletal - Shoulder,8961,Cyst/Benign Growth - Musculoskeletal - Shoulder,,
+460,arteriosclerosis,8979,Heart/Veins/Arteries,,
+550,atherosclerosis,8979,Heart/Veins/Arteries,,
+4410,myelitis (a spinal cord condition),9007,Neurological other System,,
+4450,myocarditis,8979,Heart/Veins/Arteries,,
+5460,progressive muscular atrophy,9007,Neurological other System,,
+6630,syringomyelia,9007,Neurological other System,,
+6640,systemic lupus,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+8950,Cyst/Benign Growth - Genitourinary,8950,Cyst/Benign Growth - Genitourinary,,
+8980,Helpless Child,8980,Helpless Child,,
+8984,Herpes - Eye (Vision),8974,Eye (Vision),,
+9007,Neurological other System,9007,Neurological other System,,
+60,"abscess, liver",8968,Digestive,,
+100,Addison's disease,8973,Endocrine,,
+1450,"cataracts, posterior subcapsular",8974,Eye (Vision),,
+2120,discoid lupus,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+3630,keratitis,8974,Eye (Vision),,
+3740,labyrinthitis,8969,Ear Disease and Other Sense Organs,,
+3990,"lupus, systemic",8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+4420,myeloma,8939,Cancer - Hemic and Lymphatic,,
+5010,otosclerosis,3140,Hearing Loss,,
+5140,parathyroid adenoma,8973,Endocrine,,
+5540,psychotic reaction,8989,Mental Disorders,,
+8925,Administrative Issue,8925,Administrative Issue,,
+8948,Cyst/Benign Growth - Endocrine,8948,Cyst/Benign Growth - Endocrine,,
+8953,Cyst/Benign Growth - Musculoskeletal - Elbow,8953,Cyst/Benign Growth - Musculoskeletal - Elbow,,
+8963,Cyst/Benign Growth - Musculoskeletal and Muscle Injuries,8963,Cyst/Benign Growth - Musculoskeletal and Muscle Injuries,,
+8982,Hemorrhage - Eye (Vision),8982,Hemorrhage - Eye (Vision),,
+260,amputation - foot (feet),8990,Musculoskeletal - Amputations,,
+290,amputation - single finger,8990,Musculoskeletal - Amputations,,
+790,brain hemorrhage,8972,Embolism/Infarction - Neurological other System,,
+3010,grand mal epilepsy,9007,Neurological other System,,
+3310,"hernia, femoral",8968,Digestive,,
+4010,lymphogranulomatosis,8939,Cancer - Hemic and Lymphatic,,
+4020,Lymphoma - except Hodgkin's disease,8939,Cancer - Hemic and Lymphatic,,
+4540,nephritis,8975,Genitourinary,,
+7150,vulvovaginitis,8978,Gynecological,,
+8944,Competency,8944,Competency,,
+8947,Cyst/Benign Growth - Ear Disease and Other Sense Organs,8947,Cyst/Benign Growth - Ear Disease and Other Sense Organs,,
+9021,"Wound, Bullet/Shell Fragment",9021,"Wound, Bullet/Shell Fragment",,
+230,amputation - above knee,8990,Musculoskeletal - Amputations,,
+310,amyotrophic lateral sclerosis,9007,Neurological other System,,
+580,"atrophy, progressive muscular",9007,Neurological other System,,
+1100,cancer - larynx,1230,Cancer - Respiratory,,
+1110,cancer - lip,8931,Cancer - Dental and Oral,,
+1560,cervicitis,8978,Gynecological,,
+2070,diabetes insipidus,8973,Endocrine,,
+5280,petit mal epilepsy,9007,Neurological other System,,
+5510,psychoses,8989,Mental Disorders,,
+7010,uterus (displacement of),8978,Gynecological,,
+7040,uveitis,8974,Eye (Vision),,
+8920,Adhesions - Digestive,8920,Adhesions - Digestive,,
+8927,Aneurysm - Neurological other System,8927,Aneurysm - Neurological other System,,
+8937,Cancer - Gynecological,8937,Cancer - Gynecological,,
+8939,Cancer - Hemic and Lymphatic,8939,Cancer - Hemic and Lymphatic,,
+8946,Cyst/Benign Growth - Digestive,8946,Cyst/Benign Growth - Digestive,,
+8956,Cyst/Benign Growth - Musculoskeletal - Hip,8956,Cyst/Benign Growth - Musculoskeletal - Hip,,
+8969,Ear Disease and Other Sense Organs,8969,Ear Disease and Other Sense Organs,,
+9003,Musculoskeletal - Toe Amputations,9003,Musculoskeletal - Toe Amputations,,
+249475,Cancer - Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine),249475,Cancer - Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine),,
+280,amputation - multiple fingers,8990,Musculoskeletal - Amputations,,
+710,bladder stone(s),8975,Genitourinary,,
+1210,cancer - rectum,8932,Cancer - Digestive,,
+1230,Cancer - Respiratory,1230,Cancer - Respiratory,,
+1280,cancer - stomach,8932,Cancer - Digestive,,
+1320,cancer - trachea,1230,Cancer - Respiratory,,
+1360,cancer - urinary tract,8935,Cancer - Genitourinary,,
+1850,cor pulmonale,8979,Heart/Veins/Arteries,,
+1920,Cushing's syndrome,8973,Endocrine,,
+3670,kidney transplant,8975,Genitourinary,,
+4130,mastoiditis,8969,Ear Disease and Other Sense Organs,,
+8933,Cancer - Endocrine,8933,Cancer - Endocrine,,
+8965,Cyst/Benign Growth - Respiratory,8965,Cyst/Benign Growth - Respiratory,,
+8971,Embolism/Infarction - Heart/Veins/Arteries,8971,Embolism/Infarction - Heart/Veins/Arteries,,
+249476,Cancer - Musculoskeletal - Neck/Upper Back (Cervical Spine),249476,Cancer - Musculoskeletal - Neck/Upper Back (Cervical Spine),,
+40,"abscess, brain",9007,Neurological other System,,
+270,amputation - leg(s),8990,Musculoskeletal - Amputations,,
+530,ASHD,8979,Heart/Veins/Arteries,,
+800,brain thrombosis,8972,Embolism/Infarction - Neurological other System,,
+940,calculus - bladder,8975,Genitourinary,,
+1060,cancer - gall bladder,8932,Cancer - Digestive,,
+1080,cancer - gum,8931,Cancer - Dental and Oral,,
+1160,cancer - ovarian,8937,Cancer - Gynecological,,
+1330,cancer - ureters,8935,Cancer - Genitourinary,,
+1370,cancer - urogenital system (except prostate),8935,Cancer - Genitourinary,,
+1670,choroiditis,8974,Eye (Vision),,
+1760,coccidiodomycosis,9012,Respiratory,,
+1880,coronary accident,8979,Heart/Veins/Arteries,,
+2180,dysentery,8968,Digestive,,
+2330,"encephalitis, lethargica residuals",9007,Neurological other System,,
+2420,erythematosus lupus,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+3890,Lou Gehrig's disease,9007,Neurological other System,,
+3970,"lupus, discoid",8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+5060,palsy,9007,Neurological other System,,
+5330,plague,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+5430,posterior subcapsular cataracts,8974,Eye (Vision),,
+5660,rheumatic fever,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+5730,salpingitis,8978,Gynecological,,
+8928,Arm Condition - Heart/Veins/Arteries,8928,Arm Condition - Heart/Veins/Arteries,,
+8941,Cancer - Musculoskeletal and Muscle Injuries,8941,Cancer - Musculoskeletal and Muscle Injuries,,
+8952,Cyst/Benign Growth - Musculoskeletal - Ankle,8952,Cyst/Benign Growth - Musculoskeletal - Ankle,,
+8964,Cyst/Benign Growth - Neurological other System,8964,Cyst/Benign Growth - Neurological other System,,
+8972,Embolism/Infarction - Neurological other System,8972,Embolism/Infarction - Neurological other System,,
+8981,Hemic and Lymphatic,8981,Hemic and Lymphatic,,
+9008,Pension,9008,Pension,,
+9015,Service Connected Death,9015,Service Connected Death,,
+9019,Spina Bifida,9019,Spina Bifida,,
+249479,Cyst/Benign Growth - Heart/Veins/Arteries,249479,Cyst/Benign Growth - Heart/Veins/Arteries,,
+160,AIDS,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+200,alveolar abscesses,8967,Dental and Oral,,
+210,amebiasis,8968,Digestive,,
+240,"amputation - arm, forearm, hand",8990,Musculoskeletal - Amputations,,
+470,arteriosclerosis obliterans,8979,Heart/Veins/Arteries,,
+660,beriberi (including beriberi heart disease),8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+690,blackwater fever,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+740,Boeck's disease,9012,Respiratory,,
+880,Buerger's disease,8979,Heart/Veins/Arteries,,
+890,bulbar palsy,9007,Neurological other System,,
+930,Caisson disease,8930,Caisson,,
+980,cancer - bile ducts,8932,Cancer - Digestive,,
+1020,cancer - bronchus,1230,Cancer - Respiratory,,
+1260,cancer - small intestine,8932,Cancer - Digestive,,
+1340,cancer - urethra,8935,Cancer - Genitourinary,,
+1630,cholangitis,8968,Digestive,,
+1650,cholera,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+1660,choriocarcinoma,8937,Cancer - Gynecological,,
+1710,chronic organic brain syndrome,9007,Neurological other System,,
+1820,comedocarcinoma,8937,Cancer - Gynecological,,
+1870,coronary,8979,Heart/Veins/Arteries,,
+1940,cyclitis,8974,Eye (Vision),,
+2150,dracontiasis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+2160,dracunculiasis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+2310,"embolism, brain",8972,Embolism/Infarction - Neurological other System,,
+2340,endocarditis,8979,Heart/Veins/Arteries,,
+2380,enucleation,8974,Eye (Vision),,
+2580,filariasis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+2900,glomerulonephritis,8975,Genitourinary,,
+3110,Hansen's disease,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+3210,helminthiasis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+3280,hepatocarcinoma,8932,Cancer - Digestive,,
+3290,hepatoma,8932,Cancer - Digestive,,
+3430,human immunodeficiency virus,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+3620,kala-azar,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+3750,laryngectomy,9012,Respiratory,,
+3820,leprosy,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+3840,leukosarcoma,8939,Cancer - Hemic and Lymphatic,,
+3860,loiasis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+4040,lymphosarcoma,8939,Cancer - Hemic and Lymphatic,,
+4270,mesotheliomas of peritoneum,8932,Cancer - Digestive,,
+5070,"palsy, bulbar",9007,Neurological other System,,
+5170,pellagra,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+5490,psychomotor epilepsy,9007,Neurological other System,,
+5580,removal of kidneys,8975,Genitourinary,,
+6160,schistosomiasis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+6210,scleritis,8974,Eye (Vision),,
+6800,"thrombosis, brain",8972,Embolism/Infarction - Neurological other System,,
+7270,yellow fever,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+8876,filariasis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+8916,aids,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",,
+8922,Adhesions - Heart/Veins/Arteries,8922,Adhesions - Heart/Veins/Arteries,,
+8923,Adhesions - Neurological other System,8923,Adhesions - Neurological other System,,
+8924,Adhesions - Respiratory,8924,Adhesions - Respiratory,,
+8930,Caisson,8930,Caisson,,
+8931,Cancer - Dental and Oral,8931,Cancer - Dental and Oral,,
+8932,Cancer - Digestive,8932,Cancer - Digestive,,
+8934,Cancer - Eye (Vision),8934,Cancer - Eye (Vision),,
+8935,Cancer - Genitourinary,8935,Cancer - Genitourinary,,
+8938,Cancer - Heart/Veins/Arteries,8938,Cancer - Heart/Veins/Arteries,,
+8940,Cancer - Musculoskeletal - Other,8940,Cancer - Musculoskeletal - Other,,
+8942,Cancer - Neurological other System,8942,Cancer - Neurological other System,,
+8983,Hemorrhage - Neurological other System,8983,Hemorrhage - Neurological other System,,
+8990,Musculoskeletal - Amputations,8990,Musculoskeletal - Amputations,,
+249468,Cancer - Ear Disease and Other Sense Organs,249468,Cancer - Ear Disease and Other Sense Organs,,
+249469,Cancer - Musculoskeletal - Ankle,249469,Cancer - Musculoskeletal - Ankle,,
+249470,Cancer - Musculoskeletal - Elbow,249470,Cancer - Musculoskeletal - Elbow,,
+249471,Cancer - Musculoskeletal - Hand,249471,Cancer - Musculoskeletal - Hand,,
+249472,Cancer - Musculoskeletal - Foot,249472,Cancer - Musculoskeletal - Foot,,
+249473,Cancer - Musculoskeletal - Knee,249473,Cancer - Musculoskeletal - Knee,,
+249474,Cancer - Musculoskeletal - Hip,249474,Cancer - Musculoskeletal - Hip,,
+249477,Cancer - Musculoskeletal - Shoulder,249477,Cancer - Musculoskeletal - Shoulder,,
+249478,Cancer - Musculoskeletal - Wrist,249478,Cancer - Musculoskeletal - Wrist,,
