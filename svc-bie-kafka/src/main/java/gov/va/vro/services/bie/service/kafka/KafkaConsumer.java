@@ -16,29 +16,12 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import java.util.Set;
-
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class KafkaConsumer {
   private final AmqpMessageSender amqpMessageSender;
   private final BieProperties bieProperties;
-  private final String KEY_DIAGNOSTIC_TYPE_CODE = "DiagnosticTypeCode";
-  private final String KEY_CLAIM_ID = "ClaimId";
-  private final String KEY_CONTENTION_ID = "ContentionId";
-  private final String KEY_CONTENTION_CLASSIFICATION_NAME = "ContentionClassificationName";
-  private final String KEY_CONTENTION_TYPE_CODE = "ContentionTypeCode";
-  private final String KEY_EVENT_TIME = "EventTime";
-  private final String[] INCLUDED_FIELDS =
-      new String[] {
-        KEY_DIAGNOSTIC_TYPE_CODE,
-        KEY_CLAIM_ID,
-        KEY_CONTENTION_ID,
-        KEY_CONTENTION_CLASSIFICATION_NAME,
-        KEY_CONTENTION_TYPE_CODE,
-        KEY_EVENT_TIME
-      };
 
   @KafkaListener(topics = "#{bieProperties.topicNames()}")
   public void consume(ConsumerRecord<String, Object> record) {
@@ -74,22 +57,13 @@ public class KafkaConsumer {
   }
 
   private BieMessagePayload handleGenericRecord(ConsumerRecord<String, Object> record) {
+    GenericRecord messageValue = (GenericRecord) record.value();
+    String KEY_CONTENTION_CLASSIFICATION_NAME = "ContentionClassificationName";
     String KEY_DIAGNOSTIC_TYPE_CODE = "DiagnosticTypeCode";
     String KEY_CLAIM_ID = "ClaimId";
     String KEY_CONTENTION_ID = "ContentionId";
-    String KEY_CONTENTION_CLASSIFICATION_NAME = "ContentionClassificationName";
     String KEY_CONTENTION_TYPE_CODE = "ContentionTypeCode";
     String KEY_EVENT_TIME = "EventTime";
-
-    GenericRecord messageValue = (GenericRecord) record.value();
-    final Set<String> keysToRemove =
-        Set.of(
-            KEY_CLAIM_ID,
-            KEY_CONTENTION_ID,
-            KEY_CONTENTION_CLASSIFICATION_NAME,
-            KEY_CONTENTION_TYPE_CODE,
-            KEY_DIAGNOSTIC_TYPE_CODE,
-            KEY_EVENT_TIME);
 
     return BieMessagePayload.builder()
         .eventType(ContentionEvent.valueOf(mapTopicToEvent(record.topic()).toString()))
