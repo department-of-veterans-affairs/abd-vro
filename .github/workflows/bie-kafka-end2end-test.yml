@@ -9,7 +9,6 @@ on:
 
 env:
   COMPOSE_PROFILES: 'kafka'
-  # Maps to the value of the BieKafkaApplicationTest run by ./gradlew :svc-bie-kafka:integrationTest
   VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"
 jobs:
   integration-test:
