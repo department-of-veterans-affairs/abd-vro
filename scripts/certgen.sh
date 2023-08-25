@@ -48,7 +48,7 @@ export TRUSTSTORE_PWD=$(generate_password)
 
 # Delete temporary files ( if exist ) to avoid issues when re-running script
 # keeping them will result in password mismatch error. Its safe to delete as its recreated
-rm -rf bip.truststore.jks keystore.p12 bip.truststore.p12 passwd output.json
+rm -f bip.truststore.jks keystore.p12 bip.truststore.p12 passwd output.json
  
 echo "Key Store pwd : $KEYSTORE_PWD"
 echo "Trust Store pwd: $TRUSTSTORE_PWD"
