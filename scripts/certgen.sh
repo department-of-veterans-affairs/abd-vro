@@ -45,6 +45,9 @@ generate_password() {
 
 export KEYSTORE_PWD=$(generate_password)
 export TRUSTSTORE_PWD=$(generate_password)
+
+# Delete temporary files ( if exist ) to avoid issues when re-running script
+# keeping them will result in password mismatch error. Its safe to delete as its recreated
 rm -rf bip.truststore.jks keystore.p12 bip.truststore.p12 passwd output.json
  
 echo "Key Store pwd : $KEYSTORE_PWD"
@@ -71,5 +74,3 @@ bip_truststore=$(cat bip.truststore.p12 | base64 | tr -d '\n')
 
 # Create the JSON file
 echo -e "{\n\"BIE_KAFKA_KEYSTORE_INBASE64\": \"$keystore\", \n\"BIE_KAFKA_KEYSTORE_PASSWORD\": \"$KEYSTORE_PWD\", \n\"BIE_KAFKA_TRUSTSTORE_INBASE64\": \"$bip_truststore\", \n\"BIE_KAFKA_TRUSTSTORE_PASSWORD\": \"$TRUSTSTORE_PWD\"\n}" > output.json
-
-rm -rf bip.truststore.jks
