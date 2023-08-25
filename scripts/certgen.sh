@@ -36,8 +36,7 @@ generate_password() {
     all_chars="${upper}${lower}${numbers}${special}"
 
     # Generate a random password of length 15 using openssl
-    password=$(openssl rand -base64 20 | tr -dc "$all_chars" | head -c 16)
-    echo "$password"
+    openssl rand -base64 20 | tr -dc "$all_chars" | head -c 16
 }
 
 export KEYSTORE_PWD=$(generate_password)
