@@ -11,11 +11,9 @@ spec:
     metadata:
       labels: {{- toYaml .Values.labels | nindent 8 }}
         sidecar.istio.io/inject: "false"
-      annotations:
-        {{- include "vro.annotations.pod" . | nindent 8 }}
     spec:
       containers:
-        - name: awscli{{ include "vro.containerSuffix" . }}
+        - name: awscli
           image: bitnami/aws-cli:{{ .Values.imageTag }}
           resources:
             requests:
