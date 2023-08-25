@@ -50,7 +50,6 @@ echo "Trust Store pwd: $TRUSTSTORE_PWD"
 echo "Key Store pwd : $KEYSTORE_PWD" > passwd 
 echo "Trust Store pwd: $TRUSTSTORE_PWD" >> passwd 
 
-# -storepass env:KEYSTORE_PASSWORD
 openssl pkcs12 -export -in $2 -inkey $3 -out keystore.p12 -name kafka-keystore-$4-$1 -CAfile VACACerts.pem -caname root -passout env:KEYSTORE_PWD
 
 keytool -importkeystore -srckeystore keystore.p12 -srcstoretype pkcs12 -destkeystore bip.truststore.jks -deststoretype JKS -srcstorepass $KEYSTORE_PWD -deststorepass $TRUSTSTORE_PWD
