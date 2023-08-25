@@ -23,7 +23,6 @@
 #    $3 for BIE  provided key
 #    $4 Kafka env prefix Example, dev,ivv,pr,pp
 # 
-#    Additional information is provided in https://github.com/department-of-veterans-affairs/abd-vro-internal/wiki/VRO-Secrets
 # - ----
 # Function to generate a random password
 generate_password() {
