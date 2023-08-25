@@ -1,7 +1,7 @@
 #!/bin/bash
 # -----
-# Purpose: This Script is used to Generate BIE kafa Compatible Base64 Encoded
-#   Certificate String. This Script also generates two passwords truststore and keystore passwords
+# Purpose: This script is used to Generate BIE kafka Compatible Base64 Encoded
+#   certificate string. This script also generates two passwords truststore and keystore passwords
 #
 # Output: Output of this script is output.json. 
 #   Output.json Contains 4 key value pairs which are then uploaded to vault
@@ -18,13 +18,17 @@
 #       VA-Internal-S2-ICA11.cer 
 #       VA-Internal-S2-RCA2.cer
 # Input: 
-#    $1 for Environment, Example dev/qa/prod
-#    $2 for BIE  provided Cert
-#    $3 for BIE  provided key
-#    $4 Kafka env prefix Example, dev,ivv,pr,pp
+# $1 Input environment name, Example dev/qa/prod
+# $2 Input BIE provided Certificate file
+# $3 Input BIE provided key
+# $4 Input Kafka env prefix, Example: dev,ivv,pr,pp
 # 
 # - ----
-# Function to generate a random password
+
+# Function:  generates a random strong password
+#            used for generating random password for keystore and truststore
+# output: Random password string
+# input: None
 generate_password() {
     # Define characters for password generation
     upper="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
