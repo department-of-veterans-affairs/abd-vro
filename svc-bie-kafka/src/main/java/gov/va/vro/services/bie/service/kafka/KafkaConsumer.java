@@ -38,7 +38,7 @@ public class KafkaConsumer {
       }
 
       amqpMessageSender.send(
-          ContentionEvent.generateRabbitMQChannelName(topicName), topicName, payload);
+          ContentionEvent.rabbitMqExchangeName(topicName), topicName, payload);
     } catch (Exception e) {
       log.error("Exception occurred while processing message: " + e.getMessage());
     }
@@ -50,7 +50,7 @@ public class KafkaConsumer {
     String messageValue = (String) record.value();
     BieMessagePayload payload = objectMapper.readValue(messageValue, BieMessagePayload.class);
     payload.setEventType(
-        ContentionEvent.valueOf(ContentionEvent.mapTopicToEvent(record.topic()).toString()));
+        ContentionEvent.valueOf(ContentionEvent.mapTopicToEvent(record.topic()).name()));
 
     return payload;
   }

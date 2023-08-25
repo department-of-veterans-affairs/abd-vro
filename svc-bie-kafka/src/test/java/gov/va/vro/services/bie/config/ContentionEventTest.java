@@ -42,7 +42,7 @@ public class ContentionEventTest {
     "TST_CONTENTION_BIE_CONTENTION_DELETED_V02, bie-events-contention-deleted"
   })
   public void testGenerateRabbitMQChannelName_channelNames(String inputTopic, String bieChannel) {
-    assertEquals(bieChannel, ContentionEvent.generateRabbitMQChannelName(inputTopic));
+    assertEquals(bieChannel, ContentionEvent.rabbitMqExchangeName(inputTopic));
   }
 
   @Test
@@ -51,7 +51,7 @@ public class ContentionEventTest {
     assertThrows(
         IllegalArgumentException.class,
         () -> {
-          ContentionEvent.generateRabbitMQChannelName(topic);
+          ContentionEvent.rabbitMqExchangeName(topic);
         });
   }
 }

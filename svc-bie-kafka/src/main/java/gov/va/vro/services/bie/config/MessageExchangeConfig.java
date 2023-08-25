@@ -35,7 +35,7 @@ public class MessageExchangeConfig {
                 topic -> {
                   final FanoutExchange fanoutExchange =
                       new FanoutExchange(
-                          ContentionEvent.generateRabbitMQChannelName(topic),
+                          ContentionEvent.rabbitMqExchangeName(topic),
                           IS_DURABLE,
                           IS_AUTO_DELETED);
                   log.info("event=setUpMQ exchange={}", fanoutExchange);

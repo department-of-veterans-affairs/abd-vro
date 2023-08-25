@@ -34,7 +34,7 @@ public class IntegrationTestConfig {
   }
 
   String mqExchangeName() {
-    return ContentionEvent.generateRabbitMQChannelName(kafkaTopic());
+    return ContentionEvent.rabbitMqExchangeName(kafkaTopic());
   }
 
   @Bean

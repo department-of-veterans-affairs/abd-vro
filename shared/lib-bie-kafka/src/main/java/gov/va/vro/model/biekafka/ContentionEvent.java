@@ -29,7 +29,7 @@ public enum ContentionEvent {
         .orElseThrow(() -> new IllegalArgumentException("Unrecognized topic: " + noPrefixTopic));
   }
 
-  public static String generateRabbitMQChannelName(String topic) {
+  public static String rabbitMqExchangeName(String topic) {
     return String.format(
         "bie-events-%s", mapTopicToEvent(topic).toString().toLowerCase().replace("_", "-"));
   }
