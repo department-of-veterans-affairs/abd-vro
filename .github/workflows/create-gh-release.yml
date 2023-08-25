@@ -14,11 +14,13 @@ jobs:
 
       - name: "Check if release already exists"
         id: check-release
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           echo "Tag name from github.ref_name: ${{ github.ref_name }}"
           if gh release view ${{ github.ref_name }}; then
-            # This workflow is triggered twice in the internal repo.
-            # The second run is undesirable, so don't continue.
+            # This workflow is triggered more than once in the internal repo.
+            # Subsequent runs are undesirable, so don't continue.
             # See notes at https://github.com/department-of-veterans-affairs/abd-vro/issues/1955
             echo "continue=false" >> $GITHUB_OUTPUT
             echo "Skipping b/c GitHub release ${{ github.ref_name }} already exists." | tee -a $GITHUB_STEP_SUMMARY
@@ -36,4 +38,4 @@ jobs:
           prerelease: true
           generate_release_notes: true
           append_body: true
-          body: "Automatically created by create-gh-release GitHub Action (${{github.run_number}})"
+          body: "Automatically created by create-gh-release GitHub Action (run #${{github.run_number}})"
