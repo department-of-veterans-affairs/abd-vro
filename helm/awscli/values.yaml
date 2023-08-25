@@ -1,0 +1,6 @@
+labels:
+  app: vro-awscli
+
+imageTag: "latest"
+
+replicaCount: 1
