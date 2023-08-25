@@ -37,8 +37,7 @@ public class KafkaConsumer {
         log.info("Sending String BieMessagePayload to Amqp Message Sender: {}", payload);
       }
 
-      amqpMessageSender.send(
-          ContentionEvent.rabbitMqExchangeName(topicName), topicName, payload);
+      amqpMessageSender.send(ContentionEvent.rabbitMqExchangeName(topicName), topicName, payload);
     } catch (Exception e) {
       log.error("Exception occurred while processing message: " + e.getMessage());
     }
