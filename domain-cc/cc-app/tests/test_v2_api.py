@@ -1,4 +1,4 @@
-""" Tests for the v2 of classifier API, new dropdown contentions were added """
+""" Tests for the /v2/classifier endpoint, new dropdown contentions were added """
 
 from fastapi.testclient import TestClient
 

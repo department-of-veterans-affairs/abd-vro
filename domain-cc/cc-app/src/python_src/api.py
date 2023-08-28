@@ -68,12 +68,21 @@ def get_classification(
 
 @app.post("/v2/classifier")
 def get_classification_v2(claim: Claim) -> Optional[PredictedClassification]:
+    logging.info(
+        f"claim_id: {claim.claim_id}, form526_submission_id: {claim.form526_submission_id}"
+    )
+
     classification_code = None
     if claim.claim_type == "claim_for_increase":
+        logging.info(f"diagnostic code: {claim.diagnostic_code}")
         classification_code = dc_lookup_table.get(claim.diagnostic_code, None)
 
     if not classification_code:
         classification_code = dropdown_lookup_table.get(claim.contention_text, None)
+        if classification_code:
+            logging.info(f"Lookup table match: {claim.contention_text}")
+        else:
+            logging.info("No dropdown match for contention_text")
 
     if classification_code:
         classification_name = get_classification_name(classification_code)
@@ -84,9 +93,5 @@ def get_classification_v2(claim: Claim) -> Optional[PredictedClassification]:
     else:
         classification = None
 
-    logging.info(
-        f"claim_id: {claim.claim_id}, form526_submission_id: {claim.form526_submission_id}"
-    )
     logging.info(f"classification: {classification}")
-
     return classification
