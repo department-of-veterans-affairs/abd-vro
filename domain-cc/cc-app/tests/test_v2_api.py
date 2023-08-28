@@ -1,4 +1,4 @@
-""" Tests for the /v2/classifier endpoint, new dropdown contentions were added """
+""" Tests for the addition of new contention dropdown mappings to the /classifier endpoint """
 
 from fastapi.testclient import TestClient
 
@@ -6,7 +6,7 @@ from .conftest import TUBERCULOSIS_CLASSIFICATION
 
 
 def test_diagnostic_code_mapping(client: TestClient):
-    """ diagnostic code mapping still works the same as v1 """
+    """diagnostic code mapping still works the same as v1"""
     json_post_dict = {
         "diagnostic_code": TUBERCULOSIS_CLASSIFICATION["diagnostic_code"],
         "claim_id": 100,
@@ -42,7 +42,7 @@ def test_classification_dropdown_cfi(client: TestClient):
 
 
 def test_dropdown_lut_case_insensitive(client: TestClient):
-    """ dropdown lookup table is case insensitive """
+    """dropdown lookup table is case insensitive"""
     json_post_dict = {
         "claim_id": 700,
         "form526_submission_id": 777,
@@ -53,13 +53,13 @@ def test_dropdown_lut_case_insensitive(client: TestClient):
     response = client.post("/classifier", json=json_post_dict)
     assert response.status_code == 200
     assert (
-            response.json()["classification_code"]
-            == TUBERCULOSIS_CLASSIFICATION["classification_code"]
+        response.json()["classification_code"]
+        == TUBERCULOSIS_CLASSIFICATION["classification_code"]
     )
 
 
 def test_dropdown_lut_whitespace(client: TestClient):
-    """ dropdown lookup table doesn't care about whitespace """
+    """dropdown lookup table doesn't care about whitespace"""
     json_post_dict = {
         "claim_id": 700,
         "form526_submission_id": 777,
@@ -70,8 +70,8 @@ def test_dropdown_lut_whitespace(client: TestClient):
     response = client.post("/classifier", json=json_post_dict)
     assert response.status_code == 200
     assert (
-            response.json()["classification_code"]
-            == TUBERCULOSIS_CLASSIFICATION["classification_code"]
+        response.json()["classification_code"]
+        == TUBERCULOSIS_CLASSIFICATION["classification_code"]
     )
 
 
@@ -91,7 +91,8 @@ def test_classification_dropdown_new(client: TestClient):
     )
 
 
-def test_v2_null_response(client: TestClient):
+def test_null_response(client: TestClient):
+    """if both LUT's fail to map to classification, return null"""
     json_post_dict = {
         "diagnostic_code": 7,
         "claim_id": 700,
