@@ -40,6 +40,38 @@ def test_classification_dropdown_cfi(client: TestClient):
         == TUBERCULOSIS_CLASSIFICATION["classification_code"]
     )
 
+def test_dropdown_lut_case_insensitive(client: TestClient):
+    """ dropdown lookup table is case insensitive """
+    json_post_dict = {
+        "claim_id": 700,
+        "form526_submission_id": 777,
+        "claim_type": "new",
+        "contention_text": "tUbeRcUloSis",
+    }
+
+    response = client.post("/v2/classifier", json=json_post_dict)
+    assert response.status_code == 200
+    assert (
+            response.json()["classification_code"]
+            == TUBERCULOSIS_CLASSIFICATION["classification_code"]
+    )
+
+def test_dropdown_lut_whitespace(client: TestClient):
+    """ dropdown lookup table doesn't care about whitespace """
+    json_post_dict = {
+        "claim_id": 700,
+        "form526_submission_id": 777,
+        "claim_type": "new",
+        "contention_text": "    tuberculosis  ",
+    }
+
+    response = client.post("/v2/classifier", json=json_post_dict)
+    assert response.status_code == 200
+    assert (
+            response.json()["classification_code"]
+            == TUBERCULOSIS_CLASSIFICATION["classification_code"]
+    )
+
 
 def test_classification_dropdown_new(client: TestClient):
     json_post_dict = {
