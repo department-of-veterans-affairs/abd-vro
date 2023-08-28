@@ -10,7 +10,7 @@
 #       BIE_KAFKA_KEYSTORE_PASSWORD
 #       BIE_KAFKA_TRUSTSTORE_INBASE64
 #       BIE_KAFKA_TRUSTSTORE_PASSWORD
-# Pre-Req:
+# Pre-requisite:
 #     - Download Certs locally. Link is provided in wiki https://github.com/department-of-veterans-affairs/abd-vro-internal/wiki/VRO-Secrets
 #       VA-Internal-S2-ICA4.cer 
 #       VA-Internal-S2-ICA19.cer
