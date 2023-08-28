@@ -59,7 +59,10 @@ def get_classification(claim: Claim) -> Optional[PredictedClassification]:
     if claim.contention_text and not classification_code:
         classification_code = dropdown_lookup_table.get(claim.contention_text, None)
         if classification_code:
-            logging.info(f"Lookup table match: {claim.contention_text}")
+            already_mapped_text = (  # being explicit, do not leak PII
+                claim.contention_text.strip().lower()
+            )
+            logging.info(f"Lookup table match: {already_mapped_text}")
         else:
             logging.info("No dropdown match for contention_text")
 
