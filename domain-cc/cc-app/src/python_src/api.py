@@ -47,7 +47,7 @@ def get_health_status():
     return {"status": "ok"}
 
 
-@app.post("/classifier")
+@app.post("/classifier", deprecated=True)
 def get_classification(
     claim_for_increase: ClaimForIncrease,
 ) -> Optional[PredictedClassification]:
@@ -87,10 +87,13 @@ def get_classification_v2(claim: Claim) -> Optional[PredictedClassification]:
         classification = None
 
     if isinstance(claim, ClaimForIncrease):
-        logging.info(f"claim_id: {claim.claim_id}, diagnostic_code: {claim.diagnostic_code}, form526_submission_id: {claim.form526_submission_id}")
+        logging.info(
+            f"claim_id: {claim.claim_id}, diagnostic_code: {claim.diagnostic_code}, form526_submission_id: {claim.form526_submission_id}"
+        )
     else:
         logging.info(
-            f"claim_id: {claim.claim_id}, form526_submission_id: {claim.form526_submission_id}")
+            f"claim_id: {claim.claim_id}, form526_submission_id: {claim.form526_submission_id}"
+        )
     logging.info(f"classification: {classification}")
 
     return classification
