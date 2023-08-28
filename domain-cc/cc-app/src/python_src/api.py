@@ -4,7 +4,7 @@ from typing import Optional
 
 from fastapi import FastAPI, HTTPException
 
-from .pydantic_models import Claim, ClaimForIncrease, PredictedClassification
+from .pydantic_models import Claim, PredictedClassification
 from .util.brd_classification_codes import get_classification_name
 from .util.lookup_table import DiagnosticCodeLookupTable, DropdownLookupTable
 
@@ -47,7 +47,7 @@ def get_health_status():
 
 @app.post("/classifier", deprecated=True)
 def get_classification(
-    claim_for_increase: ClaimForIncrease,
+    claim_for_increase: Claim,
 ) -> Optional[PredictedClassification]:
     classification_code = dc_lookup_table.get(claim_for_increase.diagnostic_code, None)
     if classification_code:
@@ -69,7 +69,7 @@ def get_classification(
 @app.post("/v2/classifier")
 def get_classification_v2(claim: Claim) -> Optional[PredictedClassification]:
     classification_code = None
-    if isinstance(claim, ClaimForIncrease):
+    if claim.claim_type == "claim_for_increase":
         classification_code = dc_lookup_table.get(claim.diagnostic_code, None)
 
     if not classification_code:
