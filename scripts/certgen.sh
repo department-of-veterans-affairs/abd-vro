@@ -1,6 +1,6 @@
 #!/bin/bash
 # -----
-# Purpose: This script is used to Generate BIE kafka Compatible Base64 Encoded
+# Purpose: This script is used to generate BIE-Kafka-compatible, base64-encoded
 #   certificate string. This script also generates two passwords truststore and keystore passwords
 #
 # Output: Output of this script is output.json. 
