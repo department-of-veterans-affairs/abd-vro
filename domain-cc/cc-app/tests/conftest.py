@@ -2,7 +2,6 @@
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src.python_src.api import app
 
 TUBERCULOSIS_CLASSIFICATION = {
