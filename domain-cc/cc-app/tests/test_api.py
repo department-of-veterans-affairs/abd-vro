@@ -1,10 +1,8 @@
 from fastapi.testclient import TestClient
 
-from .conftest import (
-    BENIGN_GROWTH_BRAIN_CLASSIFICATION,
-    DRUG_INDUCED_PULMONARY_PNEMONIA_CLASSIFICATION,
-    TUBERCULOSIS_CLASSIFICATION,
-)
+from .conftest import (BENIGN_GROWTH_BRAIN_CLASSIFICATION,
+                       DRUG_INDUCED_PULMONARY_PNEMONIA_CLASSIFICATION,
+                       TUBERCULOSIS_CLASSIFICATION)
 
 
 def test_classification(client: TestClient):
