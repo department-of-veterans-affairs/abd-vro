@@ -45,9 +45,6 @@ export TRUSTSTORE_PWD=$(generate_password)
 # Delete temporary files (if they exist) to avoid issues when re-running script.
 # Keeping them will result in password mismatch error. They are safe to delete as they are recreated.
 rm -f bip.truststore.jks keystore.p12 bip.truststore.p12 passwd output.json
- 
-echo "Key Store pwd : $KEYSTORE_PWD"
-echo "Trust Store pwd: $TRUSTSTORE_PWD"
 
 openssl pkcs12 -export -in "$2" -inkey "$3" -out keystore.p12 -name kafka-keystore-$4-$1 -CAfile VACACerts.pem -caname root -passout env:KEYSTORE_PWD
 
