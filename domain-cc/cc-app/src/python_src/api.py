@@ -45,29 +45,8 @@ def get_health_status():
     return {"status": "ok"}
 
 
-@app.post("/classifier", deprecated=True)
-def get_classification(
-    claim_for_increase: Claim,
-) -> Optional[PredictedClassification]:
-    classification_code = dc_lookup_table.get(claim_for_increase.diagnostic_code, None)
-    if classification_code:
-        classification_name = get_classification_name(classification_code)
-        classification = {
-            "classification_code": classification_code,
-            "classification_name": classification_name,
-        }
-    else:
-        classification = None
-
-    logging.info(
-        f"claim_id: {claim_for_increase.claim_id}, diagnostic_code: {claim_for_increase.diagnostic_code}, form526_submission_id: {claim_for_increase.form526_submission_id}"
-    )
-    logging.info(f"classification: {classification}")
-    return classification
-
-
-@app.post("/v2/classifier")
-def get_classification_v2(claim: Claim) -> Optional[PredictedClassification]:
+@app.post("/classifier")
+def get_classification(claim: Claim) -> Optional[PredictedClassification]:
     logging.info(
         f"claim_id: {claim.claim_id}, form526_submission_id: {claim.form526_submission_id}"
     )
@@ -77,7 +56,7 @@ def get_classification_v2(claim: Claim) -> Optional[PredictedClassification]:
         logging.info(f"diagnostic code: {claim.diagnostic_code}")
         classification_code = dc_lookup_table.get(claim.diagnostic_code, None)
 
-    if not classification_code:
+    if claim.contention_text and not classification_code:
         classification_code = dropdown_lookup_table.get(claim.contention_text, None)
         if classification_code:
             logging.info(f"Lookup table match: {claim.contention_text}")

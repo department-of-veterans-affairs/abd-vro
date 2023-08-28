@@ -15,7 +15,7 @@ def test_diagnostic_code_mapping(client: TestClient):
         "claim_type": "claim_for_increase",
     }
 
-    response = client.post("/v2/classifier", json=json_post_dict)
+    response = client.post("/classifier", json=json_post_dict)
     assert response.status_code == 200
     assert (
         response.json()["classification_code"]
@@ -33,7 +33,7 @@ def test_classification_dropdown_cfi(client: TestClient):
         "claim_type": "claim_for_increase",
     }
 
-    response = client.post("/v2/classifier", json=json_post_dict)
+    response = client.post("/classifier", json=json_post_dict)
     assert response.status_code == 200
     assert (
         response.json()["classification_code"]
@@ -49,7 +49,7 @@ def test_dropdown_lut_case_insensitive(client: TestClient):
         "contention_text": "tUbeRcUloSis",
     }
 
-    response = client.post("/v2/classifier", json=json_post_dict)
+    response = client.post("/classifier", json=json_post_dict)
     assert response.status_code == 200
     assert (
             response.json()["classification_code"]
@@ -65,7 +65,7 @@ def test_dropdown_lut_whitespace(client: TestClient):
         "contention_text": "    tuberculosis  ",
     }
 
-    response = client.post("/v2/classifier", json=json_post_dict)
+    response = client.post("/classifier", json=json_post_dict)
     assert response.status_code == 200
     assert (
             response.json()["classification_code"]
@@ -81,7 +81,7 @@ def test_classification_dropdown_new(client: TestClient):
         "claim_type": "new",
     }
 
-    response = client.post("/v2/classifier", json=json_post_dict)
+    response = client.post("/classifier", json=json_post_dict)
     assert response.status_code == 200
     assert (
         response.json()["classification_code"]
@@ -98,6 +98,6 @@ def test_v2_null_response(client: TestClient):
         "contention_text": "this_is_a_test",
     }
 
-    response = client.post("/v2/classifier", json=json_post_dict)
+    response = client.post("/classifier", json=json_post_dict)
     assert response.status_code == 200
     assert response.json() is None

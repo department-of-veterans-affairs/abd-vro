@@ -6,6 +6,7 @@ from .conftest import (BENIGN_GROWTH_BRAIN_CLASSIFICATION,
 
 
 def test_classification(client: TestClient):
+    """ old api inputs without contention text still operate the same """
     json_post_dict = {
         "diagnostic_code": TUBERCULOSIS_CLASSIFICATION["diagnostic_code"],
         "claim_id": 100,
