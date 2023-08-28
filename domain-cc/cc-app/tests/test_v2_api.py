@@ -40,6 +40,7 @@ def test_classification_dropdown_cfi(client: TestClient):
         == TUBERCULOSIS_CLASSIFICATION["classification_code"]
     )
 
+
 def test_dropdown_lut_case_insensitive(client: TestClient):
     """ dropdown lookup table is case insensitive """
     json_post_dict = {
@@ -55,6 +56,7 @@ def test_dropdown_lut_case_insensitive(client: TestClient):
             response.json()["classification_code"]
             == TUBERCULOSIS_CLASSIFICATION["classification_code"]
     )
+
 
 def test_dropdown_lut_whitespace(client: TestClient):
     """ dropdown lookup table doesn't care about whitespace """
