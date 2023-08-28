@@ -22,7 +22,6 @@ def test_classification(client: TestClient):
         "diagnostic_code": TUBERCULOSIS_CLASSIFICATION["diagnostic_code"],
         "claim_id": 100,
         "form526_submission_id": 500,
-        "claim_type": "claim_for_increase",
     }
 
     response = client.post("/classifier", json=json_post_dict)
@@ -123,7 +122,7 @@ def test_classification_dropdown_cfi(client: TestClient):
     assert response.status_code == 200
     assert (
             response.json()["classification_code"]
-            == 6890
+            == TUBERCULOSIS_CLASSIFICATION["classification_code"]
     )
 
 
@@ -139,6 +138,6 @@ def test_classification_dropdown_new(client: TestClient):
     assert response.status_code == 200
     assert (
             response.json()["classification_code"]
-            == 6890
+            == TUBERCULOSIS_CLASSIFICATION["classification_code"]
     )
 

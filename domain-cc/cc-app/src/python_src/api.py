@@ -3,10 +3,8 @@ import sys
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException
-from .pydantic_models import Claim, ClaimForIncrease, PredictedClassification
-from .util.lookup_table import DropdownLookupTable, DiagnosticCodeLookupTable
 
-from .pydantic_models import ClaimForIncrease, PredictedClassification
+from .pydantic_models import Claim, ClaimForIncrease, PredictedClassification
 from .util.brd_classification_codes import get_classification_name
 from .util.lookup_table import DiagnosticCodeLookupTable, DropdownLookupTable
 
@@ -86,14 +84,9 @@ def get_classification_v2(claim: Claim) -> Optional[PredictedClassification]:
     else:
         classification = None
 
-    if isinstance(claim, ClaimForIncrease):
-        logging.info(
-            f"claim_id: {claim.claim_id}, diagnostic_code: {claim.diagnostic_code}, form526_submission_id: {claim.form526_submission_id}"
-        )
-    else:
-        logging.info(
-            f"claim_id: {claim.claim_id}, form526_submission_id: {claim.form526_submission_id}"
-        )
+    logging.info(
+        f"claim_id: {claim.claim_id}, form526_submission_id: {claim.form526_submission_id}"
+    )
     logging.info(f"classification: {classification}")
 
     return classification
