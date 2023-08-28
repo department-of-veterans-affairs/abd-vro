@@ -17,10 +17,10 @@
 #       VA-Internal-S2-ICA11.cer 
 #       VA-Internal-S2-RCA2.cer
 # Input: 
-# $1 Input environment name, Example dev/qa/prod
-# $2 Input BIE provided Certificate file
+# $1 Input environment name like dev, qa, prod
+# $2 Input BIE provided certificate file
 # $3 Input BIE provided key
-# $4 Input Kafka env prefix, Example: dev,ivv,pr,pp
+# $4 Input BIE Kafka environment prefix like dev, ivv, pr, pp
 # 
 # - ----
 
