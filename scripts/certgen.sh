@@ -24,8 +24,7 @@
 # 
 # - ----
 
-# Function:  generates a random strong password
-#            used for generating random password for keystore and truststore
+# Function:  generates a random password for keystore and truststore
 # output: Random password string
 # input: None
 generate_password() {
