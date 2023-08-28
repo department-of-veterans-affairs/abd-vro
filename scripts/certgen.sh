@@ -25,8 +25,6 @@
 # - ----
 
 # Function:  generates a random password for keystore and truststore
-# output: Random password string
-# input: None
 generate_password() {
     # Define characters for password generation
     upper="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
