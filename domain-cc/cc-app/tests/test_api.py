@@ -1,23 +1,12 @@
 from fastapi.testclient import TestClient
 
-TUBERCULOSIS_CLASSIFICATION = {
-    "diagnostic_code": 7710,
-    "classification_code": 6890,
-    "classification_name": "Tuberculosis",
-}
-BENIGN_GROWTH_BRAIN_CLASSIFICATION = {
-    "diagnostic_code": 8003,
-    "classification_code": 8964,
-    "classification_name": "Cyst/Benign Growth - Neurological other System",
-}
-DRUG_INDUCED_PULMONARY_PNEMONIA_CLASSIFICATION = {
-    "diagnostic_code": 6829,
-    "classification_code": 9012,
-    "classification_name": "Respiratory",
-}
+from .conftest import (BENIGN_GROWTH_BRAIN_CLASSIFICATION,
+                       DRUG_INDUCED_PULMONARY_PNEMONIA_CLASSIFICATION,
+                       TUBERCULOSIS_CLASSIFICATION)
 
 
 def test_classification(client: TestClient):
+    """old api inputs without contention text still operate the same"""
     json_post_dict = {
         "diagnostic_code": TUBERCULOSIS_CLASSIFICATION["diagnostic_code"],
         "claim_id": 100,
