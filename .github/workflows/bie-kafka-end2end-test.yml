@@ -10,7 +10,6 @@ on:
 env:
   COMPOSE_PROFILES: 'kafka'
   VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"
-
 jobs:
   integration-test:
     runs-on: ubuntu-latest
@@ -133,7 +132,8 @@ jobs:
             FROM
               claims.bie_contention_event
             WHERE
-              event_details='Lorem ipsum'
+              -- This is the contention id used in BieKafkaApplicationTest
+              contention_id=1234567890
           ")
           echo $RESULTS
           if echo $RESULTS | grep -q 'count | 1'

@@ -14,7 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Slf4j
 @Component
@@ -50,12 +52,20 @@ public class DbHelper {
 
   public ContentionEventEntity saveContentionEvent(final BieMessagePayload bieMessagePayload) {
     final ContentionEventEntity contentionEventEntity = new ContentionEventEntity();
-    contentionEventEntity.setEventType(bieMessagePayload.getEvent());
+    contentionEventEntity.setClaimId(bieMessagePayload.getClaimId());
+    contentionEventEntity.setContentionId(bieMessagePayload.getContentionId());
+    contentionEventEntity.setEventType(bieMessagePayload.getEventType().toString());
+    contentionEventEntity.setNotifiedAt(convertTime(bieMessagePayload.getNotifiedAt()));
+    contentionEventEntity.setContentionTypeCode(bieMessagePayload.getContentionTypeCode());
+    contentionEventEntity.setDiagnosticTypeCode(bieMessagePayload.getDiagnosticTypeCode());
+    contentionEventEntity.setContentionClassificationName(
+        bieMessagePayload.getContentionClassificationName());
+    contentionEventEntity.setOccurredAt(convertTime(bieMessagePayload.getOccurredAt()));
 
-    // TODO: Non-PII event details to be extracted from eventDetails into their own fields.
-    // See ticket #1680 https://github.com/department-of-veterans-affairs/abd-vro/issues/1680
-    contentionEventEntity.setEventDetails("Lorem ipsum");
-    contentionEventEntity.setNotifiedAt(LocalDateTime.parse(bieMessagePayload.getNotifiedAt()));
     return contentionEventRepository.save(contentionEventEntity);
+  }
+
+  public LocalDateTime convertTime(long time) {
+    return LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
   }
 }

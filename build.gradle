@@ -172,3 +172,4 @@ tasks.named("dockerComposeDown").configure {
   def domainProjects = subprojects.findAll { it.name.startsWith('domain-') }
   mustRunAfter domainProjects*.name.collect { it + ':dockerComposeDown'}
 }
+
