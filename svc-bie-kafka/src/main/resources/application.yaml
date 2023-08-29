@@ -17,7 +17,7 @@ spring:
       schema.registry.url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://schemaregistry.dev.bip.va.gov:443}"
       specific.avro.reader: false
     consumer:
-      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-tst-vro-2}"
+      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-tst-vro-3}"
       key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
       value-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
       auto-offset-reset: earliest
