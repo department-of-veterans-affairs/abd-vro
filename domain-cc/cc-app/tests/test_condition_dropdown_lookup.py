@@ -1,4 +1,4 @@
-""" Tests for the addition of new contention dropdown mappings to the /classifier endpoint """
+""" Tests for the addition of new condition dropdown mappings to the /classifier endpoint """
 
 from fastapi.testclient import TestClient
 
