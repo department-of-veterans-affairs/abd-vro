@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vro-awscli
+  name: vro-rds-dbinit
   labels: {{- toYaml .Values.labels | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
@@ -13,10 +13,10 @@ spec:
         sidecar.istio.io/inject: "false"
     spec:
       containers:
-        - name: awscli
-          image: bitnami/aws-cli:{{ .Values.imageTag }}
-          command: [ "/bin/bash", "-c", "--" ]
-          args: [ "while true; do sleep 30; done;" ]
+       - name: db-init{{ include "vro.containerSuffix" . }}
+          image: { { include "vro.imageRegistryPath" . } }vro-db-init:{{ .Values.dbInit.imageTag  | default .Values.global.imageTag }}
+          env:
+            {{- include "vro.flyway.envVars" . | nindent 12 }}
           resources:
             requests:
               cpu: 150m
