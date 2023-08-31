@@ -59,6 +59,10 @@ allprojects {
   }
 }
 
+dependencies {
+  implementation 'org.springframework.hateoas:spring-hateoas:2.1.2'
+}
+
 subprojects {
   task allDependencies(type: DependencyReportTask) {}
 
@@ -172,4 +176,3 @@ tasks.named("dockerComposeDown").configure {
   def domainProjects = subprojects.findAll { it.name.startsWith('domain-') }
   mustRunAfter domainProjects*.name.collect { it + ':dockerComposeDown'}
 }
-

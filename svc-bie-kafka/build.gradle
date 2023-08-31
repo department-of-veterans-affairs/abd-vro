@@ -32,7 +32,6 @@ dependencies {
 
   // RabbitMQ
   implementation 'org.springframework.boot:spring-boot-starter-amqp'
-  implementation 'org.springframework.kafka:spring-kafka'
 
   // Provides endpoint for healthcheck
   implementation 'org.springframework.boot:spring-boot-starter-web'
