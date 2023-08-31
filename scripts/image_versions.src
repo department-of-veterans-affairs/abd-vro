@@ -27,10 +27,3 @@ svclighthouseapi_VER="v3.4.3"
 apigateway_VER="v3.4.7"
 # Fri Aug 25 16:36:30 UTC 2023 -- v3.4.8
 # Wed Aug 30 18:36:53 UTC 2023 -- v3.4.9
-app_VER="v3.4.9"
-dbinit_VER="v3.4.9"
-svcbgsapi_VER="v3.4.9"
-svcbiekafka_VER="v3.4.9"
-xampleworkflows_VER="v3.4.9"
-ccapp_VER="v3.4.9"
-eemaxcfiapp_VER="v3.4.9"
