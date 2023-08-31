@@ -5,8 +5,8 @@
 - name: POSTGRES_URL
   valueFrom:
     secretKeyRef:
-          name: vro-db
-          key: DB_URL
+      name: rds-db
+      key: DB_URL
 - name: POSTGRES_USER
   valueFrom:
     secretKeyRef:
@@ -30,7 +30,7 @@
 - name: FLYWAY_URL
   valueFrom:
     secretKeyRef:
-      name: vro-db
+      name: rds-db
       key: DB_URL
 - name: FLYWAY_USER
   valueFrom:
