@@ -1,16 +1,12 @@
-{{- define "vro.postgresUrl" -}}
-{{- printf "jdbc:postgresql://%s-postgres:%s/%s"
-  .Values.global.hostnamePrefix
-  (toString .Values.global.service.db.targetPort)
-  .Values.global.service.db.databaseName }}
-{{- end }}
-
 {{/*
   For clients to connect to DB
 */}}
 {{- define "vro.dbClient.envVars" -}}
 - name: POSTGRES_URL
-  value: {{ include "vro.postgresUrl" . }}
+  valueFrom:
+    secretKeyRef:
+          name: vro-db
+          key: DB_URL
 - name: POSTGRES_USER
   valueFrom:
     secretKeyRef:
@@ -32,7 +28,10 @@
 */}}
 {{- define "vro.flyway.envVars" -}}
 - name: FLYWAY_URL
-  value: {{ include "vro.postgresUrl" . }}
+  valueFrom:
+    secretKeyRef:
+      name: vro-db
+      key: DB_URL
 - name: FLYWAY_USER
   valueFrom:
     secretKeyRef:
