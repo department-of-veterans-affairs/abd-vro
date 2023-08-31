@@ -14,13 +14,13 @@ spec:
     spec:
       containers:
        - name: db-init{{ include "vro.containerSuffix" . }}
-          image: { { include "vro.imageRegistryPath" . } }vro-db-init:latest
-          env:
-            {{- include "vro.flyway.envVars" . | nindent 12 }}
-          resources:
-            requests:
-              cpu: 150m
-              memory: 512Mi
-            limits:
-              cpu: 1000m
-              memory: 1024Mi
+         image: { { include "vro.imageRegistryPath" . } }vro-db-init:latest
+         env:
+           {{- include "vro.flyway.envVars" . | nindent 12 }}
+         resources:
+           requests:
+             cpu: 150m
+             memory: 512Mi
+           limits:
+             cpu: 1000m
+             memory: 1024Mi
