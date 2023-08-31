@@ -1,6 +1,7 @@
 buildscript {
   dependencies {
     classpath "org.yaml:snakeyaml:2.2"
+    classpath "org.springframework.hateoas:spring-hateoas:2.1.2"
   }
   // There's a conflict between versions of jgit between spotless and axion release plugin
   configurations.classpath {
@@ -57,10 +58,6 @@ allprojects {
       indentWithSpaces(2)
     }
   }
-}
-
-dependencies {
-  implementation 'org.springframework.hateoas:spring-hateoas:2.1.2'
 }
 
 subprojects {
