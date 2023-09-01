@@ -3,6 +3,12 @@ buildscript {
     classpath "org.yaml:snakeyaml:2.2"
     classpath "org.springframework.hateoas:spring-hateoas:2.1.2"
   }
+
+  configurations.configureEach {
+    resolutionStrategy {
+      force 'org.springframework.hateoas:spring-hateoas:2.1.2'
+    }
+  }
   // There's a conflict between versions of jgit between spotless and axion release plugin
   configurations.classpath {
     resolutionStrategy {
@@ -59,15 +65,12 @@ allprojects {
     }
   }
 }
-
 subprojects {
   task allDependencies(type: DependencyReportTask) {}
 
   pluginManager.withPlugin('java') {
-    // List all failedTest at the end of a build -- copied from https://stackoverflow.com/a/43936442
-    // add a collection to track failedTests
+    // Your existing code...
     ext.failedTests = []
-    // add a listener to all tasks of type Test
     tasks.withType(Test) {
       afterTest { TestDescriptor descriptor, TestResult result ->
         if (result.resultType == org.gradle.api.tasks.testing.TestResult.ResultType.FAILURE) {
@@ -75,9 +78,6 @@ subprojects {
         }
       }
     }
-    // print out tracked failed tests when the build has finished
-    // TODO: https://github.com/gradle/gradle/issues/20151#issuecomment-1551007455
-    // and https://docs.gradle.org/current/userguide/dataflow_actions.html#lifecycle_event_providers
     gradle.buildFinished {
       if (!failedTests.empty) {
         println "Failed tests:"
@@ -89,6 +89,8 @@ subprojects {
     }
   }
 }
+
+
 
 ext {
   jacoco_enforce_violations = true
