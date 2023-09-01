@@ -68,8 +68,9 @@ This should result in a response with the following body:
 * The `diagnostic_codes` array in the request are integers within the range of `5000 - 10000`.
     * Any request with an any entry that falls outside the range `5000 - 10000` will yield a `400`.
 * An invalid request such as missing/invalid field will result in `422` status code.
-* Duplicate entries in the `diagnostic_codes` array will yield `422` status code.
-* An empty `diagnostic_codes` array or more than 100 entries in `diagnostic_codes` array will yield a `422` status code.
+* Duplicate entries in the `diagnostic_codes` array will yield a ratings array with unique entries.
+* An empty `diagnostic_codes` array will yield an empty ratings array.
+* A `diagnostic_codes` array with more than 1000 entries will yield a `422` status code.
 
 #### Response
 
