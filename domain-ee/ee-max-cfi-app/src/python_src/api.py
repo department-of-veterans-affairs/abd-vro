@@ -44,7 +44,7 @@ def get_health_status():
 def get_max_ratings(
         claim_for_increase: MaxRatingsForClaimForIncreaseRequest, ) -> MaxRatingsForClaimForIncreaseResponse:
     ratings = []
-    for dc in claim_for_increase.diagnostic_codes:
+    for dc in set(claim_for_increase.diagnostic_codes):
         validate_diagnostic_code(dc)
         max_rating = get_max_rating(dc)
         if max_rating:
