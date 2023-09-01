@@ -61,22 +61,6 @@ allprojects {
 }
 
 subprojects {
-  buildscript {
-    repositories {
-      mavenCentral()
-    }
-
-    dependencies {
-      classpath "org.springframework.hateoas:spring-hateoas:2.1.2"
-    }
-
-    configurations.classpath {
-      resolutionStrategy {
-        force 'org.springframework.hateoas:spring-hateoas:2.1.2'
-      }
-    }
-  }
-
   task allDependencies(type: DependencyReportTask) {}
 
   pluginManager.withPlugin('java') {
