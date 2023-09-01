@@ -1,6 +1,7 @@
 buildscript {
   dependencies {
     classpath "org.yaml:snakeyaml:2.2"
+    classpath "org.springframework.hateoas:spring-hateoas:2.1.2"
   }
   // There's a conflict between versions of jgit between spotless and axion release plugin
   configurations.classpath {
@@ -172,4 +173,3 @@ tasks.named("dockerComposeDown").configure {
   def domainProjects = subprojects.findAll { it.name.startsWith('domain-') }
   mustRunAfter domainProjects*.name.collect { it + ':dockerComposeDown'}
 }
-
