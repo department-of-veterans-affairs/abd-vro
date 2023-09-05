@@ -1,11 +1,6 @@
 name: "PR: Test code"
 
 on:
-  # Trigger on all pull requests
-#  pull_request:
-#    branches:
-#      - "*"
-
   # Trigger when called by another GitHub Action
   workflow_call:
     inputs:
