@@ -1,6 +1,5 @@
-name: "3. Continuous Integration (run tests and checks)"
-# Runs tests and checks with merged code in the public repo so that the PR author is notified of failures.
-# The SecRel workflow (in the internal repo) publishes `dev_` images, regardless of test failures, for manual testing.
+name: "CI"
+# Runs Continuous Integration tests and checks
 # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/CI-CD-Workflows
 
 on:
@@ -55,7 +54,7 @@ jobs:
     uses: ./.github/workflows/svc-bgs-api-integration-test.yml
     secrets: inherit
 
-  bie-kafka-end-to-end:
+  svc-bie-kafka-end-to-end:
     needs: nondraft-pr
     uses: ./.github/workflows/bie-kafka-end2end-test.yml
     secrets: inherit
