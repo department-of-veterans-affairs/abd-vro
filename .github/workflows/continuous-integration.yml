@@ -13,6 +13,10 @@ on:
   # Allow manual triggering
   workflow_dispatch:
 
+concurrency:
+  group: ci-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   nondraft-pr:
     # Adding an `if:` that evaluates to false for this nondraft-pr job prevents other dependent jobs from running.
