@@ -37,8 +37,6 @@ jobs:
     #   but the number of releases (shown on the front page) is incorrect (i.e., there are orphaned GH releases)
     #   Submitted bug report to GitHub: https://support.github.com/ticket/personal/0/2247467
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
-    outputs:
-      continue: ${{ steps.check-permission.outputs.continue }}
     runs-on: ubuntu-latest
     steps:
     - id: checkUserMember
@@ -57,13 +55,10 @@ jobs:
         if [ ${{ steps.checkUserMember.outputs.isTeamMember }} = 'false' ]; then
           echo "Only VRO-RESTRICTED team members can run this action!" | tee -a $GITHUB_STEP_SUMMARY
           exit 3
-        else
-          echo "continue=true" >> $GITHUB_OUTPUT
         fi
 
   delete_releases:
     needs: gate-check
-    if: needs.gate-check.outputs.continue == 'true'
     runs-on: ubuntu-latest
     steps:
     - name: "Delete old releases in GHCR"
