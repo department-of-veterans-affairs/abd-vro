@@ -51,9 +51,10 @@ jobs:
         echo "teams: ${{ steps.checkUserMember.outputs.teams }}"
         if [ ${{ steps.checkUserMember.outputs.isTeamMember }} = 'false' ]; then
           echo "Only VRO-RESTRICTED team members can run this action!" | tee -a $GITHUB_STEP_SUMMARY
+          exit 3
         fi
     - name: "Delete old releases in GHCR"
-      if: ${{ steps.checkUserMember.outputs.isTeamMember == 'false' }}
+      if: ${{ steps.checkUserMember.outputs.isTeamMember == 'true' }}
       uses: yoomlam/delete-older-releases@v0.3.0
       with:
         dry_run: ${{ inputs.dry_run || false }}
