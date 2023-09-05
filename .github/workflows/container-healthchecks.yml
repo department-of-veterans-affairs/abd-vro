@@ -7,8 +7,8 @@ on:
   # Allow being called by another GitHub Action
   workflow_call:
 
-  pull_request:
-    branches: [ develop ]
+#  pull_request:
+#    branches: [ develop ]
 
 env:
   SLACK_EXCEPTION_WEBHOOK: "http://mock-slack:20100/slack-messages"
