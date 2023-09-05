@@ -39,22 +39,23 @@ jobs:
     if: github.repository == 'department-of-veterans-affairs/abd-vro'
     runs-on: ubuntu-latest
     steps:
-    - uses: tspascoal/get-user-teams-membership@v2
-      id: checkUserMember
+    - id: checkUserMember
+      if: github.event_name == 'workflow_dispatch'
+      uses: tspascoal/get-user-teams-membership@v2
       with:
         username: ${{ github.actor }}
-        team: 'octocats'
+        team: 'vro-restricted'
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN_READ_TEAM }}
-    - name: "Check permissions"
+    - name: "Check permission"
+      if: github.event_name == 'workflow_dispatch'
       run: |
-        echo "isTeamMember: ${{ steps.checkUserMember.outputs.isTeamMember }}"
-        echo "teams: ${{ steps.checkUserMember.outputs.teams }}"
+        echo "${{ github.actor }} isTeamMember: ${{ steps.checkUserMember.outputs.isTeamMember }}"
+        echo "Member of teams: ${{ steps.checkUserMember.outputs.teams }}"
         if [ ${{ steps.checkUserMember.outputs.isTeamMember }} = 'false' ]; then
           echo "Only VRO-RESTRICTED team members can run this action!" | tee -a $GITHUB_STEP_SUMMARY
           exit 3
         fi
     - name: "Delete old releases in GHCR"
-      if: ${{ steps.checkUserMember.outputs.isTeamMember == 'true' }}
       uses: yoomlam/delete-older-releases@v0.3.0
       with:
         dry_run: ${{ inputs.dry_run || false }}
