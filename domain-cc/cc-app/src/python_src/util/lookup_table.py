@@ -2,13 +2,13 @@ import csv
 import os
 from abc import ABC
 
-from .dropdown_table_version import DROPDOWN_TABLE_VERSION
-from .table_version import TABLE_VERSION
+from .condition_dropdown_table_version import CONDITION_DROPDOWN_TABLE_VERSION
+from .diagnostic_code_table_version import TABLE_VERSION
 
 # https://docs.google.com/spreadsheets/d/18Mwnn9-cvJIRRupQyQ2zLYOBm3bd0pr4kKlsZtFiyc0/edit#gid=1711756762
 dc_table_name = f"Contention Classification Diagnostic Codes Lookup table master sheet - DC Lookup {TABLE_VERSION}.csv"
 # https://docs.google.com/spreadsheets/d/1A5JuYwn39mHE5Mk1HazN-mxCL2TENPeyUPHHhH10g_I/edit#gid=819850041
-dropdown_table_name = f"Contention dropdown to classification master - Dropdown Lookup {DROPDOWN_TABLE_VERSION}.csv"
+condition_dropdown_table_name = f"Contention dropdown to classification master - Dropdown Lookup {CONDITION_DROPDOWN_TABLE_VERSION}.csv"
 
 
 class LookupTable(ABC):
@@ -32,11 +32,11 @@ class LookupTable(ABC):
         return self.mappings.get(input_str, fallback)
 
 
-class DropdownLookupTable(LookupTable):
-    """Lookup table for mapping dropdown values to contention classification codes"""
+class ConditionDropdownLookupTable(LookupTable):
+    """Lookup table for mapping condition dropdown values to contention classification codes"""
 
     CSV_FILEPATH = os.path.join(
-        os.path.dirname(__file__), "data", "dropdown_lookup_table", dropdown_table_name
+        os.path.dirname(__file__), "data", "condition_dropdown_lookup_table", condition_dropdown_table_name
     )
     input_key = "CONTENTION_TEXT"
     output_key = "CLASSIFICATION_CODE"
