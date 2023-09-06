@@ -30,7 +30,7 @@ jobs:
           source scripts/setenv.sh
 
           # create basic auth token for RabbitMQ and export to github environment
-          BASIC_AUTH=`echo "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" | base64`
+          BASIC_AUTH=$(echo "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" | base64)
           echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}" >> "$GITHUB_ENV"
 
           export -p | sed 's/declare -x //'
@@ -76,7 +76,7 @@ jobs:
         run: |
           # Verify broker is up
           BROKER_QUERY=$(kafkacat -m 30 -b localhost:9092 -L)
-          if echo $BROKER_QUERY | grep -q '1 brokers'
+          if echo "$BROKER_QUERY" | grep -q '1 brokers'
           then
             echo "Found Broker: $BROKER_QUERY"
           else
@@ -121,7 +121,7 @@ jobs:
         run: |
           source scripts/setenv.sh
 
-          psql postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/vro -c \
+          psql "postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/vro" -c \
           "SELECT *
             FROM
               claims.bie_contention_event
@@ -135,8 +135,8 @@ jobs:
               -- This is the contention id used in BieKafkaApplicationTest
               contention_id=1234567890
           ")
-          echo $RESULTS
-          if echo $RESULTS | grep -q 'count | 1'
+          echo "$RESULTS"
+          if echo "$RESULTS" | grep -q 'count | 1'
           then
             echo "Found record in DB."
           else

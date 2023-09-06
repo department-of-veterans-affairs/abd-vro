@@ -18,7 +18,7 @@ jobs:
         run: |
           echo "first_line=$(echo "${{github.event.head_commit.message}}" | head -n 1)" >> "$GITHUB_OUTPUT"
 
-          if [ $(echo "${{github.event.head_commit.message}}" | wc -l) -gt 1 ]; then
+          if [ "$(echo "${{github.event.head_commit.message}}" | wc -l)" -gt 1 ]; then
             echo "multiline=true" >> "$GITHUB_OUTPUT"
           else
             echo "multiline=false" >> "$GITHUB_OUTPUT"

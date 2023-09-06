@@ -164,7 +164,7 @@ jobs:
 
           # To override pinned image version default, export env variable, e.g., 'apigateway_VER' for Helm chart 'api-gateway'
           VAR_PREFIX=$(bashVarPrefix "${{inputs.helm_chart}}")
-          eval export ${VAR_PREFIX}_VER="${{inputs.image_tag}}"
+          eval export "${VAR_PREFIX}_VER=${{inputs.image_tag}}"
 
           # Run deploy_prep_script to set/override environment variables used by deploy.sh
           eval ${{inputs.deploy_prep_script}}
@@ -186,7 +186,7 @@ jobs:
           {
             echo '## After update'
             echo '```'
-            helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
+            helm get values "${{ env.RELEASE_NAME }}" -n "va-abd-rrd-${{ inputs.target_env }}"
             echo '```'
           } | tee -a "$GITHUB_STEP_SUMMARY"
 
