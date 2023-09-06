@@ -86,7 +86,7 @@ jobs:
             fi
           fi
 
-          echo "continue=${CONTINUE:-true}" >> $GITHUB_OUTPUT
+          echo "continue=${CONTINUE:-true}" >> "$GITHUB_OUTPUT"
 
   publish-to-ghcr:
     name: Publish to GHCR
@@ -134,11 +134,11 @@ jobs:
             PUBLISH_MODE=${{ inputs.publish_mode }}
           fi
 
-          echo "image_tag=${IMG_TAG}" >> $GITHUB_OUTPUT
-          echo "image_prefix=${IMG_PREFIX}" >> $GITHUB_OUTPUT
-          echo "run_tests=${RUN_GRADLE_TESTS}" >> $GITHUB_OUTPUT
-          echo "run_secrel=${RUN_SECREL}" >> $GITHUB_OUTPUT
-          echo "publish_mode=${PUBLISH_MODE}" >> $GITHUB_OUTPUT
+          echo "image_tag=${IMG_TAG}" >> "$GITHUB_OUTPUT"
+          echo "image_prefix=${IMG_PREFIX}" >> "$GITHUB_OUTPUT"
+          echo "run_tests=${RUN_GRADLE_TESTS}" >> "$GITHUB_OUTPUT"
+          echo "run_secrel=${RUN_SECREL}" >> "$GITHUB_OUTPUT"
+          echo "publish_mode=${PUBLISH_MODE}" >> "$GITHUB_OUTPUT"
 
       - name: "DEBUG"
         run: |

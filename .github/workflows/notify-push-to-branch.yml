@@ -16,15 +16,15 @@ jobs:
       - name: "Get PR title"
         id: get-pr-title
         run: |
-          echo "first_line=$(echo "${{github.event.head_commit.message}}" | head -n 1)" >> $GITHUB_OUTPUT
+          echo "first_line=$(echo "${{github.event.head_commit.message}}" | head -n 1)" >> "$GITHUB_OUTPUT"
 
           if [ $(echo "${{github.event.head_commit.message}}" | wc -l) -gt 1 ]; then
-            echo "multiline=true" >> $GITHUB_OUTPUT
+            echo "multiline=true" >> "$GITHUB_OUTPUT"
           else
-            echo "multiline=false" >> $GITHUB_OUTPUT
+            echo "multiline=false" >> "$GITHUB_OUTPUT"
           fi
 
-          echo "short_sha=${GITHUB_SHA:0:7}" >> $GITHUB_OUTPUT
+          echo "short_sha=${GITHUB_SHA:0:7}" >> "$GITHUB_OUTPUT"
 
       - name: "Notify Slack"
         id: notify-slack
