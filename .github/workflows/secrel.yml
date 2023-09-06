@@ -233,26 +233,26 @@ jobs:
         run: |
           URL=${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}
           if [ "${{needs.publish-to-ghcr.result}}" == 'failure' ]; then
-            echo "WORKFLOW_STATE_TEXT=:panda_blank: <$URL|Publishing> failed!" >> $GITHUB_ENV
-            echo 'WORKFLOW_STATE_EMOJI=x' >> $GITHUB_ENV
+            echo "WORKFLOW_STATE_TEXT=:panda_blank: <$URL|Publishing> failed!" >> "$GITHUB_ENV"
+            echo 'WORKFLOW_STATE_EMOJI=x' >> "$GITHUB_ENV"
           elif [ "${{needs.secrel.result}}" == 'failure' ]; then
-            echo "WORKFLOW_STATE_TEXT=:panda_cop: <$URL|SecRel> failed!" >> $GITHUB_ENV
-            echo 'WORKFLOW_STATE_EMOJI=x' >> $GITHUB_ENV
+            echo "WORKFLOW_STATE_TEXT=:panda_cop: <$URL|SecRel> failed!" >> "$GITHUB_ENV"
+            echo 'WORKFLOW_STATE_EMOJI=x' >> "$GITHUB_ENV"
           elif [ "${{needs.secrel.result}}" == 'success' ]; then
-            echo "WORKFLOW_STATE_TEXT=:panda-yay: SecRel passed and images signed!" >> $GITHUB_ENV
-            echo 'WORKFLOW_STATE_EMOJI=panda-yay' >> $GITHUB_ENV
+            echo "WORKFLOW_STATE_TEXT=:panda-yay: SecRel passed and images signed!" >> "$GITHUB_ENV"
+            echo 'WORKFLOW_STATE_EMOJI=panda-yay' >> "$GITHUB_ENV"
           elif [ "${{needs.publish-to-ghcr.result}}" == 'skipped' ]; then
-            echo "WORKFLOW_STATE_TEXT=:black_square_for_stop: <$URL|Publishing> skipped" >> $GITHUB_ENV
-            echo 'WORKFLOW_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
+            echo "WORKFLOW_STATE_TEXT=:black_square_for_stop: <$URL|Publishing> skipped" >> "$GITHUB_ENV"
+            echo 'WORKFLOW_STATE_EMOJI=black_square_for_stop' >> "$GITHUB_ENV"
           elif [ "${{needs.publish-to-ghcr.outputs.run-secrel}}" == "true" ] && [ "${{needs.secrel.result}}" != 'success' ]; then
-            echo "WORKFLOW_STATE_TEXT=:black_square_for_stop: <$URL|SecRel> ${{needs.secrel.result}}" >> $GITHUB_ENV
-            echo 'WORKFLOW_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
+            echo "WORKFLOW_STATE_TEXT=:black_square_for_stop: <$URL|SecRel> ${{needs.secrel.result}}" >> "$GITHUB_ENV"
+            echo 'WORKFLOW_STATE_EMOJI=black_square_for_stop' >> "$GITHUB_ENV"
           elif [ "${{needs.publish-to-ghcr.outputs.run-secrel}}" == "false" ] && [ "${{needs.publish-to-ghcr.result}}" == 'success' ]; then
-            echo "WORKFLOW_STATE_TEXT=:heavy_check_mark: Run completed (without SecRel scans or signing images)" >> $GITHUB_ENV
-            echo 'WORKFLOW_STATE_EMOJI=heavy_check_mark' >> $GITHUB_ENV
+            echo "WORKFLOW_STATE_TEXT=:heavy_check_mark: Run completed (without SecRel scans or signing images)" >> "$GITHUB_ENV"
+            echo 'WORKFLOW_STATE_EMOJI=heavy_check_mark' >> "$GITHUB_ENV"
           else
-            echo "WORKFLOW_STATE_TEXT=publish: ${{needs.publish-to-ghcr.result}}; secrel: ${{needs.secrel.result}}" >> $GITHUB_ENV
-            echo 'WORKFLOW_STATE_EMOJI=shrug' >> $GITHUB_ENV
+            echo "WORKFLOW_STATE_TEXT=publish: ${{needs.publish-to-ghcr.result}}; secrel: ${{needs.secrel.result}}" >> "$GITHUB_ENV"
+            echo 'WORKFLOW_STATE_EMOJI=shrug' >> "$GITHUB_ENV"
           fi
 
       - name: "Slack thread: Post final status"
