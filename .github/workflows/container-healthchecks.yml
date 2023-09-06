@@ -81,7 +81,7 @@ jobs:
             docker ps --all
             echo ''
             echo '```'
-          } | tee -a $GITHUB_STEP_SUMMARY
+          } | tee -a "$GITHUB_STEP_SUMMARY"
 
           # Ignore mocks and redis-service since they don't have health checks
           # TODO: add health check for svc-bgs-api; ignore it for now

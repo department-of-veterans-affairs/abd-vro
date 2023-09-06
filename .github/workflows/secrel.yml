@@ -67,22 +67,22 @@ jobs:
               echo "Skipping this workflow b/c it was triggered by a commit that pins image versions \
           immediately after a release. Otherwise, the workflow will fail.
           Until the release images are published to GHCR (so that they're available for comparison), \
-          the 'Publish to GHCR' step of this workflow will fail." | tee -a $GITHUB_STEP_SUMMARY
+          the 'Publish to GHCR' step of this workflow will fail." | tee -a "$GITHUB_STEP_SUMMARY"
 
             elif [ "${{ startsWith(github.event.head_commit.message, 'Automated commit:') }}" == "true" ]; then
               CONTINUE=false
               echo "Skipping this workflow b/c it was triggered by an automated commit that \
-          doesn't change container images." | tee -a $GITHUB_STEP_SUMMARY
+          doesn't change container images." | tee -a "$GITHUB_STEP_SUMMARY"
             fi
           fi
 
           if [ "${{ github.event_name }}" == "pull_request" ]; then
             if [ "${{ startsWith(github.head_ref, 'dependabot/')}}" == "true" ]; then
               CONTINUE=true
-              echo "Running SecRel against a Dependabot PR" | tee -a $GITHUB_STEP_SUMMARY
+              echo "Running SecRel against a Dependabot PR" | tee -a "$GITHUB_STEP_SUMMARY"
             else
               CONTINUE=false
-              echo "For PRs, SecRel runs against only Dependabot PR" | tee -a $GITHUB_STEP_SUMMARY
+              echo "For PRs, SecRel runs against only Dependabot PR" | tee -a "$GITHUB_STEP_SUMMARY"
             fi
           fi
 

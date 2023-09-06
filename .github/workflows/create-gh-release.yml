@@ -23,7 +23,7 @@ jobs:
             # Subsequent runs are undesirable, so don't continue.
             # See notes at https://github.com/department-of-veterans-affairs/abd-vro/issues/1955
             echo "continue=false" >> "$GITHUB_OUTPUT"
-            echo "Skipping b/c GitHub release ${{ github.ref_name }} already exists." | tee -a $GITHUB_STEP_SUMMARY
+            echo "Skipping b/c GitHub release ${{ github.ref_name }} already exists." | tee -a "$GITHUB_STEP_SUMMARY"
           else
             echo "continue=true" >> "$GITHUB_OUTPUT"
           fi

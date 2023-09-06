@@ -124,7 +124,7 @@ jobs:
               echo '```'
               helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
               echo '```'
-            } | tee -a $GITHUB_STEP_SUMMARY
+            } | tee -a "$GITHUB_STEP_SUMMARY"
           else
             echo "No existing Helm release; creating a new Helm release: ${{ env.RELEASE_NAME }}"
           fi
@@ -160,7 +160,7 @@ jobs:
             echo '```'
             imageVersions | sort
             echo '```'
-          } | tee -a $GITHUB_STEP_SUMMARY
+          } | tee -a "$GITHUB_STEP_SUMMARY"
 
           # To override pinned image version default, export env variable, e.g., 'apigateway_VER' for Helm chart 'api-gateway'
           VAR_PREFIX=$(bashVarPrefix "${{inputs.helm_chart}}")
@@ -175,7 +175,7 @@ jobs:
             echo '```'
             export -p | sed 's/declare -x //' | grep '_VER='
             echo '```'
-          } | tee -a $GITHUB_STEP_SUMMARY
+          } | tee -a "$GITHUB_STEP_SUMMARY"
           echo "::endgroup::"
 
           echo "::group::Upgrading Helm chart: ${{inputs.helm_chart}}"
@@ -188,7 +188,7 @@ jobs:
             echo '```'
             helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
             echo '```'
-          } | tee -a $GITHUB_STEP_SUMMARY
+          } | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: "Slack thread: Post failed status message"
         if: failure()
