@@ -49,8 +49,8 @@ jobs:
       run: |
         echo "${{ github.actor }} isTeamMember: ${{ steps.checkUserMember.outputs.isTeamMember }}"
         echo "Member of teams: ${{ steps.checkUserMember.outputs.teams }}"
-        if [ ${{ steps.checkUserMember.outputs.isTeamMember }} = 'false' ]; then
-          echo "Only VRO-RESTRICTED team members can run this action!" | tee -a $GITHUB_STEP_SUMMARY
+        if [ "${{ steps.checkUserMember.outputs.isTeamMember }}" = 'false' ]; then
+          echo "Only VRO-RESTRICTED team members can run this action!" | tee -a "$GITHUB_STEP_SUMMARY"
           exit 3
         fi
 
