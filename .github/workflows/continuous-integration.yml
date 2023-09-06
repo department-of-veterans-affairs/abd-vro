@@ -1,16 +1,35 @@
-name: "3. Continuous Integration (run tests and checks)"
-# Runs tests and checks with merged code in the public repo so that the PR author is notified of failures.
-# The SecRel workflow (in the internal repo) publishes `dev_` images, regardless of test failures, for manual testing.
+name: "CI"
+# Runs Continuous Integration tests and checks
 # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/CI-CD-Workflows
 
 on:
+  pull_request:
+    branches: [main, develop, domain-*]
+    types: [ready_for_review, synchronize, opened, reopened]
+
   push:
     branches: [ develop, domain-* ]
 
   # Allow manual triggering
   workflow_dispatch:
 
+concurrency:
+  group: ci-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
+  nondraft-pr:
+    # Adding an `if:` that evaluates to false for this nondraft-pr job prevents other dependent jobs from running.
+    # For github.event.pull_request fields, see
+    # https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request
+    if: github.event_name != 'pull_request' ||
+      (github.event_name == 'pull_request' && !github.event.pull_request.draft )
+    runs-on: ubuntu-latest
+    steps:
+    - name: "DEBUG"
+      run: |
+        echo "${{ github.event_name }} ${{ github.event.pull_request.draft }}"
+
   lint-and-test:
     uses: ./.github/workflows/test-code.yml
     secrets: inherit
@@ -20,21 +39,26 @@ jobs:
     secrets: inherit
 
   container-healthchecks:
+    needs: nondraft-pr
     uses: ./.github/workflows/container-healthchecks.yml
     secrets: inherit
 
   xample-domain:
+    needs: nondraft-pr
     uses: ./.github/workflows/xample-integration-test.yml
     secrets: inherit
 
   api-gateway:
+    needs: nondraft-pr
     uses: ./.github/workflows/api-gateway-integration-test.yml
     secrets: inherit
 
   svc-bgs-api:
+    needs: nondraft-pr
     uses: ./.github/workflows/svc-bgs-api-integration-test.yml
     secrets: inherit
 
-  bie-kafka-end-to-end:
+  svc-bie-kafka-end-to-end:
+    needs: nondraft-pr
     uses: ./.github/workflows/bie-kafka-end2end-test.yml
     secrets: inherit

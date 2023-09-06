@@ -7,17 +7,13 @@ on:
   # Allow being called by another GitHub Action
   workflow_call:
 
-  pull_request:
-    branches: [ develop ]
-
 env:
   SLACK_EXCEPTION_WEBHOOK: "http://mock-slack:20100/slack-messages"
   VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"
 
 jobs:
   container-healthcheck:
-    if: github.repository == 'department-of-veterans-affairs/abd-vro' &&
-        ((github.event_name == 'pull_request' && startsWith(github.head_ref, 'dependabot/')) || github.event_name != 'pull_request')
+    if: github.repository == 'department-of-veterans-affairs/abd-vro'
     runs-on: ubuntu-latest
 
     steps:
