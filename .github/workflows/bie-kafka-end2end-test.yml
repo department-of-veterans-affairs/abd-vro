@@ -114,35 +114,34 @@ jobs:
             ./gradlew :svc-bie-kafka:integrationTest
           fi
 
-      - name: 'Sleep to give time for message to travel end to end from kafka to saved in database'
-        run: sleep 5
 
       - name: 'Check for saved DB entry in Postgres'
         run: |
           source scripts/setenv.sh
 
-          psql "postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/vro" -c \
-          "SELECT *
-            FROM
-              claims.bie_contention_event
-          "
+          # Retry to 5 times to allow time for message to travel from kafka to database
+          for i in {1..5}; do
+            sleep 5
+            echo "Attempt $i"
+            # For debugging
+            echo "::group::Table bie_contention_event contents"
+            psql "postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/vro" -c \
+              "SELECT * FROM claims.bie_contention_event"
+            echo "::endgroup::"
 
-          RESULTS=$(psql postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/vro -x -c \
-          "SELECT COUNT(*)
-            FROM
-              claims.bie_contention_event
-            WHERE
+            RESULT=$(psql postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/vro -x -c \
+            "SELECT COUNT(*) FROM claims.bie_contention_event
               -- This is the contention id used in BieKafkaApplicationTest
-              contention_id=1234567890
-          ")
-          echo "$RESULTS"
-          if echo "$RESULTS" | grep -q 'count | 1'
-          then
-            echo "Found record in DB."
-          else
-            echo "Could not find record in DB."
-            exit 10
-          fi
+              WHERE contention_id=1234567890
+            ")
+            echo "$RESULT"
+            if echo "$RESULT" | grep 'count | 1'; then
+              break
+            fi
+          done
+
+          # This will cause a failure if expected result is not found
+          echo "$RESULT" | grep 'count | 1'
 
       - name: "Collect docker logs"
         if: always()
