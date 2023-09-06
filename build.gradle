@@ -6,7 +6,7 @@ buildscript {
   // There's a conflict between versions of jgit between spotless and axion release plugin
   configurations.classpath {
     resolutionStrategy {
-      force 'org.eclipse.jgit:org.eclipse.jgit:6.6.0.202305301015-r'
+      force 'org.eclipse.jgit:org.eclipse.jgit:6.7.0.202309050840-r'
     }
   }
 }
