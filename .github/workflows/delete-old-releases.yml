@@ -16,12 +16,12 @@ on:
       older_than:
         description: 'Delete pre-releases published older than this many days ago'
         required: true
-        type: number
+        type: string
         default: 45
       keep_latest:
         description: 'Number of latest pre-releases to keep'
         required: true
-        type: number
+        type: string
         default: 10
       tag_pattern:
         description: 'Pre-releases matching this git tag regex pattern'

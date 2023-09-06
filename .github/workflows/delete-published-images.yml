@@ -11,12 +11,12 @@ on:
       retain_days:
         description: 'Delete images older than this many days'
         required: true
-        type: number
+        type: string
         default: 30
       keep_last:
         description: 'Minimum versions to keep'
         required: true
-        type: number
+        type: string
         default: 10
       dry_run:
         description: 'Always do a dry-run first'

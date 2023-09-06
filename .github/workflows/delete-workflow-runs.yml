@@ -11,12 +11,12 @@ on:
       retain_days:
         description: 'Delete runs older than this many days'
         required: true
-        type: number
+        type: string
         default: 30
       min_runs:
         description: 'Minimum runs to keep'
         required: true
-        type: number
+        type: string
         default: 20
 
 jobs:

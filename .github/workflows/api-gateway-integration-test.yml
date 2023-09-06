@@ -113,7 +113,7 @@ jobs:
       - name: "API Gateway Rest Controller GET /hello - Validate Response"
         run: |
           # Validate Response:
-          if [ "${{ fromJson(steps.apiGatewayHello.outputs.response).data }}" != "Hi!"]; then
+          if [ "${{ fromJson(steps.apiGatewayHello.outputs.response).data }}" != "Hi!" ]; then
             echo "Unexpected Response: ${{ steps.apiGatewayHello.outputs.response }}"
             exit 10
           else
