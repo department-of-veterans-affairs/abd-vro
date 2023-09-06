@@ -7,6 +7,7 @@ on:
 env:
   # Id for the #benefits-vro-devops Slack channel
   SLACK_CHANNEL: C04CA47HV96
+  HEAD_COMMIT_MSG: ${{ github.event.head_commit.message }}
 
 jobs:
   notify_push:
@@ -16,9 +17,9 @@ jobs:
       - name: "Get PR title"
         id: get-pr-title
         run: |
-          echo "first_line=$(echo "${{github.event.head_commit.message}}" | head -n 1)" >> "$GITHUB_OUTPUT"
+          echo "first_line=$(echo "$HEAD_COMMIT_MSG" | head -n 1)" >> "$GITHUB_OUTPUT"
 
-          if [ "$(echo "${{github.event.head_commit.message}}" | wc -l)" -gt 1 ]; then
+          if [ "$(echo "$HEAD_COMMIT_MSG" | wc -l)" -gt 1 ]; then
             echo "multiline=true" >> "$GITHUB_OUTPUT"
           else
             echo "multiline=false" >> "$GITHUB_OUTPUT"

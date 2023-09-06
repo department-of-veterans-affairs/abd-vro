@@ -46,6 +46,7 @@ on:
 env:
   # Id for the #benefits-vro-devops Slack channel
   SLACK_CHANNEL: C04CA47HV96
+  HEAD_COMMIT_MSG: "${{ github.event.head_commit.message }}"
 
 jobs:
   gate-check:
@@ -62,14 +63,14 @@ jobs:
 
           # Use triggering_actor instead of actor to allow manually re-running this workflow as another user
           if [ "${{github.triggering_actor}}" == "abd-vro-machine" ]; then
-            if [ "${{ startsWith(github.event.head_commit.message, 'Automated commit: Pin versions') }}" == "true" ]; then
+            if echo "$HEAD_COMMIT_MSG" | grep '^Automated commit: Pin versions'; then
               CONTINUE=false
               echo "Skipping this workflow b/c it was triggered by a commit that pins image versions \
           immediately after a release. Otherwise, the workflow will fail.
           Until the release images are published to GHCR (so that they're available for comparison), \
           the 'Publish to GHCR' step of this workflow will fail." | tee -a "$GITHUB_STEP_SUMMARY"
 
-            elif [ "${{ startsWith(github.event.head_commit.message, 'Automated commit:') }}" == "true" ]; then
+            elif echo "$HEAD_COMMIT_MSG" | grep '^Automated commit:'; then
               CONTINUE=false
               echo "Skipping this workflow b/c it was triggered by an automated commit that \
           doesn't change container images." | tee -a "$GITHUB_STEP_SUMMARY"
@@ -77,7 +78,7 @@ jobs:
           fi
 
           if [ "${{ github.event_name }}" == "pull_request" ]; then
-            if [ "${{ startsWith(github.head_ref, 'dependabot/')}}" == "true" ]; then
+            if echo "$GITHUB_HEAD_REF" | grep '^dependabot/'; then
               CONTINUE=true
               echo "Running SecRel against a Dependabot PR" | tee -a "$GITHUB_STEP_SUMMARY"
             else
