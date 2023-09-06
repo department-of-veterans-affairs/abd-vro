@@ -74,13 +74,14 @@ jobs:
 
       - name: 'Wait for Kafka to be ready'
         run: |
-          # Verify broker is up
+          # Verify broker is up with 30 second timeout
           BROKER_QUERY=$(kafkacat -m 30 -b localhost:9092 -L)
           if echo "$BROKER_QUERY" | grep -q '1 brokers'
           then
             echo "Found Broker: $BROKER_QUERY"
           else
             echo "Count not find Kafka broker"
+            exit 5
           fi
 
       - name: 'Wait for xample-workflow to be ready'
@@ -114,14 +115,13 @@ jobs:
             ./gradlew :svc-bie-kafka:integrationTest
           fi
 
-
       - name: 'Check for saved DB entry in Postgres'
         run: |
           source scripts/setenv.sh
 
           # Retry to 5 times to allow time for message to travel from kafka to database
           for i in {1..5}; do
-            sleep 5
+            sleep 10
             echo "Attempt $i"
             # For debugging
             echo "::group::Table bie_contention_event contents"
@@ -135,13 +135,13 @@ jobs:
               WHERE contention_id=1234567890
             ")
             echo "$RESULT"
-            if echo "$RESULT" | grep 'count | 1'; then
+            if echo "$RESULT" | grep -q 'count | 1'; then
               break
             fi
           done
 
           # This will cause a failure if expected result is not found
-          echo "$RESULT" | grep 'count | 1'
+          echo "$RESULT" | grep -q 'count | 1'
 
       - name: "Collect docker logs"
         if: always()
