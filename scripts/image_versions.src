@@ -30,3 +30,5 @@ apigateway_VER="v3.4.12"
 dbinit_VER="v3.4.12"
 svclighthouseapi_VER="v3.4.12"
 eemaxcfiapp_VER="v3.4.12"
+# Wed Sep  6 17:58:41 UTC 2023 -- v3.4.13
+ccapp_VER="v3.4.13"
