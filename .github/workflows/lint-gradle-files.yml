@@ -2,7 +2,7 @@ name: "Lint build.gradle files"
 on:
   push:
     paths:
-      - ./**/*.gradle
+      - '**.gradle'
 
   # Allow manual triggering
   workflow_dispatch:
@@ -13,5 +13,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: "Lint Gradle"
+      - name: "Lint Gradle files"
         run: ./gradlew lintGradle
