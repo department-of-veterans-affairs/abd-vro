@@ -1,8 +1,8 @@
 name: "Lint build.gradle files"
 on:
   push:
-    paths:
-      - '**.gradle'
+    branches: [ develop, main ]
+    paths: [ '**.gradle' ]
 
   # Allow manual triggering
   workflow_dispatch:
