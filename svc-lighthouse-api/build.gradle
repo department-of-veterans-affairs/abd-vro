@@ -15,9 +15,7 @@ dependencies {
 
   def hapi_fhir_version="6.8.0"
   implementation "ca.uhn.hapi.fhir:hapi-fhir-base:${hapi_fhir_version}"
-  implementation("ca.uhn.hapi.fhir:hapi-fhir-server-openapi:${hapi_fhir_version}") {
-    exclude group: 'xalan', module: 'xalan'
-  }
+  implementation "ca.uhn.hapi.fhir:hapi-fhir-server-openapi:${hapi_fhir_version}"
 
   implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
   implementation 'org.apache.commons:commons-lang3:3.13.0'
