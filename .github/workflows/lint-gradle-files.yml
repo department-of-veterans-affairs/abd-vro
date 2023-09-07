@@ -4,6 +4,9 @@ on:
     paths:
       - ./**/*.gradle
 
+  # Allow manual triggering
+  workflow_dispatch:
+
 jobs:
   lint-gradle-files:
     runs-on: ubuntu-latest
