@@ -41,7 +41,6 @@ include ':shared:lib-camel-connector'
 include ':svc-bgs-api'
 include ':svc-bip-api'
 include ':svc-lighthouse-api'
-include ':svc-hoppy-usage'
 include ':svc-bie-kafka'
 
 include ':domain-xample:xample-api-controller'
