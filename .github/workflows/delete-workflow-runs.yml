@@ -20,7 +20,32 @@ on:
         default: 20
 
 jobs:
+  gate-check:
+    # Adding an `if:` that evaluates to false for this gate-check job prevents other dependent jobs from running.
+    runs-on: ubuntu-latest
+    steps:
+    - id: checkUserMember
+      # Only check for manual runs, not scheduled runs
+      if: github.event_name == 'workflow_dispatch'
+      uses: tspascoal/get-user-teams-membership@v2
+      with:
+        username: ${{ github.actor }}
+        team: 'vro-restricted'
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN_READ_TEAM }}
+    - name: "Check permission"
+      id: check-permission
+      # Only check for manual runs, not scheduled runs
+      if: github.event_name == 'workflow_dispatch'
+      run: |
+        echo "${{ github.actor }} isTeamMember: ${{ steps.checkUserMember.outputs.isTeamMember }}"
+        echo "Member of teams: ${{ steps.checkUserMember.outputs.teams }}"
+        if [ ${{ steps.checkUserMember.outputs.isTeamMember }} = 'false' ]; then
+          echo "Only VRO-RESTRICTED team members can run this action!" | tee -a "$GITHUB_STEP_SUMMARY"
+          exit 3
+        fi
+
   delete_runs:
+    needs: gate-check
     runs-on: ubuntu-latest
     steps:
       - name: "Delete old workflow runs"
