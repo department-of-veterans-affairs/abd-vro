@@ -33,3 +33,8 @@ eemaxcfiapp_VER="v3.4.12"
 # Wed Sep  6 17:58:41 UTC 2023 -- v3.4.13
 ccapp_VER="v3.4.13"
 # Thu Sep  7 20:28:30 UTC 2023 -- v3.4.14
+# Tue Sep 12 20:23:04 UTC 2023 -- v3.4.15
+app_VER="v3.4.15"
+svcbgsapi_VER="v3.4.15"
+svcbiekafka_VER="v3.4.15"
+xampleworkflows_VER="v3.4.15"
