@@ -50,10 +50,12 @@ dependencies {
         implementation('org.xerial.snappy:snappy-java:1.1.10.1')
 
         implementation('com.google.guava:guava:32.0.1-jre')
+        implementation 'org.bouncycastle:bcpkix-jdk18on:1.74'
+        implementation 'org.webjars:swagger-ui:4.1.3'
+        implementation 'org.springframework.kafka:spring-kafka:2.9.11'
 
         // These are used indirectly but we need to specify versions, otherwise build error
         annotationProcessor "org.springframework.boot:spring-boot-autoconfigure-processor:${spring_boot_version}"
         annotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct_version}"
-
     }
 }
