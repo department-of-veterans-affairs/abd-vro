@@ -1,0 +1,6 @@
+fastapi==0.97.*
+hoppy @ git+https://github.com/department-of-veterans-affairs/abd-vro.git#subdirectory=shared/lib-hoppy
+httpx==0.24.*
+pytest==7.3.1
+starlette>=0.27.0
+uvicorn[standard]==0.20.*
