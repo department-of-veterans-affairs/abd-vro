@@ -39,7 +39,7 @@ jobs:
               origin/develop..origin/${{ inputs.domain_branch }}
             echo ''
             echo '```'
-          } | tee -a $GITHUB_STEP_SUMMARY
+          } | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: "Fast-forward merge ${{ inputs.domain_branch }}"
         run: |
@@ -58,4 +58,4 @@ jobs:
             cat git-graph.log
             echo ''
             echo '```'
-          } | tee -a $GITHUB_STEP_SUMMARY
+          } | tee -a "$GITHUB_STEP_SUMMARY"

@@ -16,12 +16,12 @@ on:
       older_than:
         description: 'Delete pre-releases published older than this many days ago'
         required: true
-        type: number
+        type: string
         default: 45
       keep_latest:
         description: 'Number of latest pre-releases to keep'
         required: true
-        type: number
+        type: string
         default: 10
       tag_pattern:
         description: 'Pre-releases matching this git tag regex pattern'
@@ -30,7 +30,32 @@ on:
         default: ^v
 
 jobs:
+  gate-check:
+    # Adding an `if:` that evaluates to false for this gate-check job prevents other dependent jobs from running.
+    runs-on: ubuntu-latest
+    steps:
+    - id: checkUserMember
+      # Only check for manual runs, not scheduled runs
+      if: github.event_name == 'workflow_dispatch'
+      uses: tspascoal/get-user-teams-membership@v2
+      with:
+        username: ${{ github.actor }}
+        team: 'vro-restricted'
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN_READ_TEAM }}
+    - name: "Check permission"
+      id: check-permission
+      # Only check for manual runs, not scheduled runs
+      if: github.event_name == 'workflow_dispatch'
+      run: |
+        echo "${{ github.actor }} isTeamMember: ${{ steps.checkUserMember.outputs.isTeamMember }}"
+        echo "Member of teams: ${{ steps.checkUserMember.outputs.teams }}"
+        if [ "${{ steps.checkUserMember.outputs.isTeamMember }}" = 'false' ]; then
+          echo "Only VRO-RESTRICTED team members can run this action!" | tee -a "$GITHUB_STEP_SUMMARY"
+          exit 3
+        fi
+
   delete_releases:
+    needs: gate-check
     # Deletions in public repo will be automatically propagated to internal repo when mirror.yml runs, at which point:
     # - Git release tags (associated with GitHub pre-releases) will be deleted in the internal repo
     # - Tag deletions will result in GitHub releases disappearing in internal repo: https://github.com/department-of-veterans-affairs/abd-vro-internal/releases

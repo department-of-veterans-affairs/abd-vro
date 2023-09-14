@@ -84,9 +84,33 @@ env:
   SHUTDOWN_FIRST: ${{ inputs.shutdown }}
 
 jobs:
-  update-deployment:
-    # Required secrets are set in the specific repo
+  gate-check:
+    # Adding an `if:` that evaluates to false for this gate-check job prevents other dependent jobs from running.
     if: github.repository == 'department-of-veterans-affairs/abd-vro-internal'
+    runs-on: ubuntu-latest
+    steps:
+    - id: checkUserMember
+      # Only check for manual runs against prod
+      if: github.event_name == 'workflow_dispatch' && inputs.target_env == 'prod'
+      uses: tspascoal/get-user-teams-membership@v2
+      with:
+        username: ${{ github.actor }}
+        team: 'vro-restricted'
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN_READ_TEAM }}
+    - name: "Check permission"
+      id: check-permission
+      # Only check for manual runs against prod
+      if: github.event_name == 'workflow_dispatch' && inputs.target_env == 'prod'
+      run: |
+        echo "${{ github.actor }} isTeamMember: ${{ steps.checkUserMember.outputs.isTeamMember }}"
+        echo "Member of teams: ${{ steps.checkUserMember.outputs.teams }}"
+        if [ ${{ steps.checkUserMember.outputs.isTeamMember }} = 'false' ]; then
+          echo "Only VRO-RESTRICTED team members can run this action for ${{inputs.target_env}}!" | tee -a "$GITHUB_STEP_SUMMARY"
+          exit 3
+        fi
+
+  update-deployment:
+    needs: gate-check
     runs-on: ubuntu-latest
     steps:
       - name: "Slack: workflow triggered"
@@ -124,7 +148,7 @@ jobs:
               echo '```'
               helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
               echo '```'
-            } | tee -a $GITHUB_STEP_SUMMARY
+            } | tee -a "$GITHUB_STEP_SUMMARY"
           else
             echo "No existing Helm release; creating a new Helm release: ${{ env.RELEASE_NAME }}"
           fi
@@ -160,11 +184,11 @@ jobs:
             echo '```'
             imageVersions | sort
             echo '```'
-          } | tee -a $GITHUB_STEP_SUMMARY
+          } | tee -a "$GITHUB_STEP_SUMMARY"
 
           # To override pinned image version default, export env variable, e.g., 'apigateway_VER' for Helm chart 'api-gateway'
           VAR_PREFIX=$(bashVarPrefix "${{inputs.helm_chart}}")
-          eval export ${VAR_PREFIX}_VER="${{inputs.image_tag}}"
+          eval export "${VAR_PREFIX}_VER=${{inputs.image_tag}}"
 
           # Run deploy_prep_script to set/override environment variables used by deploy.sh
           eval ${{inputs.deploy_prep_script}}
@@ -175,7 +199,7 @@ jobs:
             echo '```'
             export -p | sed 's/declare -x //' | grep '_VER='
             echo '```'
-          } | tee -a $GITHUB_STEP_SUMMARY
+          } | tee -a "$GITHUB_STEP_SUMMARY"
           echo "::endgroup::"
 
           echo "::group::Upgrading Helm chart: ${{inputs.helm_chart}}"
@@ -186,9 +210,9 @@ jobs:
           {
             echo '## After update'
             echo '```'
-            helm get values ${{ env.RELEASE_NAME }} -n va-abd-rrd-${{ inputs.target_env }}
+            helm get values "${{ env.RELEASE_NAME }}" -n "va-abd-rrd-${{ inputs.target_env }}"
             echo '```'
-          } | tee -a $GITHUB_STEP_SUMMARY
+          } | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: "Slack thread: Post failed status message"
         if: failure()
