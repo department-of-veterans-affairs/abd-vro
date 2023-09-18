@@ -107,6 +107,33 @@ services:
     networks:
       - vro_intranet
 
+  mock-bie-schema-registry:
+    profiles: ["all","kafka"]
+    image: va/vro_mocks-mock-schema-registry:latest
+    <<: [*common-sde-security, *common-security-opt]
+    depends_on:
+      - mock-bie-kafka
+    ports:
+      - "8081:8081"
+    environment:
+      <<: *common-vars
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://mock-bie-kafka:9092
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+    volumes:
+      - ./mock-bie-schema-registry/resources/avro:/schemas
+    command: |
+      bash -c "
+        echo Waiting for Kafka;
+        for schema in /schemas/events/*.avsc; do
+          subject=$(basename $schema .avsc)
+          curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json"
+           --data @$schema http://mock-bie-schema-registry:8081/subjects/$subject/versions;
+        done
+        sleep infinity"
+    networks:
+      - vro_intranet
+
   mock-bip-claims-api:
     profiles: ["all","bip"]
     image: va/vro_mocks-mock-bip-claims-api:latest
