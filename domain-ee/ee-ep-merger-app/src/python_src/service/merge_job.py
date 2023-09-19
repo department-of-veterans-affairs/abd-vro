@@ -1,40 +1,19 @@
-import logging
 from enum import Enum
 from uuid import UUID
 
 from pydantic import BaseModel, conint
 
 
-class NextEnum(str, Enum):
-    def next(self):
-        members = [member for member in NextEnum]
-        cur_index = members.index(self)
-        if cur_index + 1 < len(members):
-            next_member = NextEnum(members[cur_index + 1])
-            logging.info(next_member)
-            return next_member
-        else:
-            raise ValueError("No more members.")
-
-
-class JobState(NextEnum):
-    ERROR = 'ERROR'
+class JobState(str, Enum):
+    COMPLETED_ERROR = 'COMPLETED_ERROR'
     PENDING = 'PENDING'
     RUNNING_SET_TEMP_STATION_OF_JURISDICTION = 'RUNNING_SET_TEMP_STATION_OF_JURISDICTION'
     RUNNING_GET_PENDING_CLAIM_CONTENTIONS = 'RUNNING_GET_PENDING_CLAIM_CONTENTIONS'
     RUNNING_GET_SUPP_CLAIM_CONTENTIONS = 'RUNNING_GET_SUPP_CLAIM_CONTENTIONS'
     RUNNING_MERGE_CONTENTIONS = 'RUNNING_MERGE_CONTENTIONS'
     RUNNING_UPDATE_PENDING_CLAIM_CONTENTIONS = 'RUNNING_UPDATE_PENDING_CLAIM_CONTENTIONS'
-    COMPLETED = 'COMPLETED'
-
-    def next(self):
-        states = [state for state in JobState]
-        cur_index = states.index(self)
-        if cur_index + 1 < len(states):
-            job_state = JobState(states[cur_index + 1])
-            return job_state
-        else:
-            raise ValueError("No more states.")
+    RUNNING_CANCEL_SUPP_CLAIM = 'RUNNING_CANCEL_SUPP_CLAIM'
+    COMPLETED_SUCCESS = 'COMPLETED_SUCCESS'
 
 
 class MergeJob(BaseModel):
@@ -43,26 +22,9 @@ class MergeJob(BaseModel):
     supp_claim_id: conint(strict=True)
     state: JobState = JobState.PENDING
     message: str | None = None
+    error_state: JobState = None
 
-    def next_state(self):
-        self.state = self.state.next()
-        logging.info(f"event=jobProgressed job_id={self.job_id} state={self.state.value}")
-
-    def error(self, message):
-        self.state = JobState.ERROR
+    def error(self, current_state, message):
+        self.error_state = current_state
+        self.state = JobState.COMPLETED_ERROR
         self.message = message
-
-
-JOB_MAP = {}
-
-
-def get_merge_jobs():
-    return JOB_MAP
-
-
-def get_merge_job(job_id: UUID):
-    return JOB_MAP.get(job_id)
-
-
-def submit_merge_job(merge_job: MergeJob):
-    JOB_MAP[merge_job.job_id] = merge_job

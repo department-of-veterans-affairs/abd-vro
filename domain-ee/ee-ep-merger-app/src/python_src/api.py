@@ -1,20 +1,50 @@
+import asyncio
 import logging
 import sys
+from contextlib import asynccontextmanager
 from uuid import UUID, uuid4
 
-import service.ep_merger as ep_merger
+import uvicorn
 from fastapi import BackgroundTasks, FastAPI, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from pydantic_models import (MergeEndProductsErrorResponse,
                              MergeEndProductsRequest, MergeEndProductsResponse)
-from service.merge_job import MergeJob, get_merge_job, submit_merge_job
+from service.ep_merge_machine import EpMergeMachine
+from service.hoppy_service import HoppyService
+from service.job_store import JobStore
+from service.merge_job import MergeJob
 from util.sanitizer import sanitize
+
+hoppy = HoppyService()
+job_store = JobStore()
+
+
+@asynccontextmanager
+async def lifespan(api: FastAPI):
+    await on_start_up()
+    yield
+    await on_shut_down()
+
+
+async def on_start_up():
+    global hoppy
+
+    hoppy.start_hoppy_clients(asyncio.get_event_loop())
+
+    # Wait for hoppy clients to initialize
+    await asyncio.sleep(5)
+
+
+async def on_shut_down():
+    global hoppy
+    hoppy.stop_hoppy_clients()
+
 
 # TODO fill in empty fields
 app = FastAPI(
     title="EP Merge Tool",
-    description="",
+    description="Merge supplemental claim (EP400) contentions to a pending claim (EP 010/020/110).",
     contact={},
     version="v0.1",
     license={
@@ -26,7 +56,8 @@ app = FastAPI(
             "url": "/end-product",
             "description": "",
         },
-    ]
+    ],
+    lifespan=lifespan
 )
 
 logging.basicConfig(
@@ -57,9 +88,9 @@ async def merge_claims(merge_request: MergeEndProductsRequest, background_tasks:
         merge_job = MergeJob(job_id=job_id,
                              pending_claim_id=merge_request.pending_claim_id,
                              supp_claim_id=merge_request.supp_claim_id)
-        submit_merge_job(merge_job)
+        job_store.submit_merge_job(merge_job)
 
-        background_tasks.add_task(ep_merger.merge_end_products, merge_job)
+        background_tasks.add_task(start_job_state_machine, merge_job)
 
         return jsonable_encoder({"job": merge_job})
     else:
@@ -68,6 +99,11 @@ async def merge_claims(merge_request: MergeEndProductsRequest, background_tasks:
 
 def validate_merge_request(merge_request: MergeEndProductsRequest) -> bool:
     return True
+
+
+def start_job_state_machine(merge_job):
+    global hoppy
+    EpMergeMachine(hoppy, merge_job).process()
 
 
 @app.get("/merge/{job_id}",
@@ -79,7 +115,7 @@ def validate_merge_request(merge_request: MergeEndProductsRequest) -> bool:
          },
          response_model_exclude_none=True)
 async def get_merge_claims_status(job_id: UUID):
-    job = get_merge_job(job_id)
+    job = job_store.get_merge_job(job_id)
     if job:
         logging.info(f"event=getMergeStatus {job}")
         return jsonable_encoder({"job": job})
@@ -88,3 +124,12 @@ async def get_merge_claims_status(job_id: UUID):
                             content=jsonable_encoder(
                                 {"job_id": job_id,
                                  "message": "Could not find job"}))
+
+
+@app.get("/merge")
+async def get_all_merge_jobs():
+    return jsonable_encoder({"jobs": list(job_store.get_merge_jobs())})
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="localhost", port=8120)

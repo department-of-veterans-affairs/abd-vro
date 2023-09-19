@@ -1,9 +1,8 @@
-import logging
-import time
+from enum import Enum
 
 import pika
+from async_hoppy_client import AsyncHoppyClient
 from hoppy.config import RABBITMQ_CONFIG
-from hoppy_client import HoppyClient
 
 EXCHANGE = "bipApiExchange"
 
@@ -12,34 +11,45 @@ connection_params = pika.ConnectionParameters(RABBITMQ_CONFIG["host"], RABBITMQ_
                                                                                 RABBITMQ_CONFIG["password"]))
 
 
-def get_connection():
-    retries = RABBITMQ_CONFIG["retry_limit"]
-    for i in range(retries):
-        try:
-            return pika.BlockingConnection(connection_params)
-        except Exception as e:
-            logging.warning(e, exc_info=True)
-            logging.warning(f"RabbitMQ Connection Failed. Retrying in 30s ({i + 1}/{retries})")
-            time.sleep(30)
-    return None
+class HoppyService:
+    clients = {}
 
-
-connection = get_connection()
-connection.channel().exchange_declare(exchange=EXCHANGE, exchange_type="direct", durable=True, auto_delete=True)
-
-set_temp_station_of_jurisdiction = HoppyClient(connection,
-                                               EXCHANGE,
-                                               "putTemporaryStationOfJurisdictionQueue",
-                                               "putTemporaryStationOfJurisdictionResponseQueue")
-get_claim_contentions = HoppyClient(connection,
-                                    EXCHANGE,
-                                    "getClaimContentionsQueue",
-                                    "getClaimContentionsResponseQueue")
-update_contentions = HoppyClient(connection,
-                                 EXCHANGE,
-                                 "updateClaimContentionQueue",
-                                 "updateClaimContentionResponseQueue")
-cancel_claim = HoppyClient(connection,
-                           EXCHANGE,
+    def __init__(self):
+        self.create_client(HoppyClientName.PUT_TSOJ,
+                           "putTemporaryStationOfJurisdictionQueue",
+                           "putTemporaryStationOfJurisdictionResponseQueue")
+        self.create_client(HoppyClientName.GET_CLAIM_CONTENTIONS,
+                           "getClaimContentionsQueue",
+                           "getClaimContentionsResponseQueue")
+        self.create_client(HoppyClientName.UPDATE_CLAIM_CONTENTIONS,
+                           "updateClaimContentionQueue",
+                           "updateClaimContentionResponseQueue")
+        self.create_client(HoppyClientName.CANCEL_CLAIM,
                            "cancelClaimQueue",
                            "cancelClaimResponseQueue")
+
+    def create_client(self, name, queue, reply_queue):
+        client = AsyncHoppyClient(name.value,
+                                  connection_params,
+                                  EXCHANGE,
+                                  queue,
+                                  reply_queue)
+        self.clients[name] = client
+
+    def get_client(self, name):
+        return self.clients.get(name)
+
+    def start_hoppy_clients(self, loop):
+        for client in self.clients.values():
+            client.start(loop)
+
+    def stop_hoppy_clients(self):
+        for client in self.clients.values():
+            client.stop()
+
+
+class HoppyClientName(str, Enum):
+    PUT_TSOJ = "putTemporaryStationOfJurisdictionClient"
+    GET_CLAIM_CONTENTIONS = "getClaimContentionsClient"
+    UPDATE_CLAIM_CONTENTIONS = "updateClaimContentionsClient"
+    CANCEL_CLAIM = "cancelClaimClient"
