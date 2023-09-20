@@ -17,12 +17,24 @@ public class ContentionEventEntity extends BaseEntity {
   @Column(name = "notified_at")
   private LocalDateTime notifiedAt;
 
-  @Column(name = "event")
+  @Column(name = "occurred_at")
+  private LocalDateTime occurredAt;
+
+  @Column(name = "event_type")
   private String eventType;
 
-  @Column(name = "event_details")
-  private String eventDetails;
+  @Column(name = "claim_id")
+  private long claimId;
 
-  // TODO: Non-PII event details to be extracted from eventDetails into their own fields.
-  // See ticket #1680 https://github.com/department-of-veterans-affairs/abd-vro/issues/1680
+  @Column(name = "contention_id")
+  private long contentionId;
+
+  @Column(name = "contention_type_code")
+  private String contentionTypeCode;
+
+  @Column(name = "contention_classification_name")
+  private String contentionClassificationName;
+
+  @Column(name = "diagnostic_type_code")
+  private String diagnosticTypeCode;
 }

@@ -34,6 +34,7 @@ jobs:
             ./gradlew release -Prelease.forceVersion="${{ inputs.version }}"
           fi
 
+      # Pin version numbers AFTER creating the new version
       - name: "Pin unpinned image versions"
         run: |
           scripts/image-version.sh pin
@@ -43,8 +44,9 @@ jobs:
           git add scripts/image_versions.src
           git commit -m "Automated commit: Pin versions of unpinned images"
 
-      - name: "Push updated version number and new tag"
+      - name: "Push updated image versions and new tag"
         run: |
+          git log -5
           git push
           # Push the release tag after a successful `git push`
           git push --tags

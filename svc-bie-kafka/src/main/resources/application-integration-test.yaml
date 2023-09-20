@@ -1,0 +1,31 @@
+
+spring:
+  kafka:
+    # To prevent java.net.UnknownHostException mock-bie-kafka, use mock Kafka's 'EXTERNAL' port 9094
+    # since the integration test runs outside the docker-compose network
+    # See https://github.com/bitnami/containers/blob/main/bitnami/kafka/README.md#accessing-apache-kafka-with-internal-and-external-clients
+    bootstrap-servers: "localhost:9094"
+    properties:
+      ssl:
+        # Disable hostname verification to avoid error for 'localhost' by setting to empty string
+        endpoint.identification.algorithm:
+    producer:
+      key-serializer: "org.apache.kafka.common.serialization.StringSerializer"
+      value-serializer: "org.apache.kafka.common.serialization.StringSerializer"
+      security.protocol: SSL
+      ssl:
+        keystore-location: "file:${KEYSTORE_FILE}"
+        keystore-password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
+        key-store-type: "PKCS12"
+        truststore-location: "file:${TRUSTSTORE_FILE}"
+        truststore-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
+        trust-store-type: "PKCS12"
+    admin:
+      security.protocol: SSL
+      ssl:
+        keystore-location: "file:${KEYSTORE_FILE}"
+        keystore-password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
+        key-store-type: "PKCS12"
+        truststore-location: "file:${TRUSTSTORE_FILE}"
+        truststore-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
+        trust-store-type: "PKCS12"

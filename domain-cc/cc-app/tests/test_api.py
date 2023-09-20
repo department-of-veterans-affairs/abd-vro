@@ -1,18 +1,12 @@
 from fastapi.testclient import TestClient
 
-TUBERCULOSIS_CLASSIFICATION = {
-    "diagnostic_code": 7710,
-    "classification_code": 6890,
-    "classification_name": "Tuberculosis",
-}
-BENIGN_GROWTH_BRAIN_CLASSIFICATION = {
-    "diagnostic_code": 8003,
-    "classification_code": 8964,
-    "classification_name": "Cyst/Benign Growth - Neurological other System",
-}
+from .conftest import (BENIGN_GROWTH_BRAIN_CLASSIFICATION,
+                       DRUG_INDUCED_PULMONARY_PNEMONIA_CLASSIFICATION,
+                       TUBERCULOSIS_CLASSIFICATION)
 
 
 def test_classification(client: TestClient):
+    """old api inputs without contention text still operate the same"""
     json_post_dict = {
         "diagnostic_code": TUBERCULOSIS_CLASSIFICATION["diagnostic_code"],
         "claim_id": 100,
@@ -81,4 +75,25 @@ def test_v2_table_diagnostic_code(client: TestClient):
     assert (
         response.json()["classification_name"]
         == BENIGN_GROWTH_BRAIN_CLASSIFICATION["classification_name"]
+    )
+
+
+def test_v3_table_diagnostic_code(client: TestClient):
+    json_post_dict = {
+        "diagnostic_code": DRUG_INDUCED_PULMONARY_PNEMONIA_CLASSIFICATION[
+            "diagnostic_code"
+        ],
+        "claim_id": 123,
+        "form526_submission_id": 456,
+    }
+
+    response = client.post("/classifier", json=json_post_dict)
+    assert response.status_code == 200
+    assert (
+        response.json()["classification_code"]
+        == DRUG_INDUCED_PULMONARY_PNEMONIA_CLASSIFICATION["classification_code"]
+    )
+    assert (
+        response.json()["classification_name"]
+        == DRUG_INDUCED_PULMONARY_PNEMONIA_CLASSIFICATION["classification_name"]
     )

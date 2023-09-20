@@ -7,25 +7,26 @@ on:
   # Allow being called by another GitHub Action
   workflow_call:
 
-  pull_request:
-    branches: [ develop ]
-
-concurrency:
-  group: containerHealthChecks-${{ github.ref }}
-
 env:
-  LH_ACCESS_CLIENT_ID: ${{ secrets.LH_ACCESS_CLIENT_ID }}
-  LH_PRIVATE_KEY: ${{ secrets.LH_PRIVATE_KEY }}
   SLACK_EXCEPTION_WEBHOOK: "http://mock-slack:20100/slack-messages"
+  VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"
+
 jobs:
   container-healthcheck:
-    if: github.repository == 'department-of-veterans-affairs/abd-vro' &&
-        ((github.event_name == 'pull_request' && startsWith(github.head_ref, 'dependabot/')) || github.event_name != 'pull_request')
+    if: github.repository == 'department-of-veterans-affairs/abd-vro'
     runs-on: ubuntu-latest
 
     steps:
       - name: "Checkout source code"
         uses: actions/checkout@v3
+
+      - name: "Checkout abd-vro-dev-secrets repo"
+        uses: actions/checkout@v3
+        with:
+          # Checkout using a PAT so that we can access the internal repo
+          token: ${{ secrets.ACCESS_TOKEN_CHECKOUT_INTERNAL_REPO }}
+          repository: 'department-of-veterans-affairs/abd-vro-dev-secrets'
+          path: "${{ env.VRO_DEV_SECRETS_FOLDER }}"
 
       - name: "Docker build"
         uses: ./.github/actions/build-images
@@ -51,6 +52,12 @@ jobs:
           source scripts/setenv.sh
           ./gradlew :domain-cc:dockerComposeUp
 
+      - name: "Start containers: domain-ee"
+        shell: bash
+        run: |
+          source scripts/setenv.sh
+          ./gradlew :domain-ee:dockerComposeUp
+
       - name: "Wait for containers to start"
         run: |
           STATUS="..."
@@ -70,7 +77,7 @@ jobs:
             docker ps --all
             echo ''
             echo '```'
-          } | tee -a $GITHUB_STEP_SUMMARY
+          } | tee -a "$GITHUB_STEP_SUMMARY"
 
           # Ignore mocks and redis-service since they don't have health checks
           # TODO: add health check for svc-bgs-api; ignore it for now
@@ -93,10 +100,14 @@ jobs:
         run: |
           for C_NAME in $(docker container ls --format '{{.Names}}' | grep -v '-service1'); do
             echo "## Searching $C_NAME container logs"
-            if docker logs "$C_NAME" 2>&1 | grep 'ERROR\|error'; then
+            if docker logs "$C_NAME" 2>&1 | grep 'ERROR'; then
               echo "::error::Unexpected ERROR in $C_NAME container logs"
+              ERROR_IN_LOGS=true
             fi
           done
+          if [ "$ERROR_IN_LOGS" ]; then
+            exit 4
+          fi
 
       - name: "Collect docker logs"
         if: always()

@@ -1,16 +1,8 @@
 name: "PR: Test code"
 
 on:
-  # Trigger on all pull requests
-  pull_request:
-    branches:
-      - "*"
-
   # Trigger when called by another GitHub Action
   workflow_call:
-    secrets:
-      ACCESS_TOKEN_GRADLE_BUILD:
-        required: true
     inputs:
       run_all_tests:
         required: false
@@ -19,10 +11,6 @@ on:
 
   # Allow manual triggering
   workflow_dispatch:
-
-concurrency:
-  group: lintAndTest-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   test-java:
@@ -152,14 +140,26 @@ jobs:
         with:
           files: domain-cc/**
 
+      - name: "Get changed domain-ee files"
+        if: '! inputs.run_all_tests'
+        id: ee-changed-files-specific
+        uses: tj-actions/changed-files@v35
+        with:
+          files: domain-ee/**
+
       - name: "Install Python"
-        if: inputs.run_all_tests || steps.changed-files-specific.outputs.any_changed == 'true'
+        if: inputs.run_all_tests || steps.changed-files-specific.outputs.any_changed == 'true' || steps.ee-changed-files-specific.outputs.any_changed == 'true'
         uses: actions/setup-python@v4
         with:
           python-version: "3.10"
           cache: "pip"
 
-      - name: "Run contention classification tests"
+      - name: "Run Contention Classification tests"
         if: inputs.run_all_tests || steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
           ./gradlew :domain-cc:test
+
+      - name: "Run Employee Experience tests"
+        if: inputs.run_all_tests || steps.ee-changed-files-specific.outputs.any_changed  == 'true'
+        run: |
+          ./gradlew :domain-ee:test

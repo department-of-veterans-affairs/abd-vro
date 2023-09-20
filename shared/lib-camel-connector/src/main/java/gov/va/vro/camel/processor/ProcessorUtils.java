@@ -1,7 +1,9 @@
 package gov.va.vro.camel.processor;
 
 import org.apache.camel.Exchange;
+import org.apache.camel.ExchangePattern;
 
+import java.util.Objects;
 import java.util.Optional;
 
 final class ProcessorUtils {
@@ -14,14 +16,9 @@ final class ProcessorUtils {
   }
 
   void conditionallySetOutputBody(Exchange exchange, Object body) {
-    switch (exchange.getPattern()) {
-      case InOut -> exchange.getMessage().setBody(body);
-      case InOptionalOut -> {
-        if (body == null || (body instanceof Optional && ((Optional<?>) body).isEmpty())) break;
-        exchange.getMessage().setBody(body);
+      if (Objects.requireNonNull(exchange.getPattern()) == ExchangePattern.InOut) {
+          if (body == null || (body instanceof Optional && ((Optional<?>) body).isEmpty())) return;
+          exchange.getMessage().setBody(body);
       }
-      default -> {
-      }
-    }
   }
 }

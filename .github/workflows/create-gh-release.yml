@@ -12,12 +12,24 @@ jobs:
       - name: "Checkout source code"
         uses: actions/checkout@v3
 
-      - name: "Log tag info"
+      - name: "Check if release already exists"
+        id: check-release
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          echo "Tag name from GITHUB_REF_NAME: $GITHUB_REF_NAME"
-          echo "Tag name from github.ref_name: ${{  github.ref_name }}"
+          echo "Tag name from github.ref_name: ${{ github.ref_name }}"
+          if gh release view ${{ github.ref_name }}; then
+            # This workflow is triggered more than once in the internal repo.
+            # Subsequent runs are undesirable, so don't continue.
+            # See notes at https://github.com/department-of-veterans-affairs/abd-vro/issues/1955
+            echo "continue=false" >> "$GITHUB_OUTPUT"
+            echo "Skipping b/c GitHub release ${{ github.ref_name }} already exists." | tee -a "$GITHUB_STEP_SUMMARY"
+          else
+            echo "continue=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: "Create GitHub Release"
+        if: steps.check-release.outputs.continue == 'true'
         uses: softprops/action-gh-release@v1
         with:
           name: "${{ github.ref_name }}-auto"
@@ -26,4 +38,4 @@ jobs:
           prerelease: true
           generate_release_notes: true
           append_body: true
-          body: "Automatically created by create-gh-release GitHub Action"
+          body: "Automatically created by create-gh-release GitHub Action (run #${{github.run_number}})"

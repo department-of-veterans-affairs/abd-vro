@@ -1,33 +1,29 @@
 plugins {
-  id 'java'
-  id 'local.std.java.library-conventions'
-  id "io.freefair.lombok"
-  id 'org.springframework.boot'
   id 'local.java.container-spring-conventions'
+  id 'local.std.java.library-conventions'
   id 'jvm-test-suite'
 }
 
-
-
-repositories {
-  mavenCentral()
-}
-
 ext {
+  jacocoExclude = ['**/*model*']
   // TODO: improve test code coverage so that the following can be increased or removed
   jacoco_minimum_coverage = 0.4
 }
 
 dependencies {
-  implementation "org.springdoc:springdoc-openapi-webmvc-core"
-  implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
-  implementation 'io.jsonwebtoken:jjwt:0.2'
-  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
   implementation project(':domain-xample:xample-shared')
+
+  implementation "org.springdoc:springdoc-openapi-webmvc-core"
+  implementation 'org.apache.httpcomponents:httpclient:4.5.14'
+  implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
 
   implementation "com.fasterxml.jackson.core:jackson-core"
   implementation "com.fasterxml.jackson.core:jackson-databind"
+
+  def jjwt_version="0.11.5"
+  implementation "io.jsonwebtoken:jjwt-api:${jjwt_version}"
+  implementation "io.jsonwebtoken:jjwt-impl:${jjwt_version}"
+  implementation "io.jsonwebtoken:jjwt-jackson:${jjwt_version}"
 
   // RabbitMQ
   implementation 'org.springframework.boot:spring-boot-starter-amqp'
@@ -36,7 +32,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-  testImplementation 'org.slf4j:slf4j-simple:2.0.7'
+  // testImplementation 'org.slf4j:slf4j-simple:2.0.7'
 }
 
 // https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html#sec:jvm_test_suite_usage
@@ -49,7 +45,7 @@ testing {
         implementation "org.springframework.boot:spring-boot-starter-test"
         implementation "org.springframework.boot:spring-boot-starter-amqp"
         implementation "com.fasterxml.jackson.core:jackson-databind"
-        implementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+        // implementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
       }
     }
   }

@@ -6,7 +6,7 @@ dependencies {
   // Apache Camel
   implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
   implementation "org.apache.camel.springboot:camel-jms-starter:${camel_version}"
-  implementation "org.apache.camel.springboot:camel-rabbitmq-starter:${camel_version}"
+  implementation "org.apache.camel.springboot:camel-rabbitmq-starter:3.9.0"
   implementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
   implementation "org.apache.camel.springboot:camel-slack-starter:${camel_version}"
   // Needed to send POST to external API

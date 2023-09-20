@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 import gov.va.vro.model.biekafka.BieMessagePayload;
+import gov.va.vro.model.biekafka.test.BieMessagePayloadFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -35,15 +36,20 @@ class BieRabbitServiceTest {
     void shouldConvertAndSendBiePayload() {
       final String exchange = "testExchange";
       final String topic = "testTopic";
-      final String message = "testMessage";
+      final BieMessagePayload payload = BieMessagePayloadFactory.create();
 
-      bieRabbitService.send(exchange, topic, message);
-
+      bieRabbitService.send(exchange, topic, payload);
       verify(rabbitTemplate).convertAndSend(eq(exchange), eq(topic), messageCaptor.capture());
-      final BieMessagePayload payload = messageCaptor.getValue();
-      assertThat(payload.getEvent()).isEqualTo(topic);
-      assertThat(payload.getNotifiedAt()).isNotBlank();
-      assertThat(payload.getEventDetails()).isEqualTo(message);
+
+      final BieMessagePayload value = messageCaptor.getValue();
+      assertThat(value.getEventType()).isEqualTo(payload.getEventType());
+      assertThat(value.getClaimId()).isEqualTo(payload.getClaimId());
+      assertThat(value.getContentionId()).isEqualTo(payload.getContentionId());
+      assertThat(value.getContentionTypeCode()).isEqualTo(payload.getContentionTypeCode());
+      assertThat(value.getContentionClassificationName())
+          .isEqualTo(payload.getContentionClassificationName());
+      assertThat(value.getDiagnosticTypeCode()).isEqualTo(payload.getDiagnosticTypeCode());
+      assertThat(value.getNotifiedAt()).isEqualTo(payload.getNotifiedAt());
     }
   }
 }

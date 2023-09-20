@@ -6,11 +6,6 @@ on:
   push:
     branches: [main]
 
-  pull_request:
-    branches: [main, develop, domain-*]
-    # Limit to certain PR event types since this action is slow
-    types: [ready_for_review, review_requested]
-
   schedule:
     - cron: 31 6 * * 5
 

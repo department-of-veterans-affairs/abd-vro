@@ -55,9 +55,11 @@ jobs:
         docker tag "${{ inputs.image_name }}:${{ inputs.image_tag }}" "${{ env.GHCR_PATH }}:${{ inputs.image_tag }}"
         docker push "${{ env.GHCR_PATH }}:${{ inputs.image_tag }}"
 
-        echo "images_list<<EOF" >> $GITHUB_OUTPUT
-        echo "${{ env.GHCR_PATH }}:${{ inputs.image_tag }}" >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
+        {
+          echo "images_list<<EOF"
+          echo "${{ env.GHCR_PATH }}:${{ inputs.image_tag }}"
+          echo "EOF"
+        } >> "$GITHUB_OUTPUT"
 
   secrel:
     name: SecRel Pipeline

@@ -7,9 +7,6 @@ on:
   # Allow being called by another GitHub Action
   workflow_call:
 
-concurrency:
-  group: xampleIntegrationTest-${{ github.ref }}
-
 env:
   COMPOSE_PROFILES: ""
 

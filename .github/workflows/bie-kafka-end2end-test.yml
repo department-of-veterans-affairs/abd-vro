@@ -7,43 +7,36 @@ on:
   # Allow being called by another GitHub Action
   workflow_call:
 
-concurrency:
-  group: bieKafkaEnd2EndTestWithMock-${{ github.ref }}
-
 env:
   COMPOSE_PROFILES: 'kafka'
-  TEST_TOPIC: 'TST_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02'
-  # TEST_DATA should be replaced with data after event_details is populated with non PII data. See Github Issue 1680
-  TEST_DATA: 'Lorem ipsum'
-
+  VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"
 jobs:
   integration-test:
     runs-on: ubuntu-latest
     steps:
-      - name: 'Install kcat and postgresql'
-        run: |
-          sudo apt-get update
-          sudo apt-get install kafkacat
-          which kafkacat
-
-          sudo apt-get install postgresql
-          which psql
-
       - name: 'Checkout source code'
         uses: actions/checkout@v3
 
-      - name: 'Build the images'
-        uses: ./.github/actions/build-images
+      - name: "Checkout abd-vro-dev-secrets repo"
+        uses: actions/checkout@v3
+        with:
+          # Checkout using a PAT so that we can access the internal repo
+          token: ${{ secrets.ACCESS_TOKEN_CHECKOUT_INTERNAL_REPO }}
+          repository: 'department-of-veterans-affairs/abd-vro-dev-secrets'
+          path: "${{ env.VRO_DEV_SECRETS_FOLDER }}"
 
       - name: 'Set RABBITMQ_BASIC_AUTH'
         run: |
           source scripts/setenv.sh
 
           # create basic auth token for RabbitMQ and export to github environment
-          BASIC_AUTH=`echo "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" | base64`
-          echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}" >> $GITHUB_ENV
+          BASIC_AUTH=$(echo "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" | base64)
+          echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}" >> "$GITHUB_ENV"
 
           export -p | sed 's/declare -x //'
+
+      - name: 'Build the images'
+        uses: ./.github/actions/build-images
 
       - name: 'Start the containers'
         run: |
@@ -70,15 +63,25 @@ jobs:
           # Quit after 60 seconds
           retries: 30
 
+      - name: 'Install kafkacat and postgresql'
+        run: |
+          sudo apt-get update
+          sudo apt-get install kafkacat
+          which kafkacat
+
+          sudo apt-get install postgresql
+          which psql
+
       - name: 'Wait for Kafka to be ready'
         run: |
-          # Verify broker is up
-          BROKER_QUERY=$(kafkacat -m 30 -b localhost:9094 -L)
-          if echo $BROKER_QUERY | grep -q '1 brokers'
+          # Verify broker is up with 30 second timeout
+          BROKER_QUERY=$(kafkacat -m 30 -b localhost:9092 -L)
+          if echo "$BROKER_QUERY" | grep -q '1 brokers'
           then
             echo "Found Broker: $BROKER_QUERY"
           else
             echo "Count not find Kafka broker"
+            exit 5
           fi
 
       - name: 'Wait for xample-workflow to be ready'
@@ -103,44 +106,42 @@ jobs:
 
       - name: 'Create Kafka topic and send message'
         run: |
-          # Create Test File:
-          echo '${{env.TEST_DATA}}' > test.txt
-          echo "Producing message from test.txt on ${{env.TEST_TOPIC}}: "
-          cat test.txt
+          source scripts/setenv.sh
 
-          # Create Topic and Produce message on test topic
-          kafkacat -b localhost:9094 -P -t '${{env.TEST_TOPIC}}' -l test.txt
-
-      - name: 'Sleep to give time for message to travel end to end from kafka to saved in database'
-        run: sleep 5
+          pushd svc-bie-kafka && { source ./docker-entryprep.sh; popd; }
+          if ! ./gradlew :svc-bie-kafka:integrationTest; then
+            echo "First run could fail due to some mock Kafka initialization"
+            # Subsequent runs should pass
+            ./gradlew :svc-bie-kafka:integrationTest
+          fi
 
       - name: 'Check for saved DB entry in Postgres'
         run: |
           source scripts/setenv.sh
 
-          psql postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/vro -c \
-          "SELECT *
-            FROM
-              claims.bie_contention_event
-          "
+          # Retry to 5 times to allow time for message to travel from kafka to database
+          for i in {1..5}; do
+            sleep 10
+            echo "Attempt $i"
+            # For debugging
+            echo "::group::Table bie_contention_event contents"
+            psql "postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/vro" -c \
+              "SELECT * FROM claims.bie_contention_event"
+            echo "::endgroup::"
 
-          RESULTS=$(psql postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/vro -x -c \
-          "SELECT COUNT(*)
-            FROM
-              claims.bie_contention_event
-            WHERE
-              event='${{env.TEST_TOPIC}}'
-                AND
-              event_details='${{env.TEST_DATA}}'
-          ")
-          echo $RESULTS
-          if echo $RESULTS | grep -q 'count | 1'
-          then
-            echo "Found record in DB."
-          else
-            echo "Could not find record in DB."
-            exit 10
-          fi
+            RESULT=$(psql postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/vro -x -c \
+            "SELECT COUNT(*) FROM claims.bie_contention_event
+              -- This is the contention id used in BieKafkaApplicationTest
+              WHERE contention_id=1234567890
+            ")
+            echo "$RESULT"
+            if echo "$RESULT" | grep -q 'count | 1'; then
+              break
+            fi
+          done
+
+          # This will cause a failure if expected result is not found
+          echo "$RESULT" | grep -q 'count | 1'
 
       - name: "Collect docker logs"
         if: always()

@@ -2,10 +2,8 @@ plugins {
   id 'local.std.java.library-conventions'
 }
 
-ext {
-  jacoco_minimum_coverage = 0.8
-}
-
 dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-amqp'
+  implementation 'net.datafaker:datafaker:2.0.1'
+  implementation "com.google.guava:guava"
 }

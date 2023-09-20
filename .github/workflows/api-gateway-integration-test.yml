@@ -7,9 +7,6 @@ on:
   # Allow being called by another GitHub Action
   workflow_call:
 
-concurrency:
-  group: apiGatewayIntegrationTest-${{ github.ref }}
-
 env:
   COMPOSE_PROFILES: ""
 
@@ -33,6 +30,9 @@ jobs:
 
           # Run CC:
           ./gradlew :domain-cc:dockerComposeUp
+
+          # Run EE:
+          ./gradlew :domain-ee:dockerComposeUp
 
           # Run Xample:
           ./gradlew :domain-xample:dockerComposeUp
@@ -93,6 +93,13 @@ jobs:
           method: "GET"
           accept: 200
 
+      - name: "Max CFI API Docs- Request"
+        uses: indiesdev/curl@v1.1
+        with:
+          url: "http://localhost:8060/cfi/openapi.json"
+          method: "GET"
+          accept: 200
+
       - name: "API Gateway Rest Controller GET /hello - Request"
         id: "apiGatewayHello"
         uses: indiesdev/curl@v1.1
@@ -106,7 +113,7 @@ jobs:
       - name: "API Gateway Rest Controller GET /hello - Validate Response"
         run: |
           # Validate Response:
-          if [ "${{ fromJson(steps.apiGatewayHello.outputs.response).data }}" != "Hi!"]; then
+          if [ "${{ fromJson(steps.apiGatewayHello.outputs.response).data }}" != "Hi!" ]; then
             echo "Unexpected Response: ${{ steps.apiGatewayHello.outputs.response }}"
             exit 10
           else

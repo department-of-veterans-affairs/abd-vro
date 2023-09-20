@@ -51,13 +51,6 @@ updates:
     open-pull-requests-limit: 10
 
   - package-ecosystem: "docker"
-    directory: "/console/src/docker"
-    target-branch: "develop"
-    schedule:
-      interval: "daily"
-    open-pull-requests-limit: 10
-
-  - package-ecosystem: "docker"
     directory: "/svc-bgs-api/src/docker"
     target-branch: "develop"
     schedule:

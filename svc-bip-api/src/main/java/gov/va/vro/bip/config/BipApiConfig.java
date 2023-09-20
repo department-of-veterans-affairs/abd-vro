@@ -97,8 +97,10 @@ public class BipApiConfig {
 
       SSLConnectionSocketFactory sslConFactory = new SSLConnectionSocketFactory(sslContext);
 
-      HttpClientConnectionManager connectionManager = PoolingHttpClientConnectionManagerBuilder.create()
-              .setSSLSocketFactory(sslConFactory).build();
+      HttpClientConnectionManager connectionManager =
+          PoolingHttpClientConnectionManagerBuilder.create()
+              .setSSLSocketFactory(sslConFactory)
+              .build();
       CloseableHttpClient httpClient =
           HttpClients.custom().setConnectionManager(connectionManager).build();
       ClientHttpRequestFactory requestFactory =

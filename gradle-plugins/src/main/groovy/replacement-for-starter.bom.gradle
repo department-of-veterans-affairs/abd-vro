@@ -7,7 +7,7 @@ ext {
     opentracing_mock_version = "0.33.0"
     brave_opentracing_version = "1.0.0"
     zipkin_sender_okhttp3_version = "2.16.3"
-    springdoc_version =  "1.5.4"
+    springdoc_version =  "1.5.13"
     problem_spring_web_version="0.26.2"
     arch_unit_version = "0.21.0"
     mockserver_netty_version = "5.11.2"

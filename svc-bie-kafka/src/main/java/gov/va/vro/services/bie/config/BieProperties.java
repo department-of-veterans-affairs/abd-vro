@@ -1,22 +1,23 @@
 package gov.va.vro.services.bie.config;
 
+import gov.va.vro.model.biekafka.ContentionEvent;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
+import java.util.Arrays;
 
 @Component
 @ConfigurationProperties(prefix = "bie")
 @Setter
-@Getter
 public class BieProperties {
 
-  /**
-   * Map of entries where the keys are the kafka topics to which this app will subscribe. The value
-   * is the corresponding RabbitMQ exchange/queue upon which the payload will be put. These values
-   * are separated by a colon ":" character.
-   */
-  private Map<String, String> kafkaTopicToAmqpQueueMap;
+  @Getter String kakfaTopicPrefix;
+
+  public String[] topicNames() {
+    return Arrays.stream(ContentionEvent.values())
+        .map(contention -> kakfaTopicPrefix + contention.getTopicName())
+        .toArray(String[]::new);
+  }
 }

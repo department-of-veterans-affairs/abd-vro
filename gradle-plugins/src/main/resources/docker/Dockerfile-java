@@ -13,11 +13,9 @@ RUN apk update && \
 
 WORKDIR /app
 
-ARG ENTRYPOINT_FILE=docker-entrypoint.sh
-# Workaround to copy ENTRYPOINT_FILE that may not exist
 # https://stackoverflow.com/a/46801962
 # Copy script that runs docker-entrypoint.sh if it exists, otherwise run jar file
-COPY set-env-secrets.src entrypoint-wrapper.sh ${ENTRYPOINT_FILE}* ./
+COPY set-env-secrets.src entrypoint-wrapper.sh docker-entry*.sh ./
 
 ARG JAR_FILE
 ENV JAR_FILENAME=${JAR_FILE}

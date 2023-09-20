@@ -11,12 +11,12 @@ on:
       retain_days:
         description: 'Delete images older than this many days'
         required: true
-        type: number
+        type: string
         default: 30
       keep_last:
         description: 'Minimum versions to keep'
         required: true
-        type: number
+        type: string
         default: 10
       dry_run:
         description: 'Always do a dry-run first'
@@ -35,7 +35,6 @@ jobs:
         - abd-vro-internal
         # Do NOT delete non-dev images, which will be managed in a different workflow
         package:
-        - dev_vro-console
         - dev_vro-postgres
         - dev_vro-api-gateway
         - dev_vro-app
@@ -45,6 +44,7 @@ jobs:
         - dev_vro-svc-bie-kafka
         - dev_vro-xample-workflows
         - dev_vro-cc-app
+        - dev_vro-ee-max-cfi-app
     runs-on: ubuntu-latest
     steps:
     - name: "Delete old images in GHCR"

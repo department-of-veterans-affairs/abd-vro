@@ -1,0 +1,691 @@
+DIAGNOSTIC_CODE,RATED_ISSUE_NAME,CC_ID,CC_NAME,AUTO_ELIGIBLE_DC,CC_VERSION
+5260,"Limitation of flexion, knee",8997,Musculoskeletal - Knee,Unknown,Unknown
+6260,Tinnitus,3140,Hearing Loss,Unknown,Unknown
+5271,Limitation of motion of the ankle,8991,Musculoskeletal - Ankle,Unknown,Unknown
+5201,Limitation of motion of the arm,9002,Musculoskeletal - Shoulder,Unknown,Unknown
+6100,Hearing loss,3140,Hearing Loss,Unknown,Unknown
+5257,"Impairment of the knee, general",8997,Musculoskeletal - Knee,Unknown,Unknown
+5252,Limitation of flexion of the thigh,8996,Musculoskeletal - Hip,Unknown,Unknown
+7346,Hiatal hernia,8968,Digestive,Unknown,Unknown
+5276,"Flatfoot, acquired",8994,Musculoskeletal - Foot,Unknown,Unknown
+9434,Major depressive disorder,8989,Mental Disorders,Unknown,Unknown
+5261,"Limitation of extension, knee",8997,Musculoskeletal - Knee,Unknown,Unknown
+5253,"Thigh condition, general",8996,Musculoskeletal - Hip,Unknown,Unknown
+5251,Limitation of extension of the thigh,8996,Musculoskeletal - Hip,Unknown,Unknown
+7802,"Scars, burns (2nd degree)",9013,Scars (Extremities and Trunk),Unknown,Unknown
+9440,Chronic adjustment disorder,8989,Mental Disorders,Unknown,Unknown
+5215,Limited motion of wrist,9004,Musculoskeletal - Wrist,Unknown,Unknown
+5284,Residuals of foot injury,8994,Musculoskeletal - Foot,Unknown,Unknown
+9413,"Anxiety disorder, unspecified",8989,Mental Disorders,Unknown,Unknown
+5003,Degenerative arthritis,8992,Musculoskeletal - Arthritis,Unknown,Unknown
+9400,Generalized anxiety disorder,8989,Mental Disorders,Unknown,Unknown
+5010,Traumatic arthritis,8992,Musculoskeletal - Arthritis,Unknown,Unknown
+5262,Impairment of lower leg - tibia and fibula,8997,Musculoskeletal - Knee,Unknown,Unknown
+7522,Penile deformity (loss of erectile power),8975,Genitourinary,Unknown,Unknown
+5280,"Hallux valgus, unilateral (foot condition)",8994,Musculoskeletal - Foot,Unknown,Unknown
+7319,Irritable bowel syndrome,8968,Digestive,Unknown,Unknown
+7913,Diabetes mellitus,8973,Endocrine,Unknown,Unknown
+7336,Hemorrhoids,8968,Digestive,Unknown,Unknown
+8045,Brain disease due to trauma,9020,Traumatic Brain Injury,Unknown,Unknown
+5206,Limited flexion of the forearm,8993,Musculoskeletal - Elbow,Unknown,Unknown
+9435,Mood disorder,8989,Mental Disorders,Unknown,Unknown
+5230,Limitation of motion of ring or little finger,8995,Musculoskeletal - Hand,Unknown,Unknown
+9410,Unspecified neurosis,8989,Mental Disorders,Unknown,Unknown
+5203,"Clavicle or scapula, impairment of",9002,Musculoskeletal - Shoulder,Unknown,Unknown
+5229,Limitation of motion of index or long finger,8995,Musculoskeletal - Hand,Unknown,Unknown
+5228,Limitation of motion of thumb,8995,Musculoskeletal - Hand,Unknown,Unknown
+9905,Limited motion of the jaw,249481,Dental and Oral - Musculoskeletal,Unknown,Unknown
+9433,Dysthymic disorder,8989,Mental Disorders,Unknown,Unknown
+7005,Arteriosclerotic heart disease,8979,Heart/Veins/Arteries,Unknown,Unknown
+5213,Impaired supination and pronation of forearm,8993,Musculoskeletal - Elbow,Unknown,Unknown
+6354,Chronic fatigue syndrome,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6204,Labyrinthitis,8969,Ear Disease and Other Sense Organs,Unknown,Unknown
+5269,Plantar fascitis,8994,Musculoskeletal - Foot,Unknown,Unknown
+5055,Knee replacement,8997,Musculoskeletal - Knee,Unknown,Unknown
+6502,Deviated septum,9012,Respiratory,Unknown,Unknown
+5223,Favorable ankylosis of two fingers,8995,Musculoskeletal - Hand,Unknown,Unknown
+7338,Inguinal hernia,8968,Digestive,Unknown,Unknown
+6066,Loss of 1 eye; vision 20/40 in other,8974,Eye (Vision),Unknown,Unknown
+9432,Bipolar disorder,8989,Mental Disorders,Unknown,Unknown
+5202,Impairment of upper arm - humerus,9002,Musculoskeletal - Shoulder,Unknown,Unknown
+5258,"Dislocated cartilage, semilunar - knee",8997,Musculoskeletal - Knee,Unknown,Unknown
+5207,Limited extension of the forearm,8993,Musculoskeletal - Elbow,Unknown,Unknown
+5321,Injury to muscles of respiration,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+5279,Metatarsalgia (foot pain) (Morton's disease),8994,Musculoskeletal - Foot,Unknown,Unknown
+7903,Hypothyroidism,8973,Endocrine,Unknown,Unknown
+5259,"Removal of cartilage, semilunar - knee",8997,Musculoskeletal - Knee,Unknown,Unknown
+8103,Nervous tic,9007,Neurological other System,Unknown,Unknown
+7542,Neurogenic bladder,8975,Genitourinary,Unknown,Unknown
+7615,Disease or injury of the ovary,8978,Gynecological,Unknown,Unknown
+5224,Ankylosis of the thumb,8995,Musculoskeletal - Hand,Unknown,Unknown
+7801,"Scars, burns (3rd degree)",9013,Scars (Extremities and Trunk),Unknown,Unknown
+7010,Supraventricular arrhythmias,8979,Heart/Veins/Arteries,Unknown,Unknown
+7323,Ulcerative colitis,8968,Digestive,Unknown,Unknown
+8207,Paralysis of the 7th cranial nerve,9007,Neurological other System,Unknown,Unknown
+7508,Nephrolithiasis (kidney stones),8975,Genitourinary,Unknown,Unknown
+7527,Prostate gland injuries,8975,Genitourinary,Unknown,Unknown
+6018,"Conjunctivitis, chronic",8974,Eye (Vision),Unknown,Unknown
+9326,Dementia due to general medical conditions,8989,Mental Disorders,Unknown,Unknown
+5282,Hammer toe,8994,Musculoskeletal - Foot,Unknown,Unknown
+6009,Unhealed eye injury,8974,Eye (Vision),Unknown,Unknown
+6025,Excessive tearing,8974,Eye (Vision),Unknown,Unknown
+9412,Panic disorder and/or agoraphobia,8989,Mental Disorders,Unknown,Unknown
+5311,Injury affecting propulsion (group XI) of foot,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+7203,Stricture of esophagus,8968,Digestive,Unknown,Unknown
+7307,Hypertrophic gastritis,8968,Digestive,Unknown,Unknown
+7517,Injury of bladder,8975,Genitourinary,Unknown,Unknown
+9421,Somatization disorder,8989,Mental Disorders,Unknown,Unknown
+9913,Loss of teeth,8967,Dental and Oral,Unknown,Unknown
+9422,Pain disorder,8989,Mental Disorders,Unknown,Unknown
+7339,Ventral hernia,8968,Digestive,Unknown,Unknown
+5017,Gout,8992,Musculoskeletal - Arthritis,Unknown,Unknown
+6080,Impairment to field of vision,8974,Eye (Vision),Unknown,Unknown
+7700,Anemia,8981,Hemic and Lymphatic,Unknown,Unknown
+7512,Cystitis,8975,Genitourinary,Unknown,Unknown
+5054,Hip replacement,8996,Musculoskeletal - Hip,Unknown,Unknown
+7114,Arteriosclerosis obliterans,8979,Heart/Veins/Arteries,Unknown,Unknown
+7629,Endometriosis,8978,Gynecological,Unknown,Unknown
+5227,Ankylosis of the ring or little finger,8995,Musculoskeletal - Hand,Unknown,Unknown
+7523,Complete atrophy of the testis,8975,Genitourinary,Unknown,Unknown
+7011,Ventricular Arrhythmias,8979,Heart/Veins/Arteries,Unknown,Unknown
+7305,Duodenal ulcer,8968,Digestive,Unknown,Unknown
+5312,Injury affecting dorsiflexion (group XII) of foot,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+7301,Adhesions of the peritoneum,8968,Digestive,Unknown,Unknown
+6516,Chronic laryngitis,9012,Respiratory,Unknown,Unknown
+7000,Valvular heart disease,8979,Heart/Veins/Arteries,Unknown,Unknown
+7613,Disease or injury of the uterus,8978,Gynecological,Unknown,Unknown
+7632,Female sexual arousal disorder (FSAD),8978,Gynecological,Unknown,Unknown
+7720,Iron deficiency anemia,8981,Hemic and Lymphatic,Unknown,Unknown
+8911,"Epilepsy, petit mal",9007,Neurological other System,Unknown,Unknown
+5002,Rheumatoid arthritis,8992,Musculoskeletal - Arthritis,Unknown,Unknown
+7318,Removal of the gall bladder,8968,Digestive,Unknown,Unknown
+7525,Chronic epididymo-orchitis,8975,Genitourinary,Unknown,Unknown
+6200,"Otitis media, chronic (ear infection)",8969,Ear Disease and Other Sense Organs,Unknown,Unknown
+7541,Renal involvement with systemic disease process,8975,Genitourinary,Unknown,Unknown
+8910,"Epilepsy, grand mal",9007,Neurological other System,Unknown,Unknown
+5283,Malunion of tarsal or metatarsal bones (toes),8994,Musculoskeletal - Foot,Unknown,Unknown
+8205,Paralysis of the 5th cranial nerve,9007,Neurological other System,Unknown,Unknown
+6013,"Glaucoma, simple",8974,Eye (Vision),Unknown,Unknown
+6275,Complete loss of sense of smell,8969,Ear Disease and Other Sense Organs,Unknown,Unknown
+6351,HIV-Related Illness,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+7345,Infectious hepatitis,8968,Digestive,Unknown,Unknown
+7524,Removal of testis,8975,Genitourinary,Unknown,Unknown
+9403,Simple or social phobia,8989,Mental Disorders,Unknown,Unknown
+5236,Sacroiliac Injury and Weakness,8998,Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine),Unknown,Unknown
+6205,Meniere's syndrome,8969,Ear Disease and Other Sense Organs,Unknown,Unknown
+7332,Impairment of sphincter control,8968,Digestive,Unknown,Unknown
+9310,"Dementia, unknown etiology",8989,Mental Disorders,Unknown,Unknown
+5051,Shoulder replacement,9002,Musculoskeletal - Shoulder,Unknown,Unknown
+5278,"Claw foot (pes cavus, acquired",8994,Musculoskeletal - Foot,Unknown,Unknown
+6211,Perforated ear drum,8969,Ear Disease and Other Sense Organs,Unknown,Unknown
+7007,Hypertensive heart disease,8979,Heart/Veins/Arteries,Unknown,Unknown
+7611,Disease or injury of the vagina,8978,Gynecological,Unknown,Unknown
+7618,Removal of uterus,8978,Gynecological,Unknown,Unknown
+7900,Hyperthyroidism,8973,Endocrine,Unknown,Unknown
+9423,Undifferentiated somatoform disorder,8989,Mental Disorders,Unknown,Unknown
+5209,Impairment of elbow or flail joint,8993,Musculoskeletal - Elbow,Unknown,Unknown
+5250,Ankylosis of the hip,8996,Musculoskeletal - Hip,Unknown,Unknown
+5301,Injury to extrinsic muscles (group I) of shoulder,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+5313,Injury affecting hip extension and knee flexion,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+7612,Disease or injury of the cervix,8978,Gynecological,Unknown,Unknown
+7614,Disease or injury of the fallopian tube,8978,Gynecological,Unknown,Unknown
+7017,Coronary bypass surgery,8979,Heart/Veins/Arteries,Unknown,Unknown
+7619,Removal of ovary,8978,Gynecological,Unknown,Unknown
+5314,Injury affecting knee extension and hip flexion,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+6210,Disease of the auditory canal,8969,Ear Disease and Other Sense Organs,Unknown,Unknown
+6276,Complete loss of sense of taste,8969,Ear Disease and Other Sense Organs,Unknown,Unknown
+7020,Cardiomyopathy,8979,Heart/Veins/Arteries,Unknown,Unknown
+7304,Gastric ulcer,8968,Digestive,Unknown,Unknown
+7312,Cirrhosis of the liver,8968,Digestive,Unknown,Unknown
+7617,Removal of uterus and both ovaries,8978,Gynecological,Unknown,Unknown
+9304,Dementia due to head trauma,8989,Mental Disorders,Unknown,Unknown
+9327,Organic mental disorders,8989,Mental Disorders,Unknown,Unknown
+5220,Favorable ankylosis of all fingers,8995,Musculoskeletal - Hand,Unknown,Unknown
+5254,Hip or flail joint condition,8996,Musculoskeletal - Hip,Unknown,Unknown
+5270,Ankylosis of ankle,8991,Musculoskeletal - Ankle,Unknown,Unknown
+6843,Traumatic chest wall defect,9012,Respiratory,Unknown,Unknown
+7500,Removal of kidney,8975,Genitourinary,Unknown,Unknown
+7518,Stricture of the urethra,8975,Genitourinary,Unknown,Unknown
+9904,Malunion of lower jaw,8967,Dental and Oral,Unknown,Unknown
+5225,Ankylosis of the index finger,8995,Musculoskeletal - Hand,Unknown,Unknown
+6000,"Choroidopathy-uveitis,iritis,cyclitis,choroiditis",8974,Eye (Vision),Unknown,Unknown
+7509,Hydronephrosis,8975,Genitourinary,Unknown,Unknown
+7530,Chronic renal disease,8975,Genitourinary,Unknown,Unknown
+8108,Narcolepsy,9007,Neurological other System,Unknown,Unknown
+5303,Injury to intrinsic muscle (group III) of shoulder,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+5315,Injury to hip adduction; knee and hip flexion,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+6350,Systemic lupus erythematosus,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+7354,Hepatitis C,8968,Digestive,Unknown,Unknown
+9201,"Schizophrenia, disorganized type",8989,Mental Disorders,Unknown,Unknown
+9210,Atypical psychosis,8989,Mental Disorders,Unknown,Unknown
+5205,Ankylosis of the elbow,8993,Musculoskeletal - Elbow,Unknown,Unknown
+6011,"Retina, localized scars",8974,Eye (Vision),Unknown,Unknown
+6035,Keratoconus (protrusion of cornea),8974,Eye (Vision),Unknown,Unknown
+6313,Avitaminosis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+7327,Diverticulitis,8968,Digestive,Unknown,Unknown
+7347,Pancreatitis,8968,Digestive,Unknown,Unknown
+7502,Chronic nephritis,8975,Genitourinary,Unknown,Unknown
+8004,Parkinson's disease,9007,Neurological other System,Unknown,Unknown
+8018,Multiple sclerosis,9007,Neurological other System,Unknown,Unknown
+5214,Ankylosis of wrist,9004,Musculoskeletal - Wrist,Unknown,Unknown
+5226,Ankylosis of the middle finger,8995,Musculoskeletal - Hand,Unknown,Unknown
+5310,Injury to intrinsic muscles (group X) of foot,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+5316,Injury affecting hip flexion,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+6001,Keratopathy,8974,Eye (Vision),Unknown,Unknown
+6006,Retinopathy or maculopathy,8974,Eye (Vision),Unknown,Unknown
+6008,Detachment of retina,8974,Eye (Vision),Unknown,Unknown
+6027,"Cataract, traumatic",8974,Eye (Vision),Unknown,Unknown
+6034,Pterygium (thickening of membrane),8974,Eye (Vision),Unknown,Unknown
+6065,"Loss of 1 eye; vision 20/100, 70 or 50 in other",8974,Eye (Vision),Unknown,Unknown
+6201,Otitis media,3140,Hearing Loss,Unknown,Unknown
+6817,Pulmonary Vascular Disease,9012,Respiratory,Unknown,Unknown
+7002,Pericarditis,8979,Heart/Veins/Arteries,Unknown,Unknown
+7310,Stomach injury,8968,Digestive,Unknown,Unknown
+7329,Resection of the large intestine,8968,Digestive,Unknown,Unknown
+7626,Surgery of breast,8978,Gynecological,Unknown,Unknown
+7902,Nontoxic adenoma of thyroid gland,8973,Endocrine,Unknown,Unknown
+8914,"Epilepsy, psychomotor",9007,Neurological other System,Unknown,Unknown
+9211,Schizoaffective disorder,8989,Mental Disorders,Unknown,Unknown
+9416,Dissociative disorder (multiple personalities),8989,Mental Disorders,Unknown,Unknown
+5211,Impairment of ulna,8993,Musculoskeletal - Elbow,Unknown,Unknown
+5277,"Weak foot condition, bilateral",8994,Musculoskeletal - Foot,Unknown,Unknown
+5296,Loss of part of skull,9001,Musculoskeletal - Other,Unknown,Unknown
+5305,Injury to flexor muscles (group V) of elbow,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+5319,Injury to flexion and lateral motion - spine,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+5325,Injury to facial muscles,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+7015,Atrioventricular block,8979,Heart/Veins/Arteries,Unknown,Unknown
+7115,Thrombo-angiitis obliterans (Buerger's Disease),8979,Heart/Veins/Arteries,Unknown,Unknown
+7533,Cystic diseases of the kidneys,8975,Genitourinary,Unknown,Unknown
+7705,Thrombocytopenia,8981,Hemic and Lymphatic,Unknown,Unknown
+7714,Sickle cell anemia,8981,Hemic and Lymphatic,Unknown,Unknown
+8210,Paralysis of the 10th cranial nerve,9007,Neurological other System,Unknown,Unknown
+9404,Obsessive compulsive disorder,8989,Mental Disorders,Unknown,Unknown
+9431,Cyclothymic disorder,8989,Mental Disorders,Unknown,Unknown
+5009,"Arthritis, other types",8992,Musculoskeletal - Arthritis,Unknown,Unknown
+5056,"Ankle replacement, prosthesis",8991,Musculoskeletal - Ankle,Unknown,Unknown
+5171,Amputation of great toe,9003,Musculoskeletal - Toe Amputations,Unknown,Unknown
+5212,Impairment of radius,8993,Musculoskeletal - Elbow,Unknown,Unknown
+5216,Unfavorable ankylosis of one hand,8995,Musculoskeletal - Hand,Unknown,Unknown
+5281,"Hallux rigidus (foot), unilateral, severe",8994,Musculoskeletal - Foot,Unknown,Unknown
+5302,Injury to extrinsic muscles (group II) of shoulder,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+5318,Injury to thigh rotation and hip stabilization,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+6028,"Cataract. senile, and others",8974,Eye (Vision),Unknown,Unknown
+6521,Injury to the pharynx,9012,Respiratory,Unknown,Unknown
+7016,Heart valve replacement,8979,Heart/Veins/Arteries,Unknown,Unknown
+7328,Resection of the small intestine,8968,Digestive,Unknown,Unknown
+7507,Nephrosclerosis,8975,Genitourinary,Unknown,Unknown
+7510,Urinary condition,8975,Genitourinary,Unknown,Unknown
+7536,Glomerulonephritis,8975,Genitourinary,Unknown,Unknown
+7905,Hypoparathyroidism,8973,Endocrine,Unknown,Unknown
+8019,Meningitis,9007,Neurological other System,Unknown,Unknown
+8023,Progressive muscular atrophy,9007,Neurological other System,Unknown,Unknown
+9521,Bulimia nervosa,8970,Eating Disorders,Unknown,Unknown
+9900,Inflammation of the jawbone,8967,Dental and Oral,Unknown,Unknown
+9902,Partial loss of lower jaw,8967,Dental and Oral,Unknown,Unknown
+5000,Osteomyelitis,9000,Musculoskeletal - Osteomyelitis,Unknown,Unknown
+5011,Caisson disease of the bones,8930,Caisson,Unknown,Unknown
+5208,Forearm flexion limited to 100; extension to 45,8993,Musculoskeletal - Elbow,Unknown,Unknown
+5263,Gena recurvatum - knee condition,8997,Musculoskeletal - Knee,Unknown,Unknown
+5274,Astragalectomy (ankle condition),8991,Musculoskeletal - Ankle,Unknown,Unknown
+5304,Injury to intrinsic muscles (group IV) of shoulder,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+5307,Injury to flexors (group VII) of fingers/thumb,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+5317,Injury affecting hip extension,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+5323,Injury to muscles at side and back of neck,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+6004,Inflammation of the ciliary body,8974,Eye (Vision),Unknown,Unknown
+6012,"Glaucoma, inflammatory",8974,Eye (Vision),Unknown,Unknown
+6026,Inflammation of optic nerve,8974,Eye (Vision),Unknown,Unknown
+6029,Aphakia (absence of eye lens),8974,Eye (Vision),Unknown,Unknown
+6304,Malaria,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6305,Lymphatic Filariasis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6310,Syphilis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6311,Miliary tuberculosis,6890,Tuberculosis,Unknown,Unknown
+6319,Lyme Disease,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6320,Parasitic disease,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6515,"Laryngitis, tuberculous (active or inactive)",6890,Tuberculosis,Unknown,Unknown
+6519,Aphonia (inability to speak),9012,Respiratory,Unknown,Unknown
+6520,Stenosis (constriction) of the larynx,9012,Respiratory,Unknown,Unknown
+7200,Mouth injury,8967,Dental and Oral,Unknown,Unknown
+7204,Esophagus spasm,8968,Digestive,Unknown,Unknown
+7314,Cholecystitis (inflammation of the gall bladder),8968,Digestive,Unknown,Unknown
+7325,Chronic enteritis,8968,Digestive,Unknown,Unknown
+7334,Prolapse of rectum,8968,Digestive,Unknown,Unknown
+7335,"Ano, fistula",8968,Digestive,Unknown,Unknown
+7501,Abscess of kidney,8975,Genitourinary,Unknown,Unknown
+7504,Chronic pyelonephritis,8975,Genitourinary,Unknown,Unknown
+7515,Calculus in bladder,8975,Genitourinary,Unknown,Unknown
+7520,Removal of half or more of the penis,8975,Genitourinary,Unknown,Unknown
+7531,Kidney transplant,8975,Genitourinary,Unknown,Unknown
+7534,Artherosclerotic renal disease,8975,Genitourinary,Unknown,Unknown
+7535,Toxic nephropathy,8975,Genitourinary,Unknown,Unknown
+7610,Disease or injury of the vulva,8978,Gynecological,Unknown,Unknown
+7621,Prolapse of uterus,8978,Gynecological,Unknown,Unknown
+7702,Acute agranulocytosis,8981,Hemic and Lymphatic,Unknown,Unknown
+7706,Splenectomy (removal of spleen),8981,Hemic and Lymphatic,Unknown,Unknown
+7716,Aplastic anemia,8981,Hemic and Lymphatic,Unknown,Unknown
+7809,Discoid lupus,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+7904,Hyperparathyroidism,8973,Endocrine,Unknown,Unknown
+8000,Encephalitis,9007,Neurological other System,Unknown,Unknown
+8305,Inflammation of the 5th cranial nerve,9007,Neurological other System,Unknown,Unknown
+8307,Inflammation of the 7th cranial nerve,9007,Neurological other System,Unknown,Unknown
+8312,Inflammation of the 12th cranial nerve,9007,Neurological other System,Unknown,Unknown
+8407,Neuralgia of the 7th cranial nerve,9007,Neurological other System,Unknown,Unknown
+8411,Neuralgia of the 11th cranial nerve,9007,Neurological other System,Unknown,Unknown
+8913,"Epilepsy, diencephalic",9007,Neurological other System,Unknown,Unknown
+9208,Delusional disorder,8989,Mental Disorders,Unknown,Unknown
+9300,Delirium,8989,Mental Disorders,Unknown,Unknown
+9305,Vascular dementia,8989,Mental Disorders,Unknown,Unknown
+9312,"Dementia, Alzheimer's type",8989,Mental Disorders,Unknown,Unknown
+9424,Conversion disorder,8989,Mental Disorders,Unknown,Unknown
+5005,"Arthritis, pneumococcic",8992,Musculoskeletal - Arthritis,Unknown,Unknown
+5007,"Arthritis, syphilitic",8992,Musculoskeletal - Arthritis,Unknown,Unknown
+5052,"Elbow replacement, prosthesis",8993,Musculoskeletal - Elbow,Unknown,Unknown
+5172,Amputation of a toe other than great,9003,Musculoskeletal - Toe Amputations,Unknown,Unknown
+5200,Ankylosis of shoulder joint,9002,Musculoskeletal - Shoulder,Unknown,Unknown
+5219,Unfavorable ankylosis of two fingers,8995,Musculoskeletal - Hand,Unknown,Unknown
+5256,Ankylosis of the knee,8997,Musculoskeletal - Knee,Unknown,Unknown
+5306,Injury to extensor muscles (group VI) of elbow,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+5322,Injury to muscles at front of neck,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+5331,Compartment syndrome,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+6002,Scleritis,8974,Eye (Vision),Unknown,Unknown
+6003,Inflammation of iris,8974,Eye (Vision),Unknown,Unknown
+6019,Ptosis (drooping eyelid),8974,Eye (Vision),Unknown,Unknown
+6020,Eversion of eyelid (eyelid turns outward),8974,Eye (Vision),Unknown,Unknown
+6023,Loss of eyebrows,8974,Eye (Vision),Unknown,Unknown
+6037,"Pinguecula, Spot On White of Eye",8974,Eye (Vision),Unknown,Unknown
+6046,None,8974,Eye (Vision),Unknown,Unknown
+6062,Blindness in both eyes,8974,Eye (Vision),Unknown,Unknown
+6064,"Loss of 1 eye; vision 10, 15, or 20/200 in other",8974,Eye (Vision),Unknown,Unknown
+6081,Scotoma,8974,Eye (Vision),Unknown,Unknown
+6721,Inactive pulmonary tuberculosis; far advanced,6890,Tuberculosis,Unknown,Unknown
+6723,Inactive pulmonary tuberculosis; minimal,6890,Tuberculosis,Unknown,Unknown
+6731,Chronic inactive pulmonary tuberculosis,6890,Tuberculosis,Unknown,Unknown
+6824,Chronic lung abscess,9012,Respiratory,Unknown,Unknown
+6835,Coccidiodomycosis (fungous disease),9012,Respiratory,Unknown,Unknown
+6844,"Post-surgical residual (lobectomy, pneumonectomy)",9012,Respiratory,Unknown,Unknown
+7113,Arteriovenous fistula,8979,Heart/Veins/Arteries,Unknown,Unknown
+7202,Loss of tongue,8967,Dental and Oral,Unknown,Unknown
+7306,Gastrojejunal ulcer,8968,Digestive,Unknown,Unknown
+7309,Stenosis of the stomach,8968,Digestive,Unknown,Unknown
+7311,Liver injury,8968,Digestive,Unknown,Unknown
+7315,Cholelithiasis (gall stones),8968,Digestive,Unknown,Unknown
+7317,Injury of the gall bladder,8968,Digestive,Unknown,Unknown
+7321,Amebiasis,8968,Digestive,Unknown,Unknown
+7333,Stricture of rectum/anus,8968,Digestive,Unknown,Unknown
+7351,Liver Transplant,8968,Digestive,Unknown,Unknown
+7511,Stricture of ureter,8975,Genitourinary,Unknown,Unknown
+7516,Fistula of bladder,8975,Genitourinary,Unknown,Unknown
+7521,Removal of glans of penis,8975,Genitourinary,Unknown,Unknown
+7622,Displacement of uterus,8978,Gynecological,Unknown,Unknown
+7623,Surgical complications of pregnancy,8978,Gynecological,Unknown,Unknown
+7710,Adenitis,6890,Tuberculosis,Unknown,Unknown
+7723,Acquired hemolytic anemia,8981,Hemic and Lymphatic,Unknown,Unknown
+7901,Toxic adenoma of thyroid gland,8973,Endocrine,Unknown,Unknown
+7909,Diabetes insipidus,8973,Endocrine,Unknown,Unknown
+7911,Addison's disease,8973,Endocrine,Unknown,Unknown
+7912,Pluriglandular syndrome,8973,Endocrine,Unknown,Unknown
+8005,Bulbar palsy,9007,Neurological other System,Unknown,Unknown
+8012,Hematomyelia,9007,Neurological other System,Unknown,Unknown
+8017,Amyotrophic lateral sclerosis,9007,Neurological other System,Unknown,Unknown
+8104,Paramyoclonus multiplex,9007,Neurological other System,Unknown,Unknown
+8209,Paralysis of the 9th cranial nerve,9007,Neurological other System,Unknown,Unknown
+8211,Paralysis of the 11th cranial nerve,9007,Neurological other System,Unknown,Unknown
+8212,Paralysis of the 12th cranial nerve,9007,Neurological other System,Unknown,Unknown
+8405,Neuralgia of the 5th cranial nerve,9007,Neurological other System,Unknown,Unknown
+8912,"Epilepsy, Jacksonian and focal motor or sensory",9007,Neurological other System,Unknown,Unknown
+9204,"Schizophrenia, undifferentiated type",8989,Mental Disorders,Unknown,Unknown
+9205,"Schizophrenia, unspecified",8989,Mental Disorders,Unknown,Unknown
+9911,Loss of hard palate (more than half),8967,Dental and Oral,Unknown,Unknown
+9912,Loss of hard palate (less than half),8967,Dental and Oral,Unknown,Unknown
+9916,"Maxilla, malunion or nonunion of {4.150}",8967,Dental and Oral,Unknown,Unknown
+5001,Tuberculosis of bones and joints,6890,Tuberculosis,Unknown,Unknown
+5004,"Arthritis, gonorrheal",8992,Musculoskeletal - Arthritis,Unknown,Unknown
+5006,"Arthritis, typhoid",8992,Musculoskeletal - Arthritis,Unknown,Unknown
+5008,"Arthritis, streptococcic",8992,Musculoskeletal - Arthritis,Unknown,Unknown
+5053,Wrist replacement,9004,Musculoskeletal - Wrist,Unknown,Unknown
+5170,Amputation of all toes,9003,Musculoskeletal - Toe Amputations,Unknown,Unknown
+5173,Amputation of 3-4 toes other than great,9003,Musculoskeletal - Toe Amputations,Unknown,Unknown
+5210,Nonunion of radius and ulna,8993,Musculoskeletal - Elbow,Unknown,Unknown
+5217,Unfavorable ankylosis of four fingers,8995,Musculoskeletal - Hand,Unknown,Unknown
+5218,Unfavorable ankylosis of three fingers,8995,Musculoskeletal - Hand,Unknown,Unknown
+5221,Favorable ankylosis of four fingers,8995,Musculoskeletal - Hand,Unknown,Unknown
+5222,Favorable ankylosis of three fingers,8995,Musculoskeletal - Hand,Unknown,Unknown
+5273,Malunion of ankle,8991,Musculoskeletal - Ankle,Unknown,Unknown
+5308,Injury to extensors (group VIII) of fingers/thumb,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+5309,Injury to intrinsic muscles (group IX) of hand,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+5324,Rupture of diaphragm with herniation,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+5326,Muscle hernia,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+5330,Residuals of Rhabdomyolysis,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+6005,Inflammation of the choroid,8974,Eye (Vision),Unknown,Unknown
+6007,Intraocular hemorrhage,8974,Eye (Vision),Unknown,Unknown
+6010,Tuberculosis of the eye,8974,Eye (Vision),Unknown,Unknown
+6016,Nystagmus (rapid eyeball movement),8974,Eye (Vision),Unknown,Unknown
+6017,"Conjunctivitis, chronic (trachomatus)",8974,Eye (Vision),Unknown,Unknown
+6021,Inversion of eyelid (eyelid turns inward),8974,Eye (Vision),Unknown,Unknown
+6022,Lagophthalmos (inability to close eye),8974,Eye (Vision),Unknown,Unknown
+6024,Loss of eyelashes,8974,Eye (Vision),Unknown,Unknown
+6030,Inability to focus eyes,8974,Eye (Vision),Unknown,Unknown
+6032,Loss of portion of eyelids,8974,Eye (Vision),Unknown,Unknown
+6036,Status Post Corneal Transplant,8974,Eye (Vision),Unknown,Unknown
+6040,None,8974,Eye (Vision),Unknown,Unknown
+6042,None,8974,Eye (Vision),Unknown,Unknown
+6061,Anatomical loss both eyes,8974,Eye (Vision),Unknown,Unknown
+6063,Loss of 1 eye; vision 5/200 in other,8974,Eye (Vision),Unknown,Unknown
+6090,Diplopia (double vision),8974,Eye (Vision),Unknown,Unknown
+6091,Symblepharon (eyelid condition),8974,Eye (Vision),Unknown,Unknown
+6202,Otosclerosis,3140,Hearing Loss,Unknown,Unknown
+6203,Otitis interna,8969,Ear Disease and Other Sense Organs,Unknown,Unknown
+6206,Mastoiditis,8969,Ear Disease and Other Sense Organs,Unknown,Unknown
+6207,Loss or partial loss of ear,8969,Ear Disease and Other Sense Organs,Unknown,Unknown
+6300,"Cholera, Asiatic",8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6301,Visceral Leishmaniasis (Black fever),8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6302,Leprosy (Hansen's disease),8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6306,Bartonellosis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6307,Plague,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6308,Relapsing Fever,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6309,Rheumatic Fever,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6314,Beriberi,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6315,Pellagra,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6316,Brucellosis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6317,"Typhus, scrub",8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6318,Melioidosis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6518,Total laryngectomy,9012,Respiratory,Unknown,Unknown
+6701,Active pulmonary tuberculosis; far advanced,6890,Tuberculosis,Unknown,Unknown
+6702,Active pulmonary tuberculosis; moderate,6890,Tuberculosis,Unknown,Unknown
+6703,Active pulmonary tuberculosis; minimal,6890,Tuberculosis,Unknown,Unknown
+6704,Active pulmonary tuberculosis; unspecified advance,6890,Tuberculosis,Unknown,Unknown
+6722,Inactive pulmonary tuberculosis; moderate,6890,Tuberculosis,Unknown,Unknown
+6724,Inactive pulmonary tuberculosis; unspecified,6890,Tuberculosis,Unknown,Unknown
+6730,Chronic active pulmonary tuberculosis,6890,Tuberculosis,Unknown,Unknown
+6822,Actinomycosis (lesions of the lymph nodes),9012,Respiratory,Unknown,Unknown
+6823,Nocardiosis (lung infection),9012,Respiratory,Unknown,Unknown
+6834,Histoplasmosis (infection of lung - from spores,9012,Respiratory,Unknown,Unknown
+6836,Blastomycosis (infection by yeastlike organism),9012,Respiratory,Unknown,Unknown
+6837,Cryptococcosis (acneiform lesions),9012,Respiratory,Unknown,Unknown
+6838,Aspergillosis (lesions of the lung),9012,Respiratory,Unknown,Unknown
+6839,Mucormycosis,9012,Respiratory,Unknown,Unknown
+6840,Paralysis of the diaphragm,9012,Respiratory,Unknown,Unknown
+6842,Kyphoscoliosis (curvature of the sternum),9012,Respiratory,Unknown,Unknown
+7001,Endocarditis,8979,Heart/Veins/Arteries,Unknown,Unknown
+7003,Pericardial adhesions,8979,Heart/Veins/Arteries,Unknown,Unknown
+7004,Syphilitic heart disease,8979,Heart/Veins/Arteries,Unknown,Unknown
+7008,Hyperthyroid heart disease,8979,Heart/Veins/Arteries,Unknown,Unknown
+7018,Implantable cardiac pacemakers,8979,Heart/Veins/Arteries,Unknown,Unknown
+7019,Cardiac transplantation,8979,Heart/Veins/Arteries,Unknown,Unknown
+7201,Lip injury,8967,Dental and Oral,Unknown,Unknown
+7205,Diverticulum of the esophagus,8968,Digestive,Unknown,Unknown
+7308,Postgastrectomy syndromes,8968,Digestive,Unknown,Unknown
+7316,Chronic cholangitis,8968,Digestive,Unknown,Unknown
+7322,Dysentery,8968,Digestive,Unknown,Unknown
+7324,Distomiasis,8968,Digestive,Unknown,Unknown
+7326,Chronic entercolitis,8968,Digestive,Unknown,Unknown
+7330,Fistula of the intestine,8968,Digestive,Unknown,Unknown
+7331,Tuberculous peritonitis,6890,Tuberculosis,Unknown,Unknown
+7337,Ani pruritis,8968,Digestive,Unknown,Unknown
+7340,Femoral hernia,8968,Digestive,Unknown,Unknown
+7342,Visceroptosis,8968,Digestive,Unknown,Unknown
+7348,Vagotomy,8968,Digestive,Unknown,Unknown
+7505,Tuberculosis of kidney,6890,Tuberculosis,Unknown,Unknown
+7519,Fistula of urethra,8975,Genitourinary,Unknown,Unknown
+7532,Renal tubular disorders,8975,Genitourinary,Unknown,Unknown
+7537,Interstitial nephritis,8975,Genitourinary,Unknown,Unknown
+7538,Papillary necrosis,8975,Genitourinary,Unknown,Unknown
+7539,Renal amyloid disease,8975,Genitourinary,Unknown,Unknown
+7540,Intravascular kidney disease,8975,Genitourinary,Unknown,Unknown
+7620,Complete atrophy of both ovaries,8978,Gynecological,Unknown,Unknown
+7624,Rectovaginal fistula,8978,Gynecological,Unknown,Unknown
+7625,Urethrovaginal fistula,8978,Gynecological,Unknown,Unknown
+7704,Polycythemia,8981,Hemic and Lymphatic,Unknown,Unknown
+7707,Injury of spleen,8981,Hemic and Lymphatic,Unknown,Unknown
+7721,Folic acid deficiency,8981,Hemic and Lymphatic,Unknown,Unknown
+7722,Pernicious anemia and Vitamin B12 deficiency anemia,8981,Hemic and Lymphatic,Unknown,Unknown
+7811,Lupus vulgaris (active or inactive),6890,Tuberculosis,Unknown,Unknown
+7907,Cushing's syndrome,8973,Endocrine,Unknown,Unknown
+7908,Acromegaly,8973,Endocrine,Unknown,Unknown
+7916,Hyperpituitarism,8973,Endocrine,Unknown,Unknown
+7917,Hyperaldosteronism,8973,Endocrine,Unknown,Unknown
+7918,Pheochromocytoma,8973,Endocrine,Unknown,Unknown
+7919,C-cell hyperplasia of the thyroid,8973,Endocrine,Unknown,Unknown
+8010,Myelitis (inflammation of the spinal cord),9007,Neurological other System,Unknown,Unknown
+8011,Poliomyelitis,9007,Neurological other System,Unknown,Unknown
+8013,Cerebrospinal syphilis,9007,Neurological other System,Unknown,Unknown
+8014,Meningovascular syphilis,9007,Neurological other System,Unknown,Unknown
+8015,Degeneration of spinal cord,9007,Neurological other System,Unknown,Unknown
+8020,Abscess of the brain,9007,Neurological other System,Unknown,Unknown
+8024,Syringomyelia,9007,Neurological other System,Unknown,Unknown
+8025,Myasthenia gravis,9007,Neurological other System,Unknown,Unknown
+8046,Cerebral arteriosclerosis,9007,Neurological other System,Unknown,Unknown
+8105,Sydenham's chorea,9007,Neurological other System,Unknown,Unknown
+8106,Huntington's chorea,9007,Neurological other System,Unknown,Unknown
+8107,Athetosis,9007,Neurological other System,Unknown,Unknown
+8309,Inflammation of the 9th cranial nerve,9007,Neurological other System,Unknown,Unknown
+8310,Inflammation of the 10th cranial nerve,9007,Neurological other System,Unknown,Unknown
+8311,Inflammation of the 11th cranial nerve,9007,Neurological other System,Unknown,Unknown
+8409,Neuralgia of the 9th cranial nerve,9007,Neurological other System,Unknown,Unknown
+8410,Neuralgia of the 10th cranial nerve,9007,Neurological other System,Unknown,Unknown
+8412,Neuralgia of the 12th cranial nerve,9007,Neurological other System,Unknown,Unknown
+9202,"Schizophrenia, catatonic type",8989,Mental Disorders,Unknown,Unknown
+9203,"Schizophrenia, paranoid type",8989,Mental Disorders,Unknown,Unknown
+9301,Dementia due to infection,8989,Mental Disorders,Unknown,Unknown
+9417,Depersonalization disorder,8989,Mental Disorders,Unknown,Unknown
+9425,Hypochondriasis,8989,Mental Disorders,Unknown,Unknown
+9520,Anorexia nervosa,8970,Eating Disorders,Unknown,Unknown
+9901,Complete loss of lower jaw,8967,Dental and Oral,Unknown,Unknown
+9903,Nonunion of lower jaw,8967,Dental and Oral,Unknown,Unknown
+9906,Loss (full or partial) of upper jaw,8967,Dental and Oral,Unknown,Unknown
+9907,Partial loss of upper jaw,8967,Dental and Oral,Unknown,Unknown
+9908,Loss of condyloid process of jaw,8967,Dental and Oral,Unknown,Unknown
+9909,Loss of coronoid process of jaw,8967,Dental and Oral,Unknown,Unknown
+9914,"Maxilla, loss of more than half",8967,Dental and Oral,Unknown,Unknown
+9915,"Maxilla, loss of half or less",8967,Dental and Oral,Unknown,Unknown
+9917,"Neoplasm, hard and soft tissue, benign",8967,Dental and Oral,Unknown,Unknown
+8516,Paralysis of the ulnar nerve,8929,Arm Condition - Neurological other System,Unknown,Unknown
+6522,Allergic or vasomotor rhinitis.,9012,Respiratory,Unknown,Unknown
+8616,Inflammation of the ulnar nerve,8929,Arm Condition - Neurological other System,Unknown,Unknown
+8716,Neuralgia of the ulnar nerve,8929,Arm Condition - Neurological other System,Unknown,Unknown
+7800,"Scars, head, face or neck",9014,"Scars (Head, Face, Or Neck)",Unknown,Unknown
+5025,Fibromyalgia,9007,Neurological other System,Unknown,Unknown
+5295,lumbosacral strain,8998,Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine),Unknown,Unknown
+7122,Residuals of cold injury,8943,Cold Injury Residuals,Unknown,Unknown
+7344,Benign growths of digestive system,8946,Cyst/Benign Growth - Digestive,Unknown,Unknown
+6209,Benign growth of ear,8947,Cyst/Benign Growth - Ear Disease and Other Sense Organs,Unknown,Unknown
+7915,Benign growth of the endocrine system,8948,Cyst/Benign Growth - Endocrine,Unknown,Unknown
+6015,Benign growths of eye,8949,Cyst/Benign Growth - Eye (Vision),Unknown,Unknown
+5292,limitation of motion of lumbar spine,8998,Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine),Unknown,Unknown
+5290,limitation of motion of cervical spine,8999,Musculoskeletal - Neck/Upper Back (Cervical Spine),Unknown,Unknown
+7529,Benign growths of genitourinary system,8950,Cyst/Benign Growth - Genitourinary,Unknown,Unknown
+7628,Benign growths of gynecological system or breast,8951,Cyst/Benign Growth - Gynecological,Unknown,Unknown
+5328,Benign muscle growth,8963,Cyst/Benign Growth - Musculoskeletal and Muscle Injuries,Unknown,Unknown
+8003,Benign Growth of the Brain,8964,Cyst/Benign Growth - Neurological other System,Unknown,Unknown
+8022,Benign growth of the spinal cord,8964,Cyst/Benign Growth - Neurological other System,Unknown,Unknown
+8008,Thrombosis of the brain,8972,Embolism/Infarction - Neurological other System,Unknown,Unknown
+8009,Brain hemorrhage,8972,Embolism/Infarction - Neurological other System,Unknown,Unknown
+8007,Embolism of the brain,8972,Embolism/Infarction - Neurological other System,Unknown,Unknown
+5153,Amputation of index finger,8990,Musculoskeletal - Amputations,Unknown,Unknown
+6079,Vision in 1 eye 20/100 (6/30): Other eye 20/40 (6/12); or Vision in 1 eye 20/70 (6/21): Other eye 20/40 (6/12); or Vision in 1 eye 20/50 (6/15): Other eye 20/40 (6/12).,8974,Eye (Vision),Unknown,Unknown
+5156,Amputation of little finger,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5125,Loss of use of one hand,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5126,Amputation of five digits of one hand,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5104,Loss of use of both hands and one foot,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5105,Loss of use of both feet and one hand,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5106,Anatomical loss of both hands,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5107,Anatomical loss of both feet,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5108,Anatomical loss of one hand and one foot,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5120,Disarticulation of arm,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5121,Amputation of arm above insertion of deltoid,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5122,Amputation of arm below insertion of deltoid,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5123,Amputation of forearm above pronator teres,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5124,Amputation of forearm below pronator teres,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5127,"Amputation thumb, index, middle and ring fingers",8990,Musculoskeletal - Amputations,Unknown,Unknown
+5128,"Amputation thumb, index, middle and little finger",8990,Musculoskeletal - Amputations,Unknown,Unknown
+5129,"Amputation thumb, index, ring, and little fingers",8990,Musculoskeletal - Amputations,Unknown,Unknown
+5130,"Amputation thumb, middle, ring and little fingers",8990,Musculoskeletal - Amputations,Unknown,Unknown
+5131,"Amputation index, middle, ring and little fingers",8990,Musculoskeletal - Amputations,Unknown,Unknown
+5132,"Amputation thumb, index, and middle fingers",8990,Musculoskeletal - Amputations,Unknown,Unknown
+5291,limitation of motion of dorsal spine,8998,Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine),Unknown,Unknown
+7814,Tinea barbae.,9016,Skin,Unknown,Unknown
+5133,"Amputation thumb, index and ring fingers",8990,Musculoskeletal - Amputations,Unknown,Unknown
+5134,"Amputation thumb, index and little fingers",8990,Musculoskeletal - Amputations,Unknown,Unknown
+5135,"Amputation thumb, middle and ring fingers",8990,Musculoskeletal - Amputations,Unknown,Unknown
+5136,"Amputation thumb, middle and little fingers",8990,Musculoskeletal - Amputations,Unknown,Unknown
+5137,"Amputation thumb, ring and little fingers",8990,Musculoskeletal - Amputations,Unknown,Unknown
+5138,"Amputation index, middle and ring fingers",8990,Musculoskeletal - Amputations,Unknown,Unknown
+5139,"Amputation index, middle and little fingers",8990,Musculoskeletal - Amputations,Unknown,Unknown
+5140,"Amputation index, ring and little fingers",8990,Musculoskeletal - Amputations,Unknown,Unknown
+5141,"Amputation middle, ring and little fingers",8990,Musculoskeletal - Amputations,Unknown,Unknown
+6501,"Rhinitis, atrophic, chronic",9012,Respiratory,Unknown,Unknown
+5142,Amputation thumb and index fingers,8990,Musculoskeletal - Amputations,Unknown,Unknown
+6504,Partial loss of the nose (or scars),9014,"Scars (Head, Face, Or Neck)",Unknown,Unknown
+5143,Amputation thumb and middle fingers,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5144,Amputation thumb and ring fingers,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5145,Amputation thumb and little fingers,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5146,Amputation index and middle fingers,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5147,Amputation index and ring fingers,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5148,Amputation index and little fingers,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5149,Amputation middle and ring fingers,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5150,Amputation middle and little fingers,8990,Musculoskeletal - Amputations,Unknown,Unknown
+6297,[unable to locate but appears hearing related],8969,Ear Disease and Other Sense Organs,Unknown,Unknown
+7713,"Adenitis, secondary.",8973,Endocrine,Unknown,Unknown
+9206,Manic depressive reaction.,8989,Mental Disorders,Unknown,Unknown
+5151,Amputation ring and little fingers,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5152,Amputation of thumb,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5154,Amputation of middle finger,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5155,Amputation of ring finger,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5160,Disarticulation of leg,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5161,Amputation of upper third of the leg,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5162,Amputation of middle or lower thirds of the leg,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5163,Amputation of leg with defective stump,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5164,Amputation of leg - loss of natural knee action,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5165,Amputation of leg permitting prosthesis,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5166,Amputation of forefoot,8990,Musculoskeletal - Amputations,Unknown,Unknown
+5272,"Subastragalar or tarsal joint, ankylosis.",8991,Musculoskeletal - Ankle,Unknown,Unknown
+6070,"Blindness in 1 eye, only light perception: Other eye 20/40 (6/12).",8974,Eye (Vision),Unknown,Unknown
+6077,Vision in 1 eye 10/200 (3/60): Other eye 20/40 (6/12); or Vision in 1 eye 15/200 (4.5/60): Other eye 20/40 (6/12); or Vision in 1 eye 20/200 (6/60): Other eye 20/40 (6/12).,8974,Eye (Vision),Unknown,Unknown
+7009,"Bradycardia (Bradyarrhythmia), symptomatic, requiring permanent pacemaker implantation.",8979,Heart/Veins/Arteries,Unknown,Unknown
+6280,[unable to locate but appears hearing related],8969,Ear Disease and Other Sense Organs,Unknown,Unknown
+6293,[unable to locate but appears hearing related],8969,Ear Disease and Other Sense Organs,Unknown,Unknown
+6802,"Pneumoconiosis, unspecified",9012,Respiratory,Unknown,Unknown
+6816,Lobectomy.,9012,Respiratory,Unknown,Unknown
+7013,"Tachycardia, paroxysmal.",8979,Heart/Veins/Arteries,Unknown,Unknown
+8894,??,8989,Mental Disorders,Unknown,Unknown
+9209,Paranoid reaction (specify).,8989,Mental Disorders,Unknown,Unknown
+5167,Loss of use of a foot,8990,Musculoskeletal - Amputations,Unknown,Unknown
+8520,Paralysis of the sciatic nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8526,Paralysis of the anterior crural nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8515,Paralysis of the median nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8513,Paralysis of all radicular nerve groups,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8510,Paralysis of the upper radicular nerve group,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8720,Neuralgia of the sciatic nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8620,Inflammation of the sciatic nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8521,Paralysis of the external popliteal nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8512,Paralysis of the lower radicular nerve group,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8514,Paralysis of the radial nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8511,Paralysis of the middle radicular nerve group,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8529,Paralysis of the external cutaneous nerve - thigh,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8610,Inflammation of upper radicular nerve group,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8615,Inflammation of the median nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8522,Paralysis of the superficial peroneal nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8626,Inflammation of the anterior crural nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8726,Neuralgia of the anterior crural nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8621,Inflammation of the external popliteal nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8530,Paralysis of the ilio-inguinal nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8525,Paralysis of the posterior tibial nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8528,Paralysis of the obturator nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8614,Inflammation of the radial nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8710,Neuralgia of the upper radicular nerve group,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8715,Neuralgia of the median nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8523,Paralysis of the anterior tibial nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8527,Paralysis of the internal saphenous nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8721,Neuralgia of the external popliteal nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8524,Paralysis of the internal popliteal nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8725,Neuralgia of the posterior tibial nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8711,Neuralgia of the middle radicular nerve group,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8714,Neuralgia of the radial nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8519,Paralysis of the long thoracic nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8729,Neuralgia of the external cutaneous nerve - thigh,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8612,Inflammation of lower radicular nerve group,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8629,Inflammation of external cutaneous nerve - thigh,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8723,Neuralgia of the anterior tibial nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8622,Inflammation of the superficial peroneal nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8624,Inflammation of the internal popliteal nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8630,Inflammation of the ilio-inguinal nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8712,Neuralgia of the lower radicular nerve group,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8722,Neuralgia of the superficial peroneal nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8728,Neuralgia of the obtrurator nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8730,Neuralgia of the ilio-inguinal nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8517,Paralysis of the musculocutaneous nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8611,Inflammation of middle radicular nerve group,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8619,Inflammation of the long thoracic nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8518,Paralysis of the circumflex nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8613,Inflammation of all radicular nerve groups,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8617,Inflammation of the musculocutaneous nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8618,Inflammation of the circumflex nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8623,Inflammation of the anterior tibial nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8625,Inflammation of the posterior tibial nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8627,Inflammation of the internal saphenous nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8628,Inflammation of the obturator nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8713,Neuralgia of all radicular nerve groups,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8717,Neuralgia of the musculocutaneous nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8718,Neuralgia of the circumflex nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8719,Neuralgia of the long thoracic nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+8724,Neuralgia of the internal popliteal nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+6031,Dacryocystitis.,8974,Eye (Vision),Unknown,Unknown
+6033,"Lens, crystalline, dislocation.",8974,Eye (Vision),Unknown,Unknown
+6067,"Blindness in 1 eye, only light perception: Other eye 5/200 (1.5/60).",8974,Eye (Vision),Unknown,Unknown
+6068,"Blindness in 1 eye, only light perception: Other eye 10/200 (3/60), 15/200 (4.5/60), 20/200 (6/60).",8974,Eye (Vision),Unknown,Unknown
+6069,"Blindness in 1 eye, only light perception: Other eye 20/100 (6/30), 20/70 (6/21), 20/50 (6/15).",8974,Eye (Vision),Unknown,Unknown
+6071,Vision in 1 eye 5/200 (1.5/60): Other eye 5/200 (1.5/60).,8974,Eye (Vision),Unknown,Unknown
+6072,"Vision in 1 eye 5/200 (1.5/60): Other eye 10/200 (3/60), 15/200 (4.5/60), 20/200 (6/60).",8974,Eye (Vision),Unknown,Unknown
+6073,"Vision in 1 eye 5/200 (1.5/60): Other eye 20/100 (6/30), 20/70 (6/21), 20/50 (6/15).",8974,Eye (Vision),Unknown,Unknown
+6074,Vision in 1 eye 5/200 (1.5/60): Other eye 20/40 (6/12).,8974,Eye (Vision),Unknown,Unknown
+6075,"Vision in 1 eye 10/200 (3/60): Other eye 10/200 (3/60), 15/200 (4.5/60), or 20/200 (6/60); or Vision in 1 eye 15/200 (4.5/60): Other eye 15/200 (4.5/60), or 20/200 (6/60); or Vision in 1 eye 20/200 (6/60): Other eye 20/200 (6/60).",8974,Eye (Vision),Unknown,Unknown
+6076,"Vision in 1 eye 10/200 (3/60): Other eye 20/100 (6/30), 20/70 (6/21), or 20/50 (6/15); or Vision in 1 eye 15/200 (4.5/60): Other eye 20/100 (6/30), 20/70 (6/21), or 20/50 (6/15); or Vision in 1 eye 20/200 (6/60): Other eye 20/100 (6/30), 20/70 (6/21), or 20/50 (6/15).",8974,Eye (Vision),Unknown,Unknown
+6078,"Vision in 1 eye 20/100 (6/30): Other eye 20/100 (6/30), 20/70 (6/21), or 20/50 (6/15); or Vision in 1 eye 20/70 (6/21): Other eye 20/70 (6/21) or 20/50 (6/15); or Vision in 1 eye 20/50 (6/15): Other eye 20/50 (6/15).",8974,Eye (Vision),Unknown,Unknown
+6092,"Impairment of Muscle Function: Diplopia, limited muscle function.",8974,Eye (Vision),Unknown,Unknown
+6312,Nontuberculosis mycobacterium infection.,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6325,Hyperinfection syndrome or disseminated strongyloidiasis.,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6326,Schistosomiasis.,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6329,"Hemorrhagic fevers, including dengue, yellow fever, and others.",8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6330,Campylobacter jejuni infection.,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6331,Coxiella burnetii infection (Q Fever).,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6333,Nontyphoid salmonella infections.,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6334,Shigella infections.,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6335,West Nile virus infection.,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies",Unknown,Unknown
+6841,Spinal cord injury with respiratory insufficiency.,9012,Respiratory,Unknown,Unknown
+7544,"Renal disease caused by viral infection such as HIV, Hepatitis B, and Hepatitis C.",8975,Genitourinary,Unknown,Unknown
+7545,"Bladder, diverticulum of.",8975,Genitourinary,Unknown,Unknown
+7712,Multiple myeloma,8939,Cancer - Hemic and Lymphatic,Unknown,Unknown
+7906,Thyroiditis.,8973,Endocrine,Unknown,Unknown
+8727,Neuralgia of the internal saphenous nerve,9006,Neurological - Cranial/Peripheral Nerves,Unknown,Unknown
+5297,Removal of rib(s),249482,Musculoskeletal - Bones,Unknown,Unknown
+5298,Removal of coccyx (tailbone),249482,Musculoskeletal - Bones,Unknown,Unknown
+8100,Migraine,9007,Neurological other System,Unknown,Unknown
+7101,Hypertensive vascular disease,8979,Heart/Veins/Arteries,Unknown,Unknown
+6847,Sleep Apnea Syndromes,9012,Respiratory,Unknown,Unknown
+6602,Bronchial asthma,9012,Respiratory,Unknown,Unknown
+6513,Maxillary sinusitis,9012,Respiratory,Unknown,Unknown
+6512,Frontal sinusitis,9012,Respiratory,Unknown,Unknown
+6600,Chronic bronchitis,9012,Respiratory,Unknown,Unknown
+6510,Pansinusitis,9012,Respiratory,Unknown,Unknown
+6604,Chroic obstructive pulmonary disease,9012,Respiratory,Unknown,Unknown
+6511,Ethmoid sinusitis,9012,Respiratory,Unknown,Unknown
+6845,Chronic pleural effusion,9012,Respiratory,Unknown,Unknown
+6514,Sphenoid sinusitis,9012,Respiratory,Unknown,Unknown
+6833,Asbestosis,9012,Respiratory,Unknown,Unknown
+6603,Pulmonary emphysema,9012,Respiratory,Unknown,Unknown
+6846,Sarcoidosis,9012,Respiratory,Unknown,Unknown
+6523,Bacterial rhinitis,9012,Respiratory,Unknown,Unknown
+6601,Bronchiectasis (dilatation of the bronchi),9012,Respiratory,Unknown,Unknown
+6825,Diffuse interstitial fibrosis,9012,Respiratory,Unknown,Unknown
+5329,Soft tissue sarcoma,9005,Musculoskeletal and Muscle Injuries,Unknown,Unknown
+6732,"Pleurisy, active or inactive",6890,Tuberculosis,Unknown,Unknown
+6828,Eosinophilic granuloma of lung,9012,Respiratory,Unknown,Unknown
+6830,Radiation-induced pneumonia,9012,Respiratory,Unknown,Unknown
+7718,Essential thrombocythemia and primary myelofibrosis,8981,Hemic and Lymphatic,Unknown,Unknown
+7725,Myelodysplastic syndromes,8981,Hemic and Lymphatic,Unknown,Unknown
+6524,Granulomatous rhinitis,9012,Respiratory,Unknown,Unknown
+6826,Pneumonia,9012,Respiratory,Unknown,Unknown
+6827,Pulmonary alveolar proteinosis,9012,Respiratory,Unknown,Unknown
+6829,Drug-induced pulmonary pneumonia,9012,Respiratory,Unknown,Unknown
+6831,Hypersensitivity pneumonitis,9012,Respiratory,Unknown,Unknown
+6832,"Pneumoconiosis (silicosis, anthracosis, etc",9012,Respiratory,Unknown,Unknown
+9918,"Neoplasm, hard and soft tissue, malignant",8967,Dental and Oral,Unknown,Unknown

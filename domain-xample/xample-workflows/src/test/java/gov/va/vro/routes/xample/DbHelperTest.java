@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 
 import gov.va.vro.model.biekafka.BieMessagePayload;
+import gov.va.vro.model.biekafka.test.BieMessagePayloadFactory;
 import gov.va.vro.model.xample.SomeDtoModel;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEventEntity;
@@ -19,8 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDateTime;
 
 @ExtendWith(MockitoExtension.class)
 public class DbHelperTest {
@@ -57,19 +56,19 @@ public class DbHelperTest {
 
   @Test
   void saveContentionEvent() {
-    final LocalDateTime notifiedAt = LocalDateTime.now();
-    final String eventDetails = "Lorem ipsum";
-    final String event = "testEvent";
-    final BieMessagePayload item =
-        BieMessagePayload.builder()
-            .event(event)
-            .eventDetails(eventDetails)
-            .notifiedAt(notifiedAt.toString())
-            .build();
-    final ContentionEventEntity entity = dbHelper.saveContentionEvent(item);
+    final BieMessagePayload bieMessagePayload = BieMessagePayloadFactory.create();
+    final ContentionEventEntity entity = dbHelper.saveContentionEvent(bieMessagePayload);
+
     assertNotNull(entity);
-    assertEquals(event, entity.getEventType());
-    assertEquals(eventDetails, entity.getEventDetails());
-    assertEquals(notifiedAt, entity.getNotifiedAt());
+    assertEquals(bieMessagePayload.getEventType().toString(), entity.getEventType());
+    assertEquals(bieMessagePayload.getClaimId(), entity.getClaimId());
+    assertEquals(bieMessagePayload.getContentionId(), entity.getContentionId());
+    assertEquals(bieMessagePayload.getContentionTypeCode(), entity.getContentionTypeCode());
+    assertEquals(
+        bieMessagePayload.getContentionClassificationName(),
+        entity.getContentionClassificationName());
+    assertEquals(bieMessagePayload.getDiagnosticTypeCode(), entity.getDiagnosticTypeCode());
+    assertEquals(dbHelper.convertTime(bieMessagePayload.getOccurredAt()), entity.getOccurredAt());
+    assertEquals(dbHelper.convertTime(bieMessagePayload.getNotifiedAt()), entity.getNotifiedAt());
   }
 }

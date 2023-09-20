@@ -50,14 +50,6 @@ on:
         required: true
         default: 'latest'
         type: string
-      console:
-        description: 'VRO Console image tag'
-        required: true
-        default: "(disable)"
-        type: choice
-        options:
-        - latest
-        - (disable)
 
   # Allow other workflows to call this one
   workflow_call:
@@ -86,10 +78,6 @@ on:
         required: false
         type: string
         default: "latest"
-      console:
-        required: false
-        type: string
-        default: "(disable)"
 
 jobs:
   update-deployment-platform:
@@ -104,4 +92,3 @@ jobs:
         export RABBITMQ_VER=${{ inputs.rabbitmq }}
         export REDIS_VER=${{ inputs.redis }}
         export postgres_VER=${{ inputs.postgres }}
-        export console_VER=${{ inputs.console }}
