@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 
-
 @Slf4j
 public class ApiAuthKeyFilter extends AbstractPreAuthenticatedProcessingFilter {
   private final String headerName;
