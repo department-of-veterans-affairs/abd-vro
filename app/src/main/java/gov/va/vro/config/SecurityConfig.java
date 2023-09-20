@@ -11,6 +11,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
@@ -51,6 +52,9 @@ public class SecurityConfig {
   @Value("${apiauth.hdr-key-name-v2}")
   private String jwtAuthHeaderName;
 
+  @Value("Role")
+  private String role;
+
   private final ApiAuthKeyManager apiAuthKeyManager;
 
   /**
@@ -66,19 +70,31 @@ public class SecurityConfig {
     ApiAuthKeyFilter apiAuthKeyFilter = new ApiAuthKeyFilter(apiKeyAuthHeaderName);
     apiAuthKeyFilter.setAuthenticationManager(apiAuthKeyManager);
 
-    httpSecurity
-        .exceptionHandling()
-        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+    httpSecurity.exceptionHandling(
+        (httpSecurityExceptionHandlingConfigurer ->
+            httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(
+                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))));
     // Secure end point
     httpSecurity
-        .authorizeHttpRequests((authz) -> authz
-                .requestMatchers(claimInfo, claimMetrics, evidencePdf, fullHealth, healthAssessment, immediatePdf).hasAnyRole()
-                .anyRequest()
-                .authenticated())
-        .csrf().disable()
-        .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
+        .authorizeHttpRequests(
+            (authz) ->
+                authz
+                    .requestMatchers(
+                        claimInfo,
+                        claimMetrics,
+                        evidencePdf,
+                        fullHealth,
+                        healthAssessment,
+                        immediatePdf)
+                    .hasAnyRole(role)
+                    .anyRequest()
+                    .authenticated())
+        .csrf(AbstractHttpConfigurer::disable)
+        .sessionManagement(
+            httpSecuritySessionManagementConfigurer -> {
+              httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
+                  SessionCreationPolicy.STATELESS);
+            })
         .addFilter(apiAuthKeyFilter);
     return httpSecurity.build();
   }
@@ -96,19 +112,25 @@ public class SecurityConfig {
     ApiAuthKeyFilter apiAuthKeyFilter = new ApiAuthKeyFilter(jwtAuthHeaderName);
     apiAuthKeyFilter.setAuthenticationManager(apiAuthKeyManager);
 
-    httpSecurity
-        .exceptionHandling()
-        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+    httpSecurity.exceptionHandling(
+        (httpSecurityExceptionHandlingConfigurer ->
+            httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(
+                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))));
     // Secure end point
     httpSecurity
-            .authorizeHttpRequests((authz) -> authz
-            .requestMatchers(automatedClaim, examOrder).hasAnyRole()
-                    .anyRequest().authenticated())
-        .csrf()
-        .disable()
-        .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
+        .authorizeHttpRequests(
+            (authz) ->
+                authz
+                    .requestMatchers(automatedClaim, examOrder)
+                    .hasAnyRole(role)
+                    .anyRequest()
+                    .authenticated())
+        .csrf(AbstractHttpConfigurer::disable)
+        .sessionManagement(
+            httpSecuritySessionManagementConfigurer -> {
+              httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
+                  SessionCreationPolicy.STATELESS);
+            })
         .addFilter(apiAuthKeyFilter);
     return httpSecurity.build();
   }

@@ -7,8 +7,6 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 
-import javax.validation.constraints.NotBlank;
-
 /**
  * BIP update claim payload.
  *

@@ -52,30 +52,30 @@ tasks.named('jacocoTestReport').configure {
 afterEvaluate {
   // Disable https://github.com/springdoc/springdoc-openapi-gradle-plugin
   // Not particularly useful
-//  generateOpenApiDocs.enabled = false
-//  forkedSpringBootRun.enabled = false
+  //  generateOpenApiDocs.enabled = false
+  //  forkedSpringBootRun.enabled = false
 
-//  tasks.named('forkedSpringBootRun').configure {
-//    dependsOn 'bootStartScripts'
-//    dependsOn 'checkstyleIntegrationTest'
-//    dependsOn 'checkstyleMain'
-//    dependsOn 'checkstyleTest'
-//    dependsOn 'compileIntegrationTestJava'
-//    dependsOn 'dockerfileZip'
-//    dependsOn 'integrationTest'
-//    dependsOn 'jar'
-//    dependsOn 'spotlessJava'
-//    dependsOn 'startScripts'
-//    dependsOn 'test'
-//    // dependsOn ':service-python:pytest' // slows down `:app:build` task
-//
-//    dependsOn 'jacocoTestReport'
-//    dependsOn 'jacocoTestCoverageVerification'
-//
-//    dependsOn 'dockerPrepare'
-//  }
-//
-//  tasks.named('spectralLint').configure {
-//    dependsOn 'forkedSpringBootStop'
-//  }
+  //  tasks.named('forkedSpringBootRun').configure {
+  //    dependsOn 'bootStartScripts'
+  //    dependsOn 'checkstyleIntegrationTest'
+  //    dependsOn 'checkstyleMain'
+  //    dependsOn 'checkstyleTest'
+  //    dependsOn 'compileIntegrationTestJava'
+  //    dependsOn 'dockerfileZip'
+  //    dependsOn 'integrationTest'
+  //    dependsOn 'jar'
+  //    dependsOn 'spotlessJava'
+  //    dependsOn 'startScripts'
+  //    dependsOn 'test'
+  //    // dependsOn ':service-python:pytest' // slows down `:app:build` task
+  //
+  //    dependsOn 'jacocoTestReport'
+  //    dependsOn 'jacocoTestCoverageVerification'
+  //
+  //    dependsOn 'dockerPrepare'
+  //  }
+  //
+  //  tasks.named('spectralLint').configure {
+  //    dependsOn 'forkedSpringBootStop'
+  //  }
 }
