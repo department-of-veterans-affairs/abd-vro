@@ -55,7 +55,10 @@ class AsyncHoppyClient:
     async def make_request(self, request_id, body):
         correlation_id = str(uuid.uuid4())
         logging.info(
-            f"event=requestStarted id={request_id} queue={self.request_queue} correlation_id={correlation_id}")
+            f"event=requestStarted id={request_id} "
+            f"client={self.name} "
+            f"queue={self.request_queue} "
+            f"correlation_id={correlation_id}")
         self.responses[correlation_id] = None
 
         try:
@@ -66,6 +69,7 @@ class AsyncHoppyClient:
                                                                  correlation_id=correlation_id))
         except Exception as e:
             logging.warning(f"event=requestError "
+                            f"client={self.name} "
                             f"id={request_id} "
                             f"queue={self.request_queue} "
                             f"correlation_id={correlation_id} "
@@ -77,8 +81,11 @@ class AsyncHoppyClient:
             response = self.responses.get(correlation_id)
             if response:
                 self._terminate_correlation_id(correlation_id)
-                logging.info(
-                    f"event=requestCompleted id={request_id} queue={self.request_queue} correlation_id={correlation_id}")
+                logging.info(f"event=requestCompleted "
+                             f"client={self.name} "
+                             f"id={request_id} "
+                             f"queue={self.request_queue} "
+                             f"correlation_id={correlation_id}")
                 return response
             else:
                 if wait_for_response_time is None:
@@ -86,6 +93,7 @@ class AsyncHoppyClient:
                     await asyncio.sleep(0)
                 elif time.time() - wait_for_response_time >= self.max_latency:
                     logging.warning(f"event=requestError "
+                                    f"client={self.name} "
                                     f"id={request_id} "
                                     f"queue={self.request_queue} "
                                     f"correlation_id={correlation_id} "
@@ -103,31 +111,32 @@ class AsyncHoppyClient:
         cor_id = properties.correlation_id
 
         if cor_id and cor_id in self.responses.keys():
-            self.__log_response_event("responseAcked", cor_id, True, False, 1)
+            self._log_response_event("responseAcked", cor_id, True, False, 1)
             response = json.loads(body)
             self.responses[cor_id] = response
             self.async_consumer.acknowledge_message(delivery_tag)
             return
 
         if not cor_id:
-            self.__log_response_event("responseRejected", cor_id, False, False, 1)
+            self._log_response_event("responseRejected", cor_id, False, False, 1)
             self.async_consumer.reject_message(delivery_tag, requeue=False)
             return
 
         num_rejections = self.rejected.get(cor_id, 0) + 1
         if num_rejections < self.response_reject_and_requeue_attempts:
-            self.__log_response_event("responseRejected", cor_id, False, True, num_rejections)
+            self._log_response_event("responseRejected", cor_id, False, True, num_rejections)
             self.rejected[cor_id] = num_rejections
             self.async_consumer.reject_message(delivery_tag, requeue=True)
         else:
-            self.__log_response_event("responseRejected", cor_id, False, False, num_rejections)
+            self._log_response_event("responseRejected", cor_id, False, False, num_rejections)
             self.async_consumer.reject_message(delivery_tag, requeue=False)
             if cor_id in self.rejected:
                 del self.rejected[cor_id]
 
-    def __log_response_event(self, action: str, correlation_id: str, correlated: bool, requeued: bool, times_processed):
+    def _log_response_event(self, action: str, correlation_id: str, correlated: bool, requeued: bool, times_processed):
         logging.info(
             f"event={action} "
+            f"client={self.name} "
             f"queue={self.request_queue} "
             f"correlation_id={correlation_id} "
             f"correlated={correlated} "
@@ -161,6 +170,7 @@ class RetryableAsyncHoppyClient(AsyncHoppyClient):
                 attempt += 1
                 continue
         logging.warning(f"event=requestError "
+                        f"client={self.name} "
                         f"id={request_id} "
                         f"queue={self.request_queue} "
                         f"error='Max retries reached'")

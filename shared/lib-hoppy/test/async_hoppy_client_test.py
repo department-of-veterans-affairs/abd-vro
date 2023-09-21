@@ -1,6 +1,5 @@
 import asyncio
 import json
-import logging
 import uuid
 from unittest.mock import ANY, call
 
@@ -43,7 +42,6 @@ class TestAsyncHoppyClient:
 
         client.async_publisher.connect.assert_called_once_with(loop)
         client.async_consumer.connect.assert_called_once_with(loop)
-        logging.info(client.async_publisher.mock_calls)
 
     def test_stop(self, mock_async_publisher, mock_async_consumer):
         # Given
@@ -150,7 +148,6 @@ class TestAsyncHoppyClient:
         with pytest.raises(ResponseException):
             await asyncio.wait_for(results_future, 5)
         client.async_publisher.publish_message.assert_called_once_with(request, ANY)
-        logging.info(client.rejected)
 
         # reply_correlation_id is not in rejected. Limit of response_reject_and_requeue_attempts has been reached.
         assert reply_correlation_id not in client.rejected.keys()

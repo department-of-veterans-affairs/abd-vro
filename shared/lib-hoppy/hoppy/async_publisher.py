@@ -26,7 +26,7 @@ class AsyncPublisher(object):
         self._stopping = False
 
     def connect(self, loop):
-        logging.info(f'Publisher -  Connecting to RabbitMq params={self.connection_parameters}')
+        logging.debug(f'Publisher -  Connecting to RabbitMq params={self.connection_parameters}')
         self._connection = AsyncioConnection(
             parameters=self.connection_parameters,
             on_open_callback=self.on_connection_open,
@@ -36,7 +36,7 @@ class AsyncPublisher(object):
         return self._connection
 
     def on_connection_open(self, connection):
-        logging.info('Publisher -  Connection opened')
+        logging.debug('Publisher -  Connection opened')
         self._connection = connection
         self.open_channel()
 
@@ -49,17 +49,17 @@ class AsyncPublisher(object):
         logging.warning('Publisher -  Channel Closed')
 
     def open_channel(self):
-        logging.info('Publisher -  Creating a new channel')
+        logging.debug('Publisher -  Creating a new channel')
         self._connection.channel(on_open_callback=self.on_channel_open)
 
     def on_channel_open(self, channel):
-        logging.info('Publisher -  Channel opened')
+        logging.debug('Publisher -  Channel opened')
         self._channel = channel
         self.add_on_channel_close_callback()
         self.setup_exchange(self.exchange)
 
     def add_on_channel_close_callback(self):
-        logging.info('Publisher -  Adding channel close callback')
+        logging.debug('Publisher -  Adding channel close callback')
         self._channel.add_on_close_callback(self.on_channel_closed)
 
     def on_channel_closed(self, channel, reason):
@@ -69,7 +69,7 @@ class AsyncPublisher(object):
             self._connection.close()
 
     def setup_exchange(self, exchange_name):
-        logging.info(f'Publisher -  Declaring exchange {exchange_name}')
+        logging.debug(f'Publisher -  Declaring exchange {exchange_name}')
         cb = functools.partial(self.on_exchange_declare_ok,
                                userdata=exchange_name)
         self._channel.exchange_declare(exchange=exchange_name,
@@ -79,27 +79,27 @@ class AsyncPublisher(object):
                                        callback=cb)
 
     def on_exchange_declare_ok(self, _unused_frame, userdata):
-        logging.info(f'Publisher -  Exchange declared {userdata}')
+        logging.debug(f'Publisher -  Exchange declared {userdata}')
         self.setup_queue(self.queue)
 
     def setup_queue(self, queue_name):
-        logging.info(f'Publisher -  Declaring queue {queue_name}', )
+        logging.debug(f'Publisher -  Declaring queue {queue_name}', )
         self._channel.queue_declare(queue=queue_name,
                                     callback=self.on_queue_declare_ok)
 
     def on_queue_declare_ok(self, _unused_frame):
-        logging.info(f'Publisher -  Binding {self.exchange} to {self.queue} with {self.routing_key}')
+        logging.debug(f'Publisher -  Binding {self.exchange} to {self.queue} with {self.routing_key}')
         self._channel.queue_bind(self.queue,
                                  self.exchange,
                                  routing_key=self.routing_key,
                                  callback=self.on_bind_ok)
 
     def on_bind_ok(self, _unused_frame):
-        logging.info(f'Publisher -  Queue bound {self.queue}')
+        logging.debug(f'Publisher -  Queue bound {self.queue}')
         self.start_publishing()
 
     def start_publishing(self):
-        logging.info('Publisher -  Issuing Confirm.Select RPC command')
+        logging.debug('Publisher -  Issuing Confirm.Select RPC command')
         self._channel.confirm_delivery(self.on_delivery_confirmation)
 
     def on_delivery_confirmation(self, method_frame):
@@ -107,7 +107,7 @@ class AsyncPublisher(object):
         ack_multiple = method_frame.method.multiple
         delivery_tag = method_frame.method.delivery_tag
 
-        logging.info(
+        logging.debug(
             f'Publisher -  Received {confirmation_type} for delivery tag: {delivery_tag} (multiple: {ack_multiple})')
 
         if confirmation_type == 'ack':
@@ -123,7 +123,7 @@ class AsyncPublisher(object):
                     self._acked += 1
                     del self._deliveries[tmp_tag]
 
-        logging.info(
+        logging.debug(
             f'Publisher -  Published {self._message_number} messages, '
             f'{len(self._deliveries)} have yet to be confirmed, '
             f'{self._acked} were acked and {self._nacked} were nacked')
@@ -138,21 +138,21 @@ class AsyncPublisher(object):
                                     properties)
         self._message_number += 1
         self._deliveries[self._message_number] = True
-        logging.info(f'Publisher -  Published message # {self._message_number}', )
+        logging.debug(f'Publisher -  Published message # {self._message_number}', )
 
     def stop(self):
-        logging.info('Publisher - Stopping Async Publisher')
+        logging.debug('Publisher - Stopping Async Publisher')
         self._stopping = True
         self.close_channel()
         self.close_connection()
-        logging.info('Publisher - Stopped Async Publisher')
+        logging.debug('Publisher - Stopped Async Publisher')
 
     def close_channel(self):
         if self._channel is not None:
-            logging.info('Publisher - Closing the channel')
+            logging.debug('Publisher - Closing the channel')
             self._channel.close()
 
     def close_connection(self):
         if self._connection is not None:
-            logging.info('Publisher - Closing connection')
+            logging.debug('Publisher - Closing connection')
             self._connection.close()
