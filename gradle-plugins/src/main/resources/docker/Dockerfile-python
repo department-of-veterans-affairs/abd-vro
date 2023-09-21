@@ -23,6 +23,9 @@ COPY requirements.txt ./
 # Install python packages using a long timeout so that builds won't fail when pypi.org is slow
 RUN pip install --default-timeout=100 --no-cache-dir -r requirements.txt
 
+# Install DataDog Trace
+RUN pip show ddtrace && which ddtrace-run
+
 # https://stackoverflow.com/a/46801962
 # Copy script that runs docker-entrypoint.sh if it exists
 COPY set-env-secrets.src entrypoint-wrapper.sh docker-entry*.sh ./
