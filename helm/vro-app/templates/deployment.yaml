@@ -19,32 +19,32 @@ spec:
     spec:
       {{- include "vro.imagePullSecrets" . | nindent 6 }}
       initContainers:
-        - name: pg-isready{{ include "vro.containerSuffix" . }}
-          # TODO: This simple container does not need to use the big `db` image
-          image: {{ include "vro.imageRegistryPath" . }}vro-postgres:{{ include "vro.imageTag" . }}
-          env:
-            - name: POSTGRES_FLYWAY_USER
-              valueFrom:
-                secretKeyRef:
-                  name: vro-db
-                  key: DB_FLYWAYUSER_NAME
-            - name: POSTGRES_DB
-              value: {{ .Values.global.service.db.databaseName }}
-          command:
-            - /bin/sh
-            - -c
-            - |
-              /bin/sh -c "
-                until pg_isready -d $POSTGRES_DB -h {{ .Values.global.hostnamePrefix }}-postgres -p {{ .Values.global.service.db.targetPort}} -U $POSTGRES_FLYWAY_USER; do
-                 echo 'Waiting for Postgres DB to be available'
-                 sleep 5
-                done
-              "
-          resources:
-            # TODO: reduce resources since this container requires very little
-            limits:
-              cpu: 10m
-              memory: 256Mi
+# TODO: Move these checks into the db-init container in an RDS compatible way
+#        - name: pg-isready{{ include "vro.containerSuffix" . }}
+#          image: {{ include "vro.imageRegistryPath" . }}vro-postgres:{{ include "vro.imageTag" . }}
+#          env:
+#            - name: POSTGRES_FLYWAY_USER
+#              valueFrom:
+#                secretKeyRef:
+#                  name: vro-db
+#                  key: DB_FLYWAYUSER_NAME
+#            - name: POSTGRES_DB
+#              value: {{ .Values.global.service.db.databaseName }}
+#          command:
+#            - /bin/sh
+#            - -c
+#            - |
+#              /bin/sh -c "
+#                until pg_isready -d $POSTGRES_DB -h {{ .Values.global.hostnamePrefix }}-postgres -p {{ .Values.global.service.db.targetPort}} -U $POSTGRES_FLYWAY_USER; do
+#                 echo 'Waiting for Postgres DB to be available'
+#                 sleep 5
+#                done
+#              "
+#          resources:
+#            # TODO: reduce resources since this container requires very little
+#            limits:
+#              cpu: 10m
+#              memory: 256Mi
         - name: db-init{{ include "vro.containerSuffix" . }}
           image: {{ include "vro.imageRegistryPath" . }}vro-db-init:{{ .Values.dbInit.imageTag  | default .Values.global.imageTag }}
           env:

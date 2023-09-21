@@ -1,6 +1,6 @@
 name: "1. (Internal) Update Deployment - Platform"
 # To deploy updates to VRO Base Platform container images
-run-name: "${{inputs.target_env}}: Update deployment platform: postgres ${{inputs.postgres}}"
+run-name: "${{inputs.target_env}}: Update deployment platform"
 
 on:
   workflow_dispatch:
