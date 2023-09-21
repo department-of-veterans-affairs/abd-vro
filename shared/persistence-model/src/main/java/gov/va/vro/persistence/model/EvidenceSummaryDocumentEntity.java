@@ -1,17 +1,17 @@
 package gov.va.vro.persistence.model;
 
-import lombok.Getter;
-import lombok.Setter;
-
-import java.time.OffsetDateTime;
-import java.util.Map;
-import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+
+import java.time.OffsetDateTime;
+import java.util.Map;
+import java.util.UUID;
 
 @Getter
 @Setter

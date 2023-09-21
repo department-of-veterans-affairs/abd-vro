@@ -1,15 +1,15 @@
 package gov.va.vro.persistence.model;
 
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.Map;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+
+import java.util.Map;
 
 @Entity
 @Getter

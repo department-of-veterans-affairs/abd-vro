@@ -7,6 +7,10 @@ ext {
   jacocoExclude = ['**/*Application.*']
 }
 
+tasks.named('bootJar') {
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 dependencies {
   implementation project(':domain-xample:xample-shared')
   implementation project(':shared:lib-camel-connector')
@@ -20,6 +24,7 @@ dependencies {
 
   // Enables more expressive Camel Route definitions https://camel.apache.org/manual/Endpoint-dsl.html
   implementation "org.apache.camel:camel-endpointdsl:${camel_version}"
+  implementation "org.apache.camel.springboot:camel-jaxb-starter:${camel_version}"
 
   // Actuator for health check
   implementation 'org.springframework.boot:spring-boot-starter-web'

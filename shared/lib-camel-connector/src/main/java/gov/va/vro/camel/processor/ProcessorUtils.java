@@ -16,9 +16,9 @@ final class ProcessorUtils {
   }
 
   void conditionallySetOutputBody(Exchange exchange, Object body) {
-      if (Objects.requireNonNull(exchange.getPattern()) == ExchangePattern.InOut) {
-          if (body == null || (body instanceof Optional && ((Optional<?>) body).isEmpty())) return;
-          exchange.getMessage().setBody(body);
-      }
+    if (Objects.requireNonNull(exchange.getPattern()) == ExchangePattern.InOut) {
+      if (body == null || (body instanceof Optional && ((Optional<?>) body).isEmpty())) return;
+      exchange.getMessage().setBody(body);
+    }
   }
 }
