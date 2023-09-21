@@ -109,7 +109,7 @@ services:
 
   mock-bie-schema-registry:
     profiles: ["all","kafka"]
-    image: va/vro_mocks-mock-schema-registry:latest
+    image: va/vro_mocks-mock-bie-schema-registry:latest
     <<: [*common-sde-security, *common-security-opt]
     depends_on:
       - mock-bie-kafka
@@ -122,18 +122,22 @@ services:
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
     volumes:
       - ./mock-bie-schema-registry/resources/avro:/schemas
-    command: |
-      bash -c "
-        echo Waiting for Kafka;
-        for schema in /schemas/events/*.avsc; do
-          subject=$(basename $schema .avsc)
-          curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json"
-           --data @$schema http://mock-bie-schema-registry:8081/subjects/$subject/versions;
-        done
-        sleep infinity"
+    command: >
+      sh -c '
+        sleep 3;
+        SUBJECT="TST\\_CONTENTION\\_BIE\\_CONTENTION\\_CLASSIFIED\\_V02";
+
+        echo "SUBJECT value: $SUBJECT";
+        cat /schemas/events/TST_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02.avsc > /tmp/schema.avsc;
+
+        URL="http://mock-bie-schema-registry:8081/subjects/TST_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02/versions";
+        echo "Constructed URL: $URL";
+        cat /tmp/schema.avsc;
+        curl -X POST -H 'Content-Type: application/vnd.schemaregistry.v1+json' --data-binary @/tmp/schema.avsc http://mock-bie-schema-registry:8081/subjects/TST_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02/versions;
+        sleep infinity;
+      '
     networks:
       - vro_intranet
-
   mock-bip-claims-api:
     profiles: ["all","bip"]
     image: va/vro_mocks-mock-bip-claims-api:latest
