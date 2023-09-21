@@ -6,6 +6,10 @@ from pydantic_models import (MaxRatingsForClaimForIncreaseRequest,
                              MaxRatingsForClaimForIncreaseResponse)
 from util.lookup_table import MAX_RATINGS_BY_CODE, get_max_rating
 from util.sanitizer import sanitize
+from ddtrace import patch_all
+from ddtrace.contrib.asgi import TraceMiddleware
+
+patch_all()
 
 app = FastAPI(
     title="Max Ratings for CFI",
@@ -23,6 +27,7 @@ app = FastAPI(
         },
     ]
 )
+app.add_middleware(TraceMiddleware)
 
 logging.basicConfig(
     format="[%(asctime)s] %(levelname)-8s %(message)s",
