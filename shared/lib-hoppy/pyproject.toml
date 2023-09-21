@@ -4,12 +4,22 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hoppy"
-description = "Python library for building VRO microservices"
+description = "Python library for building VRO microservices that need to interact with Rabbit MQ"
 requires-python = ">=3.6"
 dependencies = [
     "pika",
+    "pytest",
+    "pytest-mock",
+    "pytest-asyncio"
 ]
 dynamic = ["version"]
 
 [tool.setuptools.dynamic]
-version = {attr = "hoppy.__version__"}
+version = { attr = "hoppy.__version__" }
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
+#log_cli = true
+#log_cli_level = "INFO"
