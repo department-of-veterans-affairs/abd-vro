@@ -19,6 +19,8 @@ dependencies {
 
   // Needed for *Repository classes to save to DB
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+  // Postgres DB client library
+  runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
 
   // Enables more expressive Camel Route definitions https://camel.apache.org/manual/Endpoint-dsl.html
   implementation "org.apache.camel:camel-endpointdsl:${camel_version}"
