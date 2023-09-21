@@ -1,6 +1,6 @@
 labels:
   app: vro-rds-dbinit
 
-imageTag: "latest"
+imageTag: "40da75f"
 
 replicaCount: 1
