@@ -33,7 +33,7 @@ async def on_start_up():
     hoppy.start_hoppy_clients(asyncio.get_event_loop())
 
     # Wait for hoppy clients to initialize
-    await asyncio.sleep(5)
+    await asyncio.sleep(2)
 
 
 async def on_shut_down():
