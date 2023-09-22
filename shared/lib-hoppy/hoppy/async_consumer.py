@@ -2,20 +2,29 @@ import asyncio
 import functools
 import logging
 import time
+from typing import Callable
 
-import pika
+from hoppy.config import RABBITMQ_CONFIG
+from hoppy.util import create_connection_parameters
 from pika.adapters.asyncio_connection import AsyncioConnection
 
 
 class AsyncConsumer(object):
-    def __init__(self, exchange, exchange_type, queue, routing_key,
-                 connection_parameters: pika.ConnectionParameters,
-                 reply_callback):
+    def __init__(self,
+                 config: [dict | None] = None,
+                 exchange: str = '',
+                 exchange_type: str = 'direct',
+                 queue: str = '',
+                 routing_key: str = '',
+                 reply_callback: Callable = None):
+        if config is None:
+            config = {}
+        self.config = {**RABBITMQ_CONFIG, **config}
+        self.connection_parameters = create_connection_parameters(self.config)
         self.exchange = exchange
         self.exchange_type = exchange_type
         self.queue = queue
         self.routing_key = routing_key
-        self.connection_parameters = connection_parameters
 
         self.should_reconnect = False
         self.was_consuming = False
@@ -167,21 +176,31 @@ class AsyncConsumer(object):
             logging.debug('Consumer - Stopped Async Consumer')
 
 
-class ReconnectingConsumer(object):
-    """This is an example consumer that will reconnect if the nested
-    ExampleConsumer indicates that a reconnect is necessary.
-
-    """
-
-    def __init__(self, exchange, exchange_type, queue, routing_key, connection_parameters: pika.ConnectionParameters):
+class ReconnectingAsyncConsumer:
+    def __init__(self,
+                 config: [dict | None] = None,
+                 exchange: str = '',
+                 exchange_type: str = 'direct',
+                 queue: str = '',
+                 routing_key: str = '',
+                 reply_callback: Callable = None):
+        self.config = config,
         self.exchange = exchange
         self.exchange_type = exchange_type
         self.queue = queue
         self.routing_key = routing_key
-        self.connection_parameters = connection_parameters
+        self.reply_callback = reply_callback
 
         self._reconnect_delay = 0
-        self._consumer = AsyncConsumer(exchange, exchange_type, queue, routing_key, connection_parameters)
+        self._consumer = self.create_async_consumer()
+
+    def create_async_consumer(self):
+        return AsyncConsumer(self.config,
+                             self.exchange,
+                             self.exchange_type,
+                             self.queue,
+                             self.routing_key,
+                             self.reply_callback)
 
     def run(self):
         while True:
@@ -198,8 +217,7 @@ class ReconnectingConsumer(object):
             reconnect_delay = self._get_reconnect_delay()
             logging.debug('Reconnecting after %d seconds', reconnect_delay)
             time.sleep(reconnect_delay)
-            self._consumer = AsyncConsumer(self.exchange, self.exchange_type, self.queue, self.routing_key,
-                                           self.connection_parameters)
+            self._consumer = self.create_async_consumer()
 
     def _get_reconnect_delay(self):
         if self._consumer.was_consuming:

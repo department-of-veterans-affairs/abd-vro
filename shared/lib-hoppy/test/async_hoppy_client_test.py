@@ -10,7 +10,7 @@ from hoppy.async_hoppy_client import (AsyncHoppyClient,
                                       RetryableAsyncHoppyClient)
 from hoppy.exception import ResponseException
 
-pika_params = pika.ConnectionParameters()
+config = {}
 
 
 @pytest.fixture(autouse=True)
@@ -25,7 +25,7 @@ def mock_async_publisher(mocker):
 
 def get_client(mock_async_publisher, mock_async_consumer, app_id="test", exchange="exchange", queue="queue",
                reply_queue="reply_queue", max_latency=3, requeue_attempts=3):
-    client = AsyncHoppyClient("test_client", app_id, pika_params, exchange, queue, reply_queue, max_latency, requeue_attempts)
+    client = AsyncHoppyClient("test_client", app_id, config, exchange, queue, reply_queue, max_latency, requeue_attempts)
     client.async_publisher = mock_async_publisher
     client.async_consumer = mock_async_consumer
     return client
@@ -195,7 +195,7 @@ class TestAsyncHoppyClient:
 
 def get_retry_client(mock_async_publisher, mock_async_consumer, app_id="test", exchange="exchange", queue="queue",
                      reply_queue="reply_queue", max_latency=3, requeue_attempts=3, max_retries=3):
-    client = RetryableAsyncHoppyClient("test_client", app_id, pika_params, exchange, queue, reply_queue, max_latency, requeue_attempts,
+    client = RetryableAsyncHoppyClient("test_client", app_id, config, exchange, queue, reply_queue, max_latency, requeue_attempts,
                                        max_retries)
     client.async_publisher = mock_async_publisher
     client.async_consumer = mock_async_consumer

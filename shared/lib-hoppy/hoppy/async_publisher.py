@@ -2,18 +2,27 @@ import functools
 import json
 import logging
 
-import pika
+from hoppy.config import RABBITMQ_CONFIG
+from hoppy.util import create_connection_parameters
 from pika.adapters.asyncio_connection import AsyncioConnection
+from pika.spec import BasicProperties
 
 
 class AsyncPublisher(object):
-    def __init__(self, exchange, exchange_type, queue, routing_key, connection_parameters: pika.ConnectionParameters):
-        """Set up the example publisher object, passing in the URL we will use to connect to RabbitMQ."""
+    def __init__(self,
+                 config: [dict | None] = None,
+                 exchange: str = '',
+                 exchange_type: str = 'direct',
+                 queue: str = '',
+                 routing_key: str = ''):
+        if config is None:
+            config = {}
+        self.config = {**RABBITMQ_CONFIG, **config}
+        self.connection_parameters = create_connection_parameters(self.config)
         self.exchange = exchange
         self.exchange_type = exchange_type
         self.queue = queue
         self.routing_key = routing_key
-        self.connection_parameters = connection_parameters
 
         self._connection = None
         self._channel = None
@@ -128,7 +137,7 @@ class AsyncPublisher(object):
             f'{len(self._deliveries)} have yet to be confirmed, '
             f'{self._acked} were acked and {self._nacked} were nacked')
 
-    def publish_message(self, message='hello', properties: pika.BasicProperties = None):
+    def publish_message(self, message='hello', properties: BasicProperties = None):
         if self._channel is None or not self._channel.is_open:
             logging.warning(f'Publisher -  Could not publish message with channel={self._channel}')
             return

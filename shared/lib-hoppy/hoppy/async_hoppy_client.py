@@ -7,7 +7,7 @@ import uuid
 from hoppy.async_consumer import AsyncConsumer
 from hoppy.async_publisher import AsyncPublisher
 from hoppy.exception import ResponseException
-from pika import BasicProperties, ConnectionParameters
+from pika import BasicProperties
 
 
 class AsyncHoppyClient:
@@ -17,7 +17,7 @@ class AsyncHoppyClient:
     def __init__(self,
                  name: str,
                  app_id: str,
-                 connection_parameters: ConnectionParameters,
+                 config: dict,
                  exchange: str,
                  request_queue: str,
                  reply_to_queue: str,
@@ -25,23 +25,24 @@ class AsyncHoppyClient:
                  response_reject_and_requeue_attempts: int = 3):
         self.name = name
         self.app_id = app_id
+        self.config = config
         self.exchange = exchange
         self.request_queue = request_queue
         self.reply_to_queue = reply_to_queue
         self.max_latency = max_latency
         self.response_reject_and_requeue_attempts = response_reject_and_requeue_attempts
 
-        self.async_publisher = AsyncPublisher(exchange=exchange,
+        self.async_publisher = AsyncPublisher(config=self.config,
+                                              exchange=exchange,
                                               exchange_type="direct",
                                               queue=request_queue,
-                                              routing_key=request_queue,
-                                              connection_parameters=connection_parameters)
+                                              routing_key=request_queue)
 
-        self.async_consumer = AsyncConsumer(exchange=exchange,
+        self.async_consumer = AsyncConsumer(config=self.config,
+                                            exchange=exchange,
                                             exchange_type="direct",
                                             queue=reply_to_queue,
                                             routing_key=reply_to_queue,
-                                            connection_parameters=connection_parameters,
                                             reply_callback=self._on_reply)
 
     def start(self, loop):
@@ -107,7 +108,7 @@ class AsyncHoppyClient:
         if correlation_id in self.rejected.keys():
             del self.rejected[correlation_id]
 
-    def _on_reply(self, channel, properties, delivery_tag, body):
+    def _on_reply(self, _channel, properties, delivery_tag, body):
         cor_id = properties.correlation_id
 
         if cor_id and cor_id in self.responses.keys():
@@ -148,7 +149,7 @@ class RetryableAsyncHoppyClient(AsyncHoppyClient):
     def __init__(self,
                  name: str,
                  app_id: str,
-                 connection_parameters: ConnectionParameters,
+                 config: dict,
                  exchange: str,
                  request_queue: str,
                  reply_to_queue: str,
@@ -156,7 +157,7 @@ class RetryableAsyncHoppyClient(AsyncHoppyClient):
                  response_reject_and_requeue_attempts: int = 3,
                  max_retries=3):
         self.max_retries = max_retries
-        super().__init__(name, app_id, connection_parameters, exchange, request_queue, reply_to_queue, max_latency,
+        super().__init__(name, app_id, config, exchange, request_queue, reply_to_queue, max_latency,
                          response_reject_and_requeue_attempts)
 
     async def make_request(self, request_id, body):
