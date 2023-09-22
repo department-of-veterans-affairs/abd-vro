@@ -1,4 +1,3 @@
-import asyncio
 import functools
 import logging
 import time
@@ -26,20 +25,31 @@ class AsyncConsumer(object):
         self.queue = queue
         self.routing_key = routing_key
 
-        self.should_reconnect = False
-        self.was_consuming = False
-
+        self._loop = None
         self._connection = None
         self._channel = None
-        self._closing = False
         self._consumer_tag = None
-        self._consuming = False
+        self._max_reconnect_delay = self.config.get('max_reconnect_delay', 30)
+
         # In production, experiment with higher prefetch values
         # for higher consumer throughput
         self._prefetch_count = 1
         self.reply_callback = reply_callback
 
-    def connect(self, loop):
+        # The following attributes are used per connection session. When a reconnect happens, they should be reset.
+        # See self.initialize_connection_session()
+        self._reconnect_delay = self.config.get('initial_reconnect_delay', 0)
+        self._stopping = False
+        self._consuming = False
+
+    def initialize_connection_session(self):
+        self._reconnect_delay = self.config.get('initial_reconnect_delay', 0)
+        self._stopping = False
+        self._consuming = False
+
+    def connect(self, loop=None):
+        self._loop = loop
+
         logging.debug(f'Consumer - Connecting to RabbitMq params={self.connection_parameters}')
         return AsyncioConnection(
             parameters=self.connection_parameters,
@@ -59,6 +69,7 @@ class AsyncConsumer(object):
     def on_connection_open(self, connection):
         self._connection = connection
         logging.debug('Consumer - Connection opened')
+        self.initialize_connection_session()
         self.open_channel()
 
     def on_connection_open_error(self, _unused_connection, err):
@@ -67,15 +78,24 @@ class AsyncConsumer(object):
 
     def on_connection_closed(self, _unused_connection, reason):
         self._channel = None
-        if self._closing:
+        if self._stopping:
             self._connection.ioloop.stop()
         else:
-            logging.warning(f'Consumer - Connection closed, reconnect necessary: {reason}')
+            logging.warning(f'Consumer - Connection closed, reason: {reason}')
             self.reconnect()
 
     def reconnect(self):
-        self.should_reconnect = True
         self.stop()
+        reconnect_delay = self._get_reconnect_delay()
+        logging.warning('Reconnecting after %d seconds', reconnect_delay)
+        time.sleep(reconnect_delay)
+        self.connect(self._loop)
+
+    def _get_reconnect_delay(self):
+        self._reconnect_delay += 1
+        if self._reconnect_delay > self._max_reconnect_delay:
+            self._reconnect_delay = self._max_reconnect_delay
+        return self._reconnect_delay
 
     def open_channel(self):
         logging.debug('Consumer - Creating a new channel')
@@ -128,7 +148,6 @@ class AsyncConsumer(object):
         logging.debug('Consumer - Issuing consumer related RPC commands')
         self._channel.add_on_cancel_callback(self.on_consumer_cancelled)
         self._consumer_tag = self._channel.basic_consume(self.queue, self.on_message)
-        self.was_consuming = True
         self._consuming = True
 
     def on_consumer_cancelled(self, method_frame):
@@ -168,62 +187,9 @@ class AsyncConsumer(object):
         self._channel.close()
 
     def stop(self):
-        if not self._closing:
-            self._closing = True
+        if not self._stopping:
+            self._stopping = True
             logging.debug('Consumer - Stopping Async Consumer')
             if self._consuming:
                 self.stop_consuming()
             logging.debug('Consumer - Stopped Async Consumer')
-
-
-class ReconnectingAsyncConsumer:
-    def __init__(self,
-                 config: [dict | None] = None,
-                 exchange: str = '',
-                 exchange_type: str = 'direct',
-                 queue: str = '',
-                 routing_key: str = '',
-                 reply_callback: Callable = None):
-        self.config = config,
-        self.exchange = exchange
-        self.exchange_type = exchange_type
-        self.queue = queue
-        self.routing_key = routing_key
-        self.reply_callback = reply_callback
-
-        self._reconnect_delay = 0
-        self._consumer = self.create_async_consumer()
-
-    def create_async_consumer(self):
-        return AsyncConsumer(self.config,
-                             self.exchange,
-                             self.exchange_type,
-                             self.queue,
-                             self.routing_key,
-                             self.reply_callback)
-
-    def run(self):
-        while True:
-            try:
-                self._consumer.connect(asyncio.get_running_loop())
-            except KeyboardInterrupt:
-                self._consumer.stop()
-                break
-            self._maybe_reconnect()
-
-    def _maybe_reconnect(self):
-        if self._consumer.should_reconnect:
-            self._consumer.stop()
-            reconnect_delay = self._get_reconnect_delay()
-            logging.debug('Reconnecting after %d seconds', reconnect_delay)
-            time.sleep(reconnect_delay)
-            self._consumer = self.create_async_consumer()
-
-    def _get_reconnect_delay(self):
-        if self._consumer.was_consuming:
-            self._reconnect_delay = 0
-        else:
-            self._reconnect_delay += 1
-        if self._reconnect_delay > 30:
-            self._reconnect_delay = 30
-        return self._reconnect_delay

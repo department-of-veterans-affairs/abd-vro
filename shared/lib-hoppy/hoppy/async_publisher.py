@@ -1,6 +1,7 @@
 import functools
 import json
 import logging
+import time
 
 from hoppy.config import RABBITMQ_CONFIG
 from hoppy.util import create_connection_parameters
@@ -24,18 +25,32 @@ class AsyncPublisher(object):
         self.queue = queue
         self.routing_key = routing_key
 
+        self._loop = None
         self._connection = None
         self._channel = None
+        self._max_reconnect_delay = config.get('max_reconnect_delay', 30)
 
+        # The following attributes are used per connection session. When a reconnect happens, they should be reset.
+        # See self.initialize_connection_session()
+        self._reconnect_delay = config.get('initial_reconnect_delay', 0)
+        self._stopping = False
         self._deliveries = {}
         self._acked = 0
         self._nacked = 0
         self._message_number = 0
 
+    def initialize_connection_session(self):
+        self._reconnect_delay = self.config.get('initial_reconnect_delay', 0)
         self._stopping = False
+        self._deliveries = {}
+        self._acked = 0
+        self._nacked = 0
+        self._message_number = 0
 
-    def connect(self, loop):
-        logging.debug(f'Publisher -  Connecting to RabbitMq params={self.connection_parameters}')
+    def connect(self, loop=None):
+        self._loop = loop
+
+        logging.debug(f'Publisher - Connecting to RabbitMq params={self.connection_parameters}')
         self._connection = AsyncioConnection(
             parameters=self.connection_parameters,
             on_open_callback=self.on_connection_open,
@@ -45,40 +60,56 @@ class AsyncPublisher(object):
         return self._connection
 
     def on_connection_open(self, connection):
-        logging.debug('Publisher -  Connection opened')
+        logging.debug('Publisher - Connection opened')
         self._connection = connection
+        self.initialize_connection_session()
         self.open_channel()
 
     def on_connection_open_error(self, _unused_connection, err):
-        logging.error(f'Publisher -  Connection open failed, reopening in 5 seconds: {err}')
-        self._connection.ioloop.call_later(5, self._connection.ioloop.stop)
+        logging.error(f'Publisher - Connection open failed: {err}')
+        self.reconnect()
 
     def on_connection_closed(self, _unused_connection, reason):
         self._channel = None
-        logging.warning('Publisher -  Channel Closed')
+        if self._stopping:
+            self._connection.ioloop.stop()
+        else:
+            logging.warning(f'Publisher - Connection closed, reason: {reason}')
+            self.reconnect()
+
+    def reconnect(self):
+        self.stop()
+        reconnect_delay = self._get_reconnect_delay()
+        logging.warning('Reconnecting after %d seconds', reconnect_delay)
+        time.sleep(reconnect_delay)
+        self.connect(self._loop)
+
+    def _get_reconnect_delay(self):
+        self._reconnect_delay += 1
+        if self._reconnect_delay > self._max_reconnect_delay:
+            self._reconnect_delay = self._max_reconnect_delay
+        return self._reconnect_delay
 
     def open_channel(self):
-        logging.debug('Publisher -  Creating a new channel')
+        logging.debug('Publisher - Creating a new channel')
         self._connection.channel(on_open_callback=self.on_channel_open)
 
     def on_channel_open(self, channel):
-        logging.debug('Publisher -  Channel opened')
+        logging.debug('Publisher - Channel opened')
         self._channel = channel
         self.add_on_channel_close_callback()
         self.setup_exchange(self.exchange)
 
     def add_on_channel_close_callback(self):
-        logging.debug('Publisher -  Adding channel close callback')
+        logging.debug('Publisher - Adding channel close callback')
         self._channel.add_on_close_callback(self.on_channel_closed)
 
     def on_channel_closed(self, channel, reason):
-        logging.warning(f'Publisher -  Channel {channel} was closed: {reason}')
-        self._channel = None
-        if not self._stopping:
-            self._connection.close()
+        logging.warning(f'Publisher - Channel {channel} was closed: {reason}')
+        self.close_connection()
 
     def setup_exchange(self, exchange_name):
-        logging.debug(f'Publisher -  Declaring exchange {exchange_name}')
+        logging.debug(f'Publisher - Declaring exchange {exchange_name}')
         cb = functools.partial(self.on_exchange_declare_ok,
                                userdata=exchange_name)
         self._channel.exchange_declare(exchange=exchange_name,
@@ -88,27 +119,27 @@ class AsyncPublisher(object):
                                        callback=cb)
 
     def on_exchange_declare_ok(self, _unused_frame, userdata):
-        logging.debug(f'Publisher -  Exchange declared {userdata}')
+        logging.debug(f'Publisher - Exchange declared {userdata}')
         self.setup_queue(self.queue)
 
     def setup_queue(self, queue_name):
-        logging.debug(f'Publisher -  Declaring queue {queue_name}', )
+        logging.debug(f'Publisher - Declaring queue {queue_name}', )
         self._channel.queue_declare(queue=queue_name,
                                     callback=self.on_queue_declare_ok)
 
     def on_queue_declare_ok(self, _unused_frame):
-        logging.debug(f'Publisher -  Binding {self.exchange} to {self.queue} with {self.routing_key}')
+        logging.debug(f'Publisher - Binding {self.exchange} to {self.queue} with {self.routing_key}')
         self._channel.queue_bind(self.queue,
                                  self.exchange,
                                  routing_key=self.routing_key,
                                  callback=self.on_bind_ok)
 
     def on_bind_ok(self, _unused_frame):
-        logging.debug(f'Publisher -  Queue bound {self.queue}')
+        logging.debug(f'Publisher - Queue bound {self.queue}')
         self.start_publishing()
 
     def start_publishing(self):
-        logging.debug('Publisher -  Issuing Confirm.Select RPC command')
+        logging.debug('Publisher - Issuing Confirm.Select RPC command')
         self._channel.confirm_delivery(self.on_delivery_confirmation)
 
     def on_delivery_confirmation(self, method_frame):
@@ -117,7 +148,7 @@ class AsyncPublisher(object):
         delivery_tag = method_frame.method.delivery_tag
 
         logging.debug(
-            f'Publisher -  Received {confirmation_type} for delivery tag: {delivery_tag} (multiple: {ack_multiple})')
+            f'Publisher - Received {confirmation_type} for delivery tag: {delivery_tag} (multiple: {ack_multiple})')
 
         if confirmation_type == 'ack':
             self._acked += 1
@@ -133,13 +164,13 @@ class AsyncPublisher(object):
                     del self._deliveries[tmp_tag]
 
         logging.debug(
-            f'Publisher -  Published {self._message_number} messages, '
+            f'Publisher - Published {self._message_number} messages, '
             f'{len(self._deliveries)} have yet to be confirmed, '
             f'{self._acked} were acked and {self._nacked} were nacked')
 
     def publish_message(self, message='hello', properties: BasicProperties = None):
         if self._channel is None or not self._channel.is_open:
-            logging.warning(f'Publisher -  Could not publish message with channel={self._channel}')
+            logging.warning(f'Publisher - Could not publish message with channel={self._channel}')
             return
 
         self._channel.basic_publish(self.exchange, self.routing_key,
@@ -147,14 +178,15 @@ class AsyncPublisher(object):
                                     properties)
         self._message_number += 1
         self._deliveries[self._message_number] = True
-        logging.debug(f'Publisher -  Published message # {self._message_number}', )
+        logging.debug(f'Publisher - Published message # {self._message_number}', )
 
     def stop(self):
-        logging.debug('Publisher - Stopping Async Publisher')
-        self._stopping = True
-        self.close_channel()
-        self.close_connection()
-        logging.debug('Publisher - Stopped Async Publisher')
+        if not self._stopping:
+            logging.debug('Publisher - Stopping Async Publisher')
+            self._stopping = True
+            self.close_channel()
+            self.close_connection()
+            logging.debug('Publisher - Stopped Async Publisher')
 
     def close_channel(self):
         if self._channel is not None:
@@ -163,5 +195,8 @@ class AsyncPublisher(object):
 
     def close_connection(self):
         if self._connection is not None:
-            logging.debug('Publisher - Closing connection')
-            self._connection.close()
+            if self._connection.is_closing or self._connection.is_closed:
+                logging.debug('Publisher - Connection is closing or already closed')
+            else:
+                logging.debug('Publisher - Closing connection')
+                self._connection.close()
