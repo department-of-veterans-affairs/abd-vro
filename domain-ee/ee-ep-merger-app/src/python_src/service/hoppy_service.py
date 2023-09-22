@@ -1,14 +1,11 @@
 from enum import Enum
 
-import pika
-from async_hoppy_client import AsyncHoppyClient
-from hoppy.config import RABBITMQ_CONFIG
+from hoppy.async_hoppy_client import RetryableAsyncHoppyClient
 
+APP_ID = "EP_MERGE"
 EXCHANGE = "bipApiExchange"
 
-connection_params = pika.ConnectionParameters(RABBITMQ_CONFIG["host"], RABBITMQ_CONFIG["port"],
-                                              credentials=pika.PlainCredentials(RABBITMQ_CONFIG["username"],
-                                                                                RABBITMQ_CONFIG["password"]))
+config = {}
 
 
 class HoppyService:
@@ -29,11 +26,12 @@ class HoppyService:
                            "cancelClaimResponseQueue")
 
     def create_client(self, name, queue, reply_queue):
-        client = AsyncHoppyClient(name.value,
-                                  connection_params,
-                                  EXCHANGE,
-                                  queue,
-                                  reply_queue)
+        client = RetryableAsyncHoppyClient(name=name.value,
+                                           app_id=APP_ID,
+                                           config=config,
+                                           exchange=EXCHANGE,
+                                           request_queue=queue,
+                                           reply_to_queue=reply_queue)
         self.clients[name] = client
 
     def get_client(self, name):

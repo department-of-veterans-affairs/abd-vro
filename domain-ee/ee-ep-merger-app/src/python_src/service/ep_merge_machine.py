@@ -1,8 +1,9 @@
+import asyncio
 import logging
 
+from hoppy.exception import ResponseException
 from hoppy_service import HoppyClientName, HoppyService
 from merge_job import JobState, MergeJob
-from response_exception import ResponseException
 from statemachine import State, StateMachine
 
 
@@ -99,7 +100,7 @@ class EpMergeMachine(StateMachine):
 
     def make_request(self, body, hoppy_client):
         try:
-            return hoppy_client.make_request(self.job.job_id, body)
+            return asyncio.run(hoppy_client.make_request(self.job.job_id, body)).result()
         except ResponseException as e:
             logging.error(f"event=errorProcessingJob "
                           f"job_id={self.job.job_id} "
