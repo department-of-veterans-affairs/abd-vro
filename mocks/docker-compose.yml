@@ -121,21 +121,17 @@ services:
       SCHEMA_REGISTRY_HOST_NAME: mock-bie-schema-registry
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
     volumes:
-      - ./mock-bie-schema-registry/resources/avro:/schemas
+      - ./mock-bie-schema-registry/resources/avro/events:/avro/events
     command: >
-      sh -c '
-        sleep 3;
-        SUBJECT="TST\\_CONTENTION\\_BIE\\_CONTENTION\\_CLASSIFIED\\_V02";
-
-        echo "SUBJECT value: $SUBJECT";
-        cat /schemas/events/TST_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02.avsc > /tmp/schema.avsc;
-
-        URL="http://mock-bie-schema-registry:8081/subjects/TST_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02/versions";
-        echo "Constructed URL: $URL";
-        cat /tmp/schema.avsc;
-        curl -X POST -H 'Content-Type: application/vnd.schemaregistry.v1+json' --data-binary @/tmp/schema.avsc http://mock-bie-schema-registry:8081/subjects/TST_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02/versions;
-        sleep infinity;
-      '
+      bash -c "
+        cd /avro/events &&
+        for file in *.avsc; do
+          subject=$${file%.avsc} &&
+          schema=$$(cat $$file) &&
+          echo 'Registering schema for subject:' $$subject &&
+          curl -X POST -H 'Content-Type: application/vnd.schemaregistry.v1+json' --data '{\"schema\": '$$schema'}' http://localhost:8081/subjects/$$subject/versions
+        done &&
+        tail -f /dev/null"
     networks:
       - vro_intranet
   mock-bip-claims-api:
