@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from pydantic import BaseModel, conint
-from service.merge_job import MergeJob
+from src.python_src.service.merge_job import MergeJob
 
 
 class MergeEndProductsRequest(BaseModel):

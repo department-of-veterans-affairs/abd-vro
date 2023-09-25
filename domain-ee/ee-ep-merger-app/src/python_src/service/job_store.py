@@ -1,4 +1,4 @@
-from merge_job import MergeJob
+from src.python_src.pydantic_models import MergeJob
 
 
 class JobStore:
