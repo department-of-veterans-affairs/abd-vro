@@ -76,7 +76,6 @@ services:
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://mock-bie-kafka:9092,EXTERNAL://localhost:9094
       KAFKA_CFG_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
       KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: 'true'
-
       # Kafka Kraft configurations
       KAFKA_CFG_NODE_ID: 0
       KAFKA_CFG_PROCESS_ROLES: controller,broker
@@ -90,20 +89,8 @@ services:
 
       # For development without having to deal with connecting via SSL, use port 9092 or do the following.
       # To disable SSL, uncomment the following and comment out the next SSL section
-      # ALLOW_PLAINTEXT_LISTENER: 'yes'
-      # KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
-
-      # Set up SSL -- see "Security" section of https://hub.docker.com/r/bitnami/kafka/
-      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:SSL
-      KAFKA_CFG_SSL_CLIENT_AUTH: required
-      # PEM https://medium.com/analytics-vidhya/how-to-use-pem-certificates-with-apache-kafka-f3b444a00816
-      KAFKA_TLS_TYPE: JKS
-      KAFKA_CERTIFICATE_PASSWORD: mockKafka
-
-    volumes:
-      # scripts/setenv.sh creates jks files from env variables
-      - './mock-bie-kafka/kafka.keystore.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro'
-      - './mock-bie-kafka/kafka.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro'
+      ALLOW_PLAINTEXT_LISTENER: 'yes'
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
     networks:
       - vro_intranet
 
@@ -111,29 +98,21 @@ services:
     profiles: ["all","kafka"]
     image: va/vro_mocks-mock-bie-schema-registry:latest
     <<: [*common-sde-security, *common-security-opt]
-    depends_on:
-      - mock-bie-kafka
-    ports:
-      - "8081:8081"
     environment:
-      <<: *common-vars
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://mock-bie-kafka:9092
       SCHEMA_REGISTRY_HOST_NAME: mock-bie-schema-registry
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
     volumes:
       - ./mock-bie-schema-registry/resources/avro/events:/avro/events
-    command: >
-      bash -c "
-        cd /avro/events &&
-        for file in *.avsc; do
-          subject=$${file%.avsc} &&
-          schema=$$(cat $$file) &&
-          echo 'Registering schema for subject:' $$subject &&
-          curl -X POST -H 'Content-Type: application/vnd.schemaregistry.v1+json' --data '{\"schema\": '$$schema'}' http://localhost:8081/subjects/$$subject/versions
-        done &&
-        tail -f /dev/null"
+      - ./mock-bie-schema-registry/docker-entry.sh:/docker-entry.sh
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mock-bie-kafka
+    command: ["sh", "/docker-entry.sh"]
     networks:
       - vro_intranet
+
   mock-bip-claims-api:
     profiles: ["all","bip"]
     image: va/vro_mocks-mock-bip-claims-api:latest
