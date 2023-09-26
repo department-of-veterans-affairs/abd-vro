@@ -55,27 +55,27 @@ afterEvaluate {
   //  generateOpenApiDocs.enabled = false
   //  forkedSpringBootRun.enabled = false
 
-  //  tasks.named('forkedSpringBootRun').configure {
-  //    dependsOn 'bootStartScripts'
-  //    dependsOn 'checkstyleIntegrationTest'
-  //    dependsOn 'checkstyleMain'
-  //    dependsOn 'checkstyleTest'
-  //    dependsOn 'compileIntegrationTestJava'
-  //    dependsOn 'dockerfileZip'
-  //    dependsOn 'integrationTest'
-  //    dependsOn 'jar'
-  //    dependsOn 'spotlessJava'
-  //    dependsOn 'startScripts'
-  //    dependsOn 'test'
-  //    // dependsOn ':service-python:pytest' // slows down `:app:build` task
+  tasks.named('forkedSpringBootRun').configure {
+    dependsOn 'bootStartScripts'
+    dependsOn 'checkstyleIntegrationTest'
+    dependsOn 'checkstyleMain'
+    dependsOn 'checkstyleTest'
+    dependsOn 'compileIntegrationTestJava'
+    dependsOn 'dockerfileZip'
+    dependsOn 'integrationTest'
+    dependsOn 'jar'
+    dependsOn 'spotlessJava'
+    dependsOn 'startScripts'
+    dependsOn 'test'
+    // dependsOn ':service-python:pytest' // slows down `:app:build` task
+
+    dependsOn 'jacocoTestReport'
+    dependsOn 'jacocoTestCoverageVerification'
+
+    dependsOn 'dockerPrepare'
+  }
   //
-  //    dependsOn 'jacocoTestReport'
-  //    dependsOn 'jacocoTestCoverageVerification'
-  //
-  //    dependsOn 'dockerPrepare'
-  //  }
-  //
-  //  tasks.named('spectralLint').configure {
-  //    dependsOn 'forkedSpringBootStop'
-  //  }
+  //    tasks.named('spectralLint').configure {
+  //      dependsOn 'forkedSpringBootStop'
+  //    }
 }
