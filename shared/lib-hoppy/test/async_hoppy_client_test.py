@@ -25,7 +25,8 @@ def mock_async_publisher(mocker):
 
 def get_client(mock_async_publisher, mock_async_consumer, app_id="test", exchange="exchange", queue="queue",
                reply_queue="reply_queue", max_latency=3, requeue_attempts=3):
-    client = AsyncHoppyClient("test_client", app_id, config, exchange, queue, reply_queue, max_latency, requeue_attempts)
+    client = AsyncHoppyClient("test_client", app_id, config, exchange, queue, reply_queue, max_latency,
+                              requeue_attempts)
     client.async_publisher = mock_async_publisher
     client.async_consumer = mock_async_consumer
     return client
@@ -86,6 +87,30 @@ class TestAsyncHoppyClient:
         actual_response = await asyncio.wait_for(results_future, 10)
         client.async_publisher.publish_message.assert_called_once_with(request, ANY)
         assert json.loads(expected_response) == actual_response  # actual response is json object
+
+    @pytest.mark.asyncio
+    async def test_make_request_and_correlated_empty_response_body_received(self,
+                                                                            mock_async_publisher,
+                                                                            mock_async_consumer,
+                                                                            mocker):
+        # Given
+        client = get_client(mock_async_publisher, mock_async_consumer, max_latency=3)
+        request = '{"test":1}'
+        expected_response = '{}'
+        cor_id = str(uuid.uuid4())
+        mocker.patch('uuid.uuid4', return_value=cor_id)
+        reply_props = pika.BasicProperties(correlation_id=cor_id)
+        deliver_props = pika.spec.Basic.Deliver(delivery_tag=1)
+
+        # When
+        results_future = asyncio.ensure_future(client.make_request('1', request))
+        await asyncio.sleep(0)
+        client._on_reply(None, reply_props, deliver_props, expected_response)
+
+        # Then
+        actual_response = await asyncio.wait_for(results_future, 10)
+        client.async_publisher.publish_message.assert_called_once_with(request, ANY)
+        assert json.loads(expected_response) == actual_response  # actual response is empty json object
 
     @pytest.mark.asyncio
     async def test_make_request_and_non_correlated_response_received(self, mock_async_publisher, mock_async_consumer,
@@ -195,7 +220,8 @@ class TestAsyncHoppyClient:
 
 def get_retry_client(mock_async_publisher, mock_async_consumer, app_id="test", exchange="exchange", queue="queue",
                      reply_queue="reply_queue", max_latency=3, requeue_attempts=3, max_retries=3):
-    client = RetryableAsyncHoppyClient("test_client", app_id, config, exchange, queue, reply_queue, max_latency, requeue_attempts,
+    client = RetryableAsyncHoppyClient("test_client", app_id, config, exchange, queue, reply_queue, max_latency,
+                                       requeue_attempts,
                                        max_retries)
     client.async_publisher = mock_async_publisher
     client.async_consumer = mock_async_consumer

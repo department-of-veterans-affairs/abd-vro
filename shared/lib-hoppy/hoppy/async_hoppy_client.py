@@ -80,7 +80,7 @@ class AsyncHoppyClient:
         wait_for_response_time = None
         while True:
             response = self.responses.get(correlation_id)
-            if response:
+            if response is not None:
                 self._terminate_correlation_id(correlation_id)
                 logging.info(f"event=requestCompleted "
                              f"client={self.name} "
@@ -165,7 +165,7 @@ class RetryableAsyncHoppyClient(AsyncHoppyClient):
         while attempt < self.max_retries:
             try:
                 response = await super().make_request(request_id, body)
-                if response:
+                if response is not None:
                     return response
             except ResponseException:
                 attempt += 1
