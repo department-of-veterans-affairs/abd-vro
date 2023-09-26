@@ -30,10 +30,4 @@
 # Tue Sep 12 20:23:04 UTC 2023 -- v3.4.15
 # Wed Sep 13 14:29:58 UTC 2023 -- v3.4.16
 # Fri Sep 15 15:14:20 UTC 2023 -- v3.4.17
-postgres_VER="v3.4.17"
-apigateway_VER="v3.4.17"
-dbinit_VER="v3.4.17"
-svclighthouseapi_VER="v3.4.17"
-svcbiekafka_VER="v3.4.17"
-xampleworkflows_VER="v3.4.17"
 # Wed Sep 20 17:22:23 UTC 2023 -- v3.4.18
