@@ -25,18 +25,14 @@
 # Fri Aug 25 16:36:30 UTC 2023 -- v3.4.8
 # Wed Aug 30 18:36:53 UTC 2023 -- v3.4.9
 # Fri Sep  1 21:08:58 UTC 2023 -- v3.4.12
-eemaxcfiapp_VER="v3.4.12"
 # Wed Sep  6 17:58:41 UTC 2023 -- v3.4.13
-ccapp_VER="v3.4.13"
 # Thu Sep  7 20:28:30 UTC 2023 -- v3.4.14
 # Tue Sep 12 20:23:04 UTC 2023 -- v3.4.15
 # Wed Sep 13 14:29:58 UTC 2023 -- v3.4.16
 # Fri Sep 15 15:14:20 UTC 2023 -- v3.4.17
 postgres_VER="v3.4.17"
 apigateway_VER="v3.4.17"
-app_VER="v3.4.17"
 dbinit_VER="v3.4.17"
-svcbgsapi_VER="v3.4.17"
 svclighthouseapi_VER="v3.4.17"
 svcbiekafka_VER="v3.4.17"
 xampleworkflows_VER="v3.4.17"
