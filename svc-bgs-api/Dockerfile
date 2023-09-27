@@ -16,6 +16,7 @@ COPY Gemfile Gemfile.lock ./
 # After install, delete packages only needed during bundler install & clean APK cache
 RUN gem install bundler:2.4.10 --no-document && bundle install \
     && gem update cgi \
+    && gem update uri \
     && apk del git ruby-dev curl-dev build-base \
     && rm -rf /var/cache/apk/*
 
