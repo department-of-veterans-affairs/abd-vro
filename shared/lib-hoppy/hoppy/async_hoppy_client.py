@@ -9,6 +9,11 @@ from hoppy.async_publisher import AsyncPublisher
 from hoppy.exception import ResponseException
 from pika import BasicProperties
 
+MAX_RETRIES_REACHED = "Max retries reached"
+TIMED_OUT = "Request timed out"
+UNDECODABLE = "JSON response could not be parsed"
+UNEXPECTED_PUBLISH_ERROR = "Unexpected Error Caught While Publishing"
+
 
 class AsyncHoppyClient:
     responses = {}
@@ -74,20 +79,29 @@ class AsyncHoppyClient:
                             f"id={request_id} "
                             f"queue={self.request_queue} "
                             f"correlation_id={correlation_id} "
-                            f"error='Unexpected Error While Publishing {e}'")
-            raise ResponseException(message="Unexpected Error Caught")
+                            f"error='{UNEXPECTED_PUBLISH_ERROR}: {e}'")
+            raise ResponseException(message=UNEXPECTED_PUBLISH_ERROR)
 
         wait_for_response_time = None
         while True:
             response = self.responses.get(correlation_id)
             if response is not None:
                 self._terminate_correlation_id(correlation_id)
-                logging.info(f"event=requestCompleted "
-                             f"client={self.name} "
-                             f"id={request_id} "
-                             f"queue={self.request_queue} "
-                             f"correlation_id={correlation_id}")
-                return response
+                if isinstance(response, json.JSONDecodeError):
+                    logging.warning(f"event=requestError "
+                                    f"client={self.name} "
+                                    f"id={request_id} "
+                                    f"queue={self.request_queue} "
+                                    f"correlation_id={correlation_id} "
+                                    f"error='{UNDECODABLE}'")
+                    raise ResponseException(message=UNDECODABLE)
+                else:
+                    logging.info(f"event=requestCompleted "
+                                 f"client={self.name} "
+                                 f"id={request_id} "
+                                 f"queue={self.request_queue} "
+                                 f"correlation_id={correlation_id}")
+                    return response
             else:
                 if wait_for_response_time is None:
                     wait_for_response_time = time.time()
@@ -98,9 +112,9 @@ class AsyncHoppyClient:
                                     f"id={request_id} "
                                     f"queue={self.request_queue} "
                                     f"correlation_id={correlation_id} "
-                                    f"error='Request timed out'")
+                                    f"error='{TIMED_OUT}'")
                     self._terminate_correlation_id(correlation_id)
-                    raise ResponseException(message="Request timed out")
+                    raise ResponseException(message=TIMED_OUT)
 
     def _terminate_correlation_id(self, correlation_id):
         if correlation_id in self.responses.keys():
@@ -113,9 +127,15 @@ class AsyncHoppyClient:
 
         if cor_id and cor_id in self.responses.keys():
             self._log_response_event("responseAcked", cor_id, True, False, 1)
-            response = json.loads(body)
-            self.responses[cor_id] = response
-            self.async_consumer.acknowledge_message(delivery_tag)
+            try:
+                response = json.loads(body)
+                self.responses[cor_id] = response
+                self.async_consumer.acknowledge_message(delivery_tag)
+
+            except json.JSONDecodeError as e:
+                self.responses[cor_id] = e
+                self.async_consumer.reject_message(delivery_tag, requeue=False)
+
             return
 
         if not cor_id:
@@ -175,4 +195,4 @@ class RetryableAsyncHoppyClient(AsyncHoppyClient):
                         f"id={request_id} "
                         f"queue={self.request_queue} "
                         f"error='Max retries reached'")
-        raise ResponseException(message="Max retries reached")
+        raise ResponseException(message=MAX_RETRIES_REACHED)

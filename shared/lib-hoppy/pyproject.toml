@@ -20,6 +20,8 @@ version = { attr = "hoppy.__version__" }
 [tool.pytest.ini_options]
 addopts = [
     "--import-mode=importlib",
+    "-rfesp"
 ]
-log_cli = true
-log_cli_level = "INFO"
+testpaths = [
+    "tests"
+]

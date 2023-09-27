@@ -6,7 +6,9 @@ from unittest.mock import ANY, call
 import pika
 import pika.spec
 import pytest
-from hoppy.async_hoppy_client import (AsyncHoppyClient,
+from hoppy.async_hoppy_client import (MAX_RETRIES_REACHED, TIMED_OUT,
+                                      UNDECODABLE, UNEXPECTED_PUBLISH_ERROR,
+                                      AsyncHoppyClient,
                                       RetryableAsyncHoppyClient)
 from hoppy.exception import ResponseException
 
@@ -62,17 +64,24 @@ class TestAsyncHoppyClient:
         request = '{"test":1}'
 
         # When / Then
-        with pytest.raises(ResponseException):
+        with pytest.raises(ResponseException) as err_info:
             await client.make_request("1", body=request)
+            assert err_info.value.message == TIMED_OUT
         client.async_publisher.publish_message.assert_called_once_with(request, ANY)
 
     @pytest.mark.asyncio
-    async def test_make_request_and_correlated_response_received(self, mock_async_publisher, mock_async_consumer,
-                                                                 mocker):
+    @pytest.mark.parametrize("expected_response", [
+        pytest.param('{}', id="empty object"),
+        pytest.param('{"test_response":1}', id="valid object")
+    ])
+    async def test_make_request_and_correlated_valid_response_received(self,
+                                                                       expected_response,
+                                                                       mock_async_publisher,
+                                                                       mock_async_consumer,
+                                                                       mocker):
         # Given
         client = get_client(mock_async_publisher, mock_async_consumer, max_latency=3)
         request = '{"test":1}'
-        expected_response = '{"test_response":1}'
         cor_id = str(uuid.uuid4())
         mocker.patch('uuid.uuid4', return_value=cor_id)
         reply_props = pika.BasicProperties(correlation_id=cor_id)
@@ -89,14 +98,22 @@ class TestAsyncHoppyClient:
         assert json.loads(expected_response) == actual_response  # actual response is json object
 
     @pytest.mark.asyncio
-    async def test_make_request_and_correlated_empty_response_body_received(self,
-                                                                            mock_async_publisher,
-                                                                            mock_async_consumer,
-                                                                            mocker):
+    @pytest.mark.parametrize("expected_response", [
+        pytest.param('', id="empty response"),
+        pytest.param('{\'test\': true}', id="single quotes are bad"),
+        pytest.param('{"test"}', id="no value for key"),
+        pytest.param('{"arr":[1,]}', id="extra comma in array"),
+        pytest.param('{"obj":"val",', id="extra comma in object"),
+        pytest.param('{"test":1]', id="mismatched bracket")
+    ])
+    async def test_make_request_and_correlated_invalid_response_body_received(self,
+                                                                              expected_response,
+                                                                              mock_async_publisher,
+                                                                              mock_async_consumer,
+                                                                              mocker):
         # Given
         client = get_client(mock_async_publisher, mock_async_consumer, max_latency=3)
         request = '{"test":1}'
-        expected_response = '{}'
         cor_id = str(uuid.uuid4())
         mocker.patch('uuid.uuid4', return_value=cor_id)
         reply_props = pika.BasicProperties(correlation_id=cor_id)
@@ -108,9 +125,10 @@ class TestAsyncHoppyClient:
         client._on_reply(None, reply_props, deliver_props, expected_response)
 
         # Then
-        actual_response = await asyncio.wait_for(results_future, 10)
+        with pytest.raises(ResponseException) as err_info:
+            await asyncio.wait_for(results_future, 3)
+            assert err_info.value.message == UNDECODABLE
         client.async_publisher.publish_message.assert_called_once_with(request, ANY)
-        assert json.loads(expected_response) == actual_response  # actual response is empty json object
 
     @pytest.mark.asyncio
     async def test_make_request_and_non_correlated_response_received(self, mock_async_publisher, mock_async_consumer,
@@ -135,8 +153,9 @@ class TestAsyncHoppyClient:
         client._on_reply(None, reply_props, deliver_props, unexpected_response)
 
         # Then should time out
-        with pytest.raises(ResponseException):
+        with pytest.raises(ResponseException) as err_info:
             await asyncio.wait_for(results_future, 3)
+            assert err_info.value.message == TIMED_OUT
         client.async_publisher.publish_message.assert_called_once_with(request, ANY)
         assert request_correlation_id not in client.responses.keys()
 
@@ -170,8 +189,9 @@ class TestAsyncHoppyClient:
         client._on_reply(None, reply_props, deliver_props, unexpected_response)
 
         # Then should time out
-        with pytest.raises(ResponseException):
+        with pytest.raises(ResponseException) as err_info:
             await asyncio.wait_for(results_future, 5)
+            assert err_info.value.message == TIMED_OUT
         client.async_publisher.publish_message.assert_called_once_with(request, ANY)
 
         # reply_correlation_id is not in rejected. Limit of response_reject_and_requeue_attempts has been reached.
@@ -217,6 +237,19 @@ class TestAsyncHoppyClient:
         # reply_correlation_id is still in rejected. Limit of response_reject_and_requeue_attempts has not been reached.
         assert unexpected_response_correlation_id in client.rejected.keys()
 
+    @pytest.mark.asyncio
+    async def test_make_request_and_unexpected_error_on_publish(self, mock_async_publisher, mock_async_consumer):
+        # Given
+        client = get_client(mock_async_publisher, mock_async_consumer, max_latency=0)
+        mock_async_publisher.publish_message.side_effect = Exception("This shouldn't happen")
+        request = '{"test":1}'
+
+        # When / Then
+        with pytest.raises(ResponseException) as err_info:
+            await client.make_request("1", body=request)
+            assert err_info.value.message == UNEXPECTED_PUBLISH_ERROR
+        client.async_publisher.publish_message.assert_called_once_with(request, ANY)
+
 
 def get_retry_client(mock_async_publisher, mock_async_consumer, app_id="test", exchange="exchange", queue="queue",
                      reply_queue="reply_queue", max_latency=3, requeue_attempts=3, max_retries=3):
@@ -246,8 +279,9 @@ class TestRetryableAsyncHoppyClient:
         mocker.patch('pika.spec.BasicProperties', side_effect=[properties_1, properties_2])
 
         # When / Then
-        with pytest.raises(ResponseException):
+        with pytest.raises(ResponseException) as err_info:
             await client.make_request("1", body=request)
+            assert err_info.value.message == MAX_RETRIES_REACHED
         expected_calls = [call(request, properties_1), call(request, properties_2)]
         assert str(mock_async_publisher.publish_message.mock_calls).replace('\n', '') == str(expected_calls)
 
