@@ -1,5 +1,5 @@
 apiVersion: networking.istio.io/v1beta1
-kind: \VirtualService
+kind: VirtualService
 metadata:
   name: {{ .Values.global.hostnamePrefix }}-api-gateway-virtservice
   labels: {{- toYaml .Values.labels | nindent 4 }}
