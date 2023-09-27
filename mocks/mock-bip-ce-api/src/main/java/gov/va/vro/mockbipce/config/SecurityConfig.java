@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
@@ -28,13 +29,21 @@ public class SecurityConfig {
    */
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.csrf().disable();
-    http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-    http.authorizeRequests().antMatchers("/received-files/*").permitAll();
-    http.authorizeRequests().antMatchers("/actuator/health").permitAll();
-    http.authorizeRequests().anyRequest().authenticated();
+    http.csrf(CsrfConfigurer::disable);
+    http.sessionManagement(
+        (securitySessionManagementConfigurer) ->
+            securitySessionManagementConfigurer.sessionCreationPolicy(
+                SessionCreationPolicy.STATELESS));
+    http.authorizeHttpRequests(
+        (authorizeHttpRequests) -> {
+          authorizeHttpRequests.requestMatchers("/received-files/*").permitAll();
+          authorizeHttpRequests.requestMatchers("/actuator/health").permitAll();
+          authorizeHttpRequests.anyRequest().authenticated();
+        });
     http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
-    http.exceptionHandling().authenticationEntryPoint(authEntryPoint);
+    http.exceptionHandling(
+        (exceptionHandlingConfigurer) ->
+            exceptionHandlingConfigurer.authenticationEntryPoint(authEntryPoint));
     return http.build();
   }
 }

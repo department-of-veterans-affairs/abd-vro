@@ -1,10 +1,9 @@
 package gov.va.vro.mockbipclaims.model.bip;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotNull;
 
 /**
  * A person making a claim, which could be the Veteran, one of their dependents, or an organization

@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -62,6 +63,7 @@ public class FilesTest {
     assertEquals(HttpStatus.OK, response.getStatusCode());
 
     UploadResponse ur = response.getBody();
+    assert ur != null;
     log.info("UUID: " + ur.getUuid());
 
     verifyFile(spec);
@@ -73,7 +75,7 @@ public class FilesTest {
       restTemplate.getForEntity(url, byte[].class);
       fail("Expected 404 error.");
     } catch (HttpStatusCodeException exception) {
-      HttpStatus statusCode = exception.getStatusCode();
+      HttpStatusCode statusCode = exception.getStatusCode();
       assertEquals(HttpStatus.NOT_FOUND, statusCode);
     }
   }
@@ -83,7 +85,7 @@ public class FilesTest {
       helper.postFiles(spec);
       fail("Expected 400 error");
     } catch (HttpStatusCodeException exception) {
-      HttpStatus statusCode = exception.getStatusCode();
+      HttpStatusCode statusCode = exception.getStatusCode();
       assertEquals(HttpStatus.BAD_REQUEST, statusCode);
       ObjectMapper mapper = new ObjectMapper();
       try {

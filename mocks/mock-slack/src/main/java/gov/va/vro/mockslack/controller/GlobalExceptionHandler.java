@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(ResponseStatusException.class)
   public ResponseEntity<String> handleException(ResponseStatusException exception) {
     log.info("Expected thrown exception", exception);
-    return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+    return new ResponseEntity<>(exception.getMessage(), exception.getStatusCode());
   }
 
   /**
