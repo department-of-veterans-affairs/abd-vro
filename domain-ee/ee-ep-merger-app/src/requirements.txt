@@ -1,6 +1,7 @@
-fastapi==0.97.*
+fastapi==0.103.*
 hoppy>=0.2
 httpx==0.24.*
+pydantic==2.4.0
 pytest==7.3.1
 pytest-mock==3.11.1
 python-statemachine==2.1.*

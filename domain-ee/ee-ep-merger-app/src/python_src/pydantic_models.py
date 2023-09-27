@@ -1,12 +1,13 @@
 from uuid import UUID
 
-from pydantic import BaseModel, conint
+from pydantic import BaseModel, Field
 from src.python_src.service.merge_job import MergeJob
+from typing_extensions import Annotated
 
 
 class MergeEndProductsRequest(BaseModel):
-    pending_claim_id: conint(strict=True)
-    supp_claim_id: conint(strict=True)
+    pending_claim_id: Annotated[int, Field(strict=True)]
+    supp_claim_id: Annotated[int, Field(strict=True)]
 
 
 class MergeEndProductsResponse(BaseModel):

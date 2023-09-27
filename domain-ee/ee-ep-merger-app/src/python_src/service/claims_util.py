@@ -7,6 +7,8 @@ class MergeException(BaseException):
 class ClaimsUtil:
 
     @staticmethod
-    def merge_claims(pending_claim, supplemental_claim):
-        # TODO fill in merging
-        pass
+    def merge_claims(pending_contentions, supplemental_contentions):
+        if pending_contentions and supplemental_contentions:
+            # TODO fill in merging
+            return []
+        raise MergeException("Cannot merge contentions if pending or supplemental claim contentions are missing.")

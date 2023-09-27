@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Any
 from uuid import UUID
 
 from pydantic import BaseModel, conint
@@ -21,10 +22,12 @@ class MergeJob(BaseModel):
     pending_claim_id: conint(strict=True)
     supp_claim_id: conint(strict=True)
     state: JobState = JobState.PENDING
-    message: str | None = None
-    error_state: JobState = None
+    error_state: JobState | None = None
+    messages: list[Any] | None = None
 
     def error(self, current_state, message):
         self.error_state = current_state
         self.state = JobState.COMPLETED_ERROR
-        self.message = message
+        if self.messages is None:
+            self.messages = []
+        self.messages.append(message)

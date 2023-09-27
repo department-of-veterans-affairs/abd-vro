@@ -1,0 +1,14 @@
+{
+  "statusCode": 200,
+  "statusMessage": "OK",
+  "contentions": [
+    {
+      "medicalInd": true,
+      "beginDate": "2023-09-27T00:00:00-06:00",
+      "contentionTypeCode": "INCREASE",
+      "claimantText": "tendinitis/bilateral",
+      "contentionId": 1,
+      "lastModified": "2023-09-28T00:00:00-06:00"
+    }
+  ]
+}
