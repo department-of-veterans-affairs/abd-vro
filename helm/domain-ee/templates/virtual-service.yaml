@@ -7,8 +7,8 @@ spec:
   # Refer to https://animated-carnival-57b3e7f5.pages.github.io/container-platform/routing-traffic/
   hosts: [{{ .Values.global.endpoint }}]
   gateways:
-  - [istio-system/ldx-{{ .Values.global.lhdiCluster }}-1-{{ .Values.global.environment }}-gateway]
-  - [istio-system/ldx-{ { .Values.global.lhdiCluster } }-1-{ { .Values.global.environment } }-alb-gateway]
+  - istio-system/ldx-{{ .Values.global.lhdiCluster }}-1-{{ .Values.global.environment }}-gateway
+  - istio-system/ldx-{ { .Values.global.lhdiCluster } }-1-{ { .Values.global.environment } }-alb-gateway
 
   http:
   - match:
