@@ -1,5 +1,7 @@
 package gov.va.vro.mockbipclaims.config;
 
+import static io.jsonwebtoken.security.Keys.secretKeyFor;
+
 import gov.va.vro.mockshared.jwt.JwtGenerator;
 import gov.va.vro.mockshared.jwt.JwtSpecification;
 import gov.va.vro.mockshared.rest.KeystoreSpec;
@@ -12,8 +14,6 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
-
-import static io.jsonwebtoken.security.Keys.secretKeyFor;
 
 @TestConfiguration
 public class TestConfig {

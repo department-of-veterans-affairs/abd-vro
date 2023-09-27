@@ -66,7 +66,7 @@ public class JwtTest {
   @Test
   void invalidJwtSecretTest() {
     Mockito.when(props.getSecret())
-            .thenReturn(String.valueOf(secretKeyFor(SignatureAlgorithm.HS256)));
+        .thenReturn(String.valueOf(secretKeyFor(SignatureAlgorithm.HS256)));
 
     TestSpec spec = new TestSpec();
     spec.setClaimId(1010);
