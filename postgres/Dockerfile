@@ -18,4 +18,6 @@ RUN chmod a+x /our-entrypoint.sh /init-folder.sh && \
 COPY init-db.sh /docker-entrypoint-initdb.d/init-db.sh
 RUN chmod 777 /docker-entrypoint-initdb.d/init-db.sh
 
+# SecRel requires that containers not run as root
+USER postgres
 ENTRYPOINT ["/our-entrypoint.sh"]
