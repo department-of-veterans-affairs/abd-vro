@@ -1,5 +1,6 @@
 package gov.va.vro.mockbipclaims;
 
+import static io.jsonwebtoken.security.Keys.secretKeyFor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -9,6 +10,7 @@ import gov.va.vro.mockbipclaims.model.bip.ProviderResponse;
 import gov.va.vro.mockbipclaims.util.TestHelper;
 import gov.va.vro.mockbipclaims.util.TestSpec;
 import gov.va.vro.mockshared.jwt.JwtSpecification;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -63,7 +65,8 @@ public class JwtTest {
 
   @Test
   void invalidJwtSecretTest() {
-    Mockito.when(props.getSecret()).thenReturn("Not the secret");
+    Mockito.when(props.getSecret())
+            .thenReturn(String.valueOf(secretKeyFor(SignatureAlgorithm.HS256)));
 
     TestSpec spec = new TestSpec();
     spec.setClaimId(1010);

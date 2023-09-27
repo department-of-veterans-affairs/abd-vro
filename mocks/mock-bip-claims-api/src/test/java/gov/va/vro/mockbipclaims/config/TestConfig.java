@@ -4,6 +4,7 @@ import gov.va.vro.mockshared.jwt.JwtGenerator;
 import gov.va.vro.mockshared.jwt.JwtSpecification;
 import gov.va.vro.mockshared.rest.KeystoreSpec;
 import gov.va.vro.mockshared.rest.RestUtil;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,8 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
+
+import static io.jsonwebtoken.security.Keys.secretKeyFor;
 
 @TestConfiguration
 public class TestConfig {
@@ -44,6 +47,7 @@ public class TestConfig {
 
   @Bean
   public JwtSpecification getJwtSpecification() {
+    jwtProps.setSecret(String.valueOf(secretKeyFor(SignatureAlgorithm.HS256)));
     return new JwtSpecification(jwtProps);
   }
 
