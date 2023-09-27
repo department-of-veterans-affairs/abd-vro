@@ -1,3 +1,6 @@
+from src.python_src.model.get_contentions import Response
+
+
 class MergeException(BaseException):
     def __init__(self, message=None):
         self.message = message
@@ -5,10 +8,8 @@ class MergeException(BaseException):
 
 
 class ContentionsUtil:
-
     @staticmethod
-    def merge_claims(pending_contentions, supplemental_contentions):
+    def merge_claims(pending_contentions: Response = None, supplemental_contentions: Response = None):
         if pending_contentions and supplemental_contentions:
-            # TODO fill in merging
-            return []
+            return [*pending_contentions.contentions, *supplemental_contentions.contentions]
         raise MergeException("Cannot merge contentions if pending or supplemental claim contentions are missing.")

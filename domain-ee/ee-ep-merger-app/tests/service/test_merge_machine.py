@@ -11,6 +11,26 @@ from src.python_src.service.contentions_util import MergeException
 from src.python_src.service.ep_merge_machine import EpMergeMachine
 from src.python_src.service.merge_job import JobState, MergeJob
 
+RESPONSE_DIR = './tests/service/responses'
+response_200 = f'{RESPONSE_DIR}/200_response.json'
+response_404 = f'{RESPONSE_DIR}/404_response.json'
+response_400 = f'{RESPONSE_DIR}/400_response.json'
+response_500 = f'{RESPONSE_DIR}/500_response.json'
+pending_contentions_200 = f'{RESPONSE_DIR}/get_pending_claim_contentions_200.json'
+supp_contentions_200 = f'{RESPONSE_DIR}/get_supp_claim_contentions_200.json'
+
+
+def load_response(file, response_type):
+    with open(file) as f:
+        return response_type.model_validate(json.load(f))
+
+
+get_pending_contentions_200 = load_response(pending_contentions_200, get_contentions.Response)
+get_supp_contentions_200 = load_response(supp_contentions_200, get_contentions.Response)
+update_temporary_station_of_duty_200 = load_response(response_200, tsoj.Response)
+update_pending_claim_200 = load_response(response_200, update_contentions.Response)
+cancel_claim_200 = load_response(response_200, cancel_claim.Response)
+
 
 @pytest.fixture(autouse=True)
 def mock_hoppy_async_client(mocker):
@@ -34,33 +54,12 @@ def test_constructor(mock_hoppy_service):
     assert machine.current_state_value == JobState.PENDING
 
 
-def load_response(file, response_type):
-    with open(file) as f:
-        return response_type.model_validate(json.load(f))
-
-
-job_id = uuid.uuid4()
-pending_claim_id = 1
-supp_claim_id = 2
-
-get_pending_contentions_200 = load_response('get_pending_claim_contentions_200.json', get_contentions.Response)
-get_pending_contentions_404 = load_response('404_response.json', get_contentions.Response)
-get_supp_contentions_200 = load_response('get_supp_claim_contentions_200.json', get_contentions.Response)
-get_supp_contentions_404 = load_response('404_response.json', get_contentions.Response)
-update_temporary_station_of_duty_200 = load_response('200_response.json', tsoj.Response)
-update_pending_claim_200 = load_response('200_response.json', update_contentions.Response)
-update_pending_claim_400 = load_response('400_response.json', update_contentions.Response)
-cancel_claim_200 = load_response('200_response.json', cancel_claim.Response)
-cancel_claim_400 = load_response('400_response.json', cancel_claim.Response)
-
-
 @pytest.fixture
 def machine(mock_hoppy_service):
     return EpMergeMachine(mock_hoppy_service,
-                          MergeJob(job_id=job_id,
-                                   pending_claim_id=pending_claim_id,
-                                   supp_claim_id=supp_claim_id)
-                          )
+                          MergeJob(job_id=uuid.uuid4(),
+                                   pending_claim_id=1,
+                                   supp_claim_id=2))
 
 
 def get_mocked_async_response(side_effects):
@@ -85,9 +84,9 @@ def process_and_assert(machine, expected_state, expected_error_state):
 @pytest.mark.parametrize("invalid_request",
                          [
                              pytest.param(ResponseException("Oops"), id="Caught Exception"),
-                             pytest.param(load_response('400_response.json', get_contentions.Response), id="400"),
-                             pytest.param(load_response('404_response.json', get_contentions.Response), id="404"),
-                             pytest.param(load_response('500_response.json', get_contentions.Response), id="500")
+                             pytest.param(load_response(response_400, get_contentions.Response), id="400"),
+                             pytest.param(load_response(response_404, get_contentions.Response), id="404"),
+                             pytest.param(load_response(response_500, get_contentions.Response), id="500")
                          ])
 def test_invalid_request_at_get_pending_contentions(machine, mock_hoppy_async_client, invalid_request):
     mock_async_responses(mock_hoppy_async_client, invalid_request)
@@ -97,9 +96,9 @@ def test_invalid_request_at_get_pending_contentions(machine, mock_hoppy_async_cl
 @pytest.mark.parametrize("invalid_request",
                          [
                              pytest.param(ResponseException("Oops"), id="Caught Exception"),
-                             pytest.param(load_response('400_response.json', get_contentions.Response), id="400"),
-                             pytest.param(load_response('404_response.json', get_contentions.Response), id="404"),
-                             pytest.param(load_response('500_response.json', get_contentions.Response), id="500")
+                             pytest.param(load_response(response_400, get_contentions.Response), id="400"),
+                             pytest.param(load_response(response_404, get_contentions.Response), id="404"),
+                             pytest.param(load_response(response_500, get_contentions.Response), id="500")
                          ])
 def test_invalid_request_at_get_supplemental_contentions(machine, mock_hoppy_async_client, invalid_request):
     mock_async_responses(mock_hoppy_async_client,
@@ -113,9 +112,9 @@ def test_invalid_request_at_get_supplemental_contentions(machine, mock_hoppy_asy
 @pytest.mark.parametrize("invalid_request",
                          [
                              pytest.param(ResponseException("Oops"), id="Caught Exception"),
-                             pytest.param(load_response('400_response.json', tsoj.Response), id="400"),
-                             pytest.param(load_response('404_response.json', tsoj.Response), id="404"),
-                             pytest.param(load_response('500_response.json', tsoj.Response), id="500")
+                             pytest.param(load_response(response_400, tsoj.Response), id="400"),
+                             pytest.param(load_response(response_404, tsoj.Response), id="404"),
+                             pytest.param(load_response(response_500, tsoj.Response), id="500")
                          ])
 def test_invalid_request_at_set_temporary_station_of_duty(machine, mock_hoppy_service, mock_hoppy_async_client,
                                                           invalid_request):
@@ -144,9 +143,9 @@ def test_process_fails_at_merge_contentions(machine, mock_hoppy_async_client, mo
 @pytest.mark.parametrize("invalid_request",
                          [
                              pytest.param(ResponseException("Oops"), id="Caught Exception"),
-                             pytest.param(load_response('400_response.json', update_contentions.Response), id="400"),
-                             pytest.param(load_response('404_response.json', update_contentions.Response), id="404"),
-                             pytest.param(load_response('500_response.json', update_contentions.Response), id="500")
+                             pytest.param(load_response(response_400, update_contentions.Response), id="400"),
+                             pytest.param(load_response(response_404, update_contentions.Response), id="404"),
+                             pytest.param(load_response(response_500, update_contentions.Response), id="500")
                          ])
 def test_invalid_request_at_update_contentions(machine, mock_hoppy_async_client, invalid_request):
     mock_async_responses(mock_hoppy_async_client,
@@ -162,9 +161,9 @@ def test_invalid_request_at_update_contentions(machine, mock_hoppy_async_client,
 @pytest.mark.parametrize("invalid_request",
                          [
                              pytest.param(ResponseException("Oops"), id="Caught Exception"),
-                             pytest.param(load_response('400_response.json', cancel_claim.Response), id="400"),
-                             pytest.param(load_response('404_response.json', cancel_claim.Response), id="404"),
-                             pytest.param(load_response('500_response.json', cancel_claim.Response), id="500")
+                             pytest.param(load_response(response_400, cancel_claim.Response), id="400"),
+                             pytest.param(load_response(response_404, cancel_claim.Response), id="404"),
+                             pytest.param(load_response(response_500, cancel_claim.Response), id="500")
                          ])
 def test_invalid_request_at_cancel_claim_due_to_exception(machine, mock_hoppy_async_client, invalid_request):
     mock_async_responses(mock_hoppy_async_client,
