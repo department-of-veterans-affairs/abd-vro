@@ -19,6 +19,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
@@ -47,7 +48,7 @@ public class JwtTest {
       helper.getClaim(spec);
       fail("Expected 401 error");
     } catch (HttpStatusCodeException exception) {
-      HttpStatus statusCode = exception.getStatusCode();
+      HttpStatusCode statusCode = exception.getStatusCode();
       assertEquals(HttpStatus.UNAUTHORIZED, statusCode);
       ObjectMapper mapper = new ObjectMapper();
       try {
