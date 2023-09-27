@@ -8,7 +8,7 @@ spec:
   hosts: [{{ .Values.global.endpoint }}]
   gateways:
   - istio-system/ldx-{{ .Values.global.lhdiCluster }}-1-{{ .Values.global.environment }}-gateway
-  - istio-system/ldx-{ { .Values.global.lhdiCluster } }-1-{ { .Values.global.environment } }-alb-gateway
+  - istio-system/ldx-{{ .Values.global.lhdiCluster }}-1-{{ .Values.global.environment }}-alb-gateway
 
   http:
   - match:
