@@ -1,0 +1,23 @@
+###################### DO NOT DELETE OR MODIFY THIS FILE #######################
+#
+# This GitHub Workflow was added to your repository automatically by the
+# Lighthouse Delivery Infrastructure's SecRel team. It is required.
+#
+# It calculates the Lead Time for Changes DORA metric for PRs merged into your
+# default branch.
+#
+###################### DO NOT DELETE OR MODIFY THIS FILE #######################
+
+name: dora-lead-time-for-changes
+run-name: "Calculate DORA Lead Time for Changes"
+on:
+  create:
+jobs:
+  calculate-lead-time-for-changes:
+    if: ${{ github.ref_type == 'tag' }}
+    uses: department-of-veterans-affairs/lighthouse-di-documentation/.github/workflows/dora-lead-time-for-changes.yml@main
+    secrets:
+      # The SecRel team maintains a GitHub action that publishes these secrets
+      # to your repo. Do not delete these secrets from your repo.
+      DATADOG_API_KEY_FOR_LEAD_TIME_METRIC: ${{ secrets.DATADOG_API_KEY_FOR_LEAD_TIME_METRIC }}
+      DATADOG_APP_KEY_FOR_LEAD_TIME_METRIC: ${{ secrets.DATADOG_APP_KEY_FOR_LEAD_TIME_METRIC }}
