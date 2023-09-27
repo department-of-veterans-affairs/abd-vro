@@ -42,7 +42,6 @@ async def on_shut_down():
     hoppy.stop_hoppy_clients()
 
 
-# TODO fill in empty fields
 app = FastAPI(
     title="EP Merge Tool",
     description="Merge supplemental claim (EP400) contentions to a pending claim (EP 010/020/110).",

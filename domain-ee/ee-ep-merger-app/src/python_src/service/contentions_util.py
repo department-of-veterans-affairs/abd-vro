@@ -4,7 +4,7 @@ class MergeException(BaseException):
         super().__init__(self.message)
 
 
-class ClaimsUtil:
+class ContentionsUtil:
 
     @staticmethod
     def merge_claims(pending_contentions, supplemental_contentions):

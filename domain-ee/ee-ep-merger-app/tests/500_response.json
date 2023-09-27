@@ -1,11 +1,11 @@
 {
-  "statusCode": 404,
-  "statusMessage": "NOT FOUND",
+  "statusCode": 500,
+  "statusMessage": "INTERNAL SERVER ERROR",
   "messages": [
     {
       "key": "TEST FAILURE",
       "severity": "FATAL",
-      "status": 404
+      "status": 500
     }
   ]
 }
