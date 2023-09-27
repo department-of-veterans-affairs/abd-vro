@@ -81,7 +81,6 @@ GEM
       set (~> 1.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    uri (0.12.2)
     wasabi (3.7.0)
       addressable
       httpi (~> 2.0)
@@ -99,10 +98,9 @@ DEPENDENCIES
   bunny (>= 2.13.0)
   cgi (~> 0.3.6)
   rspec
-  uri (>= 0.12.2)
 
 RUBY VERSION
    ruby 3.2.2p53
 
 BUNDLED WITH
-   2.4.10
+   2.4.20
