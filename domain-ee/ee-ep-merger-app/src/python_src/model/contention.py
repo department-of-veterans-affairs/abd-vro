@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_serializer
 from pydantic.alias_generators import to_camel
 
 
@@ -33,3 +33,8 @@ class ContentionSummary(BaseModel):
     action: str | None = None
     automation_indicator: bool | None = None
     summary_date_time: datetime | None = None
+
+    @field_serializer('begin_date', 'create_date', 'completed_date', 'notification_date', 'last_modified')
+    def serialize_datetime(self, dt: datetime, _info):
+        if dt is not None:
+            return dt.isoformat()

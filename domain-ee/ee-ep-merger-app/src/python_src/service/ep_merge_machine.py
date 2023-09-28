@@ -52,8 +52,12 @@ class EpMergeMachine(StateMachine):
         super().__init__()
 
     def on_transition(self, source, target):
-        logging.info(f"event=jobTransition job_id={self.job.job_id} old={source.id} new={target.id}")
+        logging.info(f"event=jobTransition job_id={self.job.job_id} old={source.value} new={target.value}")
         self.job.state = target.value
+
+    @pending.exit
+    def on_start_process(self):
+        logging.info(f"event=jobStarted job_id={self.job.job_id}")
 
     @running_get_pending_contentions.enter
     def on_get_pending_contentions(self):
@@ -89,7 +93,6 @@ class EpMergeMachine(StateMachine):
             merged_contentions = ContentionsUtil.merge_claims(pending_contentions, supplemental_contentions)
         except MergeException as e:
             self.log_error(e.message)
-
         self.process(merged_contentions=merged_contentions)
 
     @running_update_pending_claim_contentions.enter
@@ -114,8 +117,9 @@ class EpMergeMachine(StateMachine):
         self.process()
 
     @completed_success.enter
-    def on_completed(self):
-        # TODO add processing upon completion
+    @completed_error.enter
+    def on_completed(self, state):
+        logging.info(f"event=jobCompleted job_id={self.job.job_id} state={state.value}")
         pass
 
     def make_request(self,

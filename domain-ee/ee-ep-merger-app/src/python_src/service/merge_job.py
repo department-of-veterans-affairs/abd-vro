@@ -16,6 +16,9 @@ class JobState(str, Enum):
     RUNNING_CANCEL_SUPP_CLAIM = 'RUNNING_CANCEL_SUPP_CLAIM'
     COMPLETED_SUCCESS = 'COMPLETED_SUCCESS'
 
+    def __str__(self):
+        return self.value
+
 
 class MergeJob(BaseModel):
     job_id: UUID
