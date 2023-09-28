@@ -56,3 +56,17 @@ updates:
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
+
+  - package-ecosystem: "docker"
+    directory: "/mock/mock-bie-kafka"
+    target-branch: "develop"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 10
+
+  - package-ecosystem: "docker"
+    directory: "/mock/mock-bie-schema-registry"
+    target-branch: "develop"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 10
