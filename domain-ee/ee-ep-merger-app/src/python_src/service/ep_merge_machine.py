@@ -15,6 +15,8 @@ from src.python_src.service.hoppy_service import HoppyClientName, HoppyService
 from src.python_src.service.merge_job import JobState, MergeJob
 from statemachine import State, StateMachine
 
+CANCELLATION_REASON = "Issues moved to pending EP Claim ID #%d"
+
 
 class EpMergeMachine(StateMachine):
     job: MergeJob | None = None
@@ -106,7 +108,7 @@ class EpMergeMachine(StateMachine):
 
     @running_cancel_supp_claim.enter
     def on_cancel_supp_claim(self):
-        reason = f"Issues moved to pending EP - claim #{self.job.pending_claim_id}"
+        reason = CANCELLATION_REASON % self.job.pending_claim_id
         request = cancel_claim.Request(claim_id=self.job.supp_claim_id,
                                        lifecycle_status_reason_code="65",
                                        close_reason_text=reason)

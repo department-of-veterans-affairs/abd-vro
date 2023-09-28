@@ -1,15 +1,21 @@
 import json
 import uuid
-from unittest.mock import AsyncMock, Mock
+from unittest.mock import AsyncMock, Mock, call
 
 import pytest
 from hoppy.exception import ResponseException
 from src.python_src.model import (cancel_claim, get_contentions,
                                   update_contentions)
 from src.python_src.model import update_temp_station_of_jurisdiction as tsoj
-from src.python_src.service.contentions_util import MergeException
-from src.python_src.service.ep_merge_machine import EpMergeMachine
+from src.python_src.service.contentions_util import (ContentionsUtil,
+                                                     MergeException)
+from src.python_src.service.ep_merge_machine import (CANCELLATION_REASON,
+                                                     EpMergeMachine)
 from src.python_src.service.merge_job import JobState, MergeJob
+
+JOB_ID = uuid.uuid4()
+SUPP_CLAIM_ID = 2
+PENDING_CLAIM_ID = 1
 
 RESPONSE_DIR = './tests/service/responses'
 response_200 = f'{RESPONSE_DIR}/200_response.json'
@@ -25,10 +31,22 @@ def load_response(file, response_type):
         return response_type.model_validate(json.load(f))
 
 
+get_pending_contentions_req = get_contentions.Request(claim_id=PENDING_CLAIM_ID).model_dump(by_alias=True)
 get_pending_contentions_200 = load_response(pending_contentions_200, get_contentions.Response)
+get_supp_contentions_req = get_contentions.Request(claim_id=SUPP_CLAIM_ID).model_dump(by_alias=True)
 get_supp_contentions_200 = load_response(supp_contentions_200, get_contentions.Response)
+update_temporary_station_of_duty_req = tsoj.Request(claim_id=PENDING_CLAIM_ID,
+                                                    temp_station_of_jurisdiction="398").model_dump(by_alias=True)
 update_temporary_station_of_duty_200 = load_response(response_200, tsoj.Response)
+update_pending_claim_req = update_contentions.Request(claim_id=PENDING_CLAIM_ID,
+                                                      update_contentions=ContentionsUtil.merge_claims(
+                                                          get_pending_contentions_200, get_supp_contentions_200)
+                                                      ).model_dump(by_alias=True)
 update_pending_claim_200 = load_response(response_200, update_contentions.Response)
+cancel_claim_req = cancel_claim.Request(claim_id=SUPP_CLAIM_ID,
+                                        lifecycle_status_reason_code="65",
+                                        close_reason_text=CANCELLATION_REASON % PENDING_CLAIM_ID
+                                        ).model_dump(by_alias=True)
 cancel_claim_200 = load_response(response_200, cancel_claim.Response)
 
 
@@ -57,9 +75,9 @@ def test_constructor(mock_hoppy_service):
 @pytest.fixture
 def machine(mock_hoppy_service):
     return EpMergeMachine(mock_hoppy_service,
-                          MergeJob(job_id=uuid.uuid4(),
-                                   pending_claim_id=1,
-                                   supp_claim_id=2))
+                          MergeJob(job_id=JOB_ID,
+                                   pending_claim_id=PENDING_CLAIM_ID,
+                                   supp_claim_id=SUPP_CLAIM_ID))
 
 
 def get_mocked_async_response(side_effects):
@@ -91,6 +109,7 @@ def process_and_assert(machine, expected_state, expected_error_state):
 def test_invalid_request_at_get_pending_contentions(machine, mock_hoppy_async_client, invalid_request):
     mock_async_responses(mock_hoppy_async_client, invalid_request)
     process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_GET_PENDING_CLAIM_CONTENTIONS)
+    mock_hoppy_async_client.make_request.assert_called_with(machine.job.job_id, get_pending_contentions_req)
 
 
 @pytest.mark.parametrize("invalid_request",
@@ -107,6 +126,10 @@ def test_invalid_request_at_get_supplemental_contentions(machine, mock_hoppy_asy
                              invalid_request
                          ])
     process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_GET_SUPP_CLAIM_CONTENTIONS)
+    mock_hoppy_async_client.make_request.assert_has_calls([
+        call(machine.job.job_id, get_pending_contentions_req),
+        call(machine.job.job_id, get_supp_contentions_req)
+    ])
 
 
 @pytest.mark.parametrize("invalid_request",
@@ -125,6 +148,11 @@ def test_invalid_request_at_set_temporary_station_of_duty(machine, mock_hoppy_se
                              invalid_request
                          ])
     process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_SET_TEMP_STATION_OF_JURISDICTION)
+    mock_hoppy_async_client.make_request.assert_has_calls([
+        call(machine.job.job_id, get_pending_contentions_req),
+        call(machine.job.job_id, get_supp_contentions_req),
+        call(machine.job.job_id, update_temporary_station_of_duty_req)
+    ])
 
 
 def test_process_fails_at_merge_contentions(machine, mock_hoppy_async_client, mocker):
@@ -138,6 +166,11 @@ def test_process_fails_at_merge_contentions(machine, mock_hoppy_async_client, mo
                  side_effect=MergeException(message="Merge Oops"))
 
     process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_MERGE_CONTENTIONS)
+    mock_hoppy_async_client.make_request.assert_has_calls([
+        call(machine.job.job_id, get_pending_contentions_req),
+        call(machine.job.job_id, get_supp_contentions_req),
+        call(machine.job.job_id, update_temporary_station_of_duty_req)
+    ])
 
 
 @pytest.mark.parametrize("invalid_request",
@@ -156,6 +189,12 @@ def test_invalid_request_at_update_contentions(machine, mock_hoppy_async_client,
                              invalid_request
                          ])
     process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_UPDATE_PENDING_CLAIM_CONTENTIONS)
+    mock_hoppy_async_client.make_request.assert_has_calls([
+        call(machine.job.job_id, get_pending_contentions_req),
+        call(machine.job.job_id, get_supp_contentions_req),
+        call(machine.job.job_id, update_temporary_station_of_duty_req),
+        call(machine.job.job_id, update_pending_claim_req)
+    ])
 
 
 @pytest.mark.parametrize("invalid_request",
@@ -175,6 +214,13 @@ def test_invalid_request_at_cancel_claim_due_to_exception(machine, mock_hoppy_as
                              invalid_request
                          ])
     process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_CANCEL_SUPP_CLAIM)
+    mock_hoppy_async_client.make_request.assert_has_calls([
+        call(machine.job.job_id, get_pending_contentions_req),
+        call(machine.job.job_id, get_supp_contentions_req),
+        call(machine.job.job_id, update_temporary_station_of_duty_req),
+        call(machine.job.job_id, update_pending_claim_req),
+        call(machine.job.job_id, cancel_claim_req)
+    ])
 
 
 def test_process_succeeds(machine, mock_hoppy_async_client):
@@ -187,3 +233,10 @@ def test_process_succeeds(machine, mock_hoppy_async_client):
                              cancel_claim_200
                          ])
     process_and_assert(machine, JobState.COMPLETED_SUCCESS, None)
+    mock_hoppy_async_client.make_request.assert_has_calls([
+        call(machine.job.job_id, get_pending_contentions_req),
+        call(machine.job.job_id, get_supp_contentions_req),
+        call(machine.job.job_id, update_temporary_station_of_duty_req),
+        call(machine.job.job_id, update_pending_claim_req),
+        call(machine.job.job_id, cancel_claim_req)
+    ])
