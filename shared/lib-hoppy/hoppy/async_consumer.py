@@ -4,6 +4,7 @@ import time
 from typing import Callable
 
 from hoppy.config import RABBITMQ_CONFIG
+from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
 from hoppy.util import create_connection_parameters
 from pika.adapters.asyncio_connection import AsyncioConnection
 
@@ -11,18 +12,27 @@ from pika.adapters.asyncio_connection import AsyncioConnection
 class AsyncConsumer(object):
     def __init__(self,
                  config: [dict | None] = None,
-                 exchange: str = '',
-                 exchange_type: str = 'direct',
-                 queue: str = '',
+                 exchange_properties: ExchangeProperties = ExchangeProperties(),
+                 queue_properties: QueueProperties = QueueProperties(),
                  routing_key: str = '',
                  reply_callback: Callable = None):
         if config is None:
             config = {}
         self.config = {**RABBITMQ_CONFIG, **config}
         self.connection_parameters = create_connection_parameters(self.config)
-        self.exchange = exchange
-        self.exchange_type = exchange_type
-        self.queue = queue
+
+        self.exchange_name = exchange_properties.name
+        self.exchange_type = exchange_properties.type
+        self.passive_declare_exchange = exchange_properties.passive_declare
+        self.durable_exchange = exchange_properties.durable
+        self.auto_delete_exchange = exchange_properties.auto_delete
+
+        self.queue_name = queue_properties.name
+        self.passive_declare_queue = queue_properties.passive_declare
+        self.durable_queue = queue_properties.durable
+        self.auto_delete_queue = queue_properties.auto_delete
+        self.exclusive_queue = queue_properties.exclusive
+
         self.routing_key = routing_key
 
         self._loop = None
@@ -105,39 +115,44 @@ class AsyncConsumer(object):
         logging.debug('Consumer - Channel opened')
         self._channel = channel
         self._channel.add_on_close_callback(self.on_channel_closed)
-        self.setup_exchange(self.exchange)
+        self.setup_exchange(self.exchange_name)
 
     def on_channel_closed(self, channel, reason):
         logging.warning(f'Consumer - Channel {channel} was closed: {reason}')
         self.close_connection()
 
     def setup_exchange(self, exchange_name):
-        logging.debug(f'Consumer - Declaring exchange: {self.exchange}')
-        self._channel.exchange_declare(
-            exchange=exchange_name,
-            exchange_type=self.exchange_type,
-            durable=True,
-            auto_delete=True,
-            callback=self.on_exchange_declare_ok)
+        logging.debug(f'Consumer - Declaring exchange: {self.exchange_name}')
+        self._channel.exchange_declare(exchange=exchange_name,
+                                       exchange_type=self.exchange_type,
+                                       passive=self.passive_declare_exchange,
+                                       durable=self.durable_exchange,
+                                       auto_delete=self.auto_delete_exchange,
+                                       callback=self.on_exchange_declare_ok)
 
     def on_exchange_declare_ok(self, _unused_frame):
-        logging.debug(f'Consumer - Exchange declared: {self.exchange}')
+        logging.debug(f'Consumer - Exchange declared: {self.exchange_name}')
         self.setup_queue()
 
     def setup_queue(self):
-        logging.debug(f'Consumer - Declaring queue {self.queue}')
-        self._channel.queue_declare(queue=self.queue, callback=self.on_queue_declare_ok)
+        logging.debug(f'Consumer - Declaring queue {self.queue_name}')
+        self._channel.queue_declare(queue=self.queue_name,
+                                    passive=self.passive_declare_queue,
+                                    durable=self.durable_queue,
+                                    exclusive=self.exclusive_queue,
+                                    auto_delete=self.auto_delete_queue,
+                                    callback=self.on_queue_declare_ok)
 
     def on_queue_declare_ok(self, _unused_frame):
-        logging.debug(f'Consumer - Binding {self.exchange} to {self.queue} with {self.routing_key}')
+        logging.debug(f'Consumer - Binding {self.exchange_name} to {self.queue_name} with {self.routing_key}')
         self._channel.queue_bind(
-            self.queue,
-            self.exchange,
+            self.queue_name,
+            self.exchange_name,
             routing_key=self.routing_key,
             callback=self.on_bind_ok)
 
     def on_bind_ok(self, _unused_frame):
-        logging.debug(f'Consumer - Queue bound: {self.queue}')
+        logging.debug(f'Consumer - Queue bound: {self.queue_name}')
         self._channel.basic_qos(prefetch_count=self._prefetch_count, callback=self.on_basic_qos_ok)
 
     def on_basic_qos_ok(self, _unused_frame):
@@ -147,7 +162,7 @@ class AsyncConsumer(object):
     def start_consuming(self):
         logging.debug('Consumer - Issuing consumer related RPC commands')
         self._channel.add_on_cancel_callback(self.on_consumer_cancelled)
-        self._consumer_tag = self._channel.basic_consume(self.queue, self.on_message)
+        self._consumer_tag = self._channel.basic_consume(self.queue_name, self.on_message)
         self._consuming = True
 
     def on_consumer_cancelled(self, method_frame):

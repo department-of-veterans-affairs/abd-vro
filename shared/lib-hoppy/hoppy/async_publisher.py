@@ -4,6 +4,7 @@ import logging
 import time
 
 from hoppy.config import RABBITMQ_CONFIG
+from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
 from hoppy.util import create_connection_parameters
 from pika.adapters.asyncio_connection import AsyncioConnection
 from pika.spec import BasicProperties
@@ -12,17 +13,26 @@ from pika.spec import BasicProperties
 class AsyncPublisher(object):
     def __init__(self,
                  config: [dict | None] = None,
-                 exchange: str = '',
-                 exchange_type: str = 'direct',
-                 queue: str = '',
+                 exchange_properties: ExchangeProperties = ExchangeProperties(),
+                 queue_properties: QueueProperties = QueueProperties(),
                  routing_key: str = ''):
         if config is None:
             config = {}
         self.config = {**RABBITMQ_CONFIG, **config}
         self.connection_parameters = create_connection_parameters(self.config)
-        self.exchange = exchange
-        self.exchange_type = exchange_type
-        self.queue = queue
+
+        self.exchange_name = exchange_properties.name
+        self.exchange_type = exchange_properties.type
+        self.passive_declare_exchange = exchange_properties.passive_declare
+        self.durable_exchange = exchange_properties.durable
+        self.auto_delete_exchange = exchange_properties.auto_delete
+
+        self.queue_name = queue_properties.name
+        self.passive_declare_queue = queue_properties.passive_declare
+        self.durable_queue = queue_properties.durable
+        self.auto_delete_queue = queue_properties.auto_delete
+        self.exclusive_queue = queue_properties.exclusive
+
         self.routing_key = routing_key
 
         self._loop = None
@@ -98,7 +108,7 @@ class AsyncPublisher(object):
         logging.debug('Publisher - Channel opened')
         self._channel = channel
         self.add_on_channel_close_callback()
-        self.setup_exchange(self.exchange)
+        self.setup_exchange(self.exchange_name)
 
     def add_on_channel_close_callback(self):
         logging.debug('Publisher - Adding channel close callback')
@@ -114,28 +124,33 @@ class AsyncPublisher(object):
                                userdata=exchange_name)
         self._channel.exchange_declare(exchange=exchange_name,
                                        exchange_type=self.exchange_type,
-                                       durable=True,
-                                       auto_delete=True,
+                                       passive=self.passive_declare_exchange,
+                                       durable=self.durable_exchange,
+                                       auto_delete=self.auto_delete_exchange,
                                        callback=cb)
 
     def on_exchange_declare_ok(self, _unused_frame, userdata):
         logging.debug(f'Publisher - Exchange declared {userdata}')
-        self.setup_queue(self.queue)
+        self.setup_queue()
 
-    def setup_queue(self, queue_name):
-        logging.debug(f'Publisher - Declaring queue {queue_name}', )
-        self._channel.queue_declare(queue=queue_name,
+    def setup_queue(self):
+        logging.debug(f'Publisher - Declaring queue {self.queue_name}', )
+        self._channel.queue_declare(queue=self.queue_name,
+                                    passive=self.passive_declare_queue,
+                                    durable=self.durable_queue,
+                                    exclusive=self.exclusive_queue,
+                                    auto_delete=self.auto_delete_queue,
                                     callback=self.on_queue_declare_ok)
 
     def on_queue_declare_ok(self, _unused_frame):
-        logging.debug(f'Publisher - Binding {self.exchange} to {self.queue} with {self.routing_key}')
-        self._channel.queue_bind(self.queue,
-                                 self.exchange,
+        logging.debug(f'Publisher - Binding {self.exchange_name} to {self.queue_name} with {self.routing_key}')
+        self._channel.queue_bind(self.queue_name,
+                                 self.exchange_name,
                                  routing_key=self.routing_key,
                                  callback=self.on_bind_ok)
 
     def on_bind_ok(self, _unused_frame):
-        logging.debug(f'Publisher - Queue bound {self.queue}')
+        logging.debug(f'Publisher - Queue bound {self.queue_name}')
         self.start_publishing()
 
     def start_publishing(self):
@@ -173,7 +188,7 @@ class AsyncPublisher(object):
             logging.warning(f'Publisher - Could not publish message with channel={self._channel}')
             return
 
-        self._channel.basic_publish(self.exchange, self.routing_key,
+        self._channel.basic_publish(self.exchange_name, self.routing_key,
                                     json.dumps(message, ensure_ascii=False),
                                     properties)
         self._message_number += 1

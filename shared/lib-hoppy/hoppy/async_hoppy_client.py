@@ -7,6 +7,7 @@ import uuid
 from hoppy.async_consumer import AsyncConsumer
 from hoppy.async_publisher import AsyncPublisher
 from hoppy.exception import ResponseException
+from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
 from pika import BasicProperties
 
 MAX_RETRIES_REACHED = "Max retries reached"
@@ -23,31 +24,33 @@ class AsyncHoppyClient:
                  name: str,
                  app_id: str,
                  config: dict,
-                 exchange: str,
-                 request_queue: str,
-                 reply_to_queue: str,
+                 exchange_properties: ExchangeProperties,
+                 request_queue_properties: QueueProperties,
+                 reply_queue_properties: QueueProperties,
+                 request_routing_key: str,
+                 reply_routing_key: str,
                  max_latency: int = 30,
                  response_reject_and_requeue_attempts: int = 3):
         self.name = name
         self.app_id = app_id
         self.config = config
-        self.exchange = exchange
-        self.request_queue = request_queue
-        self.reply_to_queue = reply_to_queue
+
+        self.exchange_properties = exchange_properties
+        self.request_queue_properties = request_queue_properties
+        self.reply_queue_properties = reply_queue_properties
+
         self.max_latency = max_latency
         self.response_reject_and_requeue_attempts = response_reject_and_requeue_attempts
 
         self.async_publisher = AsyncPublisher(config=self.config,
-                                              exchange=exchange,
-                                              exchange_type="direct",
-                                              queue=request_queue,
-                                              routing_key=request_queue)
+                                              exchange_properties=exchange_properties,
+                                              queue_properties=request_queue_properties,
+                                              routing_key=request_routing_key)
 
         self.async_consumer = AsyncConsumer(config=self.config,
-                                            exchange=exchange,
-                                            exchange_type="direct",
-                                            queue=reply_to_queue,
-                                            routing_key=reply_to_queue,
+                                            exchange_properties=exchange_properties,
+                                            queue_properties=reply_queue_properties,
+                                            routing_key=reply_routing_key,
                                             reply_callback=self._on_reply)
 
     def start(self, loop):
@@ -63,7 +66,7 @@ class AsyncHoppyClient:
         logging.info(
             f"event=requestStarted id={request_id} "
             f"client={self.name} "
-            f"queue={self.request_queue} "
+            f"queue={self.request_queue_properties.name} "
             f"correlation_id={correlation_id}")
         self.responses[correlation_id] = None
 
@@ -71,13 +74,13 @@ class AsyncHoppyClient:
             self.async_publisher.publish_message(body,
                                                  BasicProperties(app_id=self.app_id,
                                                                  content_type="application/json",
-                                                                 reply_to=self.reply_to_queue,
+                                                                 reply_to=self.reply_queue_properties.name,
                                                                  correlation_id=correlation_id))
         except Exception as e:
             logging.warning(f"event=requestError "
                             f"client={self.name} "
                             f"id={request_id} "
-                            f"queue={self.request_queue} "
+                            f"queue={self.request_queue_properties.name} "
                             f"correlation_id={correlation_id} "
                             f"error='{UNEXPECTED_PUBLISH_ERROR}: {e}'")
             raise ResponseException(message=UNEXPECTED_PUBLISH_ERROR)
@@ -91,7 +94,7 @@ class AsyncHoppyClient:
                     logging.warning(f"event=requestError "
                                     f"client={self.name} "
                                     f"id={request_id} "
-                                    f"queue={self.request_queue} "
+                                    f"queue={self.request_queue_properties.name} "
                                     f"correlation_id={correlation_id} "
                                     f"error='{UNDECODABLE}'")
                     raise ResponseException(message=UNDECODABLE)
@@ -99,7 +102,7 @@ class AsyncHoppyClient:
                     logging.info(f"event=requestCompleted "
                                  f"client={self.name} "
                                  f"id={request_id} "
-                                 f"queue={self.request_queue} "
+                                 f"queue={self.request_queue_properties.name} "
                                  f"correlation_id={correlation_id}")
                     return response
             else:
@@ -110,7 +113,7 @@ class AsyncHoppyClient:
                     logging.warning(f"event=requestError "
                                     f"client={self.name} "
                                     f"id={request_id} "
-                                    f"queue={self.request_queue} "
+                                    f"queue={self.request_queue_properties.name} "
                                     f"correlation_id={correlation_id} "
                                     f"error='{TIMED_OUT}'")
                     self._terminate_correlation_id(correlation_id)
@@ -158,7 +161,7 @@ class AsyncHoppyClient:
         logging.info(
             f"event={action} "
             f"client={self.name} "
-            f"queue={self.request_queue} "
+            f"queue={self.request_queue_properties.name} "
             f"correlation_id={correlation_id} "
             f"correlated={correlated} "
             f"requeued={requeued} "
@@ -170,14 +173,17 @@ class RetryableAsyncHoppyClient(AsyncHoppyClient):
                  name: str,
                  app_id: str,
                  config: dict,
-                 exchange: str,
-                 request_queue: str,
-                 reply_to_queue: str,
+                 exchange_properties: ExchangeProperties,
+                 request_queue_properties: QueueProperties,
+                 reply_queue_properties: QueueProperties,
+                 request_routing_key: str,
+                 reply_routing_key: str,
                  max_latency: int = 30,
                  response_reject_and_requeue_attempts: int = 3,
                  max_retries=3):
         self.max_retries = max_retries
-        super().__init__(name, app_id, config, exchange, request_queue, reply_to_queue, max_latency,
+        super().__init__(name, app_id, config, exchange_properties, request_queue_properties, reply_queue_properties,
+                         request_routing_key, reply_routing_key, max_latency,
                          response_reject_and_requeue_attempts)
 
     async def make_request(self, request_id, body):
@@ -193,6 +199,6 @@ class RetryableAsyncHoppyClient(AsyncHoppyClient):
         logging.warning(f"event=requestError "
                         f"client={self.name} "
                         f"id={request_id} "
-                        f"queue={self.request_queue} "
+                        f"queue={self.request_queue_properties.name} "
                         f"error='Max retries reached'")
         raise ResponseException(message=MAX_RETRIES_REACHED)

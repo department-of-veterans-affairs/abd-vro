@@ -11,6 +11,7 @@ from hoppy.async_hoppy_client import (MAX_RETRIES_REACHED, TIMED_OUT,
                                       AsyncHoppyClient,
                                       RetryableAsyncHoppyClient)
 from hoppy.exception import ResponseException
+from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
 
 config = {}
 
@@ -25,10 +26,13 @@ def mock_async_publisher(mocker):
     return mocker.patch('hoppy.async_publisher.AsyncPublisher')
 
 
-def get_client(mock_async_publisher, mock_async_consumer, app_id="test", exchange="exchange", queue="queue",
+def get_client(mock_async_publisher, mock_async_consumer, app_id="test", exchange_name="exchange", queue_name="queue",
                reply_queue="reply_queue", max_latency=3, requeue_attempts=3):
-    client = AsyncHoppyClient("test_client", app_id, config, exchange, queue, reply_queue, max_latency,
-                              requeue_attempts)
+    exchange_props = ExchangeProperties(name=exchange_name)
+    request_props = QueueProperties(name=queue_name)
+    reply_props = QueueProperties(name=reply_queue)
+    client = AsyncHoppyClient("test_client", app_id, config, exchange_props, request_props, reply_props, queue_name,
+                              reply_queue, max_latency, requeue_attempts)
     client.async_publisher = mock_async_publisher
     client.async_consumer = mock_async_consumer
     return client
@@ -251,11 +255,14 @@ class TestAsyncHoppyClient:
         client.async_publisher.publish_message.assert_called_once_with(request, ANY)
 
 
-def get_retry_client(mock_async_publisher, mock_async_consumer, app_id="test", exchange="exchange", queue="queue",
+def get_retry_client(mock_async_publisher, mock_async_consumer, app_id="test", exchange_name="exchange",
+                     queue_name="queue",
                      reply_queue="reply_queue", max_latency=3, requeue_attempts=3, max_retries=3):
-    client = RetryableAsyncHoppyClient("test_client", app_id, config, exchange, queue, reply_queue, max_latency,
-                                       requeue_attempts,
-                                       max_retries)
+    exchange_props = ExchangeProperties(name=exchange_name)
+    request_props = QueueProperties(name=queue_name)
+    reply_props = QueueProperties(name=reply_queue)
+    client = RetryableAsyncHoppyClient("test_client", app_id, config, exchange_props, request_props, reply_props,
+                                       queue_name, reply_queue, max_latency, requeue_attempts, max_retries)
     client.async_publisher = mock_async_publisher
     client.async_consumer = mock_async_consumer
     return client
