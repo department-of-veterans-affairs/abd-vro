@@ -1,4 +1,4 @@
-FROM ruby:3.3-rc-alpine3.17
+FROM ruby:3.2.2-alpine3.16
 
  # Bundler needs git, and ruby-dev curl-dev build-base to make native gems
  # https://www.cloudbees.com/blog/build-minimal-docker-container-ruby-apps
@@ -14,7 +14,7 @@ WORKDIR /app
 COPY Gemfile Gemfile.lock ./
 
 # After install, delete packages only needed during bundler install & clean APK cache
-RUN gem install bundler:2.4.20 --no-document && bundle install \
+RUN gem install bundler:2.4.10 --no-document && bundle install \
     && gem update cgi \
     && apk del git ruby-dev curl-dev build-base \
     && rm -rf /var/cache/apk/*
