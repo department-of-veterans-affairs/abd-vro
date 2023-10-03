@@ -10,6 +10,14 @@ on:
         required: true
         default: "(next patch version)"
         type: string
+      release_image_versions:
+        description: 'Image versions to publish and associate with the new release'
+        required: true
+        default: 'changed_only'
+        type: choice
+        options:
+          - "changed_only"
+          - "all"
 
 jobs:
   update-code-version:
