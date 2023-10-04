@@ -6,14 +6,14 @@ buildscript {
   // There's a conflict between versions of jgit between spotless and axion release plugin
   configurations.classpath {
     resolutionStrategy {
-      force 'org.eclipse.jgit:org.eclipse.jgit:6.6.0.202305301015-r'
+      force 'org.eclipse.jgit:org.eclipse.jgit:6.7.0.202309050840-r'
     }
   }
 }
 
 plugins {
   id 'local.std.base-project-conventions'
-  id 'pl.allegro.tech.build.axion-release' version '1.15.4'
+  id 'pl.allegro.tech.build.axion-release' version '1.15.5'
 
   // Set versions for these plugins (but don't apply) so we don't have to repeat the versions in subprojects
   id "org.springframework.boot" version "${spring_boot_version}" apply false
