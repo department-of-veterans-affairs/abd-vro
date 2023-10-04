@@ -106,7 +106,7 @@ public class BipApiServiceTest {
             ArgumentMatchers.eq(String.class));
     mockBipApiProp();
     try {
-      BipClaim result = service.getClaimDetails(GOOD_CLAIM_ID);
+      BipClaim result = service.getClaimDetails(GOOD_CLAIM_ID).getClaim();
       assertNotNull(result);
     } catch (BipException e) {
       log.error("Positive getClaimDetails test failed.", e);
@@ -114,7 +114,7 @@ public class BipApiServiceTest {
     }
 
     try {
-      BipClaim result = service.getClaimDetails(BAD_CLAIM_ID);
+      BipClaim result = service.getClaimDetails(BAD_CLAIM_ID).getClaim();
       log.error("Negative getClaimDetails test failed. {}", result.getClaimId());
       fail();
     } catch (BipException e) {

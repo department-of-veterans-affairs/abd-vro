@@ -2,7 +2,6 @@ package gov.va.vro.bip.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.bip.model.BipClaim;
 import gov.va.vro.bip.model.BipClaimResp;
 import gov.va.vro.bip.model.BipContentionResp;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
@@ -62,7 +61,7 @@ public class BipApiService implements IBipApiService {
   final ObjectMapper mapper = new ObjectMapper();
 
   @Override
-  public BipClaim getClaimDetails(long claimId) {
+  public BipClaimResp getClaimDetails(long claimId) {
     try {
       log.info("getClaimDetails({}) invoked", claimId);
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CLAIM_DETAILS, claimId);
@@ -73,8 +72,8 @@ public class BipApiService implements IBipApiService {
           restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
       if (bipResponse.getStatusCode() == HttpStatus.OK) {
         BipClaimResp result = mapper.readValue(bipResponse.getBody(), BipClaimResp.class);
-
-        return result.getClaim();
+        result.statusCode = HttpStatus.OK.value();
+        return result; // .getClaim();
       } else {
         log.error(
             "Failed to get claim details for {}. {} \n{}",
@@ -173,8 +172,9 @@ public class BipApiService implements IBipApiService {
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
       log.info("Call {} to update contention for {}.", url, claimId);
       HttpHeaders headers = getBipHeader();
-      String updtContention = mapper.writeValueAsString(contention);
-      HttpEntity<String> httpEntity = new HttpEntity<>(updtContention, headers);
+      String updtContention = mapper.writeValueAsString(contention.getUpdateContentions());
+      // HttpEntity<String> httpEntity = new HttpEntity<>(updtContention, headers);
+      HttpEntity<UpdateContentionReq> httpEntity = new HttpEntity<>(contention, headers);
       ResponseEntity<String> bipResponse =
           restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
       if (bipResponse.getStatusCode() == HttpStatus.OK) {
@@ -188,19 +188,19 @@ public class BipApiService implements IBipApiService {
     }
   }
 
-  @Override
-  public boolean confirmCanCallSpecialIssueTypes() {
-    String url = HTTPS + bipApiProps.getClaimBaseUrl() + SPECIAL_ISSUE_TYPES;
-    log.info("Call {} to get special_issue_types", url);
-
-    HttpHeaders headers = getBipHeader();
-    HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
-
-    ResponseEntity<String> response =
-        restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
-
-    return response.getStatusCode() == HttpStatus.OK && !response.getBody().isEmpty();
-  }
+  //  @Override
+  //  public boolean confirmCanCallSpecialIssueTypes() {
+  //    String url = HTTPS + bipApiProps.getClaimBaseUrl() + SPECIAL_ISSUE_TYPES;
+  //    log.info("Call {} to get special_issue_types", url);
+  //
+  //    HttpHeaders headers = getBipHeader();
+  //    HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
+  //
+  //    ResponseEntity<String> response =
+  //        restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+  //
+  //    return response.getStatusCode() == HttpStatus.OK && !response.getBody().isEmpty();
+  //  }
 
   HttpHeaders getBipHeader() throws BipException {
     try {
@@ -224,7 +224,6 @@ public class BipApiService implements IBipApiService {
     claims.put("iss", bipApiProps.getClaimIssuer());
     byte[] signSecretBytes = bipApiProps.getClaimSecret().getBytes(StandardCharsets.UTF_8);
     Key signingKey = new SecretKeySpec(signSecretBytes, SignatureAlgorithm.HS256.getJcaName());
-
     return Jwts.builder()
         .setSubject("Claim")
         .setIssuedAt(Calendar.getInstance().getTime())

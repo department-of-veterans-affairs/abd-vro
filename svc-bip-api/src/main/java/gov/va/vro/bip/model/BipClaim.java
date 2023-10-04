@@ -2,22 +2,12 @@ package gov.va.vro.bip.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BipClaim extends HasStatusCodeAndMessage {
-  public BipClaim(int httpStatus, String httpMessage) {
-    super();
-    statusCode = httpStatus;
-    statusMessage = httpMessage;
-  }
-
+public class BipClaim {
   private String summaryDateTime;
   private String lastModified;
   private String claimId;

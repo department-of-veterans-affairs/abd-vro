@@ -1,25 +1,24 @@
 package gov.va.vro.bip;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
 
-import gov.va.vro.bip.model.BipClaim;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.bip.model.BipClaimResp;
 import gov.va.vro.bip.model.BipContentionResp;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
-import gov.va.vro.bip.model.ClaimContention;
 import gov.va.vro.bip.model.ClaimStatus;
 import gov.va.vro.bip.model.RequestForUpdateClaimStatus;
+import gov.va.vro.bip.model.UpdateContention;
+import gov.va.vro.bip.model.UpdateContentionModel;
 import gov.va.vro.bip.model.UpdateContentionReq;
 import gov.va.vro.bip.service.BipApiService;
 import gov.va.vro.bip.service.RMQController;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +27,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-@Disabled("Currently fails on first run, but passes on second run")
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @Slf4j
@@ -44,83 +42,72 @@ class RMQIntegrationTest {
   @Value("${exchangeName}")
   String exchangeName;
 
+  // known good values from mocks/mock-bip-claims-api/src/main/resources/mock-claims.json
+  private static final String CLAIM_ID1 = "1015";
+  private static final long CLAIM_ID1_LONG = 1015L;
+  private static final long CONTENTION_ID = 1011L;
+  final ObjectMapper mapper = new ObjectMapper();
+
   @Test
   void testUpdateClaimStatus(@Value("${updateClaimStatusQueue}") String qName) {
-    rabbitAdmin.purgeQueue(qName, false);
-    RequestForUpdateClaimStatus req = new RequestForUpdateClaimStatus(ClaimStatus.RFD, 1);
-    BipUpdateClaimResp resp = new BipUpdateClaimResp();
-    resp.statusMessage = "test pass";
-    when(service.updateClaimStatus(anyLong(), any(ClaimStatus.class))).thenReturn(resp);
-
-    BipUpdateClaimResp result =
-        (BipUpdateClaimResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, req);
-
-    Assertions.assertEquals(result.statusMessage, resp.statusMessage);
-    rabbitAdmin.purgeQueue(qName, false);
+    RequestForUpdateClaimStatus request =
+        new RequestForUpdateClaimStatus(ClaimStatus.RFD, Long.parseLong(CLAIM_ID1));
+    BipUpdateClaimResp response =
+        (BipUpdateClaimResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, request);
+    assertResponseIsSuccess(response);
   }
 
   @Test
   void testGetClaimContentions(@Value("${getClaimContentionsQueue}") String qName) {
-    rabbitAdmin.purgeQueue(qName, false);
-    long req = 42;
-    BipContentionResp resp = new BipContentionResp();
-    List<ClaimContention> result = new ArrayList<ClaimContention>();
-    result.add(new ClaimContention());
-
-    resp.statusMessage = "test pass";
-    Mockito.when(service.getClaimContentions(Mockito.eq(req))).thenReturn(result);
-
     BipContentionResp response =
-        (BipContentionResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, req);
-
+        (BipContentionResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, CLAIM_ID1);
     assertTrue(response.getContentions().size() == 1);
-    rabbitAdmin.purgeQueue(qName, false);
   }
 
   @Test
   void testGetClaimDetails(@Value("${getClaimDetailsQueue}") String qName) {
-    rabbitAdmin.purgeQueue(qName, false);
+    BipClaimResp response =
+        (BipClaimResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, CLAIM_ID1);
 
-    long req = 42;
-    BipClaim result = new BipClaim();
-    result.setPhase("phase");
-    Mockito.when(service.getClaimDetails(Mockito.anyLong())).thenReturn(result);
-
-    BipClaim response = (BipClaim) rabbitTemplate.convertSendAndReceive(exchangeName, qName, req);
-
-    Assertions.assertEquals(response.getPhase(), result.getPhase());
-    rabbitAdmin.purgeQueue(qName, false);
+    Assertions.assertNotNull(response);
+    Assertions.assertEquals(200, response.statusCode);
+    Assertions.assertEquals(CLAIM_ID1, response.getClaim().getClaimId());
+    Assertions.assertEquals("Gathering of Evidence", response.getClaim().getPhase());
+    Assertions.assertEquals("Ready for Decision", response.getClaim().getClaimLifecycleStatus());
+    Assertions.assertNotNull(response.getClaim().getTempStationOfJurisdiction());
   }
 
   @Test
   void testSetClaimToRfdStatus(@Value("${setClaimToRfdStatusQueue}") String qName) {
-    rabbitAdmin.purgeQueue(qName, false);
-    long req = 42L;
-    BipUpdateClaimResp result = new BipUpdateClaimResp();
-    result.statusMessage = "msg";
-    Mockito.when(service.setClaimToRfdStatus(Mockito.anyLong())).thenReturn(result);
-
     BipUpdateClaimResp response =
-        (BipUpdateClaimResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, req);
-
-    Assertions.assertNotNull(response);
-    Assertions.assertEquals(response.statusMessage, result.statusMessage);
-    rabbitAdmin.purgeQueue(qName, false);
+        (BipUpdateClaimResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, CLAIM_ID1);
+    assertResponseIsSuccess(response);
   }
 
+  @SneakyThrows
   @Test
   void testUpdateClaimContention(@Value("${updateClaimContentionQueue}") String qName) {
-    rabbitAdmin.purgeQueue(qName, false);
-    UpdateContentionReq req = UpdateContentionReq.builder().claimId(123).build();
-    BipUpdateClaimResp result = new BipUpdateClaimResp();
-    result.statusMessage = "msg";
-    when(service.updateClaimContention(anyLong(), any(UpdateContentionReq.class)))
-        .thenReturn(result);
+    UpdateContention builtContention =
+        UpdateContention.builder().contentionId(CONTENTION_ID).build();
+    List<UpdateContention> builtUpdates = Arrays.asList(builtContention);
+    UpdateContentionReq testReq =
+        UpdateContentionReq.builder().updateContentions(builtUpdates).build();
+    UpdateContentionModel req =
+        UpdateContentionModel.builder().claimId(CLAIM_ID1_LONG).updateContentions(testReq).build();
 
     BipUpdateClaimResp response =
         (BipUpdateClaimResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, req);
+    assertResponseIsSuccess(response);
+  }
 
-    Assertions.assertEquals(response.statusMessage, result.statusMessage);
-    rabbitAdmin.purgeQueue(qName, false);
+  @SneakyThrows
+  private void assertResponseIsSuccess(BipUpdateClaimResp response) {
+    Assertions.assertNotNull(response);
+    Assertions.assertEquals(response.statusCode, 200);
+    // There should be a message with 'Success' in the 'text' field
+    JsonNode node = mapper.readTree(response.statusMessage);
+    List<String> textFields = node.findValuesAsText("text");
+    Assertions.assertFalse(textFields.isEmpty());
+    Assertions.assertTrue(textFields.contains("Success"));
   }
 }
