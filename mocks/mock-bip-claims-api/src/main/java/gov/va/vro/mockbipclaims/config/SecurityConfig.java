@@ -11,6 +11,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @AllArgsConstructor
@@ -36,12 +37,12 @@ public class SecurityConfig {
                 SessionCreationPolicy.STATELESS));
     http.authorizeHttpRequests(
         (managerRequestMatcherRegistry) -> {
-          managerRequestMatcherRegistry.requestMatchers("/updates/**").permitAll();
-          managerRequestMatcherRegistry.requestMatchers("/actuator/health").permitAll();
-          managerRequestMatcherRegistry.requestMatchers("/").permitAll();
-          managerRequestMatcherRegistry.requestMatchers("/swagger-ui.html").permitAll();
-          managerRequestMatcherRegistry.requestMatchers("/swagger-ui/**").permitAll();
-          managerRequestMatcherRegistry.requestMatchers("/v3/api-docs/**").permitAll();
+          managerRequestMatcherRegistry.requestMatchers(new AntPathRequestMatcher("/updates/**")).permitAll();
+          managerRequestMatcherRegistry.requestMatchers(new AntPathRequestMatcher("/actuator/health")).permitAll();
+          managerRequestMatcherRegistry.requestMatchers(new AntPathRequestMatcher("/")).permitAll();
+          managerRequestMatcherRegistry.requestMatchers(new AntPathRequestMatcher("/swagger-ui.html")).permitAll();
+          managerRequestMatcherRegistry.requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll();
+          managerRequestMatcherRegistry.requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll();
           managerRequestMatcherRegistry.anyRequest().authenticated();
         });
     http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);

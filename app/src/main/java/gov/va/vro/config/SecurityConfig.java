@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -52,9 +53,6 @@ public class SecurityConfig {
   @Value("${apiauth.hdr-key-name-v2}")
   private String jwtAuthHeaderName;
 
-  @Value("Role")
-  private String role;
-
   private final ApiAuthKeyManager apiAuthKeyManager;
 
   /**
@@ -77,24 +75,28 @@ public class SecurityConfig {
     // Secure end point
     httpSecurity
         .authorizeHttpRequests(
-            (authz) ->
-                authz
-                    .requestMatchers(
-                        claimInfo,
-                        claimMetrics,
-                        evidencePdf,
-                        fullHealth,
-                        healthAssessment,
-                        immediatePdf)
-                    .hasAnyRole(role)
-                    .anyRequest()
-                    .authenticated())
+            (authz) -> {
+              authz
+                  .requestMatchers(new AntPathRequestMatcher(claimInfo))
+                  .permitAll()
+                  .requestMatchers(new AntPathRequestMatcher(claimMetrics))
+                  .permitAll()
+                  .requestMatchers(new AntPathRequestMatcher(evidencePdf))
+                  .permitAll()
+                  .requestMatchers(new AntPathRequestMatcher(fullHealth))
+                  .permitAll()
+                  .requestMatchers(new AntPathRequestMatcher(healthAssessment))
+                  .permitAll()
+                  .requestMatchers(new AntPathRequestMatcher(immediatePdf))
+                  .permitAll()
+                  .anyRequest()
+                  .authenticated();
+            })
         .csrf(AbstractHttpConfigurer::disable)
         .sessionManagement(
-            httpSecuritySessionManagementConfigurer -> {
-              httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
-                  SessionCreationPolicy.STATELESS);
-            })
+            httpSecuritySessionManagementConfigurer ->
+                httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
+                    SessionCreationPolicy.STATELESS))
         .addFilter(apiAuthKeyFilter);
     return httpSecurity.build();
   }
@@ -121,16 +123,17 @@ public class SecurityConfig {
         .authorizeHttpRequests(
             (authz) ->
                 authz
-                    .requestMatchers(automatedClaim, examOrder)
-                    .hasAnyRole(role)
+                    .requestMatchers(new AntPathRequestMatcher(automatedClaim))
+                    .permitAll()
+                    .requestMatchers(new AntPathRequestMatcher(examOrder))
+                    .permitAll()
                     .anyRequest()
                     .authenticated())
         .csrf(AbstractHttpConfigurer::disable)
         .sessionManagement(
-            httpSecuritySessionManagementConfigurer -> {
-              httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
-                  SessionCreationPolicy.STATELESS);
-            })
+            httpSecuritySessionManagementConfigurer ->
+                httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
+                    SessionCreationPolicy.STATELESS))
         .addFilter(apiAuthKeyFilter);
     return httpSecurity.build();
   }

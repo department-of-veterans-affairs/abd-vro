@@ -11,6 +11,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @RequiredArgsConstructor
@@ -36,8 +37,8 @@ public class SecurityConfig {
                 SessionCreationPolicy.STATELESS));
     http.authorizeHttpRequests(
         (authorizeHttpRequests) -> {
-          authorizeHttpRequests.requestMatchers("/received-files/*").permitAll();
-          authorizeHttpRequests.requestMatchers("/actuator/health").permitAll();
+          authorizeHttpRequests.requestMatchers(new AntPathRequestMatcher("/received-files/*")).permitAll();
+          authorizeHttpRequests.requestMatchers(new AntPathRequestMatcher("/actuator/health")).permitAll();
           authorizeHttpRequests.anyRequest().authenticated();
         });
     http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
