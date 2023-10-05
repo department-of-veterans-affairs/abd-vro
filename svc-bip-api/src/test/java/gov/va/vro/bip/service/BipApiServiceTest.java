@@ -15,10 +15,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Stubber;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.file.Files;
@@ -30,8 +34,11 @@ import java.util.Objects;
 @Slf4j
 public class BipApiServiceTest {
   private static final long GOOD_CLAIM_ID = 9666959L;
-
   private static final long BAD_CLAIM_ID = 9666958L;
+  private static final long BAD_JSON_CLAIM_ID = 9123456L;
+  private static final long NOT_FOUND_CLAIM_ID = 9234567L;
+  private static final long BAD_STATUS_CLAIM_ID = 9345678L;
+  private static final long BAD_REST_CLAIM_ID = 9456789L;
   private static final String CONTENTION_RESPONSE_200 =
       "bip-test-data/contention_response_200.json";
   private static final String CONTENTION_RESPONSE_412 =
@@ -86,24 +93,32 @@ public class BipApiServiceTest {
 
     ResponseEntity<String> resp200 = ResponseEntity.ok(resp200Body);
     ResponseEntity<String> resp404 = ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp404Body);
+    ResponseEntity<String> respBadJson =
+        ResponseEntity.ok("}" + resp200Body); // add } to valid resp to cause parse error
+
     String baseUrl = HTTPS + CLAIM_URL;
     String claimUrl = baseUrl + String.format(CLAIM_DETAILS, GOOD_CLAIM_ID);
     String badClaimUrl = baseUrl + String.format(CLAIM_DETAILS, BAD_CLAIM_ID);
+    String badJsonClaimUrl = baseUrl + String.format(CLAIM_DETAILS, BAD_JSON_CLAIM_ID);
+    String notFoundClaimUrl = baseUrl + String.format(CLAIM_DETAILS, NOT_FOUND_CLAIM_ID);
+    String badStatusClaimUrl = baseUrl + String.format(CLAIM_DETAILS, BAD_STATUS_CLAIM_ID);
+    String badRestClaimUrl = baseUrl + String.format(CLAIM_DETAILS, BAD_REST_CLAIM_ID);
 
-    Mockito.doReturn(resp200)
-        .when(restTemplate)
-        .exchange(
-            ArgumentMatchers.eq(claimUrl),
-            ArgumentMatchers.eq(HttpMethod.GET),
-            ArgumentMatchers.any(HttpEntity.class),
-            ArgumentMatchers.eq(String.class));
-    Mockito.doReturn(resp404)
-        .when(restTemplate)
-        .exchange(
-            ArgumentMatchers.eq(badClaimUrl),
-            ArgumentMatchers.eq(HttpMethod.GET),
-            ArgumentMatchers.any(HttpEntity.class),
-            ArgumentMatchers.eq(String.class));
+    mockResponseForUrl(Mockito.doReturn(resp200), claimUrl, HttpMethod.GET);
+    mockResponseForUrl(Mockito.doReturn(resp404), badClaimUrl, HttpMethod.GET);
+    mockResponseForUrl(Mockito.doReturn(respBadJson), badJsonClaimUrl, HttpMethod.GET);
+    mockResponseForUrl(
+        Mockito.doThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND)),
+        notFoundClaimUrl,
+        HttpMethod.GET);
+    mockResponseForUrl(
+        Mockito.doThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)),
+        badStatusClaimUrl,
+        HttpMethod.GET);
+    mockResponseForUrl(
+        Mockito.doThrow(new RestClientException("Mock RestClient exception")),
+        badRestClaimUrl,
+        HttpMethod.GET);
     mockBipApiProp();
     try {
       BipClaim result = service.getClaimDetails(GOOD_CLAIM_ID).getClaim();
@@ -120,6 +135,46 @@ public class BipApiServiceTest {
     } catch (BipException e) {
       assertSame(HttpStatus.NOT_FOUND, e.getStatus());
     }
+
+    try {
+      BipClaim result = service.getClaimDetails(BAD_JSON_CLAIM_ID).getClaim();
+      log.error("Negative getClaimDetails test failed. {}", result.getClaimId());
+      fail();
+    } catch (BipException e) {
+      assertSame(HttpStatus.INTERNAL_SERVER_ERROR, e.getStatus());
+    }
+
+    try {
+      BipClaim result = service.getClaimDetails(NOT_FOUND_CLAIM_ID).getClaim();
+      log.error("Negative getClaimDetails test failed. {}", result.getClaimId());
+      fail();
+    } catch (BipException e) {
+      assertSame(HttpStatus.NOT_FOUND, e.getStatus());
+    }
+    try {
+      BipClaim result = service.getClaimDetails(BAD_STATUS_CLAIM_ID).getClaim();
+      log.error("Negative getClaimDetails test failed. {}", result.getClaimId());
+      fail();
+    } catch (BipException e) {
+      assertSame(HttpStatus.INTERNAL_SERVER_ERROR, e.getStatus());
+    }
+    try {
+      BipClaim result = service.getClaimDetails(BAD_REST_CLAIM_ID).getClaim();
+      log.error("Negative getClaimDetails test failed. {}", result.getClaimId());
+      fail();
+    } catch (BipException e) {
+      assertSame(HttpStatus.INTERNAL_SERVER_ERROR, e.getStatus());
+    }
+  }
+
+  private void mockResponseForUrl(Stubber response, String claimUrl, HttpMethod httpMethod) {
+    response
+        .when(restTemplate)
+        .exchange(
+            ArgumentMatchers.eq(claimUrl),
+            ArgumentMatchers.eq(httpMethod),
+            ArgumentMatchers.any(HttpEntity.class),
+            ArgumentMatchers.eq(String.class));
   }
 
   @Test
@@ -130,20 +185,8 @@ public class BipApiServiceTest {
     ResponseEntity<String> resp200 = ResponseEntity.ok("{}");
     ResponseEntity<String> resp500 =
         ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
-    Mockito.doReturn(resp200)
-        .when(restTemplate)
-        .exchange(
-            ArgumentMatchers.eq(goodUrl),
-            ArgumentMatchers.eq(HttpMethod.PUT),
-            ArgumentMatchers.any(HttpEntity.class),
-            ArgumentMatchers.eq(String.class));
-    Mockito.doReturn(resp500)
-        .when(restTemplate)
-        .exchange(
-            ArgumentMatchers.eq(badUrl),
-            ArgumentMatchers.eq(HttpMethod.PUT),
-            ArgumentMatchers.any(HttpEntity.class),
-            ArgumentMatchers.eq(String.class));
+    mockResponseForUrl(Mockito.doReturn(resp200), goodUrl, HttpMethod.PUT);
+    mockResponseForUrl(Mockito.doReturn(resp500), badUrl, HttpMethod.PUT);
 
     mockBipApiProp();
     try {
@@ -174,20 +217,8 @@ public class BipApiServiceTest {
     String goodUrl = baseUrl + String.format(CONTENTION, GOOD_CLAIM_ID);
     String badUrl = baseUrl + String.format(CONTENTION, BAD_CLAIM_ID);
 
-    Mockito.doReturn(resp200)
-        .when(restTemplate)
-        .exchange(
-            ArgumentMatchers.eq(goodUrl),
-            ArgumentMatchers.eq(HttpMethod.GET),
-            ArgumentMatchers.any(HttpEntity.class),
-            ArgumentMatchers.eq(String.class));
-    Mockito.doReturn(resp404)
-        .when(restTemplate)
-        .exchange(
-            ArgumentMatchers.eq(badUrl),
-            ArgumentMatchers.eq(HttpMethod.GET),
-            ArgumentMatchers.any(HttpEntity.class),
-            ArgumentMatchers.eq(String.class));
+    mockResponseForUrl(Mockito.doReturn(resp200), goodUrl, HttpMethod.GET);
+    mockResponseForUrl(Mockito.doReturn(resp404), badUrl, HttpMethod.GET);
 
     mockBipApiProp();
     try {
@@ -219,20 +250,8 @@ public class BipApiServiceTest {
     String goodUrl = baseUrl + String.format(CONTENTION, GOOD_CLAIM_ID);
     String badUrl = baseUrl + String.format(CONTENTION, BAD_CLAIM_ID);
 
-    Mockito.doReturn(resp200)
-        .when(restTemplate)
-        .exchange(
-            ArgumentMatchers.eq(goodUrl),
-            ArgumentMatchers.eq(HttpMethod.PUT),
-            ArgumentMatchers.any(HttpEntity.class),
-            ArgumentMatchers.eq(String.class));
-    Mockito.doReturn(resp412)
-        .when(restTemplate)
-        .exchange(
-            ArgumentMatchers.eq(badUrl),
-            ArgumentMatchers.eq(HttpMethod.PUT),
-            ArgumentMatchers.any(HttpEntity.class),
-            ArgumentMatchers.eq(String.class));
+    mockResponseForUrl(Mockito.doReturn(resp200), goodUrl, HttpMethod.PUT);
+    mockResponseForUrl(Mockito.doReturn(resp412), badUrl, HttpMethod.PUT);
 
     mockBipApiProp();
     UpdateContentionReq request = UpdateContentionReq.builder().build();

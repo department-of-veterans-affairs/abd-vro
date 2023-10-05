@@ -73,7 +73,7 @@ public class BipApiService implements IBipApiService {
       if (bipResponse.getStatusCode() == HttpStatus.OK) {
         BipClaimResp result = mapper.readValue(bipResponse.getBody(), BipClaimResp.class);
         result.statusCode = HttpStatus.OK.value();
-        return result; // .getClaim();
+        return result;
       } else {
         log.error(
             "Failed to get claim details for {}. {} \n{}",
@@ -86,15 +86,10 @@ public class BipApiService implements IBipApiService {
       log.error("json processing error", e);
       throw new BipException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     } catch (HttpStatusCodeException e) {
-      String message = "Failed to get claim info for claim ID " + claimId;
-      log.error(message, e);
-      if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-        throw new BipException(HttpStatus.BAD_REQUEST, message);
-      } else {
-        throw new BipException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-      }
+      log.error("Failed to get claim info for claim ID {}.", claimId, e);
+      throw new BipException(e.getStatusCode(), e.getMessage());
     } catch (RestClientException e) {
-      log.error("failed to update status to {} for claim {}.", claimId, e);
+      log.error("Failed to get claim info for claim ID {}.", claimId, e);
       throw new BipException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
