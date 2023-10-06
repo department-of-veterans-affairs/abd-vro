@@ -48,9 +48,6 @@ class TestMergeRequest:
     pending_claim_id = 1
     supp_claim_id = 2
 
-    def test_setup(self):
-        pass
-
     async def submit_request(self, client):
         request = {"pending_claim_id": self.pending_claim_id, "supp_claim_id": self.supp_claim_id}
         response = await client.post(url="/merge", json=request)

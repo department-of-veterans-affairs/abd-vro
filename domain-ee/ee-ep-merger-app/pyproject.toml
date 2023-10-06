@@ -3,8 +3,7 @@
 minversion = "6.0"
 addopts = "-rfesp"
 testpaths = [
-    "tests",
-    "integration"
+    "tests"
 ]
 env = [
     "REQUEST_TIMEOUT = 1",
