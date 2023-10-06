@@ -48,7 +48,7 @@ public class BipApiProps {
     Calendar cal = Calendar.getInstance();
     cal.add(Calendar.MINUTE, 30);
     Date expired = cal.getTime();
-    Claims claims = Jwts.claims();
+    Claims claims = Jwts.claims().build();
     claims.put("applicationID", applicationId);
     claims.put("stationID", stationId);
     claims.put("userID", claimClientId);
