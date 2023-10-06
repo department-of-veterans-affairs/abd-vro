@@ -49,14 +49,14 @@ public class BipApiProps {
     Calendar cal = Calendar.getInstance();
     cal.add(Calendar.MINUTE, 30);
     Date expired = cal.getTime();
-    ClaimsBuilder claimsBuilder = Jwts.claims()
+    ClaimsBuilder claimsBuilder =
+        Jwts.claims()
             .add("applicationID", applicationId)
             .add("stationID", stationId)
             .add("userID", claimClientId);
 
     Date now = cal.getTime();
-    claimsBuilder.add("iat", now.getTime())
-            .add("expires", expired.getTime());
+    claimsBuilder.add("iat", now.getTime()).add("expires", expired.getTime());
 
     return claimsBuilder.build();
   }

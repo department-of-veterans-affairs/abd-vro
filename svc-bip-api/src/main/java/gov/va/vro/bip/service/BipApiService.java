@@ -218,8 +218,8 @@ public class BipApiService implements IBipApiService {
     Map<String, Object> headerType = new HashMap<>();
     headerType.put("typ", Header.JWT_TYPE);
 
-    ClaimsBuilder claimsBuilder = Jwts.claims().add(claims)
-            .add("iss", bipApiProps.getClaimIssuer());
+    ClaimsBuilder claimsBuilder =
+        Jwts.claims().add(claims).add("iss", bipApiProps.getClaimIssuer());
     claims = claimsBuilder.build();
     byte[] signSecretBytes = bipApiProps.getClaimSecret().getBytes(StandardCharsets.UTF_8);
     Key signingKey = new SecretKeySpec(signSecretBytes, SignatureAlgorithm.HS256.getJcaName());
