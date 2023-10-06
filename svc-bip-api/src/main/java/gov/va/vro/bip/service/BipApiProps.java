@@ -1,6 +1,7 @@
 package gov.va.vro.bip.service;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ClaimsBuilder;
 import io.jsonwebtoken.Jwts;
 import lombok.Getter;
 import lombok.Setter;
@@ -48,13 +49,15 @@ public class BipApiProps {
     Calendar cal = Calendar.getInstance();
     cal.add(Calendar.MINUTE, 30);
     Date expired = cal.getTime();
-    Claims claims = Jwts.claims().build();
-    claims.put("applicationID", applicationId);
-    claims.put("stationID", stationId);
-    claims.put("userID", claimClientId);
+    ClaimsBuilder claimsBuilder = Jwts.claims()
+            .add("applicationID", applicationId)
+            .add("stationID", stationId)
+            .add("userID", claimClientId);
+
     Date now = cal.getTime();
-    claims.put("iat", now.getTime());
-    claims.put("expires", expired.getTime());
-    return claims;
+    claimsBuilder.add("iat", now.getTime())
+            .add("expires", expired.getTime());
+
+    return claimsBuilder.build();
   }
 }
