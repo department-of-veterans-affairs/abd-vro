@@ -47,11 +47,21 @@ def test_merge_claims_with_no_supp_claim_id(client: TestClient):
 def test_merge_claims_with_request_has_non_int_value(client: TestClient):
     request = {
         "pending_claim_id": 1,
-        "supp_claim_id": "1"
+        "supp_claim_id": "2"
     }
 
     response = client.post(MERGE, json=request)
     assert response.status_code == 422
+
+
+def test_merge_claims_with_request_has_matching_claim_ids(client: TestClient):
+    request = {
+        "pending_claim_id": 1,
+        "supp_claim_id": 1
+    }
+
+    response = client.post(MERGE, json=request)
+    assert response.status_code == 400
 
 
 def test_merge_claims_ok(client: TestClient):

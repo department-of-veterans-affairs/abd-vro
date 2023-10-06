@@ -1,37 +1,39 @@
-from enum import Enum
-
 from hoppy.async_hoppy_client import RetryableAsyncHoppyClient
-
-APP_ID = "EP_MERGE"
-EXCHANGE = "bipApiExchange"
-
-config = {}
+from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
+from src.python_src.config import (EXCHANGE, QUEUES, REPLY_QUEUES, ClientName,
+                                   config)
 
 
 class HoppyService:
     clients = {}
 
-    def __init__(self):
-        self.create_client(HoppyClientName.PUT_TSOJ,
-                           "putTemporaryStationOfJurisdictionQueue",
-                           "putTemporaryStationOfJurisdictionResponseQueue")
-        self.create_client(HoppyClientName.GET_CLAIM_CONTENTIONS,
-                           "getClaimContentionsQueue",
-                           "getClaimContentionsResponseQueue")
-        self.create_client(HoppyClientName.UPDATE_CLAIM_CONTENTIONS,
-                           "updateClaimContentionQueue",
-                           "updateClaimContentionResponseQueue")
-        self.create_client(HoppyClientName.CANCEL_CLAIM,
-                           "cancelClaimQueue",
-                           "cancelClaimResponseQueue")
+    exchange_props = ExchangeProperties(name=EXCHANGE)
 
-    def create_client(self, name, queue, reply_queue):
+    def __init__(self):
+        self.create_client(ClientName.PUT_TSOJ)
+        self.create_client(ClientName.GET_CLAIM_CONTENTIONS)
+        self.create_client(ClientName.UPDATE_CLAIM_CONTENTIONS)
+        self.create_client(ClientName.CANCEL_CLAIM)
+
+    def create_client(self, name):
+        req_queue = QUEUES[name]
+        reply_queue = REPLY_QUEUES[name]
+        request_queue_props = QueueProperties(name=req_queue,
+                                              passive_declare=False)
+        reply_queue_props = QueueProperties(name=reply_queue,
+                                            passive_declare=False,
+                                            auto_delete=True)
         client = RetryableAsyncHoppyClient(name=name.value,
-                                           app_id=APP_ID,
+                                           app_id=config["app_id"],
                                            config=config,
-                                           exchange=EXCHANGE,
-                                           request_queue=queue,
-                                           reply_to_queue=reply_queue)
+                                           exchange_properties=self.exchange_props,
+                                           request_queue_properties=request_queue_props,
+                                           request_routing_key=req_queue,
+                                           reply_queue_properties=reply_queue_props,
+                                           reply_routing_key=reply_queue,
+                                           max_latency=config["request_timeout"],
+                                           max_retries=config["request_retries"],
+                                           response_reject_and_requeue_attempts=config["response_delivery_attempts"])
         self.clients[name] = client
 
     def get_client(self, name):
@@ -44,10 +46,3 @@ class HoppyService:
     def stop_hoppy_clients(self):
         for client in self.clients.values():
             client.stop()
-
-
-class HoppyClientName(str, Enum):
-    PUT_TSOJ = "putTemporaryStationOfJurisdictionClient"
-    GET_CLAIM_CONTENTIONS = "getClaimContentionsClient"
-    UPDATE_CLAIM_CONTENTIONS = "updateClaimContentionsClient"
-    CANCEL_CLAIM = "cancelClaimClient"

@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from uuid import UUID, uuid4
 
 import uvicorn
-from fastapi import BackgroundTasks, FastAPI, status
+from fastapi import BackgroundTasks, FastAPI, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from src.python_src.pydantic_models import (MergeEndProductsErrorResponse,
@@ -94,11 +94,11 @@ async def merge_claims(merge_request: MergeEndProductsRequest, background_tasks:
 
         return jsonable_encoder({"job": merge_job})
     else:
-        return {"status": status.HTTP_400_BAD_REQUEST}
+        raise HTTPException(status_code=400, detail="Claim IDs must be different.")
 
 
 def validate_merge_request(merge_request: MergeEndProductsRequest) -> bool:
-    return True
+    return merge_request.pending_claim_id != merge_request.supp_claim_id
 
 
 def start_job_state_machine(merge_job):
@@ -132,4 +132,4 @@ async def get_all_merge_jobs():
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="localhost", port=8120)
+    uvicorn.run(app, host="localhost", port=8140)
