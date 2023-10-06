@@ -35,3 +35,13 @@ services:
       - "8130:8130"
     networks:
       - vro_intranet
+
+  ee-ep-merge-app:
+    image: va/abd_vro-ee-ep-merge-app:latest
+    <<: [*common-sde-security, *common-security-opt]
+    environment:
+      <<: *common-vars
+    ports:
+      - "8140:8140"
+    networks:
+      - vro_intranet
