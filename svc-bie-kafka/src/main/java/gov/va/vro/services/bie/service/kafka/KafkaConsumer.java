@@ -62,6 +62,8 @@ public class KafkaConsumer {
     String KEY_CONTENTION_ID = "ContentionId";
     String KEY_CONTENTION_TYPE_CODE = "ContentionTypeCode";
     String KEY_EVENT_TIME = "EventTime";
+    String ACTION_NAME = "ActionName";
+    String ACTION_RESULT_NAME = "ActionResultName";
 
     return BieMessagePayload.builder()
         .eventType(
@@ -73,6 +75,8 @@ public class KafkaConsumer {
         .diagnosticTypeCode((String) messageValue.get(KEY_DIAGNOSTIC_TYPE_CODE))
         .occurredAt((Long) messageValue.get(KEY_EVENT_TIME))
         .notifiedAt(record.timestamp())
+        .actionName((String) messageValue.get(ACTION_NAME))
+        .actionResultName((String) messageValue.get(ACTION_RESULT_NAME))
         .status(200)
         .build();
   }
