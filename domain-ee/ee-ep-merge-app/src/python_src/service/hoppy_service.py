@@ -6,7 +6,8 @@ from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
 class HoppyService:
     clients = {}
 
-    exchange_props = ExchangeProperties(name=EXCHANGE)
+    exchange_props = ExchangeProperties(name=EXCHANGE,
+                                        passive_declare=False)
 
     def __init__(self):
         self.create_client(ClientName.PUT_TSOJ)
@@ -20,8 +21,7 @@ class HoppyService:
         request_queue_props = QueueProperties(name=req_queue,
                                               passive_declare=False)
         reply_queue_props = QueueProperties(name=reply_queue,
-                                            passive_declare=False,
-                                            auto_delete=True)
+                                            passive_declare=False)
         client = RetryableAsyncHoppyClient(name=name.value,
                                            app_id=config["app_id"],
                                            config=config,

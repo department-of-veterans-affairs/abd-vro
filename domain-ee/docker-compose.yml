@@ -23,6 +23,11 @@ x-common-sde-security: &common-sde-security
   ulimits:
     nproc: 65535
 
+x-rabbitmq-placeholder-vars: &rabbitmq-placeholder-vars
+  RABBITMQ_PLACEHOLDERS_HOST: rabbitmq-service
+  RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
+  RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
+
 services:
   # Containers with the `svc-` prefix are microservices to support domain workflows.
 
@@ -40,7 +45,7 @@ services:
     image: va/abd_vro-ee-ep-merge-app:latest
     <<: [*common-sde-security, *common-security-opt]
     environment:
-      <<: *common-vars
+      <<: [ *rabbitmq-placeholder-vars, *common-vars ]
     ports:
       - "8140:8140"
     networks:

@@ -62,3 +62,8 @@ jobs:
     needs: nondraft-pr
     uses: ./.github/workflows/bie-kafka-end2end-test.yml
     secrets: inherit
+
+  ee-ep-merge-end-to-end:
+    needs: nondraft-pr
+    uses: ./.github/workflows/ee-ep-merge-end-to-end.yml
+    secrets: inherit
