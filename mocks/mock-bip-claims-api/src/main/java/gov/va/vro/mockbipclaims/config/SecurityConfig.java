@@ -37,12 +37,22 @@ public class SecurityConfig {
                 SessionCreationPolicy.STATELESS));
     http.authorizeHttpRequests(
         (managerRequestMatcherRegistry) -> {
-          managerRequestMatcherRegistry.requestMatchers(new AntPathRequestMatcher("/updates/**")).permitAll();
-          managerRequestMatcherRegistry.requestMatchers(new AntPathRequestMatcher("/actuator/health")).permitAll();
+          managerRequestMatcherRegistry
+              .requestMatchers(new AntPathRequestMatcher("/updates/**"))
+              .permitAll();
+          managerRequestMatcherRegistry
+              .requestMatchers(new AntPathRequestMatcher("/actuator/health"))
+              .permitAll();
           managerRequestMatcherRegistry.requestMatchers(new AntPathRequestMatcher("/")).permitAll();
-          managerRequestMatcherRegistry.requestMatchers(new AntPathRequestMatcher("/swagger-ui.html")).permitAll();
-          managerRequestMatcherRegistry.requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll();
-          managerRequestMatcherRegistry.requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll();
+          managerRequestMatcherRegistry
+              .requestMatchers(new AntPathRequestMatcher("/swagger-ui.html"))
+              .permitAll();
+          managerRequestMatcherRegistry
+              .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**"))
+              .permitAll();
+          managerRequestMatcherRegistry
+              .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**"))
+              .permitAll();
           managerRequestMatcherRegistry.anyRequest().authenticated();
         });
     http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);

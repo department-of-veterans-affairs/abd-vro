@@ -37,8 +37,12 @@ public class SecurityConfig {
                 SessionCreationPolicy.STATELESS));
     http.authorizeHttpRequests(
         (authorizeHttpRequests) -> {
-          authorizeHttpRequests.requestMatchers(new AntPathRequestMatcher("/received-files/*")).permitAll();
-          authorizeHttpRequests.requestMatchers(new AntPathRequestMatcher("/actuator/health")).permitAll();
+          authorizeHttpRequests
+              .requestMatchers(new AntPathRequestMatcher("/received-files/*"))
+              .permitAll();
+          authorizeHttpRequests
+              .requestMatchers(new AntPathRequestMatcher("/actuator/health"))
+              .permitAll();
           authorizeHttpRequests.anyRequest().authenticated();
         });
     http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
