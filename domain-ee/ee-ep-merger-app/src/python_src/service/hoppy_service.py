@@ -1,7 +1,6 @@
+from config import EXCHANGE, QUEUES, REPLY_QUEUES, ClientName, config
 from hoppy.async_hoppy_client import RetryableAsyncHoppyClient
 from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
-from src.python_src.config import (EXCHANGE, QUEUES, REPLY_QUEUES, ClientName,
-                                   config)
 
 
 class HoppyService:

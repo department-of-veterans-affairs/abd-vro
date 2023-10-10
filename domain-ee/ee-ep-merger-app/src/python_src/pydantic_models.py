@@ -1,7 +1,7 @@
 from uuid import UUID
 
+from model.merge_job import MergeJob
 from pydantic import BaseModel, Field
-from src.python_src.service.merge_job import MergeJob
 from typing_extensions import Annotated
 
 

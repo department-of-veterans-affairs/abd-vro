@@ -3,8 +3,8 @@ from unittest.mock import Mock
 
 import pytest
 from fastapi.testclient import TestClient
+from model.merge_job import JobState
 from src.python_src.api import job_store
-from src.python_src.service.merge_job import JobState
 
 MERGE = "/merge"
 

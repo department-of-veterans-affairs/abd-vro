@@ -1,23 +1,21 @@
 import json
+import os
 import uuid
 from unittest.mock import AsyncMock, Mock, call
 
 import pytest
 from hoppy.exception import ResponseException
-from src.python_src.model import (cancel_claim, get_contentions,
-                                  update_contentions)
-from src.python_src.model import update_temp_station_of_jurisdiction as tsoj
-from src.python_src.service.contentions_util import (ContentionsUtil,
-                                                     MergeException)
-from src.python_src.service.ep_merge_machine import (CANCELLATION_REASON,
-                                                     EpMergeMachine)
-from src.python_src.service.merge_job import JobState, MergeJob
+from model import cancel_claim, get_contentions, update_contentions
+from model import update_temp_station_of_jurisdiction as tsoj
+from model.merge_job import JobState, MergeJob
+from service.ep_merge_machine import CANCELLATION_REASON, EpMergeMachine
+from util.contentions_util import ContentionsUtil, MergeException
 
 JOB_ID = uuid.uuid4()
 SUPP_CLAIM_ID = 2
 PENDING_CLAIM_ID = 1
 
-RESPONSE_DIR = './tests/service/responses'
+RESPONSE_DIR = os.path.abspath('./tests/responses')
 response_200 = f'{RESPONSE_DIR}/200_response.json'
 response_404 = f'{RESPONSE_DIR}/404_response.json'
 response_400 = f'{RESPONSE_DIR}/400_response.json'
@@ -27,8 +25,11 @@ supp_contentions_200 = f'{RESPONSE_DIR}/get_supp_claim_contentions_200.json'
 
 
 def load_response(file, response_type):
-    with open(file) as f:
-        return response_type.model_validate(json.load(f))
+    try:
+        with open(file) as f:
+            return response_type.model_validate(json.load(f))
+    except Exception as e:
+        raise e
 
 
 get_pending_contentions_req = get_contentions.Request(claim_id=PENDING_CLAIM_ID).model_dump(by_alias=True)

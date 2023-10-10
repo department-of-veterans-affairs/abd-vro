@@ -12,4 +12,5 @@ tasks.register('integrationPytest', PythonTask) {
 
 tasks.register('integrationTest', Test) {
   dependsOn 'integrationPytest'
+  group = 'verification'
 }

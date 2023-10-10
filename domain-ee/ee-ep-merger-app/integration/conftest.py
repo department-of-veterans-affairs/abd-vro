@@ -1,6 +1,6 @@
 import pytest_asyncio
+from config import QUEUES, REPLY_QUEUES, ClientName
 from integration.mq_endpoint import MqEndpoint
-from src.python_src.config import QUEUES, REPLY_QUEUES, ClientName
 
 
 @pytest_asyncio.fixture(autouse=True, scope="session")

@@ -3,17 +3,15 @@ import logging
 from typing import Type
 
 from hoppy.exception import ResponseException
+from model import cancel_claim, get_contentions, update_contentions
+from model import update_temp_station_of_jurisdiction as tsoj
+from model.merge_job import JobState, MergeJob
+from model.request import GeneralRequest
+from model.response import GeneralResponse
 from pydantic import ValidationError
-from src.python_src.model import (cancel_claim, get_contentions,
-                                  update_contentions)
-from src.python_src.model import update_temp_station_of_jurisdiction as tsoj
-from src.python_src.model.request import GeneralRequest
-from src.python_src.model.response import GeneralResponse
-from src.python_src.service.contentions_util import (ContentionsUtil,
-                                                     MergeException)
-from src.python_src.service.hoppy_service import ClientName, HoppyService
-from src.python_src.service.merge_job import JobState, MergeJob
+from service.hoppy_service import ClientName, HoppyService
 from statemachine import State, StateMachine
+from util.contentions_util import ContentionsUtil, MergeException
 
 CANCELLATION_REASON = "Issues moved to pending EP Claim ID #%d"
 

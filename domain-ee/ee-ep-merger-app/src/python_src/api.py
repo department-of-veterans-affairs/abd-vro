@@ -8,14 +8,13 @@ import uvicorn
 from fastapi import BackgroundTasks, FastAPI, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-from src.python_src.pydantic_models import (MergeEndProductsErrorResponse,
-                                            MergeEndProductsRequest,
-                                            MergeEndProductsResponse)
-from src.python_src.service.ep_merge_machine import EpMergeMachine
-from src.python_src.service.hoppy_service import HoppyService
-from src.python_src.service.job_store import JobStore
-from src.python_src.service.merge_job import MergeJob
-from src.python_src.util.sanitizer import sanitize
+from pydantic_models import (MergeEndProductsErrorResponse,
+                             MergeEndProductsRequest, MergeEndProductsResponse)
+from service.ep_merge_machine import EpMergeMachine
+from service.hoppy_service import HoppyService
+from service.job_store import JobStore
+from src.python_src.model.merge_job import MergeJob
+from util.sanitizer import sanitize
 
 hoppy = HoppyService()
 job_store = JobStore()
@@ -53,7 +52,7 @@ app = FastAPI(
     },
     servers=[
         {
-            "url": "/end-product",
+            "url": "/ep",
             "description": "",
         },
     ],

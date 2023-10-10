@@ -1,4 +1,4 @@
-from src.python_src.model.get_contentions import Response
+from model.get_contentions import Response
 
 
 class MergeException(BaseException):

@@ -1,8 +1,9 @@
 from pydantic import ConfigDict
 from pydantic.alias_generators import to_camel
-from src.python_src.model.contention import ContentionSummary
-from src.python_src.model.request import GeneralRequest
-from src.python_src.model.response import GeneralResponse
+
+from .contention import ContentionSummary
+from .request import GeneralRequest
+from .response import GeneralResponse
 
 
 class Request(GeneralRequest):

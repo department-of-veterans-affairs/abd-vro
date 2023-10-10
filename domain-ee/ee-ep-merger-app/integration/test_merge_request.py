@@ -4,10 +4,10 @@ import pytest
 import pytest_asyncio
 from httpx import AsyncClient
 from integration.mq_endpoint import MqEndpoint
+from model.merge_job import JobState
 from src.python_src.api import app, on_shut_down, on_start_up
-from src.python_src.service.merge_job import JobState
 
-RESPONSE_DIR = './tests/service/responses'
+RESPONSE_DIR = './tests/responses'
 response_200 = f'{RESPONSE_DIR}/200_response.json'
 response_404 = f'{RESPONSE_DIR}/404_response.json'
 response_400 = f'{RESPONSE_DIR}/400_response.json'
