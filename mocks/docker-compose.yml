@@ -56,9 +56,9 @@ services:
       - vro_intranet
 
   mock-bie-kafka:
-    profiles: ["all","kafka"]
+    profiles: [ "all","kafka" ]
     image: va/vro_mocks-mock-bie-kafka:latest
-    <<: [*common-sde-security, *common-security-opt]
+    <<: [ *common-sde-security, *common-security-opt ]
     # Port 9092 is for internal communication within the vro_intranet, and is needed for consuming/producing messages
     # within the vro_intranet docker network. In order to produce/consume messages outside the vro_intranet network,
     # the port 9094 is exposed for external communication with mock-bie-kafka from outside the vro_intranet. Advertised
@@ -76,6 +76,7 @@ services:
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://mock-bie-kafka:9092,EXTERNAL://localhost:9094
       KAFKA_CFG_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
       KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: 'true'
+
       # Kafka Kraft configurations
       KAFKA_CFG_NODE_ID: 0
       KAFKA_CFG_PROCESS_ROLES: controller,broker
@@ -89,8 +90,20 @@ services:
 
       # For development without having to deal with connecting via SSL, use port 9092 or do the following.
       # To disable SSL, uncomment the following and comment out the next SSL section
-      ALLOW_PLAINTEXT_LISTENER: 'yes'
-      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      # ALLOW_PLAINTEXT_LISTENER: 'yes'
+      # KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+
+      # Set up SSL -- see "Security" section of https://hub.docker.com/r/bitnami/kafka/
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:SSL
+      KAFKA_CFG_SSL_CLIENT_AUTH: required
+      # PEM https://medium.com/analytics-vidhya/how-to-use-pem-certificates-with-apache-kafka-f3b444a00816
+      KAFKA_TLS_TYPE: JKS
+      KAFKA_CERTIFICATE_PASSWORD: mockKafka
+
+    volumes:
+      # scripts/setenv.sh creates jks files from env variables
+      - './mock-bie-kafka/kafka.keystore.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro'
+      - './mock-bie-kafka/kafka.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro'
     networks:
       - vro_intranet
 
