@@ -8,12 +8,12 @@ import uvicorn
 from fastapi import BackgroundTasks, FastAPI, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
+from model.merge_job import MergeJob
 from pydantic_models import (MergeEndProductsErrorResponse,
                              MergeEndProductsRequest, MergeEndProductsResponse)
 from service.ep_merge_machine import EpMergeMachine
 from service.hoppy_service import HoppyService
 from service.job_store import JobStore
-from src.python_src.model.merge_job import MergeJob
 from util.sanitizer import sanitize
 
 hoppy = HoppyService()

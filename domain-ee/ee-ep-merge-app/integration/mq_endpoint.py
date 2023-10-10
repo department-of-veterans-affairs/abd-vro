@@ -1,10 +1,10 @@
 import asyncio
 import json
 
-from config import EXCHANGE
 from hoppy import async_consumer, async_publisher
 from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
 from pika import BasicProperties
+from src.python_src.config import EXCHANGE
 
 exchange_props = ExchangeProperties(name=EXCHANGE)
 
