@@ -17,7 +17,7 @@ dependencies {
   implementation "ca.uhn.hapi.fhir:hapi-fhir-base:${hapi_fhir_version}"
   implementation "ca.uhn.hapi.fhir:hapi-fhir-server-openapi:${hapi_fhir_version}"
 
-  implementation 'org.bouncycastle:bcprov-jdk18on:1.74'
+  implementation 'org.bouncycastle:bcprov-jdk18on:1.76'
   implementation 'org.apache.commons:commons-lang3:3.13.0'
 
   def jjwt_version="0.12.2"
