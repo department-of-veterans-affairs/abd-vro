@@ -1,3 +1,10 @@
+###################### DO NOT DELETE OR MODIFY THIS FILE #######################
+#
+# This workflow calculates the Lead Time for Changes DORA metric for PRs merged into your
+# default branch.
+#
+###################### DO NOT DELETE OR MODIFY THIS FILE #######################
+
 name: dora-lead-time-for-changes
 run-name: "Calculate DORA Lead Time for Changes"
 on:
