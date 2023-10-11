@@ -35,3 +35,13 @@
 # Fri Sep 29 16:52:44 UTC 2023 -- v3.4.20
 # Fri Sep 29 17:50:35 UTC 2023 -- v3.4.21
 # Mon Oct  2 20:38:20 UTC 2023 -- v3.5.0
+# Wed Oct 11 19:06:17 UTC 2023 -- v3.5.1
+postgres_VER="v3.5.1"
+apigateway_VER="v3.5.1"
+app_VER="v3.5.1"
+dbinit_VER="v3.5.1"
+svclighthouseapi_VER="v3.5.1"
+svcbiekafka_VER="v3.5.1"
+xampleworkflows_VER="v3.5.1"
+ccapp_VER="v3.5.1"
+eemaxcfiapp_VER="v3.5.1"
