@@ -48,6 +48,18 @@ jobs:
           # Quit after 60 seconds
           retries: 30
 
+      # Temporary step added to avoid condition where bipApiExchange is not yet created.
+      - name: 'Create bgs-api exchange'
+        uses: indiesdev/curl@v1.1
+        with:
+          url: 'http://localhost:15672/api/exchanges/%2f/bipApiExchange'
+          method: 'PUT'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          body: '{"type":"direct", "durable":true, "auto_delete":true}'
+          accept: 201, 204
+          retries: 3
+          log-response: true
+
       - name: "Run Employee Experience Integration Tests"
         run: |
           ./gradlew :domain-ee:ee-ep-merge-app:integrationTest
