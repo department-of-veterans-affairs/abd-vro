@@ -4,10 +4,10 @@ import logging
 import time
 import uuid
 
-from hoppy.async_consumer import AsyncConsumer
-from hoppy.async_publisher import AsyncPublisher
-from hoppy.exception import ResponseException
-from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
+from async_consumer import AsyncConsumer
+from async_publisher import AsyncPublisher
+from exception import ResponseException
+from hoppy_properties import ExchangeProperties, QueueProperties
 from pika import BasicProperties
 
 MAX_RETRIES_REACHED = "Max retries reached"
@@ -133,27 +133,27 @@ class AsyncHoppyClient:
             try:
                 response = json.loads(body)
                 self.responses[cor_id] = response
-                self.async_consumer.acknowledge_message(delivery_tag)
+                self.async_consumer.acknowledge_message(properties, delivery_tag)
 
             except json.JSONDecodeError as e:
                 self.responses[cor_id] = e
-                self.async_consumer.reject_message(delivery_tag, requeue=False)
+                self.async_consumer.reject_message(properties, delivery_tag, requeue=False)
 
             return
 
         if not cor_id:
             self._log_response_event("responseRejected", cor_id, False, False, 1)
-            self.async_consumer.reject_message(delivery_tag, requeue=False)
+            self.async_consumer.reject_message(properties, delivery_tag, requeue=False)
             return
 
         num_rejections = self.rejected.get(cor_id, 0) + 1
         if num_rejections < self.response_reject_and_requeue_attempts:
             self._log_response_event("responseRejected", cor_id, False, True, num_rejections)
             self.rejected[cor_id] = num_rejections
-            self.async_consumer.reject_message(delivery_tag, requeue=True)
+            self.async_consumer.reject_message(properties, delivery_tag, requeue=True)
         else:
             self._log_response_event("responseRejected", cor_id, False, False, num_rejections)
-            self.async_consumer.reject_message(delivery_tag, requeue=False)
+            self.async_consumer.reject_message(properties, delivery_tag, requeue=False)
             if cor_id in self.rejected:
                 del self.rejected[cor_id]
 
