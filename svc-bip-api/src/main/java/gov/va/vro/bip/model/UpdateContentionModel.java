@@ -14,5 +14,5 @@ import lombok.Setter;
 @Builder
 public class UpdateContentionModel {
   public long claimId;
-  public UpdateContentionReq updateContentions;
+  private UpdateContentionReq updateContentions;
 }
