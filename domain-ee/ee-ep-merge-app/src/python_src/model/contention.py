@@ -36,5 +36,4 @@ class ContentionSummary(BaseModel):
 
     @field_serializer('begin_date', 'create_date', 'completed_date', 'notification_date', 'last_modified')
     def serialize_datetime(self, dt: datetime, _info):
-        if dt is not None:
-            return dt.isoformat()
+        return None if dt is None else dt.isoformat()

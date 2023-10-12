@@ -120,7 +120,6 @@ class EpMergeMachine(StateMachine):
     @completed_error.enter
     def on_completed(self, state):
         logging.info(f"event=jobCompleted job_id={self.job.job_id} state={state.value}")
-        pass
 
     def make_request(self,
                      request: GeneralRequest,
@@ -140,6 +139,7 @@ class EpMergeMachine(StateMachine):
             self.log_error(e.message)
         except Exception as e:
             self.log_error(f"Unknown Exception Caught {e}")
+        return None
 
     def has_error(self):
         return self.job.state == JobState.COMPLETED_ERROR

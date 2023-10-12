@@ -16,4 +16,3 @@ class Response(GeneralResponse):
     model_config = ConfigDict(populate_by_name=True, alias_generator=to_camel)
 
     contentions: list[ContentionSummary] | None = None
-    pass
