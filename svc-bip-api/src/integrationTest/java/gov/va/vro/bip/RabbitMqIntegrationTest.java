@@ -13,7 +13,7 @@ import gov.va.vro.bip.model.UpdateContention;
 import gov.va.vro.bip.model.UpdateContentionModel;
 import gov.va.vro.bip.model.UpdateContentionReq;
 import gov.va.vro.bip.service.BipApiService;
-import gov.va.vro.bip.service.RMQController;
+import gov.va.vro.bip.service.RabbitMqController;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -33,9 +33,9 @@ import java.util.List;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @Slf4j
-class RMQIntegrationTest {
+class RabbitMqIntegrationTest {
   @MockBean BipApiService service;
-  @Autowired RMQController controller;
+  @Autowired RabbitMqController controller;
   @Autowired RabbitTemplate rabbitTemplate;
   @Autowired RabbitAdmin rabbitAdmin;
 

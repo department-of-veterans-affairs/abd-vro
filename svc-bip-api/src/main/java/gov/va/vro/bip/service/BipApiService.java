@@ -167,8 +167,6 @@ public class BipApiService implements IBipApiService {
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
       log.info("Call {} to update contention for {}.", url, claimId);
       HttpHeaders headers = getBipHeader();
-      String updtContention = mapper.writeValueAsString(contention.getUpdateContentions());
-      // HttpEntity<String> httpEntity = new HttpEntity<>(updtContention, headers);
       HttpEntity<UpdateContentionReq> httpEntity = new HttpEntity<>(contention, headers);
       ResponseEntity<String> bipResponse =
           restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
@@ -177,25 +175,36 @@ public class BipApiService implements IBipApiService {
       } else {
         throw new BipException(bipResponse.getStatusCode(), bipResponse.getBody());
       }
-    } catch (RestClientException | JsonProcessingException e) {
-      log.error("failed to getClaimContentions for claim {}.", claimId, e);
+    } catch (RestClientException e) {
+      log.error("failed to updateClaimContentions for claim {}.", claimId, e);
       throw new BipException(e.getMessage(), e);
     }
   }
 
-  //  @Override
-  //  public boolean confirmCanCallSpecialIssueTypes() {
-  //    String url = HTTPS + bipApiProps.getClaimBaseUrl() + SPECIAL_ISSUE_TYPES;
-  //    log.info("Call {} to get special_issue_types", url);
-  //
-  //    HttpHeaders headers = getBipHeader();
-  //    HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
-  //
-  //    ResponseEntity<String> response =
-  //        restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
-  //
-  //    return response.getStatusCode() == HttpStatus.OK && !response.getBody().isEmpty();
-  //  }
+  /**
+   * Verifies that the BIP Api responds to a request. Calls the special_issue_types URL and confirms
+   * the response status is OK and body is not empty
+   *
+   * @return true if the API responds with OK status and response.
+   */
+  public boolean isApiFunctioning() {
+    String url = HTTPS + bipApiProps.getClaimBaseUrl() + SPECIAL_ISSUE_TYPES;
+    log.info("Call {} to get special_issue_types", url);
+
+    HttpHeaders headers = getBipHeader();
+    HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
+
+    try {
+      ResponseEntity<String> response =
+          restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+      boolean statusIsOK = response.getStatusCode() == HttpStatus.OK;
+      boolean responseIsNotEmpty = (response.getBody() != null && !response.getBody().isEmpty());
+      return statusIsOK && responseIsNotEmpty;
+    } catch (HttpStatusCodeException e) {
+      log.error("API {} failed", url, e);
+      return false;
+    }
+  }
 
   HttpHeaders getBipHeader() throws BipException {
     try {

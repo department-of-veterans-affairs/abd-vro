@@ -1,6 +1,8 @@
 package gov.va.vro.bip.config;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import gov.va.vro.bip.service.BipException;
 import org.junit.jupiter.api.Test;

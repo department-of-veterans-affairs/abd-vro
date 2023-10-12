@@ -16,10 +16,10 @@ import java.util.Map;
 
 @ActiveProfiles("test")
 @SpringBootTest
-class RMQApiConfigTest {
+class RabbitMqApiConfigTest {
   @Test
-  public void testRMQConfig() {
-    RMQConfig rmqConfig = new RMQConfig();
+  public void testRabbitMqConfig() {
+    RabbitMqConfig rmqConfig = new RabbitMqConfig();
     MessageConverter messageConverter = rmqConfig.jackson2MessageConverter();
     Assertions.assertNotNull(messageConverter);
     DirectExchange directExchange = rmqConfig.bipApiExchange();

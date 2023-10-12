@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 
 @Configuration
 @Slf4j
-public class RMQConfig {
+public class RabbitMqConfig {
 
   @Value("${exchangeName}")
   String exchangeName;
