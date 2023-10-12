@@ -13,14 +13,14 @@ dependencies {
   // Provides endpoint for healthcheck
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-  def hapi_fhir_version="6.8.2"
+  def hapi_fhir_version="6.8.3"
   implementation "ca.uhn.hapi.fhir:hapi-fhir-base:${hapi_fhir_version}"
   implementation "ca.uhn.hapi.fhir:hapi-fhir-server-openapi:${hapi_fhir_version}"
 
-  implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
+  implementation 'org.bouncycastle:bcprov-jdk18on:1.76'
   implementation 'org.apache.commons:commons-lang3:3.13.0'
 
-  def jjwt_version="0.11.5"
+  def jjwt_version="0.12.2"
   implementation "io.jsonwebtoken:jjwt-api:${jjwt_version}"
   implementation "io.jsonwebtoken:jjwt-impl:${jjwt_version}"
   implementation "io.jsonwebtoken:jjwt-jackson:${jjwt_version}"
