@@ -20,5 +20,5 @@ dependencies {
   // api project(':shared:lib-camel-connector')
   implementation project(':shared:lib-camel-connector')
 
-  implementation "org.springdoc:springdoc-openapi-webmvc-core"
+  implementation "org.springdoc:springdoc-openapi-starter-webmvc-api:${spring_doc_version}"
 }
