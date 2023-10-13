@@ -1,7 +1,7 @@
 import json
 import logging
 
-from hoppy.base_queue_client import BaseQueueClient, Type
+from hoppy.base_queue_client import BaseQueueClient, ClientType
 from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
 from pika.spec import BasicProperties
 
@@ -28,7 +28,7 @@ class AsyncPublisher(BaseQueueClient):
             the routing key used to route messages to the queue
         """
 
-        super().__init__(Type.PUBLISHER, config, exchange_properties, queue_properties, routing_key)
+        super().__init__(ClientType.PUBLISHER, config, exchange_properties, queue_properties, routing_key)
 
         self._deliveries = {}
         self._acked = 0

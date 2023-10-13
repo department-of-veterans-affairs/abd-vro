@@ -1,7 +1,7 @@
 import logging
 from typing import Callable
 
-from hoppy.base_queue_client import BaseQueueClient, Type
+from hoppy.base_queue_client import BaseQueueClient, ClientType
 from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
 
 
@@ -35,7 +35,7 @@ class AsyncConsumer(BaseQueueClient):
                 reply_callback(_channel, properties, basic_deliver.delivery_tag, body)
         """
 
-        super().__init__(Type.CONSUMER, config, exchange_properties, queue_properties, routing_key)
+        super().__init__(ClientType.CONSUMER, config, exchange_properties, queue_properties, routing_key)
 
         self._consuming = False
         self._consumer_tag = None

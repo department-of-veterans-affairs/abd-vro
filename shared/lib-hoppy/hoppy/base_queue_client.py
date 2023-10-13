@@ -1,7 +1,7 @@
 import logging
 import time
 from abc import ABC, abstractmethod
-from enum import StrEnum, auto
+from enum import Enum
 
 from hoppy.config import RABBITMQ_CONFIG
 from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
@@ -9,9 +9,9 @@ from pika import ConnectionParameters, PlainCredentials
 from pika.adapters.asyncio_connection import AsyncioConnection
 
 
-class Type(StrEnum):
-    CONSUMER = auto()
-    PUBLISHER = auto()
+class ClientType(str, Enum):
+    CONSUMER = "CONSUMER"
+    PUBLISHER = "PUBLISHER"
 
     def __str__(self):
         return self.value
@@ -32,7 +32,7 @@ class BaseQueueClient(ABC):
     """
 
     def __init__(self,
-                 _client_type: Type,
+                 _client_type: ClientType,
                  config: [dict | None] = None,
                  exchange_properties: ExchangeProperties = ExchangeProperties(),
                  queue_properties: QueueProperties = QueueProperties(),
