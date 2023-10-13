@@ -12,7 +12,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-security'
 
-  implementation "org.springdoc:springdoc-openapi-webmvc-core"
+  implementation "org.springdoc:springdoc-openapi-starter-webmvc-api:${spring_doc_version}"
 
   implementation 'org.apache.httpcomponents.client5:httpclient5:5.2'
 }
