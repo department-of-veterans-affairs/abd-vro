@@ -57,6 +57,8 @@ public class SecurityConfig {
 
   private final String ACTUATOR_URLS = "/actuator/**";
 
+  private final String V3_URLS = "/v3/**";
+
   /**
    * Sets the security filter chain.
    *
@@ -92,6 +94,8 @@ public class SecurityConfig {
                   .requestMatchers(new AntPathRequestMatcher(immediatePdf))
                   .permitAll()
                   .requestMatchers(new AntPathRequestMatcher(ACTUATOR_URLS))
+                  .permitAll()
+                  .requestMatchers(new AntPathRequestMatcher(V3_URLS))
                   .permitAll()
                   .anyRequest()
                   .authenticated();
@@ -132,6 +136,8 @@ public class SecurityConfig {
                     .requestMatchers(new AntPathRequestMatcher(examOrder))
                     .permitAll()
                     .requestMatchers(new AntPathRequestMatcher(ACTUATOR_URLS))
+                    .permitAll()
+                    .requestMatchers(new AntPathRequestMatcher(V3_URLS))
                     .permitAll()
                     .anyRequest()
                     .authenticated())
