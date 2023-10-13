@@ -9,3 +9,5 @@ env = [
     "REQUEST_TIMEOUT = 1",
     "REQUEST_RETRIES = 1"
 ]
+log_cli_level = "INFO"
+log_cli = "true"

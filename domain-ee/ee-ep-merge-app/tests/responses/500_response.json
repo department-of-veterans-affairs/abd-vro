@@ -1,0 +1,11 @@
+{
+  "statusCode": 500,
+  "statusMessage": "INTERNAL SERVER ERROR",
+  "messages": [
+    {
+      "key": "TEST FAILURE",
+      "severity": "FATAL",
+      "status": 500
+    }
+  ]
+}
