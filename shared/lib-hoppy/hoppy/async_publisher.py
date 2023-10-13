@@ -7,11 +7,27 @@ from pika.spec import BasicProperties
 
 
 class AsyncPublisher(BaseQueueClient):
+    """Creates an asynchronous publisher that can be used to publish messages to a queue"""
+
     def __init__(self,
                  config: [dict | None] = None,
                  exchange_properties: ExchangeProperties = ExchangeProperties(),
                  queue_properties: QueueProperties = QueueProperties(),
                  routing_key: str = ''):
+        """
+        Creates this class
+
+        :param config: dict | None = None
+            collection of key value pairs used to create the RabbitMQ connection parameters (see pika.ConnectionParameters)
+            this config is merged with the default RABBITMQ_CONFIG
+        :param exchange_properties: ExchangeProperties
+            properties dictating how the exchange is declared
+        :param queue_properties: QueueProperties
+            properties dictating how the queue is declared
+        :param routing_key: str = ''
+            the routing key used to route messages to the queue
+        """
+
         super().__init__(Type.PUBLISHER, config, exchange_properties, queue_properties, routing_key)
 
         self._deliveries = {}
@@ -34,12 +50,14 @@ class AsyncPublisher(BaseQueueClient):
     def _ready(self):
         """Executed when the exchange and queue are ready and this class can start the process of consuming.
         Overrides super class abstract method."""
+
         logging.debug(f'event=enabledDeliveryConfirmation client_type={self._client_type}')
         self._channel.confirm_delivery(self._on_delivery_confirmation)
 
     def _shut_down(self):
         """Called when the client is requested to stop.
         Overrides super class abstract method"""
+
         self._close_channel()
         self._close_connection()
 
@@ -75,6 +93,8 @@ class AsyncPublisher(BaseQueueClient):
                       f'rejected={self._rejected}')
 
     def publish_message(self, message='hello', properties: BasicProperties = None):
+        """Publishes a message to the queue"""
+
         if self._channel is None or not self._channel.is_open:
             logging.warning(f'event=publishMessageFailed '
                             f'client_type={self._client_type} '

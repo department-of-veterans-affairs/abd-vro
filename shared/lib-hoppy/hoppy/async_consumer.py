@@ -6,13 +6,35 @@ from hoppy_properties import ExchangeProperties, QueueProperties
 
 
 class AsyncConsumer(BaseQueueClient):
+    """Creates an asynchronous consumer that can be used to consume messages from a queue and execute a callback upon
+    message received"""
 
     def __init__(self, config: [dict | None] = None,
                  exchange_properties: ExchangeProperties = ExchangeProperties(),
                  queue_properties: QueueProperties = QueueProperties(),
                  routing_key: str = '',
-                 reply_callback: Callable = None,
-                 prefetch_count: int = 1):
+                 prefetch_count: int = 1,
+                 reply_callback: Callable = None):
+        """
+        Creates this class
+
+        :param config: dict | None = None
+            collection of key value pairs used to create the RabbitMQ connection parameters (see pika.ConnectionParameters)
+            this config is merged with the default RABBITMQ_CONFIG
+        :param exchange_properties: ExchangeProperties
+            properties dictating how the exchange is declared
+        :param queue_properties: QueueProperties
+            properties dictating how the queue is declared
+        :param routing_key: str = ''
+            the routing key used to route messages to the queue
+        :param reply_callback: int = 1
+            number of messages to pull from server at a time, experiment with higher prefetch_count for higher consumer
+            throughput
+        :param prefetch_count: Callable = None
+            if present, this callback is called with the following parameters:
+                reply_callback(_channel, properties, basic_deliver.delivery_tag, body)
+        """
+
         super().__init__(Type.CONSUMER, config, exchange_properties, queue_properties, routing_key)
 
         self._consuming = False
@@ -28,8 +50,9 @@ class AsyncConsumer(BaseQueueClient):
         self._consuming = False
 
     def _ready(self):
-        """Executed when the exchange and queue are ready and this class can start the process of consuming.
+        """Called when the exchange and queue are ready and this class can start the process of consuming.
         Overrides super class abstract method."""
+
         logging.debug(f'event=specifyingQualityOfService '
                       f'client_type={self._client_type} '
                       f'prefetch_count={self._prefetch_count}')
@@ -38,6 +61,7 @@ class AsyncConsumer(BaseQueueClient):
     def _shut_down(self):
         """Called when the client is requested to stop.
         Overrides super class abstract method"""
+
         if self._consuming:
             self._stop_consuming()
 
@@ -94,6 +118,8 @@ class AsyncConsumer(BaseQueueClient):
                               f'err={e}')
 
     def acknowledge_message(self, properties, delivery_tag):
+        """Notifies the server that the received message is acknowledged"""
+
         logging.debug(f'event=ackedMessage '
                       f'client_type={self._client_type} '
                       f'delivery_tag={delivery_tag} '
@@ -101,6 +127,8 @@ class AsyncConsumer(BaseQueueClient):
         self._channel.basic_ack(delivery_tag)
 
     def reject_message(self, properties, delivery_tag, requeue=True):
+        """Notifies the server that the received message is rejected"""
+
         logging.debug(f'event=rejectedMessage '
                       f'client_type={self._client_type} '
                       f'delivery_tag={delivery_tag} '

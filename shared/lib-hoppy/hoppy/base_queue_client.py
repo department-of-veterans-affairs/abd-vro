@@ -18,12 +18,39 @@ class Type(StrEnum):
 
 
 class BaseQueueClient(ABC):
+    """
+    Creates the base of an asynchronous client for connecting to an exchange and queue. This class does not implement
+    publishing or consuming from the queues, but merely handles creating the connection, declaring the exchange,
+    declaring the queue, adding callbacks for connection and channel events (open/error/close).
+
+    Abstract Functions
+    -------------------
+    _ready - Method to be called after the asyncio connection has successfully opened the connection, created the
+        channel, declared the exchange, declared the queue, and bound the queue and exchange
+    _shut_down - Method to be called as part of the self.stop(), this method should do the processing needed to shut
+        down the client
+    """
+
     def __init__(self,
                  _client_type: Type,
                  config: [dict | None] = None,
                  exchange_properties: ExchangeProperties = ExchangeProperties(),
                  queue_properties: QueueProperties = QueueProperties(),
                  routing_key: str = ''):
+        """
+        Creates this class
+
+        :param config: dict | None = None
+            collection of key value pairs used to create the RabbitMQ connection parameters (see pika.ConnectionParameters)
+            this config is merged with the default RABBITMQ_CONFIG
+        :param exchange_properties: ExchangeProperties
+            properties dictating how the exchange is declared
+        :param queue_properties: QueueProperties
+            properties dictating how the queue is declared
+        :param routing_key: str = ''
+            the routing key used to route messages to the queue
+        """
+
         self._client_type = _client_type
         if config is None:
             config = {}
@@ -64,6 +91,15 @@ class BaseQueueClient(ABC):
         self._stopping = False
 
     def connect(self, loop=None):
+        """
+        Creates the asyncio connection to RabbitMQ
+
+        Parameters
+        ----------
+        loop = None | asyncio.AbstractEventLoop | nbio_interface.AbstractIOServices
+            Defaults to asyncio.get_event_loop()
+        """
+
         self._loop = loop
 
         logging.debug(f'event=connectingToRabbitMq client_type={self._client_type} config={self.config}')
@@ -77,13 +113,21 @@ class BaseQueueClient(ABC):
 
     @abstractmethod
     def _ready(self):
+        """Method to be called after the asyncio connection has successfully opened the connection, created the
+        channel, declared the exchange, declared the queue, and bound the queue and exchange"""
+
         pass
 
     @abstractmethod
     def _shut_down(self):
+        """Method to be called as part of the self.stop(), this method should do the processing needed to shut
+        down the client"""
+
         pass
 
     def stop(self):
+        """Calls the abstract method self._shut_down() meant to perform the processing needed to stop the connection"""
+
         if not self._stopping:
             self._stopping = True
             logging.debug(f'event=stopping client_type={self._client_type}')
