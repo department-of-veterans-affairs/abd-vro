@@ -1,8 +1,8 @@
 import logging
 from typing import Callable
 
-from base_queue_client import BaseQueueClient, Type
-from hoppy_properties import ExchangeProperties, QueueProperties
+from hoppy.base_queue_client import BaseQueueClient, Type
+from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
 
 
 class AsyncConsumer(BaseQueueClient):

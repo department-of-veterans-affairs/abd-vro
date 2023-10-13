@@ -4,10 +4,10 @@ import logging
 import time
 import uuid
 
-from async_consumer import AsyncConsumer
-from async_publisher import AsyncPublisher
-from exception import ResponseException
-from hoppy_properties import ExchangeProperties, QueueProperties
+from hoppy.async_consumer import AsyncConsumer
+from hoppy.async_publisher import AsyncPublisher
+from hoppy.exception import ResponseException
+from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
 from pika import BasicProperties
 
 MAX_RETRIES_REACHED = "Max retries reached"

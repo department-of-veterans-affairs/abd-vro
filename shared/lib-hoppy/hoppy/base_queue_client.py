@@ -3,8 +3,8 @@ import time
 from abc import ABC, abstractmethod
 from enum import StrEnum, auto
 
-from config import RABBITMQ_CONFIG
-from hoppy_properties import ExchangeProperties, QueueProperties
+from hoppy.config import RABBITMQ_CONFIG
+from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
 from pika import ConnectionParameters, PlainCredentials
 from pika.adapters.asyncio_connection import AsyncioConnection
 
