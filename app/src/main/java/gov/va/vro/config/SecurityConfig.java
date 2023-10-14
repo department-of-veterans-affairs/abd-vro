@@ -72,7 +72,6 @@ public class SecurityConfig {
                 new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))));
     // Secure end point
     httpSecurity
-        .authorizeHttpRequests((authz) -> authz.anyRequest().authenticated())
         .securityMatcher(
             claimInfo, claimMetrics, evidencePdf, fullHealth, healthAssessment, immediatePdf)
         .csrf(AbstractHttpConfigurer::disable)
@@ -80,7 +79,8 @@ public class SecurityConfig {
             httpSecuritySessionManagementConfigurer ->
                 httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
                     SessionCreationPolicy.STATELESS))
-        .addFilter(apiAuthKeyFilter);
+        .addFilter(apiAuthKeyFilter)
+        .authorizeHttpRequests(authz -> authz.anyRequest().authenticated());
     return httpSecurity.build();
   }
 
@@ -104,13 +104,11 @@ public class SecurityConfig {
     // Secure end point
     httpSecurity
         .securityMatcher(automatedClaim, examOrder)
-        .authorizeHttpRequests((authz) -> authz.anyRequest().authenticated())
         .csrf(AbstractHttpConfigurer::disable)
         .sessionManagement(
-            httpSecuritySessionManagementConfigurer ->
-                httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
-                    SessionCreationPolicy.STATELESS))
-        .addFilter(apiAuthKeyFilter);
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .addFilter(apiAuthKeyFilter)
+        .authorizeHttpRequests(authz -> authz.anyRequest().permitAll());
     return httpSecurity.build();
   }
 }
