@@ -15,7 +15,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -83,23 +82,15 @@ public class SecurityConfig {
         .authorizeHttpRequests(
             (authz) -> {
               authz
-                  .requestMatchers(claimInfo)
-                  .permitAll()
-                  .requestMatchers(claimMetrics)
-                  .permitAll()
-                  .requestMatchers(evidencePdf)
-                  .permitAll()
-                  .requestMatchers(fullHealth)
-                  .permitAll()
-                  .requestMatchers(healthAssessment)
-                  .permitAll()
-                  .requestMatchers(immediatePdf)
-                  .permitAll()
-                  .requestMatchers(ACTUATOR_URLS)
-                  .permitAll()
-                  .requestMatchers(V3_URLS)
-                  .permitAll()
-                  .anyRequest()
+                  .requestMatchers(
+                      claimInfo,
+                      claimMetrics,
+                      evidencePdf,
+                      fullHealth,
+                      healthAssessment,
+                      immediatePdf,
+                      ACTUATOR_URLS,
+                      V3_URLS)
                   .authenticated();
             })
         .csrf(AbstractHttpConfigurer::disable)
@@ -134,15 +125,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(
             (authz) ->
                 authz
-                    .requestMatchers(new AntPathRequestMatcher(automatedClaim))
-                    .permitAll()
-                    .requestMatchers(new AntPathRequestMatcher(examOrder))
-                    .permitAll()
-                    .requestMatchers(new AntPathRequestMatcher(ACTUATOR_URLS))
-                    .permitAll()
-                    .requestMatchers(new AntPathRequestMatcher(V3_URLS))
-                    .permitAll()
-                    .anyRequest()
+                    .requestMatchers(automatedClaim, examOrder, ACTUATOR_URLS, V3_URLS)
                     .authenticated())
         .csrf(AbstractHttpConfigurer::disable)
         .sessionManagement(
