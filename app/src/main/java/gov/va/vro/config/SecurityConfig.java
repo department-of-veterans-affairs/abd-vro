@@ -15,7 +15,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -54,11 +53,6 @@ public class SecurityConfig {
   private String jwtAuthHeaderName;
 
   private final ApiAuthKeyManager apiAuthKeyManager;
-
-  private final String ACTUATOR_URLS = "/actuator/**";
-
-  private final String V3_URLS = "/v3/**";
-
   /**
    * Sets the security filter chain.
    *
@@ -78,28 +72,9 @@ public class SecurityConfig {
                 new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))));
     // Secure end point
     httpSecurity
-        .authorizeHttpRequests(
-            (authz) -> {
-              authz
-                  .requestMatchers(new AntPathRequestMatcher(claimInfo))
-                  .permitAll()
-                  .requestMatchers(new AntPathRequestMatcher(claimMetrics))
-                  .permitAll()
-                  .requestMatchers(new AntPathRequestMatcher(evidencePdf))
-                  .permitAll()
-                  .requestMatchers(new AntPathRequestMatcher(fullHealth))
-                  .permitAll()
-                  .requestMatchers(new AntPathRequestMatcher(healthAssessment))
-                  .permitAll()
-                  .requestMatchers(new AntPathRequestMatcher(immediatePdf))
-                  .permitAll()
-                  .requestMatchers(new AntPathRequestMatcher(ACTUATOR_URLS))
-                  .permitAll()
-                  .requestMatchers(new AntPathRequestMatcher(V3_URLS))
-                  .permitAll()
-                  .anyRequest()
-                  .authenticated();
-            })
+        .authorizeHttpRequests((authz) -> authz.anyRequest().authenticated())
+        .securityMatcher(
+            claimInfo, claimMetrics, evidencePdf, fullHealth, healthAssessment, immediatePdf)
         .csrf(AbstractHttpConfigurer::disable)
         .sessionManagement(
             httpSecuritySessionManagementConfigurer ->
@@ -128,19 +103,8 @@ public class SecurityConfig {
                 new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))));
     // Secure end point
     httpSecurity
-        .authorizeHttpRequests(
-            (authz) ->
-                authz
-                    .requestMatchers(new AntPathRequestMatcher(automatedClaim))
-                    .permitAll()
-                    .requestMatchers(new AntPathRequestMatcher(examOrder))
-                    .permitAll()
-                    .requestMatchers(new AntPathRequestMatcher(ACTUATOR_URLS))
-                    .permitAll()
-                    .requestMatchers(new AntPathRequestMatcher(V3_URLS))
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated())
+        .securityMatcher(automatedClaim, examOrder)
+        .authorizeHttpRequests((authz) -> authz.anyRequest().authenticated())
         .csrf(AbstractHttpConfigurer::disable)
         .sessionManagement(
             httpSecuritySessionManagementConfigurer ->
