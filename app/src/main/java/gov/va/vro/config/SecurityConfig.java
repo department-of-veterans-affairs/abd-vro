@@ -87,26 +87,25 @@ public class SecurityConfig {
                     new AntPathRequestMatcher(fullHealth),
                     new AntPathRequestMatcher(healthAssessment),
                     new AntPathRequestMatcher(immediatePdf)))
-        .authorizeHttpRequests(
-            (authz) -> {
-              authz
-                  .requestMatchers(
-                      claimInfo,
-                      claimMetrics,
-                      evidencePdf,
-                      fullHealth,
-                      healthAssessment,
-                      immediatePdf,
-                      ACTUATOR_URLS,
-                      V3_URLS)
-                  .authenticated();
-            })
+//        .authorizeHttpRequests(
+//            (authz) -> {
+//              authz
+//                  .requestMatchers(
+//                      claimInfo,
+//                      claimMetrics,
+//                      evidencePdf,
+//                      fullHealth,
+//                      healthAssessment,
+//                      immediatePdf,
+//                      ACTUATOR_URLS,
+//                      V3_URLS)
+//                  .authenticated();
+//            })
         .csrf(AbstractHttpConfigurer::disable)
         .sessionManagement(
             httpSecuritySessionManagementConfigurer ->
                 httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
-                    SessionCreationPolicy.STATELESS))
-        .addFilter(apiAuthKeyFilter);
+                    SessionCreationPolicy.STATELESS));
     return httpSecurity.build();
   }
 
@@ -134,17 +133,17 @@ public class SecurityConfig {
                 matchers.requestMatchers(
                     new AntPathRequestMatcher(automatedClaim),
                     new AntPathRequestMatcher(examOrder)))
-        .authorizeHttpRequests(
-            (authz) ->
-                authz
-                    .requestMatchers(automatedClaim, examOrder, ACTUATOR_URLS, V3_URLS)
-                    .authenticated())
+//        .authorizeHttpRequests(
+//            (authz) ->
+//                authz
+//                    .requestMatchers(automatedClaim, examOrder, ACTUATOR_URLS, V3_URLS)
+//                    .authenticated())
         .csrf(AbstractHttpConfigurer::disable)
         .sessionManagement(
             httpSecuritySessionManagementConfigurer ->
                 httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
-                    SessionCreationPolicy.STATELESS))
-        .addFilter(apiAuthKeyFilter);
+                    SessionCreationPolicy.STATELESS));
+
     return httpSecurity.build();
   }
 }
