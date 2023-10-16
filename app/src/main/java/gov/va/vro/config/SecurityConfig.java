@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -77,8 +78,15 @@ public class SecurityConfig {
                 new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))));
     // Secure end point
     httpSecurity
-        .securityMatcher(
-            claimInfo, claimMetrics, evidencePdf, fullHealth, healthAssessment, immediatePdf)
+        .securityMatchers(
+            (matchers) ->
+                matchers.requestMatchers(
+                    new AntPathRequestMatcher(claimInfo),
+                    new AntPathRequestMatcher(claimMetrics),
+                    new AntPathRequestMatcher(evidencePdf),
+                    new AntPathRequestMatcher(fullHealth),
+                    new AntPathRequestMatcher(healthAssessment),
+                    new AntPathRequestMatcher(immediatePdf)))
         .authorizeHttpRequests(
             (authz) -> {
               authz
@@ -121,7 +129,11 @@ public class SecurityConfig {
                 new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))));
     // Secure end point
     httpSecurity
-        .securityMatcher(automatedClaim, examOrder)
+        .securityMatchers(
+            (matchers) ->
+                matchers.requestMatchers(
+                    new AntPathRequestMatcher(automatedClaim),
+                    new AntPathRequestMatcher(examOrder)))
         .authorizeHttpRequests(
             (authz) ->
                 authz
