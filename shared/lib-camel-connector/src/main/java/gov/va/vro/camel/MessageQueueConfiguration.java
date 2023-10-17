@@ -64,7 +64,7 @@ public class MessageQueueConfiguration {
   FanoutExchange fanoutExchangeBieEventsContentionAssociated() {
     return new FanoutExchange(
         BIE_EVENTS_CONTENTION_ASSOCIATED,
-        false,
+        true,
         true,
         Collections.singletonMap("queues", queueSaveToDbBieAssociated().getName()));
   }
@@ -73,7 +73,7 @@ public class MessageQueueConfiguration {
   FanoutExchange fanoutExchangeBieEventsSaveToDbBieClassified() {
     return new FanoutExchange(
         BIE_EVENTS_CONTENTION_CLASSIFIED,
-        false,
+        true,
         true,
         Collections.singletonMap("queues", queueSaveToDbBieClassified().getName()));
   }
@@ -82,7 +82,7 @@ public class MessageQueueConfiguration {
   FanoutExchange fanoutExchangeBieEventsContentionCompleted() {
     return new FanoutExchange(
         BIE_EVENTS_CONTENTION_COMPLETED,
-        false,
+        true,
         true,
         Collections.singletonMap("queues", queueSaveToDbBieCompleted().getName()));
   }
@@ -91,7 +91,7 @@ public class MessageQueueConfiguration {
   FanoutExchange fanoutExchangeBieEventsContentionUpdated() {
     return new FanoutExchange(
         BIE_EVENTS_CONTENTION_UPDATED,
-        false,
+        true,
         true,
         Collections.singletonMap("queues", queueSaveToDbBieUpdated().getName()));
   }
@@ -100,7 +100,7 @@ public class MessageQueueConfiguration {
   FanoutExchange fanoutExchangeBieEventsContentionDeleted() {
     return new FanoutExchange(
         BIE_EVENTS_CONTENTION_DELETED,
-        false,
+        true,
         true,
         Collections.singletonMap("queues", queueSaveToDbBieDeleted().getName()));
   }
@@ -117,27 +117,27 @@ public class MessageQueueConfiguration {
 
   @Bean
   Queue queueSaveToDbBieAssociated() {
-    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_ASSOCIATED, true, false, true);
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_ASSOCIATED);
   }
 
   @Bean
   Queue queueSaveToDbBieUpdated() {
-    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_UPDATED, true, false, true);
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_UPDATED);
   }
 
   @Bean
   Queue queueSaveToDbBieClassified() {
-    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_CLASSIFIED, true, false, true);
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_CLASSIFIED);
   }
 
   @Bean
   Queue queueSaveToDbBieCompleted() {
-    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_COMPLETED, true, false, true);
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_COMPLETED);
   }
 
   @Bean
   Queue queueSaveToDbBieDeleted() {
-    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_DELETED, true, false, true);
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_DELETED);
   }
 
   @Bean
