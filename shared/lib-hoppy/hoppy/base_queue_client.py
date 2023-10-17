@@ -8,13 +8,7 @@ from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
 from pika import ConnectionParameters, PlainCredentials
 from pika.adapters.asyncio_connection import AsyncioConnection
 
-
-class ClientType(str, Enum):
-    CONSUMER = "CONSUMER"
-    PUBLISHER = "PUBLISHER"
-
-    def __str__(self):
-        return self.value
+ClientType = Enum('ClientType', ['CONSUMER', 'PUBLISHER'])
 
 
 class BaseQueueClient(ABC):
@@ -102,7 +96,7 @@ class BaseQueueClient(ABC):
 
         self._loop = loop
 
-        logging.debug(f'event=connectingToRabbitMq client_type={self._client_type} config={self.config}')
+        self._info('connectingToRabbitMq', config=self.config)
         self._connection = AsyncioConnection(
             parameters=self.connection_parameters,
             on_open_callback=self._on_connection_open,
@@ -130,45 +124,43 @@ class BaseQueueClient(ABC):
 
         if not self._stopping:
             self._stopping = True
-            logging.debug(f'event=stopping client_type={self._client_type}')
+            self._debug('stopping')
             self._shut_down()
-            logging.debug(f'event=stopped client_type={self._client_type}')
+            self._debug('stopped')
 
     def _on_connection_open(self, connection):
-        logging.debug(f'event=openedConnection client_type={self._client_type}')
+        self._debug('openedConnection')
         self._connection = connection
         self._initialize_connection_session()
         self._open_channel()
 
     def _on_connection_open_error(self, _unused_connection, err):
-        logging.error(f'event=failedToOpenConnection client_type={self._client_type} err={err}')
+        self._error('failedToOpenConnection', err)
         self._reconnect()
 
     def _on_connection_closed(self, _unused_connection, reason):
         self._channel = None
         if self._stopping:
             self._connection.ioloop.stop()
-            logging.debug(f'event=closedConnection '
-                          f'client_type={self._client_type} '
-                          f'closing={self._connection.is_closing} '
-                          f'closed={self._connection.is_closed}')
+            self._debug('closedConnection',
+                        closing=self._connection.is_closing,
+                        closed=self._connection.is_closed)
         else:
-            logging.warning(f'event=connectionClosedUnexpectedly client_type={self._client_type} reason={reason}')
+            self._warning('connectionClosedUnexpectedly', reason=reason)
             self._reconnect()
 
     def _close_connection(self):
         if self._connection is not None:
-            logging.debug(f'event=closingConnection '
-                          f'client_type={self._client_type} '
-                          f'closing={self._connection.is_closing} '
-                          f'closed={self._connection.is_closed}')
+            self._debug('closingConnection',
+                        closing=self._connection.is_closing,
+                        closed=self._connection.is_closed)
             if not self._connection.is_closing and not self._connection.is_closed:
                 self._connection.close()
 
     def _reconnect(self):
         self.stop()
         reconnect_delay = self._get_reconnect_delay()
-        logging.warning(f'event=reconnecting client_type={self._client_type} reconnect_delay_seconds={reconnect_delay}')
+        self._warning('reconnecting', reconnect_delay_seconds=reconnect_delay)
         time.sleep(reconnect_delay)
         self.connect(self._loop)
 
@@ -179,32 +171,31 @@ class BaseQueueClient(ABC):
         return self._reconnect_delay
 
     def _open_channel(self):
-        logging.debug(f'event=openingChannel client_type={self._client_type}')
+        self._debug('openingChannel')
         self._connection.channel(on_open_callback=self._on_channel_open)
 
     def _on_channel_open(self, channel):
-        logging.debug(f'event=openedChannel client_type={self._client_type} channel={channel}')
+        self._debug('openedChannel', channel=channel)
         self._channel = channel
         self._channel.add_on_close_callback(self._on_channel_closed)
         self._setup_exchange()
 
     def _on_channel_closed(self, channel, reason):
-        logging.warning(f'event=closedChannel client_type={self._client_type} channel={channel} reason={reason}')
+        self._warning('closedChannel', channel=channel, reason=reason)
         self._close_connection()
 
     def _close_channel(self):
         if self._channel is not None:
-            logging.debug(f'event=closingChannel client_type={self._client_type} channel={self._channel}')
+            self._debug('closingChannel', channel=self._channel)
             self._channel.close()
 
     def _setup_exchange(self):
-        logging.debug(f'event=declaringExchange '
-                      f'client_type={self._client_type} '
-                      f'exchange={self.exchange_name} '
-                      f'type={self.exchange_type} '
-                      f'passive_declare={self.passive_declare_exchange} '
-                      f'durable={self.durable_exchange} '
-                      f'auto_delete={self.auto_delete_exchange}')
+        self._debug('declaringExchange',
+                    exchange=self.exchange_name,
+                    type=self.exchange_type,
+                    passive_declare=self.passive_declare_exchange,
+                    durable=self.durable_exchange,
+                    auto_delete=self.auto_delete_exchange)
         self._channel.exchange_declare(exchange=self.exchange_name,
                                        exchange_type=self.exchange_type,
                                        passive=self.passive_declare_exchange,
@@ -213,23 +204,21 @@ class BaseQueueClient(ABC):
                                        callback=self._on_exchange_declare_ok)
 
     def _on_exchange_declare_ok(self, _unused_frame):
-        logging.debug(f'event=declaredExchange '
-                      f'client_type={self._client_type} '
-                      f'exchange={self.exchange_name} '
-                      f'type={self.exchange_type} '
-                      f'passive_declare={self.passive_declare_exchange} '
-                      f'durable={self.durable_exchange} '
-                      f'auto_delete={self.auto_delete_exchange}')
+        self._debug('declaredExchange',
+                    exchange=self.exchange_name,
+                    type=self.exchange_type,
+                    passive_declare=self.passive_declare_exchange,
+                    durable=self.durable_exchange,
+                    auto_delete=self.auto_delete_exchange)
         self._setup_queue()
 
     def _setup_queue(self):
-        logging.debug(f'event=declaringQueue '
-                      f'client_type={self._client_type} '
-                      f'queue={self.queue_name} '
-                      f'passive_declare={self.passive_declare_queue} '
-                      f'durable={self.durable_queue} '
-                      f'exclusive={self.exclusive_queue} '
-                      f'auto_delete={self.auto_delete_exchange}')
+        self._debug('declaringQueue',
+                    queue=self.queue_name,
+                    passive_declare=self.passive_declare_queue,
+                    durable=self.durable_queue,
+                    exclusive=self.exclusive_queue,
+                    auto_delete=self.auto_delete_exchange)
         self._channel.queue_declare(queue=self.queue_name,
                                     passive=self.passive_declare_queue,
                                     durable=self.durable_queue,
@@ -238,27 +227,47 @@ class BaseQueueClient(ABC):
                                     callback=self._on_queue_declare_ok)
 
     def _on_queue_declare_ok(self, _unused_frame):
-        logging.debug(f'event=declaredQueue '
-                      f'client_type={self._client_type} '
-                      f'queue={self.queue_name} '
-                      f'passive_declare={self.passive_declare_queue} '
-                      f'durable={self.durable_queue} '
-                      f'exclusive={self.exclusive_queue} '
-                      f'auto_delete={self.auto_delete_exchange}')
-        logging.debug(f'event=bindingQueue '
-                      f'client_type={self._client_type} '
-                      f'queue={self.queue_name} '
-                      f'exchange={self.exchange_name} '
-                      f'routing_key={self.routing_key}')
+        self._debug('declaredQueue',
+                    queue=self.queue_name,
+                    passive_declare=self.passive_declare_queue,
+                    durable=self.durable_queue,
+                    exclusive=self.exclusive_queue,
+                    auto_delete=self.auto_delete_exchange)
+        self._debug('bindingQueue',
+                    queue=self.queue_name,
+                    exchange=self.exchange_name,
+                    routing_key=self.routing_key)
         self._channel.queue_bind(self.queue_name,
                                  self.exchange_name,
                                  routing_key=self.routing_key,
                                  callback=self._on_bind_ok)
 
     def _on_bind_ok(self, _unused_frame):
-        logging.debug(f'event=boundQueue '
-                      f'client_type={self._client_type} '
-                      f'queue={self.queue_name} '
-                      f'exchange={self.exchange_name} '
-                      f'routing_key={self.routing_key}')
+        self._debug('boundQueue',
+                    queue=self.queue_name,
+                    exchange=self.exchange_name,
+                    routing_key=self.routing_key)
         self._ready()
+
+    @staticmethod
+    def __kwarg_str(**kwargs):
+        msg = ''
+        for k, v in kwargs.items():
+            msg += f'{k}={v} '
+        return msg.strip()
+
+    def _debug(self, event, **kwargs):
+        msg = f'event={event} client_type={self._client_type.name} {self.__kwarg_str(**kwargs)}'
+        logging.debug(msg)
+
+    def _info(self, event, **kwargs):
+        msg = f'event={event} client_type={self._client_type.name} {self.__kwarg_str(**kwargs)}'
+        logging.info(msg)
+
+    def _warning(self, event, **kwargs):
+        msg = f'event={event} client_type={self._client_type.name} {self.__kwarg_str(**kwargs)}'
+        logging.warning(msg)
+
+    def _error(self, event, error=None, **kwargs):
+        msg = f'event={event} client_type={self._client_type.name} err={repr(error)} {self.__kwarg_str(**kwargs)}'
+        logging.error(msg)

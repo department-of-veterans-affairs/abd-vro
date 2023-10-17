@@ -1,5 +1,4 @@
 import json
-import logging
 
 from hoppy.base_queue_client import BaseQueueClient, ClientType
 from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
@@ -51,7 +50,7 @@ class AsyncPublisher(BaseQueueClient):
         """Executed when the exchange and queue are ready and this class can start the process of consuming.
         Overrides super class abstract method."""
 
-        logging.debug(f'event=enabledDeliveryConfirmation client_type={self._client_type}')
+        self._debug('enabledDeliveryConfirmation')
         self._channel.confirm_delivery(self._on_delivery_confirmation)
 
     def _shut_down(self):
@@ -76,29 +75,27 @@ class AsyncPublisher(BaseQueueClient):
         del self._deliveries[delivery_tag]
 
         if ack_multiple:
-            for tmp_tag in list(self._deliveries.keys()):
+            for tmp_tag in list(self._deliveries):
                 if tmp_tag <= delivery_tag:
                     self._acked += 1
                     del self._deliveries[tmp_tag]
 
-        logging.debug(f'event=receivedDeliveryConfirmation '
-                      f'client_type={self._client_type} '
-                      f'confirmation_type={confirmation_type} '
-                      f'delivery_tag={delivery_tag} '
-                      f'ack_multiple={ack_multiple} '
-                      f'total={self._message_number} '
-                      f'unconfirmed={len(self._deliveries)} '
-                      f'acked={self._acked} '
-                      f'nacked={self._nacked} '
-                      f'rejected={self._rejected}')
+        self._debug('receivedDeliveryConfirmation',
+                    confirmation_type=confirmation_type,
+                    delivery_tag=delivery_tag,
+                    ack_multiple=ack_multiple,
+                    total=self._message_number,
+                    unconfirmed=len(self._deliveries),
+                    acked=self._acked,
+                    nacked=self._nacked,
+                    rejected=self._rejected)
 
     def publish_message(self, message='hello', properties: BasicProperties = None):
         """Publishes a message to the queue"""
 
         if self._channel is None or not self._channel.is_open:
-            logging.warning(f'event=publishMessageFailed '
-                            f'client_type={self._client_type} '
-                            f'channel={self._channel}')
+            self._warning('publishMessageFailed',
+                          channel=self._channel)
             return
 
         self._channel.basic_publish(self.exchange_name, self.routing_key,
@@ -106,6 +103,5 @@ class AsyncPublisher(BaseQueueClient):
                                     properties)
         self._message_number += 1
         self._deliveries[self._message_number] = True
-        logging.debug(f'event=publishedMessage '
-                      f'client_type={self._client_type} '
-                      f'message_number={self._message_number}')
+        self._debug('publishedMessage',
+                    message_number=self._message_number)

@@ -17,8 +17,6 @@ UNEXPECTED_PUBLISH_ERROR = "Unexpected Error Caught While Publishing"
 
 
 class AsyncHoppyClient:
-    responses = {}
-    rejected = {}
 
     def __init__(self,
                  name: str,
@@ -53,6 +51,9 @@ class AsyncHoppyClient:
                                             routing_key=reply_routing_key,
                                             reply_callback=self._on_reply)
 
+        self.responses = {}
+        self.rejected = {}
+
     def start(self, loop):
         self.async_publisher.connect(loop)
         self.async_consumer.connect(loop)
@@ -70,6 +71,20 @@ class AsyncHoppyClient:
             f"correlation_id={correlation_id}")
         self.responses[correlation_id] = None
 
+        self.publish(body, correlation_id, request_id)
+
+        wait_for_response_time = time.time()
+        while True:
+            response = self.responses.get(correlation_id)
+            if response is not None:
+                return self.handle_response(request_id, correlation_id, response)
+            else:
+                self.wait_for_response(correlation_id,
+                                       request_id,
+                                       wait_for_response_time)
+            await asyncio.sleep(0)
+
+    def publish(self, body, correlation_id, request_id):
         try:
             self.async_publisher.publish_message(body,
                                                  BasicProperties(app_id=self.app_id,
@@ -85,65 +100,58 @@ class AsyncHoppyClient:
                             f"error='{UNEXPECTED_PUBLISH_ERROR}: {e}'")
             raise ResponseException(message=UNEXPECTED_PUBLISH_ERROR)
 
-        wait_for_response_time = None
-        while True:
-            response = self.responses.get(correlation_id)
-            if response is not None:
-                self._terminate_correlation_id(correlation_id)
-                if isinstance(response, json.JSONDecodeError):
-                    logging.warning(f"event=requestError "
-                                    f"client={self.name} "
-                                    f"id={request_id} "
-                                    f"queue={self.request_queue_properties.name} "
-                                    f"correlation_id={correlation_id} "
-                                    f"error='{UNDECODABLE}'")
-                    raise ResponseException(message=UNDECODABLE)
-                else:
-                    logging.info(f"event=requestCompleted "
-                                 f"client={self.name} "
-                                 f"id={request_id} "
-                                 f"queue={self.request_queue_properties.name} "
-                                 f"correlation_id={correlation_id}")
-                    return response
-            else:
-                if wait_for_response_time is None:
-                    wait_for_response_time = time.time()
-                    await asyncio.sleep(0)
-                elif time.time() - wait_for_response_time >= self.max_latency:
-                    logging.warning(f"event=requestError "
-                                    f"client={self.name} "
-                                    f"id={request_id} "
-                                    f"queue={self.request_queue_properties.name} "
-                                    f"correlation_id={correlation_id} "
-                                    f"error='{TIMED_OUT}'")
-                    self._terminate_correlation_id(correlation_id)
-                    raise ResponseException(message=TIMED_OUT)
+    def handle_response(self, request_id, correlation_id, response):
+        self._terminate_correlation_id(correlation_id)
+        if isinstance(response, json.JSONDecodeError):
+            logging.warning(f"event=requestError "
+                            f"client={self.name} "
+                            f"id={request_id} "
+                            f"queue={self.request_queue_properties.name} "
+                            f"correlation_id={correlation_id} "
+                            f"error='{UNDECODABLE}'")
+            raise ResponseException(message=UNDECODABLE)
+        else:
+            logging.info(f"event=requestCompleted "
+                         f"client={self.name} "
+                         f"id={request_id} "
+                         f"queue={self.request_queue_properties.name} "
+                         f"correlation_id={correlation_id}")
+            return response
+
+    def wait_for_response(self, correlation_id, request_id, wait_for_response_time):
+        current_time = time.time()
+        if current_time - wait_for_response_time >= self.max_latency:
+            logging.warning(f"event=requestError "
+                            f"client={self.name} "
+                            f"id={request_id} "
+                            f"queue={self.request_queue_properties.name} "
+                            f"correlation_id={correlation_id} "
+                            f"error='{TIMED_OUT}'")
+            self._terminate_correlation_id(correlation_id)
+            raise ResponseException(message=TIMED_OUT)
+        return current_time
 
     def _terminate_correlation_id(self, correlation_id):
-        if correlation_id in self.responses.keys():
-            del self.responses[correlation_id]
-        if correlation_id in self.rejected.keys():
-            del self.rejected[correlation_id]
+        self.responses.pop(correlation_id, None)
+        self.rejected.pop(correlation_id, None)
 
     def _on_reply(self, _channel, properties, delivery_tag, body):
         cor_id = properties.correlation_id
 
-        if cor_id and cor_id in self.responses.keys():
+        if not cor_id:
+            self._log_response_event("responseRejected", cor_id, False, False, 1)
+            self.async_consumer.reject_message(properties, delivery_tag, requeue=False)
+            return
+
+        if cor_id in self.responses:
             self._log_response_event("responseAcked", cor_id, True, False, 1)
             try:
                 response = json.loads(body)
                 self.responses[cor_id] = response
                 self.async_consumer.acknowledge_message(properties, delivery_tag)
-
             except json.JSONDecodeError as e:
                 self.responses[cor_id] = e
                 self.async_consumer.reject_message(properties, delivery_tag, requeue=False)
-
-            return
-
-        if not cor_id:
-            self._log_response_event("responseRejected", cor_id, False, False, 1)
-            self.async_consumer.reject_message(properties, delivery_tag, requeue=False)
             return
 
         num_rejections = self.rejected.get(cor_id, 0) + 1
@@ -195,7 +203,6 @@ class RetryableAsyncHoppyClient(AsyncHoppyClient):
                     return response
             except ResponseException:
                 attempt += 1
-                continue
         logging.warning(f"event=requestError "
                         f"client={self.name} "
                         f"id={request_id} "
