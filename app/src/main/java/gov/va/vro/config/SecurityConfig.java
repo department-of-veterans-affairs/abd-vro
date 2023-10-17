@@ -91,14 +91,16 @@ public class SecurityConfig {
             (authz) -> {
               authz
                   .requestMatchers(
-                      claimInfo,
-                      claimMetrics,
-                      evidencePdf,
-                      fullHealth,
-                      healthAssessment,
-                      immediatePdf,
-                      ACTUATOR_URLS,
-                      V3_URLS)
+                      new AntPathRequestMatcher(claimInfo),
+                      new AntPathRequestMatcher(claimMetrics),
+                      new AntPathRequestMatcher(evidencePdf),
+                      new AntPathRequestMatcher(fullHealth),
+                      new AntPathRequestMatcher(healthAssessment),
+                      new AntPathRequestMatcher(immediatePdf),
+                      new AntPathRequestMatcher(ACTUATOR_URLS),
+                      new AntPathRequestMatcher(V3_URLS))
+                  .permitAll()
+                  .anyRequest()
                   .authenticated();
             })
         .csrf(AbstractHttpConfigurer::disable)
@@ -137,7 +139,13 @@ public class SecurityConfig {
         .authorizeHttpRequests(
             (authz) ->
                 authz
-                    .requestMatchers(automatedClaim, examOrder, ACTUATOR_URLS, V3_URLS)
+                    .requestMatchers(
+                        new AntPathRequestMatcher(automatedClaim),
+                        new AntPathRequestMatcher(examOrder),
+                        new AntPathRequestMatcher(ACTUATOR_URLS),
+                        new AntPathRequestMatcher(V3_URLS))
+                    .permitAll()
+                    .anyRequest()
                     .authenticated())
         .csrf(AbstractHttpConfigurer::disable)
         .sessionManagement(
