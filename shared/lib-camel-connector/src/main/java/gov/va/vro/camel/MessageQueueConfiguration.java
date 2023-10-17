@@ -13,6 +13,8 @@ import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Collections;
+
 @Slf4j
 @EnableRabbit
 @Configuration
@@ -20,6 +22,12 @@ import org.springframework.context.annotation.Configuration;
 public class MessageQueueConfiguration {
   private final MessageQueueProperties mqProperties;
   private final MessageQueueEnvVariables mqEnvVariables;
+  private final String BIE_EVENTS_CONTENTION_ASSOCIATED = "bie-events-contention-associated";
+  private final String BIE_EVENTS_CONTENTION_UPDATED = "bie-events-contention-updated";
+  private final String BIE_EVENTS_CONTENTION_CLASSIFIED = "bie-events-contention-classified";
+  private final String BIE_EVENTS_CONTENTION_COMPLETED = "bie-events-contention-completed";
+  private final String BIE_EVENTS_CONTENTION_DELETED = "bie-events-contention-deleted";
+  private final String SAVE_TO_DB_PREFIX = "saveToDB-";
 
   @Bean
   ConnectionFactory rabbitmqConnectionFactory() {
@@ -53,6 +61,51 @@ public class MessageQueueConfiguration {
   }
 
   @Bean
+  FanoutExchange fanoutExchangeBieEventsContentionAssociated() {
+    return new FanoutExchange(
+        BIE_EVENTS_CONTENTION_ASSOCIATED,
+        false,
+        true,
+        Collections.singletonMap("queues", queueSaveToDbBieAssociated().getName()));
+  }
+
+  @Bean
+  FanoutExchange fanoutExchangeBieEventsSaveToDbBieClassified() {
+    return new FanoutExchange(
+        BIE_EVENTS_CONTENTION_CLASSIFIED,
+        false,
+        true,
+        Collections.singletonMap("queues", queueSaveToDbBieClassified().getName()));
+  }
+
+  @Bean
+  FanoutExchange fanoutExchangeBieEventsContentionCompleted() {
+    return new FanoutExchange(
+        BIE_EVENTS_CONTENTION_COMPLETED,
+        false,
+        true,
+        Collections.singletonMap("queues", queueSaveToDbBieCompleted().getName()));
+  }
+
+  @Bean
+  FanoutExchange fanoutExchangeBieEventsContentionUpdated() {
+    return new FanoutExchange(
+        BIE_EVENTS_CONTENTION_UPDATED,
+        false,
+        true,
+        Collections.singletonMap("queues", queueSaveToDbBieUpdated().getName()));
+  }
+
+  @Bean
+  FanoutExchange fanoutExchangeBieEventsContentionDeleted() {
+    return new FanoutExchange(
+        BIE_EVENTS_CONTENTION_DELETED,
+        false,
+        true,
+        Collections.singletonMap("queues", queueSaveToDbBieDeleted().getName()));
+  }
+
+  @Bean
   Queue queuePostResource() {
     return new Queue(CamelConstants.POST_RESOURCE_QUEUE, false, false, true);
   }
@@ -60,6 +113,61 @@ public class MessageQueueConfiguration {
   @Bean
   Queue queueGetResource() {
     return new Queue(CamelConstants.GET_RESOURCE_QUEUE, false, false, true);
+  }
+
+  @Bean
+  Queue queueSaveToDbBieAssociated() {
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_ASSOCIATED, false, false, true);
+  }
+
+  @Bean
+  Queue queueSaveToDbBieUpdated() {
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_UPDATED, false, false, true);
+  }
+
+  @Bean
+  Queue queueSaveToDbBieClassified() {
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_CLASSIFIED, false, false, true);
+  }
+
+  @Bean
+  Queue queueSaveToDbBieCompleted() {
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_COMPLETED, false, false, true);
+  }
+
+  @Bean
+  Queue queueSaveToDbBieDeleted() {
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_DELETED, false, false, true);
+  }
+
+  @Bean
+  Binding bindingExchangeBieDeleted() {
+    return BindingBuilder.bind(queueSaveToDbBieDeleted())
+        .to(fanoutExchangeBieEventsContentionDeleted());
+  }
+
+  @Bean
+  Binding bindingExchangeBieUpdated() {
+    return BindingBuilder.bind(queueSaveToDbBieUpdated())
+        .to(fanoutExchangeBieEventsContentionUpdated());
+  }
+
+  @Bean
+  Binding bindingExchangeBieCompleted() {
+    return BindingBuilder.bind(queueSaveToDbBieCompleted())
+        .to(fanoutExchangeBieEventsContentionCompleted());
+  }
+
+  @Bean
+  Binding bindingExchangeBieClassified() {
+    return BindingBuilder.bind(queueSaveToDbBieClassified())
+        .to(fanoutExchangeBieEventsSaveToDbBieClassified());
+  }
+
+  @Bean
+  Binding bindingExchangeBieAssociated() {
+    return BindingBuilder.bind(queueSaveToDbBieAssociated())
+        .to(fanoutExchangeBieEventsContentionAssociated());
   }
 
   @Bean
