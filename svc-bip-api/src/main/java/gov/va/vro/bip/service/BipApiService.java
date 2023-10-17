@@ -70,6 +70,7 @@ public class BipApiService implements IBipApiService {
       if (bipResponse.getStatusCode() == HttpStatus.OK) {
         BipClaimResp result = mapper.readValue(bipResponse.getBody(), BipClaimResp.class);
         result.statusCode = HttpStatus.OK.value();
+        result.statusMessage = HttpStatus.OK.getReasonPhrase();
         return result;
       } else {
         log.error(
