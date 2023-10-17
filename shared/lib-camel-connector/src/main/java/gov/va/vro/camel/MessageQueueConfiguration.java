@@ -107,37 +107,37 @@ public class MessageQueueConfiguration {
 
   @Bean
   Queue queuePostResource() {
-    return new Queue(CamelConstants.POST_RESOURCE_QUEUE, false, false, true);
+    return new Queue(CamelConstants.POST_RESOURCE_QUEUE, true, false, true);
   }
 
   @Bean
   Queue queueGetResource() {
-    return new Queue(CamelConstants.GET_RESOURCE_QUEUE, false, false, true);
+    return new Queue(CamelConstants.GET_RESOURCE_QUEUE, true, false, true);
   }
 
   @Bean
   Queue queueSaveToDbBieAssociated() {
-    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_ASSOCIATED, false, false, true);
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_ASSOCIATED, true, false, true);
   }
 
   @Bean
   Queue queueSaveToDbBieUpdated() {
-    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_UPDATED, false, false, true);
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_UPDATED, true, false, true);
   }
 
   @Bean
   Queue queueSaveToDbBieClassified() {
-    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_CLASSIFIED, false, false, true);
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_CLASSIFIED, true, false, true);
   }
 
   @Bean
   Queue queueSaveToDbBieCompleted() {
-    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_COMPLETED, false, false, true);
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_COMPLETED, true, false, true);
   }
 
   @Bean
   Queue queueSaveToDbBieDeleted() {
-    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_DELETED, false, false, true);
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_DELETED, true, false, true);
   }
 
   @Bean
