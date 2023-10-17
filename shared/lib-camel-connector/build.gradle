@@ -9,6 +9,7 @@ dependencies {
   implementation "org.apache.camel.springboot:camel-spring-rabbitmq-starter:${camel_version}"
   implementation "org.apache.camel.springboot:camel-jackson-starter:${camel_version}"
   implementation "org.apache.camel.springboot:camel-slack-starter:${camel_version}"
+  implementation "org.apache.camel:camel-spring-rabbitmq:${camel_version}"
   // Needed to send POST to external API
   // and to fix org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'swaggerWelcome'
   implementation "org.apache.camel.springboot:camel-http-starter:${camel_version}"
