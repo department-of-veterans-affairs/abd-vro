@@ -1,5 +1,6 @@
 package gov.va.vro.mockbipclaims;
 
+import static io.jsonwebtoken.security.Keys.secretKeyFor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -9,6 +10,7 @@ import gov.va.vro.mockbipclaims.model.bip.ProviderResponse;
 import gov.va.vro.mockbipclaims.util.TestHelper;
 import gov.va.vro.mockbipclaims.util.TestSpec;
 import gov.va.vro.mockshared.jwt.JwtSpecification;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
@@ -47,7 +50,7 @@ public class JwtTest {
       helper.getClaim(spec);
       fail("Expected 401 error");
     } catch (HttpStatusCodeException exception) {
-      HttpStatus statusCode = exception.getStatusCode();
+      HttpStatusCode statusCode = exception.getStatusCode();
       assertEquals(HttpStatus.UNAUTHORIZED, statusCode);
       ObjectMapper mapper = new ObjectMapper();
       try {
@@ -62,7 +65,8 @@ public class JwtTest {
 
   @Test
   void invalidJwtSecretTest() {
-    Mockito.when(props.getSecret()).thenReturn("Not the secret");
+    Mockito.when(props.getSecret())
+        .thenReturn(String.valueOf(secretKeyFor(SignatureAlgorithm.HS256)));
 
     TestSpec spec = new TestSpec();
     spec.setClaimId(1010);

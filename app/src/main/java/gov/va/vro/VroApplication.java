@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 
 @Slf4j
 @SpringBootConfiguration
@@ -18,7 +18,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
     excludeFilters = {
       @ComponentScan.Filter(
           type = FilterType.ASSIGNABLE_TYPE,
-          value = {WebSecurityConfigurerAdapter.class})
+          value = {AbstractPreAuthenticatedProcessingFilter.class})
     })
 public class VroApplication {
   public static void main(String[] args) {
