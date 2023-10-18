@@ -1,6 +1,6 @@
 package gov.va.vro.bip.service;
 
-import gov.va.vro.bip.model.BipClaim;
+import gov.va.vro.bip.model.BipClaimResp;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.ClaimContention;
 import gov.va.vro.bip.model.ClaimStatus;
@@ -22,7 +22,7 @@ public interface IBipApiService {
    * @return a BipClaim object.
    * @throws BipException error occurs.
    */
-  BipClaim getClaimDetails(long collectionId);
+  BipClaimResp getClaimDetails(long collectionId);
 
   /**
    * Updates claim status to RFD.
@@ -53,6 +53,4 @@ public interface IBipApiService {
   List<ClaimContention> getClaimContentions(long claimId) throws BipException;
 
   BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention);
-
-  boolean confirmCanCallSpecialIssueTypes();
 }
