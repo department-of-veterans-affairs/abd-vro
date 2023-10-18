@@ -3,10 +3,10 @@ import sys
 from typing import Optional
 
 from fastapi import Depends, FastAPI, HTTPException
-from sqlalchemy import text
+from sqlalchemy import select, text
 from sqlalchemy.orm import Session
 
-# from . import database_models
+from . import database_models
 from .database import engine, get_db
 from .pydantic_models import Claim, PredictedClassification
 from .util.brd_classification_codes import get_classification_name
@@ -15,7 +15,7 @@ from .util.lookup_table import (ConditionDropdownLookupTable,
 
 dc_lookup_table = DiagnosticCodeLookupTable()
 dropdown_lookup_table = ConditionDropdownLookupTable()
-# database_models.Base.metadata.create_all(bind=engine)
+database_models.Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI(
@@ -55,10 +55,12 @@ def get_health_status():
 async def test_db(
         db: Session = Depends(get_db)
 ):
-    # result = db.execute(select(database_models.Claim).order_by(database_models.Claim.vets_api_claim_id))
-    # record = result.fetchone()
-    # print(f'repr(result): {repr(record)}')
     db.execute(text('SELECT 1'))
+    print('select succeeded')
+
+    result = db.execute(select(database_models.MasonModelNotRealModelDeleteMe).order_by(database_models.MasonModelNotRealModelDeleteMe.vets_api_claim_id))
+    record = result.fetchone()
+    print(f'for fake model data... repr(record): {repr(record)}')
     return {"success": True}
 
 
