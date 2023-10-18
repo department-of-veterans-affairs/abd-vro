@@ -33,7 +33,7 @@ async def on_shut_down():
 
 app = FastAPI(
     title="EP Merge Tool",
-    description="Merge supplemental claim (EP400) contentions to a pending claim (EP 010/020/110).",
+    description="Merge EP400 claim contentions into a pending claim (EP 010/020/110).",
     contact={},
     version="v0.1",
     license={
@@ -67,25 +67,25 @@ def get_health_status():
           response_model=MergeEndProductsResponse,
           response_model_exclude_none=True)
 async def merge_claims(merge_request: MergeEndProductsRequest, background_tasks: BackgroundTasks):
-    if validate_merge_request(merge_request):
-        job_id = uuid4()
-        logging.info(f"event=mergeJobSubmitted "
-                     f"job_id={job_id} "
-                     f"pending_claim_id={sanitize(merge_request.pending_claim_id)} "
-                     f"supp_claim_id={sanitize(merge_request.supp_claim_id)}")
-
-        merge_job = MergeJob(job_id=job_id,
-                             pending_claim_id=merge_request.pending_claim_id,
-                             supp_claim_id=merge_request.supp_claim_id)
-        job_store.submit_merge_job(merge_job)
-
-        return jsonable_encoder({"job": merge_job})
-    else:
+    if not is_valid_merge_request(merge_request):
         raise HTTPException(status_code=400, detail="Claim IDs must be different.")
 
+    job_id = uuid4()
+    logging.info(f"event=mergeJobSubmitted "
+                 f"job_id={job_id} "
+                 f"pending_claim_id={sanitize(merge_request.pending_claim_id)} "
+                 f"ep400_claim_id={sanitize(merge_request.ep400_claim_id)}")
 
-def validate_merge_request(merge_request: MergeEndProductsRequest) -> bool:
-    return merge_request.pending_claim_id != merge_request.supp_claim_id
+    merge_job = MergeJob(job_id=job_id,
+                         pending_claim_id=merge_request.pending_claim_id,
+                         ep400_claim_id=merge_request.ep400_claim_id)
+    job_store.submit_merge_job(merge_job)
+
+    return jsonable_encoder({"job": merge_job})
+
+
+def is_valid_merge_request(merge_request: MergeEndProductsRequest) -> bool:
+    return merge_request.pending_claim_id != merge_request.ep400_claim_id
 
 
 @app.get("/merge/{job_id}",
