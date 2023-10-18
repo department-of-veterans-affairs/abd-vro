@@ -251,10 +251,7 @@ class BaseQueueClient(ABC):
 
     @staticmethod
     def __kwarg_str(**kwargs):
-        msg = ''
-        for k, v in kwargs.items():
-            msg += f'{k}={v} '
-        return msg.strip()
+        return ' '.join(f'{k}={v}' for k, v in kwargs.items())
 
     def _debug(self, event, **kwargs):
         msg = f'event={event} client_type={self._client_type.name} {self.__kwarg_str(**kwargs)}'
@@ -269,5 +266,5 @@ class BaseQueueClient(ABC):
         logging.warning(msg)
 
     def _error(self, event, error=None, **kwargs):
-        msg = f'event={event} client_type={self._client_type.name} err={repr(error)} {self.__kwarg_str(**kwargs)}'
+        msg = f'event={event} client_type={self._client_type.name} err={error!r} {self.__kwarg_str(**kwargs)}'
         logging.error(msg)

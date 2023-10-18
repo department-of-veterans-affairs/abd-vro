@@ -79,7 +79,7 @@ class AsyncHoppyClient:
             if response is not None:
                 return self.handle_response(request_id, correlation_id, response)
             else:
-                self.wait_for_response(correlation_id,
+                self.check_for_timeout(correlation_id,
                                        request_id,
                                        wait_for_response_time)
             await asyncio.sleep(0)
@@ -97,7 +97,7 @@ class AsyncHoppyClient:
                             f"id={request_id} "
                             f"queue={self.request_queue_properties.name} "
                             f"correlation_id={correlation_id} "
-                            f"error='{UNEXPECTED_PUBLISH_ERROR}: {e}'")
+                            f"error='{UNEXPECTED_PUBLISH_ERROR}: {e!r}'")
             raise ResponseException(message=UNEXPECTED_PUBLISH_ERROR)
 
     def handle_response(self, request_id, correlation_id, response):
@@ -118,7 +118,7 @@ class AsyncHoppyClient:
                          f"correlation_id={correlation_id}")
             return response
 
-    def wait_for_response(self, correlation_id, request_id, wait_for_response_time):
+    def check_for_timeout(self, correlation_id, request_id, wait_for_response_time):
         current_time = time.time()
         if current_time - wait_for_response_time >= self.max_latency:
             logging.warning(f"event=requestError "
