@@ -2,8 +2,12 @@ import logging
 import sys
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
+from sqlalchemy import text
+from sqlalchemy.orm import Session
 
+# from . import database_models
+from .database import engine, get_db
 from .pydantic_models import Claim, PredictedClassification
 from .util.brd_classification_codes import get_classification_name
 from .util.lookup_table import (ConditionDropdownLookupTable,
@@ -11,6 +15,7 @@ from .util.lookup_table import (ConditionDropdownLookupTable,
 
 dc_lookup_table = DiagnosticCodeLookupTable()
 dropdown_lookup_table = ConditionDropdownLookupTable()
+# database_models.Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI(
@@ -44,6 +49,17 @@ def get_health_status():
         raise HTTPException(status_code=500, detail="Lookup table is empty")
 
     return {"status": "ok"}
+
+# TODO: move test database connection to health check endpoint ^
+@app.get("/test_db")
+async def test_db(
+        db: Session = Depends(get_db)
+):
+    # result = db.execute(select(database_models.Claim).order_by(database_models.Claim.vets_api_claim_id))
+    # record = result.fetchone()
+    # print(f'repr(result): {repr(record)}')
+    db.execute(text('SELECT 1'))
+    return {"success": True}
 
 
 @app.post("/classifier")
