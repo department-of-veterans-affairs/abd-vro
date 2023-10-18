@@ -40,7 +40,7 @@ public class ClaimsController implements ClaimsApi {
   @Override
   public ResponseEntity<CloseClaimResponse> cancelClaimById(Long claimId) {
     log.info("Canceling claim (id: {})", claimId);
-    if(claimStore.get(claimId) == null) {
+    if (claimStore.get(claimId) == null) {
       String reason = "No claim found for id: " + claimId;
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
     }
