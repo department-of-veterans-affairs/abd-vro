@@ -61,13 +61,13 @@ class BieXampleRoutesTest extends CamelTestSupport {
   @SneakyThrows
   void testSaveContentionEventRoute() {
     final BieMessagePayload response =
-        template.requestBody(STARTING_URI, testItem, BieMessagePayload.class);
+            template.requestBody(STARTING_URI, testItem, BieMessagePayload.class);
     assertThat(response.getEventType()).isEqualTo(testItem.getEventType());
     assertThat(response.getStatusMessage()).isNull();
     assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
     assertThat(response.getClaimId()).isEqualTo(testItem.getClaimId());
     assertThat(response.getContentionClassificationName())
-        .isEqualTo(testItem.getContentionClassificationName());
+            .isEqualTo(testItem.getContentionClassificationName());
     assertThat(response.getContentionId()).isEqualTo(testItem.getContentionId());
     assertThat(response.getContentionTypeCode()).isEqualTo(testItem.getContentionTypeCode());
     assertThat(response.getDiagnosticTypeCode()).isEqualTo(testItem.getDiagnosticTypeCode());
@@ -76,7 +76,6 @@ class BieXampleRoutesTest extends CamelTestSupport {
 
     MockEndpoint.assertIsSatisfied(context);
   }
-
   @Test
   @SneakyThrows
   void testMainRouteOnException() {
