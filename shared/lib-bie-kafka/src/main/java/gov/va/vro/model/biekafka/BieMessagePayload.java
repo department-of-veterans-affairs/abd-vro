@@ -18,6 +18,8 @@ public class BieMessagePayload {
   private String contentionTypeCode;
   private String contentionClassificationName;
   private String diagnosticTypeCode;
+  private String actionName;
+  private String actionResultName;
   private long notifiedAt;
   private long occurredAt;
 }

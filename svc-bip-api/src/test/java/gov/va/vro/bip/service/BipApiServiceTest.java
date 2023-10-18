@@ -1,6 +1,11 @@
 package gov.va.vro.bip.service;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import gov.va.vro.bip.model.BipClaim;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
@@ -15,10 +20,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Stubber;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.file.Files;
@@ -30,8 +39,11 @@ import java.util.Objects;
 @Slf4j
 public class BipApiServiceTest {
   private static final long GOOD_CLAIM_ID = 9666959L;
-
   private static final long BAD_CLAIM_ID = 9666958L;
+  private static final long BAD_JSON_CLAIM_ID = 9123456L;
+  private static final long NOT_FOUND_CLAIM_ID = 9234567L;
+  private static final long BAD_STATUS_CLAIM_ID = 9345678L;
+  private static final long BAD_REST_CLAIM_ID = 9456789L;
   private static final String CONTENTION_RESPONSE_200 =
       "bip-test-data/contention_response_200.json";
   private static final String CONTENTION_RESPONSE_412 =
@@ -49,6 +61,9 @@ public class BipApiServiceTest {
   private static final String CLAIM_ISSUER = "issuer";
   private static final String STATION_ID = "280";
   private static final String APP_ID = "bip";
+  // TODO get sample response
+  private static final String API_RESPONSE_200 = "{\"mock response\"}";
+  private static final String SPECIAL_ISSUE_TYPES = "/contentions/special_issue_types";
 
   @InjectMocks private BipApiService service;
 
@@ -78,6 +93,21 @@ public class BipApiServiceTest {
     Mockito.doReturn(claims).when(bipApiProps).toCommonJwtClaims();
   }
 
+  private String formatClaimUrl(String format, Long claimId) {
+    String baseUrl = HTTPS + CLAIM_URL;
+    return baseUrl + String.format(format, claimId);
+  }
+
+  private void mockResponseForUrl(Stubber response, String claimUrl, HttpMethod httpMethod) {
+    response
+        .when(restTemplate)
+        .exchange(
+            ArgumentMatchers.eq(claimUrl),
+            ArgumentMatchers.eq(httpMethod),
+            ArgumentMatchers.any(HttpEntity.class),
+            ArgumentMatchers.eq(String.class));
+  }
+
   @Test
   public void testGetClaimDetails() throws Exception {
 
@@ -85,28 +115,37 @@ public class BipApiServiceTest {
     String resp404Body = getTestData(CLAIM_RESPONSE_404);
 
     ResponseEntity<String> resp200 = ResponseEntity.ok(resp200Body);
-    ResponseEntity<String> resp404 = ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp404Body);
-    String baseUrl = HTTPS + CLAIM_URL;
-    String claimUrl = baseUrl + String.format(CLAIM_DETAILS, GOOD_CLAIM_ID);
-    String badClaimUrl = baseUrl + String.format(CLAIM_DETAILS, BAD_CLAIM_ID);
+    mockResponseForUrl(
+        Mockito.doReturn(resp200), formatClaimUrl(CLAIM_DETAILS, GOOD_CLAIM_ID), HttpMethod.GET);
 
-    Mockito.doReturn(resp200)
-        .when(restTemplate)
-        .exchange(
-            ArgumentMatchers.eq(claimUrl),
-            ArgumentMatchers.eq(HttpMethod.GET),
-            ArgumentMatchers.any(HttpEntity.class),
-            ArgumentMatchers.eq(String.class));
-    Mockito.doReturn(resp404)
-        .when(restTemplate)
-        .exchange(
-            ArgumentMatchers.eq(badClaimUrl),
-            ArgumentMatchers.eq(HttpMethod.GET),
-            ArgumentMatchers.any(HttpEntity.class),
-            ArgumentMatchers.eq(String.class));
+    ResponseEntity<String> resp404 = ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp404Body);
+    mockResponseForUrl(
+        Mockito.doReturn(resp404), formatClaimUrl(CLAIM_DETAILS, BAD_CLAIM_ID), HttpMethod.GET);
+
+    ResponseEntity<String> respBadJson =
+        ResponseEntity.ok("}" + resp200Body); // add } to valid resp to cause parse error
+    mockResponseForUrl(
+        Mockito.doReturn(respBadJson),
+        formatClaimUrl(CLAIM_DETAILS, BAD_JSON_CLAIM_ID),
+        HttpMethod.GET);
+
+    mockResponseForUrl(
+        Mockito.doThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND)),
+        formatClaimUrl(CLAIM_DETAILS, NOT_FOUND_CLAIM_ID),
+        HttpMethod.GET);
+
+    mockResponseForUrl(
+        Mockito.doThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)),
+        formatClaimUrl(CLAIM_DETAILS, BAD_STATUS_CLAIM_ID),
+        HttpMethod.GET);
+
+    mockResponseForUrl(
+        Mockito.doThrow(new RestClientException("Mock RestClient exception")),
+        formatClaimUrl(CLAIM_DETAILS, BAD_REST_CLAIM_ID),
+        HttpMethod.GET);
     mockBipApiProp();
     try {
-      BipClaim result = service.getClaimDetails(GOOD_CLAIM_ID);
+      BipClaim result = service.getClaimDetails(GOOD_CLAIM_ID).getClaim();
       assertNotNull(result);
     } catch (BipException e) {
       log.error("Positive getClaimDetails test failed.", e);
@@ -114,36 +153,57 @@ public class BipApiServiceTest {
     }
 
     try {
-      BipClaim result = service.getClaimDetails(BAD_CLAIM_ID);
+      BipClaim result = service.getClaimDetails(BAD_CLAIM_ID).getClaim();
       log.error("Negative getClaimDetails test failed. {}", result.getClaimId());
       fail();
     } catch (BipException e) {
       assertSame(HttpStatus.NOT_FOUND, e.getStatus());
     }
+
+    try {
+      BipClaim result = service.getClaimDetails(BAD_JSON_CLAIM_ID).getClaim();
+      log.error("Negative getClaimDetails test failed. {}", result.getClaimId());
+      fail();
+    } catch (BipException e) {
+      assertSame(HttpStatus.INTERNAL_SERVER_ERROR, e.getStatus());
+    }
+
+    try {
+      BipClaim result = service.getClaimDetails(NOT_FOUND_CLAIM_ID).getClaim();
+      log.error("Negative getClaimDetails test failed. {}", result.getClaimId());
+      fail();
+    } catch (BipException e) {
+      assertSame(HttpStatus.NOT_FOUND, e.getStatus());
+    }
+    try {
+      BipClaim result = service.getClaimDetails(BAD_STATUS_CLAIM_ID).getClaim();
+      log.error("Negative getClaimDetails test failed. {}", result.getClaimId());
+      fail();
+    } catch (BipException e) {
+      assertSame(HttpStatus.INTERNAL_SERVER_ERROR, e.getStatus());
+    }
+    try {
+      BipClaim result = service.getClaimDetails(BAD_REST_CLAIM_ID).getClaim();
+      log.error("Negative getClaimDetails test failed. {}", result.getClaimId());
+      fail();
+    } catch (BipException e) {
+      assertSame(HttpStatus.INTERNAL_SERVER_ERROR, e.getStatus());
+    }
   }
 
   @Test
   public void testSetClaimToRfdStatus() {
-    String baseUrl = HTTPS + CLAIM_URL;
-    String goodUrl = baseUrl + String.format(UPDATE_CLAIM_STATUS, GOOD_CLAIM_ID);
-    String badUrl = baseUrl + String.format(UPDATE_CLAIM_STATUS, BAD_CLAIM_ID);
     ResponseEntity<String> resp200 = ResponseEntity.ok("{}");
     ResponseEntity<String> resp500 =
         ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
-    Mockito.doReturn(resp200)
-        .when(restTemplate)
-        .exchange(
-            ArgumentMatchers.eq(goodUrl),
-            ArgumentMatchers.eq(HttpMethod.PUT),
-            ArgumentMatchers.any(HttpEntity.class),
-            ArgumentMatchers.eq(String.class));
-    Mockito.doReturn(resp500)
-        .when(restTemplate)
-        .exchange(
-            ArgumentMatchers.eq(badUrl),
-            ArgumentMatchers.eq(HttpMethod.PUT),
-            ArgumentMatchers.any(HttpEntity.class),
-            ArgumentMatchers.eq(String.class));
+    mockResponseForUrl(
+        Mockito.doReturn(resp200),
+        formatClaimUrl(UPDATE_CLAIM_STATUS, GOOD_CLAIM_ID),
+        HttpMethod.PUT);
+    mockResponseForUrl(
+        Mockito.doReturn(resp500),
+        formatClaimUrl(UPDATE_CLAIM_STATUS, BAD_CLAIM_ID),
+        HttpMethod.PUT);
 
     mockBipApiProp();
     try {
@@ -170,24 +230,10 @@ public class BipApiServiceTest {
     ResponseEntity<String> resp200 = ResponseEntity.ok(resp200Body);
     ResponseEntity<String> resp404 = ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp404Body);
 
-    String baseUrl = HTTPS + CLAIM_URL;
-    String goodUrl = baseUrl + String.format(CONTENTION, GOOD_CLAIM_ID);
-    String badUrl = baseUrl + String.format(CONTENTION, BAD_CLAIM_ID);
-
-    Mockito.doReturn(resp200)
-        .when(restTemplate)
-        .exchange(
-            ArgumentMatchers.eq(goodUrl),
-            ArgumentMatchers.eq(HttpMethod.GET),
-            ArgumentMatchers.any(HttpEntity.class),
-            ArgumentMatchers.eq(String.class));
-    Mockito.doReturn(resp404)
-        .when(restTemplate)
-        .exchange(
-            ArgumentMatchers.eq(badUrl),
-            ArgumentMatchers.eq(HttpMethod.GET),
-            ArgumentMatchers.any(HttpEntity.class),
-            ArgumentMatchers.eq(String.class));
+    mockResponseForUrl(
+        Mockito.doReturn(resp200), formatClaimUrl(CONTENTION, GOOD_CLAIM_ID), HttpMethod.GET);
+    mockResponseForUrl(
+        Mockito.doReturn(resp404), formatClaimUrl(CONTENTION, BAD_CLAIM_ID), HttpMethod.GET);
 
     mockBipApiProp();
     try {
@@ -215,24 +261,10 @@ public class BipApiServiceTest {
     ResponseEntity<String> resp412 =
         ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(resp412Body);
 
-    String baseUrl = HTTPS + CLAIM_URL;
-    String goodUrl = baseUrl + String.format(CONTENTION, GOOD_CLAIM_ID);
-    String badUrl = baseUrl + String.format(CONTENTION, BAD_CLAIM_ID);
-
-    Mockito.doReturn(resp200)
-        .when(restTemplate)
-        .exchange(
-            ArgumentMatchers.eq(goodUrl),
-            ArgumentMatchers.eq(HttpMethod.PUT),
-            ArgumentMatchers.any(HttpEntity.class),
-            ArgumentMatchers.eq(String.class));
-    Mockito.doReturn(resp412)
-        .when(restTemplate)
-        .exchange(
-            ArgumentMatchers.eq(badUrl),
-            ArgumentMatchers.eq(HttpMethod.PUT),
-            ArgumentMatchers.any(HttpEntity.class),
-            ArgumentMatchers.eq(String.class));
+    mockResponseForUrl(
+        Mockito.doReturn(resp200), formatClaimUrl(CONTENTION, GOOD_CLAIM_ID), HttpMethod.PUT);
+    mockResponseForUrl(
+        Mockito.doReturn(resp412), formatClaimUrl(CONTENTION, BAD_CLAIM_ID), HttpMethod.PUT);
 
     mockBipApiProp();
     UpdateContentionReq request = UpdateContentionReq.builder().build();
@@ -250,6 +282,41 @@ public class BipApiServiceTest {
       fail();
     } catch (BipException e) {
       assertSame(HttpStatus.PRECONDITION_FAILED, e.getStatus());
+    }
+  }
+
+  @Test
+  public void testIsApiFunctioning() throws Exception {
+    ResponseEntity<String> resp200 = ResponseEntity.ok(API_RESPONSE_200);
+
+    String goodUrl = HTTPS + CLAIM_URL + SPECIAL_ISSUE_TYPES;
+    mockBipApiProp();
+
+    mockResponseForUrl(Mockito.doReturn(resp200), goodUrl, HttpMethod.GET);
+    try {
+      assertTrue(service.isApiFunctioning());
+    } catch (BipException e) {
+      log.error("Positive testIsApiResponding test failed.", e);
+      fail();
+    }
+    ResponseEntity<String> respEmpty = ResponseEntity.ok("");
+
+    mockResponseForUrl(Mockito.doReturn(respEmpty), goodUrl, HttpMethod.GET);
+    try {
+      assertFalse(service.isApiFunctioning());
+    } catch (BipException e) {
+      log.error("Negative testIsApiResponding test failed.", e);
+      fail();
+    }
+    mockResponseForUrl(
+        Mockito.doThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)),
+        goodUrl,
+        HttpMethod.GET);
+    try {
+      assertFalse(service.isApiFunctioning());
+    } catch (BipException e) {
+      log.error("Negative testIsApiResponding test failed.", e);
+      fail();
     }
   }
 }

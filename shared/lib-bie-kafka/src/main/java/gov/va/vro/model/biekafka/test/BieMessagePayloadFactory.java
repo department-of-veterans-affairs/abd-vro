@@ -20,6 +20,8 @@ public class BieMessagePayloadFactory {
         .diagnosticTypeCode(faker.lorem().characters(10))
         .occurredAt(faker.date().past(60, TimeUnit.DAYS).getTime())
         .notifiedAt(faker.date().past(60, TimeUnit.DAYS).getTime())
+        .actionName(faker.lorem().characters(10))
+        .actionResultName(faker.lorem().characters(10))
         .status(200)
         .build();
   }
