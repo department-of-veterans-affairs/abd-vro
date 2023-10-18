@@ -57,7 +57,7 @@ dependencies {
         implementation 'org.apache.commons:commons-compress:1.24.0'
 
         // for tomcat
-        implementation 'org.apache.tomcat.embed:tomcat-embed-core:10.1.13'
+        implementation 'org.apache.tomcat.embed:tomcat-embed-core:10.1.14'
 
         // These are used indirectly but we need to specify versions, otherwise build error
         annotationProcessor "org.springframework.boot:spring-boot-autoconfigure-processor:${spring_boot_version}"
