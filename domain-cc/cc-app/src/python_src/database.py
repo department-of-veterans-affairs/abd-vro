@@ -1,7 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-VRO_POSTGRES_URL = "postgresql://vro_user:vro_user_pw@localhost:5432/vro"
+# VRO_POSTGRES_URL = "postgresql://vro_user:vro_user_pw@localhost:5432/vro"
+VRO_POSTGRES_URL = "postgresql://vro_user:vro_user_pw@0.0.0.0:5432/vro"
 # VRO_POSTGRES_URL = "postgresql://vro_user:vro_user_pw@localhost:5432/vro"
 # POSTGRES_DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/postgres"
 # SQLITE_DATABASE_URL = "sqlite:///./sql_app.db"

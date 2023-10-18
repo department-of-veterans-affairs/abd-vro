@@ -82,7 +82,7 @@ alembic upgrade <revision-hash> --sql > new_sql_file.sql
 ```
 Move the new sql migration to db-init migrations folder
 ```
-mv new_sql_file.sql abd-vro/db-init/src/main/resources/database/migrations/<hash>_migration.sql
+mv new_sql_file.sql abd-vro/db-init/src/main/resources/database/migrations/domain_cc_<hash>_migration.sql
 ```
 You can go ahead and apply your database migrations locally 
 ```
