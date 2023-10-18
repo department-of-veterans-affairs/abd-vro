@@ -17,12 +17,12 @@ dependencies {
     // Set versions for these plugins so we don't have to repeat the versions in convention.gradle files
     // https://discuss.gradle.org/t/applying-a-plugin-version-inside-a-convention-plugin/42160
     // Syntax: "<pluginName>:<pluginName>.gradle.plugin:<pluginVersion>"
-    implementation 'io.freefair.lombok:io.freefair.lombok.gradle.plugin:8.3'
+    implementation 'io.freefair.lombok:io.freefair.lombok.gradle.plugin:8.4'
     implementation 'com.diffplug.spotless:com.diffplug.spotless.gradle.plugin:6.22.0'
     implementation 'com.felipefzdz.gradle.shellcheck:com.felipefzdz.gradle.shellcheck.gradle.plugin:1.4.6'
     implementation 'com.palantir.docker:com.palantir.docker.gradle.plugin:0.35.0'
     implementation 'com.palantir.docker-run:com.palantir.docker-run.gradle.plugin:0.35.0'
-    implementation 'org.springdoc.openapi-gradle-plugin:org.springdoc.openapi-gradle-plugin.gradle.plugin:1.7.0'
+    implementation 'org.springdoc.openapi-gradle-plugin:org.springdoc.openapi-gradle-plugin.gradle.plugin:1.8.0'
 
     implementation 'org.barfuin.gradle.jacocolog:org.barfuin.gradle.jacocolog.gradle.plugin:3.1.0'
     implementation 'org.barfuin.gradle.taskinfo:org.barfuin.gradle.taskinfo.gradle.plugin:2.1.0'
