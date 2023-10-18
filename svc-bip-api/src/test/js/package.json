@@ -2,7 +2,7 @@
   "name": "rqmtest.js",
   "version": "1.0.0",
   "description": "",
-  "main": "testRMQ.js",
+  "main": "testRabbitMq.js",
   "scripts": {
     "test": "echo notest"
   },
