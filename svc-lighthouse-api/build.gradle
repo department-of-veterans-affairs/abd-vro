@@ -25,6 +25,8 @@ dependencies {
   implementation "io.jsonwebtoken:jjwt-impl:${jjwt_version}"
   implementation "io.jsonwebtoken:jjwt-jackson:${jjwt_version}"
 
+  implementation 'org.apache.tomcat.embed:tomcat-embed-core:10.1.14'
+
   testImplementation "org.apache.camel.springboot:camel-spring-rabbitmq-starter:${camel_version}"
 }
 
