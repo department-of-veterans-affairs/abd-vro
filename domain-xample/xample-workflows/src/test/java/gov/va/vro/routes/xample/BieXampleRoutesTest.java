@@ -8,6 +8,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.builder.AdviceWith;
+import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.junit5.CamelTestSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -73,7 +74,7 @@ class BieXampleRoutesTest extends CamelTestSupport {
     assertThat(response.getActionName()).isEqualTo(testItem.getActionName());
     assertThat(response.getActionResultName()).isEqualTo(testItem.getActionResultName());
 
-    assertMockEndpointsSatisfied();
+    MockEndpoint.assertIsSatisfied(context);
   }
 
   @Test
@@ -89,6 +90,6 @@ class BieXampleRoutesTest extends CamelTestSupport {
     assertThat(response.getStatus()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     assertThat(response.getStatusMessage()).isEqualTo(exception.toString());
 
-    assertMockEndpointsSatisfied();
+    MockEndpoint.assertIsSatisfied(context);
   }
 }
