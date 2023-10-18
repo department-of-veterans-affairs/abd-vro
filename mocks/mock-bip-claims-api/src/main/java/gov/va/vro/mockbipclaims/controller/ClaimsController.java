@@ -49,7 +49,7 @@ public class ClaimsController implements ClaimsApi {
 
     CloseClaimResponse response = new CloseClaimResponse();
     Message message = new Message();
-    message.setText("Successully canceled the claim.");
+    message.setText("Successfully canceled the claim with id: " + claimId);
     message.setStatus(HttpStatus.OK.value());
     response.addMessagesItem(message);
     return new ResponseEntity<>(response, HttpStatus.OK);
