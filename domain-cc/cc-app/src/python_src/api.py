@@ -2,15 +2,24 @@ import logging
 import sys
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
-from .pydantic_models import Claim, PredictedClassification
+from . import database_models
+from .database import engine, get_db
+from .pydantic_models import (
+    Claim,
+    PredictedClassification,
+    MultiContentionClaim
+)
 from .util.brd_classification_codes import get_classification_name
 from .util.lookup_table import (ConditionDropdownLookupTable,
                                 DiagnosticCodeLookupTable)
 
 dc_lookup_table = DiagnosticCodeLookupTable()
 dropdown_lookup_table = ConditionDropdownLookupTable()
+database_models.Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI(
@@ -78,3 +87,21 @@ def get_classification(claim: Claim) -> Optional[PredictedClassification]:
 
     logging.info(f"classification: {classification}")
     return classification
+
+def get_claim_va_gov_ids(claim: list[ClaimForIncrease]) -> dict:
+    claim_metrics = {
+        "vets_api_claim_id": claim.claim_id,
+        "vets_api_form526_submission_id": claim.form526_submission_id,
+    }
+    return claim_metrics
+
+@app.get("/test")
+async def testthing(
+    db: Session = Depends(get_db)
+):
+    result = db.execute(select(database_models.Claim).order_by(database_models.Claim.vets_api_claim_id))
+    record = result.fetchone()
+    # result = db.execute(select(database_models.Claim).where(database_models.Claim.vets_api_claim_id == 1))
+    print(f'repr(result): {repr(record)}')
+    # print(f'db result: {record.id}')
+    return repr(record)

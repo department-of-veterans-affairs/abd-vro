@@ -67,6 +67,32 @@ pip install -r dev-requirements.txt
 pre-commit install
 ```
 
+### Database Changes
+When changing schema (database_models.py), you'll want to generate a new migration file:
+```
+alembic revision --autogenerate -m "<message describing change>"
+```
+This will generate a new migration file under versions/ with the changes to your model(s).
+```
+ls alembic/versions/
+```
+You'll also need to generate a sql migration file for use w/ VRO's flywheel db-init app.
+```
+alembic upgrade <revision-hash> --sql > new_sql_file.sql
+```
+Move the new sql migration to db-init migrations folder
+```
+mv new_sql_file.sql abd-vro/db-init/src/main/resources/database/migrations/<hash>_migration.sql
+```
+You can go ahead and apply your database migrations locally 
+```
+alembic upgrade head
+```
+Or if you're running the database in docker
+```
+./gradlew :dockerComposeDown ./gradlew dockerPruneImages ./gradlew dockerPruneVolumes ./gradlew docker
+```
+
 ## Building docs
 ```
 source ~/.virtualenvs/domain-cc/bin/activate
