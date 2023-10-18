@@ -2,7 +2,9 @@ package gov.va.vro.mockbipclaims.controller;
 
 import gov.va.vro.mockbipclaims.api.ClaimsApi;
 import gov.va.vro.mockbipclaims.model.bip.ClaimDetail;
+import gov.va.vro.mockbipclaims.model.bip.Message;
 import gov.va.vro.mockbipclaims.model.bip.response.ClaimDetailResponse;
+import gov.va.vro.mockbipclaims.model.bip.response.CloseClaimResponse;
 import gov.va.vro.mockbipclaims.model.store.ClaimStore;
 import gov.va.vro.mockbipclaims.model.store.ClaimStoreItem;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,24 @@ public class ClaimsController implements ClaimsApi {
     ClaimDetailResponse response = new ClaimDetailResponse();
     response.setClaim(claimDetail);
 
+    return new ResponseEntity<>(response, HttpStatus.OK);
+  }
+
+  @Override
+  public ResponseEntity<CloseClaimResponse> cancelClaimById(Long claimId) {
+    log.info("Canceling claim (id: {})", claimId);
+    if(claimStore.get(claimId) == null) {
+      String reason = "No claim found for id: " + claimId;
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
+    }
+
+    claimStore.cancel(claimId);
+
+    CloseClaimResponse response = new CloseClaimResponse();
+    Message message = new Message();
+    message.setText("Successully canceled the claim.");
+    message.setStatus(HttpStatus.OK.value());
+    response.addMessagesItem(message);
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 }
