@@ -11,7 +11,7 @@ from .database import engine, get_db
 from .pydantic_models import (
     Claim,
     PredictedClassification,
-    MultiContentionClaim
+    # MultiContentionClaim
 )
 from .util.brd_classification_codes import get_classification_name
 from .util.lookup_table import (ConditionDropdownLookupTable,
@@ -88,12 +88,12 @@ def get_classification(claim: Claim) -> Optional[PredictedClassification]:
     logging.info(f"classification: {classification}")
     return classification
 
-def get_claim_va_gov_ids(claim: list[ClaimForIncrease]) -> dict:
-    claim_metrics = {
-        "vets_api_claim_id": claim.claim_id,
-        "vets_api_form526_submission_id": claim.form526_submission_id,
-    }
-    return claim_metrics
+# def get_claim_va_gov_ids(claim: list[ClaimForIncrease]) -> dict:
+#     claim_metrics = {
+#         "vets_api_claim_id": claim.claim_id,
+#         "vets_api_form526_submission_id": claim.form526_submission_id,
+#     }
+#     return claim_metrics
 
 @app.get("/test")
 async def testthing(
