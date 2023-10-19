@@ -6,6 +6,6 @@
 // starter.java.build-javatarget-conventions
 
 dependencies {
-    implementation 'io.swagger.core.v3:swagger-annotations'
-    implementation 'io.swagger.core.v3:swagger-models'
+    implementation "io.swagger.core.v3:swagger-annotations:${swagger_version}"
+    implementation "io.swagger.core.v3:swagger-models:${swagger_version}"
 }
