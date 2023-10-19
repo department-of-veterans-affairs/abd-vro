@@ -1,5 +1,5 @@
 fastapi==0.103.*
-hoppy @ git+https://github.com/department-of-veterans-affairs/abd-vro.git@dfitchett/hoppy_async_client#subdirectory=shared/lib-hoppy
+hoppy @ git+https://github.com/department-of-veterans-affairs/abd-vro.git@shared/lib-hoppy-0.2#subdirectory=shared/lib-hoppy
 httpx==0.24.*
 pydantic==2.4.*
 pytest==7.3.1

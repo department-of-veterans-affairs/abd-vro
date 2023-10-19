@@ -12,11 +12,10 @@ from model.merge_job import MergeJob
 from pydantic_models import (MergeEndProductsErrorResponse,
                              MergeEndProductsRequest, MergeEndProductsResponse)
 from service.ep_merge_machine import EpMergeMachine
-from service.hoppy_service import HoppyService
+from service.hoppy_service import HOPPY
 from service.job_store import JobStore
 from util.sanitizer import sanitize
 
-hoppy = HoppyService()
 job_store = JobStore()
 
 
@@ -28,22 +27,16 @@ async def lifespan(api: FastAPI):
 
 
 async def on_start_up():
-    global hoppy
-
-    hoppy.start_hoppy_clients(asyncio.get_event_loop())
-
-    # Wait for hoppy clients to initialize
-    await asyncio.sleep(2)
+    await HOPPY.start_hoppy_clients(asyncio.get_event_loop())
 
 
 async def on_shut_down():
-    global hoppy
-    hoppy.stop_hoppy_clients()
+    HOPPY.stop_hoppy_clients()
 
 
 app = FastAPI(
     title="EP Merge Tool",
-    description="Merge supplemental claim (EP400) contentions to a pending claim (EP 010/020/110).",
+    description="Merge EP400 claim contentions into a pending claim (EP 010/020/110).",
     contact={},
     version="v0.1",
     license={
@@ -77,32 +70,31 @@ def get_health_status():
           response_model=MergeEndProductsResponse,
           response_model_exclude_none=True)
 async def merge_claims(merge_request: MergeEndProductsRequest, background_tasks: BackgroundTasks):
-    if validate_merge_request(merge_request):
-        job_id = uuid4()
-        logging.info(f"event=mergeJobSubmitted "
-                     f"job_id={job_id} "
-                     f"pending_claim_id={sanitize(merge_request.pending_claim_id)} "
-                     f"supp_claim_id={sanitize(merge_request.supp_claim_id)}")
+    validate_merge_request(merge_request)
 
-        merge_job = MergeJob(job_id=job_id,
-                             pending_claim_id=merge_request.pending_claim_id,
-                             supp_claim_id=merge_request.supp_claim_id)
-        job_store.submit_merge_job(merge_job)
+    job_id = uuid4()
+    logging.info(f"event=mergeJobSubmitted "
+                 f"job_id={job_id} "
+                 f"pending_claim_id={sanitize(merge_request.pending_claim_id)} "
+                 f"ep400_claim_id={sanitize(merge_request.ep400_claim_id)}")
 
-        background_tasks.add_task(start_job_state_machine, merge_job)
+    merge_job = MergeJob(job_id=job_id,
+                         pending_claim_id=merge_request.pending_claim_id,
+                         ep400_claim_id=merge_request.ep400_claim_id)
+    job_store.submit_merge_job(merge_job)
 
-        return jsonable_encoder({"job": merge_job})
-    else:
+    background_tasks.add_task(start_job_state_machine, merge_job)
+
+    return jsonable_encoder({"job": merge_job})
+
+
+def validate_merge_request(merge_request: MergeEndProductsRequest):
+    if merge_request.pending_claim_id == merge_request.ep400_claim_id:
         raise HTTPException(status_code=400, detail="Claim IDs must be different.")
 
 
-def validate_merge_request(merge_request: MergeEndProductsRequest) -> bool:
-    return merge_request.pending_claim_id != merge_request.supp_claim_id
-
-
 def start_job_state_machine(merge_job):
-    global hoppy
-    EpMergeMachine(hoppy, merge_job).process()
+    EpMergeMachine(HOPPY, merge_job).process()
 
 
 @app.get("/merge/{job_id}",
