@@ -94,7 +94,7 @@ def validate_merge_request(merge_request: MergeEndProductsRequest):
 
 
 def start_job_state_machine(merge_job):
-    EpMergeMachine(HOPPY, merge_job).process()
+    EpMergeMachine(merge_job).process()
 
 
 @app.get("/merge/{job_id}",

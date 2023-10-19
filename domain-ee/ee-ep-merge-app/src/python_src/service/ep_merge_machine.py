@@ -9,7 +9,7 @@ from model.merge_job import JobState, MergeJob
 from model.request import GeneralRequest
 from model.response import GeneralResponse
 from pydantic import ValidationError
-from service.hoppy_service import ClientName, HoppyService
+from service.hoppy_service import HOPPY, ClientName
 from statemachine import State, StateMachine
 from util.contentions_util import ContentionsUtil, MergeException
 
@@ -46,8 +46,7 @@ class EpMergeMachine(StateMachine):
             | running_cancel_ep400_claim.to(completed_error, cond="has_error")
     )
 
-    def __init__(self, hoppy_service: HoppyService, merge_job: MergeJob):
-        self.hoppy_service = hoppy_service
+    def __init__(self, merge_job: MergeJob):
         self.job = merge_job
         super().__init__()
 
@@ -64,7 +63,7 @@ class EpMergeMachine(StateMachine):
         request = get_contentions.Request(claim_id=self.job.pending_claim_id)
         response = self.make_request(
             request=request,
-            hoppy_client=self.hoppy_service.get_client(ClientName.GET_CLAIM_CONTENTIONS),
+            hoppy_client=HOPPY.get_client(ClientName.GET_CLAIM_CONTENTIONS),
             response_type=get_contentions.Response)
         self.process(pending_contentions=response)
 
@@ -73,7 +72,7 @@ class EpMergeMachine(StateMachine):
         request = get_contentions.Request(claim_id=self.job.ep400_claim_id)
         response = self.make_request(
             request=request,
-            hoppy_client=self.hoppy_service.get_client(ClientName.GET_CLAIM_CONTENTIONS),
+            hoppy_client=HOPPY.get_client(ClientName.GET_CLAIM_CONTENTIONS),
             response_type=get_contentions.Response)
         self.process(pending_contentions=pending_contentions, ep400_contentions=response)
 
@@ -82,7 +81,7 @@ class EpMergeMachine(StateMachine):
         request = tsoj.Request(temp_station_of_jurisdiction="398", claim_id=self.job.pending_claim_id)
         self.make_request(
             request=request,
-            hoppy_client=(self.hoppy_service.get_client(ClientName.PUT_TSOJ)),
+            hoppy_client=(HOPPY.get_client(ClientName.PUT_TSOJ)),
             response_type=tsoj.Response)
         self.process(pending_contentions=pending_contentions, ep400_contentions=ep400_contentions)
 
@@ -100,7 +99,7 @@ class EpMergeMachine(StateMachine):
         request = update_contentions.Request(claim_id=self.job.pending_claim_id, update_contentions=merged_contentions)
         self.make_request(
             request=request,
-            hoppy_client=self.hoppy_service.get_client(ClientName.UPDATE_CLAIM_CONTENTIONS),
+            hoppy_client=HOPPY.get_client(ClientName.UPDATE_CLAIM_CONTENTIONS),
             response_type=update_contentions.Response)
         self.process()
 
@@ -112,7 +111,7 @@ class EpMergeMachine(StateMachine):
                                        close_reason_text=reason)
         self.make_request(
             request=request,
-            hoppy_client=self.hoppy_service.get_client(ClientName.CANCEL_CLAIM),
+            hoppy_client=HOPPY.get_client(ClientName.CANCEL_CLAIM),
             response_type=cancel_claim.Response)
         self.process()
 

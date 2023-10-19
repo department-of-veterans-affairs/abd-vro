@@ -57,26 +57,20 @@ def mock_hoppy_async_client(mocker):
 
 
 @pytest.fixture(autouse=True)
-def mock_hoppy_service(mocker):
-    return mocker.patch('src.python_src.service.hoppy_service.HoppyService')
-
-
-@pytest.fixture(autouse=True)
-def mock_hoppy_service_get_client(mock_hoppy_service, mock_hoppy_async_client):
-    mock_hoppy_service.get_client.return_value = mock_hoppy_async_client
+def mock_hoppy_service_get_client(mocker, mock_hoppy_async_client):
+    mocker.patch('src.python_src.service.ep_merge_machine.HOPPY.get_client').return_value = mock_hoppy_async_client
 
 
 def test_constructor():
     merge_job = Mock()
-    machine = EpMergeMachine(mock_hoppy_service, merge_job)
+    machine = EpMergeMachine(merge_job)
 
     assert machine.current_state_value == JobState.PENDING
 
 
 @pytest.fixture
-def machine(mock_hoppy_service):
-    return EpMergeMachine(mock_hoppy_service,
-                          MergeJob(job_id=JOB_ID,
+def machine():
+    return EpMergeMachine(MergeJob(job_id=JOB_ID,
                                    pending_claim_id=PENDING_CLAIM_ID,
                                    ep400_claim_id=EP400_CLAIM_ID))
 
@@ -140,8 +134,7 @@ def test_invalid_request_at_get_ep400_contentions(machine, mock_hoppy_async_clie
                              pytest.param(load_response(response_404, tsoj.Response), id="404"),
                              pytest.param(load_response(response_500, tsoj.Response), id="500")
                          ])
-def test_invalid_request_at_set_temporary_station_of_duty(machine, mock_hoppy_service, mock_hoppy_async_client,
-                                                          invalid_request):
+def test_invalid_request_at_set_temporary_station_of_duty(machine, mock_hoppy_async_client, invalid_request):
     mock_async_responses(mock_hoppy_async_client,
                          [
                              get_pending_contentions_200,
