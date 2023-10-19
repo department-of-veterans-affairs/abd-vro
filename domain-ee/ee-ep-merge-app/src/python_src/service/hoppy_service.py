@@ -1,3 +1,5 @@
+import asyncio
+
 from config import EXCHANGE, QUEUES, REPLY_QUEUES, ClientName, config
 from hoppy.async_hoppy_client import RetryableAsyncHoppyClient
 from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
@@ -38,10 +40,17 @@ class HoppyService:
     def get_client(self, name):
         return self.clients.get(name)
 
-    def start_hoppy_clients(self, loop):
+    async def start_hoppy_clients(self, loop):
         for client in self.clients.values():
             client.start(loop)
+            publisher_connection = client.async_publisher._connection
+            consumer_connection = client.async_consumer._connection
+            while not publisher_connection.is_open or not consumer_connection.is_open:
+                await asyncio.sleep(0)
 
     def stop_hoppy_clients(self):
         for client in self.clients.values():
             client.stop()
+
+
+HOPPY = HoppyService()
