@@ -67,8 +67,7 @@ def get_health_status():
           response_model=MergeEndProductsResponse,
           response_model_exclude_none=True)
 async def merge_claims(merge_request: MergeEndProductsRequest, background_tasks: BackgroundTasks):
-    if not is_valid_merge_request(merge_request):
-        raise HTTPException(status_code=400, detail="Claim IDs must be different.")
+    validate_merge_request(merge_request)
 
     job_id = uuid4()
     logging.info(f"event=mergeJobSubmitted "
@@ -84,8 +83,9 @@ async def merge_claims(merge_request: MergeEndProductsRequest, background_tasks:
     return jsonable_encoder({"job": merge_job})
 
 
-def is_valid_merge_request(merge_request: MergeEndProductsRequest) -> bool:
-    return merge_request.pending_claim_id != merge_request.ep400_claim_id
+def validate_merge_request(merge_request: MergeEndProductsRequest):
+    if merge_request.pending_claim_id == merge_request.ep400_claim_id:
+        raise HTTPException(status_code=400, detail="Claim IDs must be different.")
 
 
 @app.get("/merge/{job_id}",
