@@ -7,7 +7,6 @@ gem 'cgi', '~> 0.3.6' # Address CVE-2021-41819
 gem 'bunny', '>= 2.13.0'
 gem 'activesupport', '~> 6.0'
 gem 'bgs_ext', git: 'https://github.com/department-of-veterans-affairs/bgs-ext.git', require: 'bgs'
-gem 'uri', '0.12.2'
 
 group :development, :test do
   gem 'rspec'
