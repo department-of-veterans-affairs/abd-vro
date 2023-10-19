@@ -50,6 +50,7 @@ def get_health_status():
 
     return {"status": "ok"}
 
+
 # TODO: move test database connection to health check endpoint ^
 @app.get("/test_db")
 async def test_db(

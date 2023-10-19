@@ -1,7 +1,8 @@
-from sqlalchemy import Column, ForeignKey, Integer
+from sqlalchemy import Column, Integer
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
+
 
 class MasonModelNotRealModelDeleteMe(Base):
     __tablename__ = "mason_model_not_real_model_delete_me"
