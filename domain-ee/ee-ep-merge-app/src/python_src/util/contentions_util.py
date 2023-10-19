@@ -9,7 +9,7 @@ class MergeException(BaseException):
 
 class ContentionsUtil:
     @staticmethod
-    def merge_claims(pending_contentions: Response = None, supplemental_contentions: Response = None):
-        if pending_contentions and supplemental_contentions:
-            return [*pending_contentions.contentions, *supplemental_contentions.contentions]
-        raise MergeException("Cannot merge contentions if pending or supplemental claim contentions are missing.")
+    def merge_claims(pending_contentions: Response = None, ep400_contentions: Response = None):
+        if pending_contentions and ep400_contentions:
+            return [*pending_contentions.contentions, *ep400_contentions.contentions]
+        raise MergeException("Cannot merge contentions if pending or EP400 claim contentions are missing.")

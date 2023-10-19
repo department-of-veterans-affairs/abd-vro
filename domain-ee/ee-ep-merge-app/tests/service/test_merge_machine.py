@@ -12,7 +12,7 @@ from service.ep_merge_machine import CANCELLATION_REASON, EpMergeMachine
 from util.contentions_util import ContentionsUtil, MergeException
 
 JOB_ID = uuid.uuid4()
-SUPP_CLAIM_ID = 2
+EP400_CLAIM_ID = 2
 PENDING_CLAIM_ID = 1
 
 RESPONSE_DIR = os.path.abspath('./tests/responses')
@@ -21,7 +21,7 @@ response_404 = f'{RESPONSE_DIR}/404_response.json'
 response_400 = f'{RESPONSE_DIR}/400_response.json'
 response_500 = f'{RESPONSE_DIR}/500_response.json'
 pending_contentions_200 = f'{RESPONSE_DIR}/get_pending_claim_contentions_200.json'
-supp_contentions_200 = f'{RESPONSE_DIR}/get_supp_claim_contentions_200.json'
+ep400_contentions_200 = f'{RESPONSE_DIR}/get_ep400_claim_contentions_200.json'
 
 
 def load_response(file, response_type):
@@ -34,20 +34,20 @@ def load_response(file, response_type):
 
 get_pending_contentions_req = get_contentions.Request(claim_id=PENDING_CLAIM_ID).model_dump(by_alias=True)
 get_pending_contentions_200 = load_response(pending_contentions_200, get_contentions.Response)
-get_supp_contentions_req = get_contentions.Request(claim_id=SUPP_CLAIM_ID).model_dump(by_alias=True)
-get_supp_contentions_200 = load_response(supp_contentions_200, get_contentions.Response)
+get_ep400_contentions_req = get_contentions.Request(claim_id=EP400_CLAIM_ID).model_dump(by_alias=True)
+get_ep400_contentions_200 = load_response(ep400_contentions_200, get_contentions.Response)
 update_temporary_station_of_duty_req = tsoj.Request(claim_id=PENDING_CLAIM_ID,
                                                     temp_station_of_jurisdiction="398").model_dump(by_alias=True)
 update_temporary_station_of_duty_200 = load_response(response_200, tsoj.Response)
 update_pending_claim_req = update_contentions.Request(claim_id=PENDING_CLAIM_ID,
                                                       update_contentions=ContentionsUtil.merge_claims(
-                                                          get_pending_contentions_200, get_supp_contentions_200)
+                                                          get_pending_contentions_200, get_ep400_contentions_200)
                                                       ).model_dump(by_alias=True)
 update_pending_claim_200 = load_response(response_200, update_contentions.Response)
-cancel_claim_req = cancel_claim.Request(claim_id=SUPP_CLAIM_ID,
-                                        lifecycle_status_reason_code="65",
-                                        close_reason_text=CANCELLATION_REASON % PENDING_CLAIM_ID
-                                        ).model_dump(by_alias=True)
+cancel_ep400_claim_req = cancel_claim.Request(claim_id=EP400_CLAIM_ID,
+                                              lifecycle_status_reason_code="65",
+                                              close_reason_text=CANCELLATION_REASON % PENDING_CLAIM_ID
+                                              ).model_dump(by_alias=True)
 cancel_claim_200 = load_response(response_200, cancel_claim.Response)
 
 
@@ -66,7 +66,7 @@ def mock_hoppy_service_get_client(mock_hoppy_service, mock_hoppy_async_client):
     mock_hoppy_service.get_client.return_value = mock_hoppy_async_client
 
 
-def test_constructor(mock_hoppy_service):
+def test_constructor():
     merge_job = Mock()
     machine = EpMergeMachine(mock_hoppy_service, merge_job)
 
@@ -78,7 +78,7 @@ def machine(mock_hoppy_service):
     return EpMergeMachine(mock_hoppy_service,
                           MergeJob(job_id=JOB_ID,
                                    pending_claim_id=PENDING_CLAIM_ID,
-                                   supp_claim_id=SUPP_CLAIM_ID))
+                                   ep400_claim_id=EP400_CLAIM_ID))
 
 
 def get_mocked_async_response(side_effects):
@@ -120,16 +120,16 @@ def test_invalid_request_at_get_pending_contentions(machine, mock_hoppy_async_cl
                              pytest.param(load_response(response_404, get_contentions.Response), id="404"),
                              pytest.param(load_response(response_500, get_contentions.Response), id="500")
                          ])
-def test_invalid_request_at_get_supplemental_contentions(machine, mock_hoppy_async_client, invalid_request):
+def test_invalid_request_at_get_ep400_contentions(machine, mock_hoppy_async_client, invalid_request):
     mock_async_responses(mock_hoppy_async_client,
                          [
                              get_pending_contentions_200,
                              invalid_request
                          ])
-    process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_GET_SUPP_CLAIM_CONTENTIONS)
+    process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_GET_EP400_CLAIM_CONTENTIONS)
     mock_hoppy_async_client.make_request.assert_has_calls([
         call(machine.job.job_id, get_pending_contentions_req),
-        call(machine.job.job_id, get_supp_contentions_req)
+        call(machine.job.job_id, get_ep400_contentions_req)
     ])
 
 
@@ -145,13 +145,13 @@ def test_invalid_request_at_set_temporary_station_of_duty(machine, mock_hoppy_se
     mock_async_responses(mock_hoppy_async_client,
                          [
                              get_pending_contentions_200,
-                             get_supp_contentions_200,
+                             get_ep400_contentions_200,
                              invalid_request
                          ])
     process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_SET_TEMP_STATION_OF_JURISDICTION)
     mock_hoppy_async_client.make_request.assert_has_calls([
         call(machine.job.job_id, get_pending_contentions_req),
-        call(machine.job.job_id, get_supp_contentions_req),
+        call(machine.job.job_id, get_ep400_contentions_req),
         call(machine.job.job_id, update_temporary_station_of_duty_req)
     ])
 
@@ -160,7 +160,7 @@ def test_process_fails_at_merge_contentions(machine, mock_hoppy_async_client, mo
     mock_async_responses(mock_hoppy_async_client,
                          [
                              get_pending_contentions_200,
-                             get_supp_contentions_200,
+                             get_ep400_contentions_200,
                              update_temporary_station_of_duty_200
                          ])
     mocker.patch('src.python_src.service.ep_merge_machine.ContentionsUtil.merge_claims',
@@ -169,7 +169,7 @@ def test_process_fails_at_merge_contentions(machine, mock_hoppy_async_client, mo
     process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_MERGE_CONTENTIONS)
     mock_hoppy_async_client.make_request.assert_has_calls([
         call(machine.job.job_id, get_pending_contentions_req),
-        call(machine.job.job_id, get_supp_contentions_req),
+        call(machine.job.job_id, get_ep400_contentions_req),
         call(machine.job.job_id, update_temporary_station_of_duty_req)
     ])
 
@@ -185,14 +185,14 @@ def test_invalid_request_at_update_contentions(machine, mock_hoppy_async_client,
     mock_async_responses(mock_hoppy_async_client,
                          [
                              get_pending_contentions_200,
-                             get_supp_contentions_200,
+                             get_ep400_contentions_200,
                              update_temporary_station_of_duty_200,
                              invalid_request
                          ])
     process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_UPDATE_PENDING_CLAIM_CONTENTIONS)
     mock_hoppy_async_client.make_request.assert_has_calls([
         call(machine.job.job_id, get_pending_contentions_req),
-        call(machine.job.job_id, get_supp_contentions_req),
+        call(machine.job.job_id, get_ep400_contentions_req),
         call(machine.job.job_id, update_temporary_station_of_duty_req),
         call(machine.job.job_id, update_pending_claim_req)
     ])
@@ -209,18 +209,18 @@ def test_invalid_request_at_cancel_claim_due_to_exception(machine, mock_hoppy_as
     mock_async_responses(mock_hoppy_async_client,
                          [
                              get_pending_contentions_200,
-                             get_supp_contentions_200,
+                             get_ep400_contentions_200,
                              update_temporary_station_of_duty_200,
                              update_pending_claim_200,
                              invalid_request
                          ])
-    process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_CANCEL_SUPP_CLAIM)
+    process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_CANCEL_EP400_CLAIM)
     mock_hoppy_async_client.make_request.assert_has_calls([
         call(machine.job.job_id, get_pending_contentions_req),
-        call(machine.job.job_id, get_supp_contentions_req),
+        call(machine.job.job_id, get_ep400_contentions_req),
         call(machine.job.job_id, update_temporary_station_of_duty_req),
         call(machine.job.job_id, update_pending_claim_req),
-        call(machine.job.job_id, cancel_claim_req)
+        call(machine.job.job_id, cancel_ep400_claim_req)
     ])
 
 
@@ -228,7 +228,7 @@ def test_process_succeeds(machine, mock_hoppy_async_client):
     mock_async_responses(mock_hoppy_async_client,
                          [
                              get_pending_contentions_200,
-                             get_supp_contentions_200,
+                             get_ep400_contentions_200,
                              update_temporary_station_of_duty_200,
                              update_pending_claim_200,
                              cancel_claim_200
@@ -236,8 +236,8 @@ def test_process_succeeds(machine, mock_hoppy_async_client):
     process_and_assert(machine, JobState.COMPLETED_SUCCESS, None)
     mock_hoppy_async_client.make_request.assert_has_calls([
         call(machine.job.job_id, get_pending_contentions_req),
-        call(machine.job.job_id, get_supp_contentions_req),
+        call(machine.job.job_id, get_ep400_contentions_req),
         call(machine.job.job_id, update_temporary_station_of_duty_req),
         call(machine.job.job_id, update_pending_claim_req),
-        call(machine.job.job_id, cancel_claim_req)
+        call(machine.job.job_id, cancel_ep400_claim_req)
     ])
