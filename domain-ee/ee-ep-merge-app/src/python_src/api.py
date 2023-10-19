@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import sys
 from contextlib import asynccontextmanager
@@ -10,6 +11,7 @@ from fastapi.responses import JSONResponse
 from model.merge_job import MergeJob
 from pydantic_models import (MergeEndProductsErrorResponse,
                              MergeEndProductsRequest, MergeEndProductsResponse)
+from service.hoppy_service import HOPPY
 from service.job_store import JobStore
 from util.sanitizer import sanitize
 
@@ -24,11 +26,11 @@ async def lifespan(api: FastAPI):
 
 
 async def on_start_up():
-    pass
+    await HOPPY.start_hoppy_clients(asyncio.get_event_loop())
 
 
 async def on_shut_down():
-    pass
+    HOPPY.stop_hoppy_clients()
 
 
 app = FastAPI(
