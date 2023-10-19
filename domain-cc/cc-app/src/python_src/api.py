@@ -10,8 +10,7 @@ from . import database_models
 from .database import engine, get_db
 from .pydantic_models import Claim, PredictedClassification
 from .util.brd_classification_codes import get_classification_name
-from .util.lookup_table import (ConditionDropdownLookupTable,
-                                DiagnosticCodeLookupTable)
+from .util.lookup_table import ConditionDropdownLookupTable, DiagnosticCodeLookupTable
 
 dc_lookup_table = DiagnosticCodeLookupTable()
 dropdown_lookup_table = ConditionDropdownLookupTable()
@@ -53,15 +52,17 @@ def get_health_status():
 
 # TODO: move test database connection to health check endpoint ^
 @app.get("/test_db")
-async def test_db(
-        db: Session = Depends(get_db)
-):
-    db.execute(text('SELECT 1'))
-    print('select succeeded')
+async def test_db(db: Session = Depends(get_db)):
+    db.execute(text("SELECT 1"))
+    print("select succeeded")
 
-    result = db.execute(select(database_models.MasonModelNotRealModelDeleteMe).order_by(database_models.MasonModelNotRealModelDeleteMe.vets_api_claim_id))
+    result = db.execute(
+        select(database_models.MasonModelNotRealModelDeleteMe).order_by(
+            database_models.MasonModelNotRealModelDeleteMe.vets_api_claim_id
+        )
+    )
     record = result.fetchone()
-    print(f'for fake model data... repr(record): {repr(record)}')
+    print(f"for fake model data... repr(record): {repr(record)}")
     return {"success": True}
 
 

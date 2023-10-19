@@ -36,7 +36,10 @@ class ConditionDropdownLookupTable(LookupTable):
     """Lookup table for mapping condition dropdown values to contention classification codes"""
 
     CSV_FILEPATH = os.path.join(
-        os.path.dirname(__file__), "data", "condition_dropdown_lookup_table", condition_dropdown_table_name
+        os.path.dirname(__file__),
+        "data",
+        "condition_dropdown_lookup_table",
+        condition_dropdown_table_name,
     )
     input_key = "CONTENTION_TEXT"
     output_key = "CLASSIFICATION_CODE"
