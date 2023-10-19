@@ -7,7 +7,7 @@ from typing_extensions import Annotated
 
 class MergeEndProductsRequest(BaseModel):
     pending_claim_id: Annotated[int, Field(strict=True)]
-    supp_claim_id: Annotated[int, Field(strict=True)]
+    ep400_claim_id: Annotated[int, Field(strict=True)]
 
 
 class MergeEndProductsResponse(BaseModel):
