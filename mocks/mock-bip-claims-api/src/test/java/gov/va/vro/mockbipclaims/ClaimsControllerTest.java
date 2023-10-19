@@ -61,7 +61,7 @@ public class ClaimsControllerTest {
     ClaimStoreItem item = new ClaimStoreItem();
     when(claimStore.get(claimId)).thenReturn(item);
 
-    ResponseEntity<CloseClaimResponse> response = claimsController.cancelClaimById(claimId);
+    ResponseEntity<CloseClaimResponse> response = claimsController.cancelClaimById(claimId, null);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(
@@ -76,7 +76,7 @@ public class ClaimsControllerTest {
     when(claimStore.get(claimId)).thenReturn(null);
 
     try {
-      claimsController.cancelClaimById(claimId);
+      claimsController.cancelClaimById(claimId, null);
     } catch (ResponseStatusException e) {
       assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
     }

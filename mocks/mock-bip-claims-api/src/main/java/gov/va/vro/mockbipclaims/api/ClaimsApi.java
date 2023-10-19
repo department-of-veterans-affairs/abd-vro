@@ -1,6 +1,7 @@
 package gov.va.vro.mockbipclaims.api;
 
 import gov.va.vro.mockbipclaims.model.bip.ProviderResponse;
+import gov.va.vro.mockbipclaims.model.bip.request.CloseClaimRequest;
 import gov.va.vro.mockbipclaims.model.bip.response.ClaimDetailResponse;
 import gov.va.vro.mockbipclaims.model.bip.response.CloseClaimResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -161,8 +163,7 @@ public interface ClaimsApi {
                     schema = @Schema(implementation = ProviderResponse.class)))
       },
       security = {@SecurityRequirement(name = "bearerAuth")})
-  @RequestMapping(
-      method = RequestMethod.PUT,
+  @PutMapping(
       value = "/claims/{claimId}/cancel",
       produces = {"application/json", "application/problem+json"})
   ResponseEntity<CloseClaimResponse> cancelClaimById(
@@ -172,5 +173,6 @@ public interface ClaimsApi {
               required = true,
               in = ParameterIn.PATH)
           @PathVariable("claimId")
-          Long claimId);
+          Long claimId,
+      @RequestBody CloseClaimRequest closeClaimRequest);
 }

@@ -3,6 +3,7 @@ package gov.va.vro.mockbipclaims.controller;
 import gov.va.vro.mockbipclaims.api.ClaimsApi;
 import gov.va.vro.mockbipclaims.model.bip.ClaimDetail;
 import gov.va.vro.mockbipclaims.model.bip.Message;
+import gov.va.vro.mockbipclaims.model.bip.request.CloseClaimRequest;
 import gov.va.vro.mockbipclaims.model.bip.response.ClaimDetailResponse;
 import gov.va.vro.mockbipclaims.model.bip.response.CloseClaimResponse;
 import gov.va.vro.mockbipclaims.model.store.ClaimStore;
@@ -38,7 +39,8 @@ public class ClaimsController implements ClaimsApi {
   }
 
   @Override
-  public ResponseEntity<CloseClaimResponse> cancelClaimById(Long claimId) {
+  public ResponseEntity<CloseClaimResponse> cancelClaimById(
+      Long claimId, CloseClaimRequest closeClaimRequest) {
     log.info("Canceling claim (id: {})", claimId);
     if (claimStore.get(claimId) == null) {
       String reason = "No claim found for id: " + claimId;
