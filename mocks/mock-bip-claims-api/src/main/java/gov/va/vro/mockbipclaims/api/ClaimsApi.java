@@ -13,9 +13,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * Generated using Open API Specification of BIP Claims API (bipclaim_3.1.1.json) amd
@@ -100,8 +101,7 @@ public interface ClaimsApi {
             })
       },
       security = {@SecurityRequirement(name = "bearerAuth")})
-  @RequestMapping(
-      method = RequestMethod.GET,
+  @GetMapping(
       value = "/claims/{claimId}",
       produces = {"application/json", "application/problem+json"})
   ResponseEntity<ClaimDetailResponse> getClaimById(
