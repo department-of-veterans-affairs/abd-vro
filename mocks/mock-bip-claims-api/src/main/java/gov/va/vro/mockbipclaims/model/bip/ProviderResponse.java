@@ -1,11 +1,11 @@
 package gov.va.vro.mockbipclaims.model.bip;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import jakarta.validation.Valid;
 import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.validation.Valid;
 
 /** ProviderResponse. */
 @JsonTypeName("provider_response")

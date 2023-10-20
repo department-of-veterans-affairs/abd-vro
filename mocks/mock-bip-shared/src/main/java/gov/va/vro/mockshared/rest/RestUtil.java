@@ -2,14 +2,14 @@ package gov.va.vro.mockshared.rest;
 
 import lombok.SneakyThrows;
 import org.apache.catalina.connector.Connector;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
+import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
-import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
@@ -35,12 +35,19 @@ public class RestUtil {
             .loadKeyMaterial(keyStore, spec.getKeyStorePassword().toCharArray())
             .build();
 
-    SSLConnectionSocketFactory sslConFactory = new SSLConnectionSocketFactory(sslContext);
-
     CloseableHttpClient httpClient =
-        HttpClients.custom().setSSLSocketFactory(sslConFactory).build();
-    ClientHttpRequestFactory requestFactory =
-        new HttpComponentsClientHttpRequestFactory(httpClient);
+        HttpClients.custom()
+            .setConnectionManager(
+                PoolingHttpClientConnectionManagerBuilder.create()
+                    .setSSLSocketFactory(
+                        SSLConnectionSocketFactoryBuilder.create()
+                            .setSslContext(sslContext)
+                            .build())
+                    .build())
+            .build();
+    HttpComponentsClientHttpRequestFactory requestFactory =
+        new HttpComponentsClientHttpRequestFactory();
+    requestFactory.setHttpClient(httpClient);
     return new RestTemplate(requestFactory);
   }
 

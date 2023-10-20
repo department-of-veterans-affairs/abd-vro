@@ -29,6 +29,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @Service
@@ -40,7 +42,8 @@ public class TestHelper {
 
   @Autowired private JwtGenerator jwtGenerator;
 
-  private HttpHeaders getHeaders(TestSpec spec) {
+  private HttpHeaders getHeaders(TestSpec spec)
+      throws UnsupportedEncodingException, NoSuchAlgorithmException {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     if (!spec.isIgnoreJwt()) {

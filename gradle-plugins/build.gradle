@@ -22,7 +22,7 @@ dependencies {
     implementation 'com.felipefzdz.gradle.shellcheck:com.felipefzdz.gradle.shellcheck.gradle.plugin:1.4.6'
     implementation 'com.palantir.docker:com.palantir.docker.gradle.plugin:0.35.0'
     implementation 'com.palantir.docker-run:com.palantir.docker-run.gradle.plugin:0.35.0'
-    implementation 'org.springdoc.openapi-gradle-plugin:org.springdoc.openapi-gradle-plugin.gradle.plugin:1.7.0'
+    implementation 'org.springdoc.openapi-gradle-plugin:org.springdoc.openapi-gradle-plugin.gradle.plugin:1.8.0'
 
     implementation 'org.barfuin.gradle.jacocolog:org.barfuin.gradle.jacocolog.gradle.plugin:3.1.0'
     implementation 'org.barfuin.gradle.taskinfo:org.barfuin.gradle.taskinfo.gradle.plugin:2.1.0'
