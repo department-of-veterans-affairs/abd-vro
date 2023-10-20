@@ -13,7 +13,7 @@ dependencies {
   // Provides endpoint for healthcheck
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-  def hapi_fhir_version="6.8.3"
+  def hapi_fhir_version="6.8.4"
   implementation "ca.uhn.hapi.fhir:hapi-fhir-base:${hapi_fhir_version}"
   implementation "ca.uhn.hapi.fhir:hapi-fhir-server-openapi:${hapi_fhir_version}"
 
