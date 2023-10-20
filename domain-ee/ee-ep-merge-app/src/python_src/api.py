@@ -11,6 +11,7 @@ from fastapi.responses import JSONResponse
 from model.merge_job import MergeJob
 from pydantic_models import (MergeEndProductsErrorResponse,
                              MergeEndProductsRequest, MergeEndProductsResponse)
+from service.ep_merge_machine import EpMergeMachine
 from service.hoppy_service import HOPPY
 from service.job_store import JobStore
 from util.sanitizer import sanitize
@@ -82,12 +83,18 @@ async def merge_claims(merge_request: MergeEndProductsRequest, background_tasks:
                          ep400_claim_id=merge_request.ep400_claim_id)
     job_store.submit_merge_job(merge_job)
 
+    background_tasks.add_task(start_job_state_machine, merge_job)
+
     return jsonable_encoder({"job": merge_job})
 
 
 def validate_merge_request(merge_request: MergeEndProductsRequest):
     if merge_request.pending_claim_id == merge_request.ep400_claim_id:
         raise HTTPException(status_code=400, detail="Claim IDs must be different.")
+
+
+def start_job_state_machine(merge_job):
+    EpMergeMachine(merge_job).process()
 
 
 @app.get("/merge/{job_id}",

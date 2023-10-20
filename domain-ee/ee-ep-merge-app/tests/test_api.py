@@ -1,4 +1,5 @@
 import uuid
+from unittest.mock import Mock
 
 import pytest
 from fastapi.testclient import TestClient
@@ -8,14 +9,22 @@ from src.python_src.api import job_store
 MERGE = "/merge"
 
 
-def test_health(client: TestClient):
-    response = client.get("/health")
-    assert response.status_code == 200
+@pytest.fixture(autouse=True)
+def mock_background_tasks(mocker):
+    mocker.patch(
+        'src.python_src.api.start_job_state_machine',
+        return_value=Mock()
+    )
 
 
 @pytest.fixture(autouse=True)
 def _job_store():
     job_store.clear()
+
+
+def test_health(client: TestClient):
+    response = client.get("/health")
+    assert response.status_code == 200
 
 
 @pytest.mark.parametrize("req", [

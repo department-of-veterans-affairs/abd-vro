@@ -1,0 +1,11 @@
+{
+  "statusCode": 400,
+  "statusMessage": "BAD REQUEST",
+  "messages": [
+    {
+      "key": "TEST FAILURE",
+      "severity": "FATAL",
+      "status": 400
+    }
+  ]
+}
