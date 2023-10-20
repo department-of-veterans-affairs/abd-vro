@@ -45,6 +45,13 @@ public class ClaimsController implements ClaimsApi {
       return new ResponseEntity<>(createNotFoundCloseClaimResponse(), HttpStatus.NOT_FOUND);
     }
 
+    if (closeClaimRequest != null) {
+      log.info(
+          "Received lifecycleStatusReasonCode: {}",
+          closeClaimRequest.getLifecycleStatusReasonCode());
+      log.info("Received closeReasonText: {}", closeClaimRequest.getCloseReasonText());
+    }
+
     claimStore.cancel(claimId);
 
     CloseClaimResponse response = new CloseClaimResponse();

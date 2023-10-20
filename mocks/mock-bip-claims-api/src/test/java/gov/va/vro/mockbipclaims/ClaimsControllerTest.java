@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import gov.va.vro.mockbipclaims.model.bip.ClaimDetail;
 import gov.va.vro.mockbipclaims.model.bip.Message;
+import gov.va.vro.mockbipclaims.model.bip.request.CloseClaimRequest;
 import gov.va.vro.mockbipclaims.model.bip.response.ClaimDetailResponse;
 import gov.va.vro.mockbipclaims.model.bip.response.CloseClaimResponse;
 import gov.va.vro.mockbipclaims.model.store.ClaimStore;
@@ -65,8 +66,13 @@ public class ClaimsControllerTest {
     Long claimId = 1010L;
     ClaimStoreItem item = new ClaimStoreItem();
     when(claimStore.get(claimId)).thenReturn(item);
+    CloseClaimRequest closeClaimRequest = new CloseClaimRequest();
+    closeClaimRequest.setLifecycleStatusReasonCode("60");
+    closeClaimRequest.setCloseReasonText(
+        String.format("Issues moved to pending EP Claim ID #%d", claimId));
 
-    ResponseEntity<CloseClaimResponse> response = claimsController.cancelClaimById(claimId, null);
+    ResponseEntity<CloseClaimResponse> response =
+        claimsController.cancelClaimById(claimId, closeClaimRequest);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(
