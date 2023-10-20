@@ -59,6 +59,8 @@ dependencies {
         // for tomcat
         implementation 'org.apache.tomcat.embed:tomcat-embed-core:10.1.14'
 
+        implementation 'org.springframework.amqp:spring-amqp:3.0.10'
+
         // These are used indirectly but we need to specify versions, otherwise build error
         annotationProcessor "org.springframework.boot:spring-boot-autoconfigure-processor:${spring_boot_version}"
         annotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct_version}"
