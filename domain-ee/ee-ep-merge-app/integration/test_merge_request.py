@@ -33,7 +33,7 @@ async def app_lifespan():
     await on_shut_down()
 
 
-@pytest_asyncio.fixture(autouse=True)
+@pytest.fixture(autouse=True)
 def reset_responses(get_claim_contentions_endpoint: MqEndpoint,
                     put_tsoj_endpoint: MqEndpoint,
                     update_claim_contentions_endpoint: MqEndpoint,

@@ -1,34 +1,31 @@
+import pytest
 import pytest_asyncio
 from integration.mq_endpoint import MqEndpoint
 from src.python_src.config import QUEUES, REPLY_QUEUES, ClientName
 
 
-@pytest_asyncio.fixture(autouse=True, scope="session")
+@pytest.fixture(autouse=True, scope="session")
 def get_claim_contentions_endpoint():
-    name = ClientName.GET_CLAIM_CONTENTIONS
-    endpoint = MqEndpoint(name, QUEUES[name], REPLY_QUEUES[name])
-    return endpoint
+    return create_mq_endpoint(ClientName.GET_CLAIM_CONTENTIONS)
 
 
-@pytest_asyncio.fixture(autouse=True, scope="session")
-async def put_tsoj_endpoint():
-    name = ClientName.PUT_TSOJ
-    endpoint = MqEndpoint(name, QUEUES[name], REPLY_QUEUES[name])
-    return endpoint
+@pytest.fixture(autouse=True, scope="session")
+def put_tsoj_endpoint():
+    return create_mq_endpoint(ClientName.PUT_TSOJ)
 
 
-@pytest_asyncio.fixture(autouse=True, scope="session")
-async def update_claim_contentions_endpoint():
-    name = ClientName.UPDATE_CLAIM_CONTENTIONS
-    endpoint = MqEndpoint(name, QUEUES[name], REPLY_QUEUES[name])
-    return endpoint
+@pytest.fixture(autouse=True, scope="session")
+def update_claim_contentions_endpoint():
+    return create_mq_endpoint(ClientName.UPDATE_CLAIM_CONTENTIONS)
 
 
-@pytest_asyncio.fixture(autouse=True, scope="session")
-async def cancel_claim_endpoint():
-    name = ClientName.CANCEL_CLAIM
-    endpoint = MqEndpoint(name, QUEUES[name], REPLY_QUEUES[name])
-    return endpoint
+@pytest.fixture(autouse=True, scope="session")
+def cancel_claim_endpoint():
+    return create_mq_endpoint(ClientName.CANCEL_CLAIM)
+
+
+def create_mq_endpoint(name):
+    return MqEndpoint(name, QUEUES[name], REPLY_QUEUES[name])
 
 
 @pytest_asyncio.fixture(autouse=True, scope="session")

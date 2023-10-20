@@ -10,13 +10,13 @@ exchange_props = ExchangeProperties(name=EXCHANGE)
 
 
 class MqEndpoint:
-    auto_response_files = []
 
     def __init__(self, name, req_queue, response_queue):
         self.name = name
         self.index = 0
-        queue_props = QueueProperties(name=req_queue, passive_declare=False)
+        self.auto_response_files = []
 
+        queue_props = QueueProperties(name=req_queue, passive_declare=False)
         self.consumer = async_consumer.AsyncConsumer(exchange_properties=exchange_props,
                                                      queue_properties=queue_props,
                                                      routing_key=req_queue,
@@ -50,17 +50,14 @@ class MqEndpoint:
 
         self.consumer.acknowledge_message(properties, delivery_tag)
 
-        if len(self.auto_response_files) > 0:
+        if self.auto_response_files:
             with open(self.auto_response_files[self.index]) as f:
                 body = json.load(f)
                 self.publisher.publish_message(body,
                                                BasicProperties(app_id="Integration Test",
                                                                content_type="application/json",
                                                                correlation_id=correlation_id))
-            if self.index + 1 != len(self.auto_response_files):
-                self.index += 1
-            else:
-                self.index = 0
+            self.index = (self.index + 1) % len(self.auto_response_files)
 
     def set_responses(self, auto_response_files=None):
         if auto_response_files is None:
