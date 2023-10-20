@@ -3,7 +3,12 @@ package gov.va.vro.mockshared.rest;
 import gov.va.vro.mockshared.jwt.JwtAppConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,12 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @Component
 @AllArgsConstructor
@@ -27,17 +27,18 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
   private static String getToken(HttpServletRequest request) {
     String header = request.getHeader("Authorization");
-    if (header == null || header.isEmpty() || !header.startsWith("Bearer ")) {
+    if (header == null || !header.startsWith("Bearer ")) {
       return null;
     }
 
-    String token = header.split(" ")[1].trim();
-    return token;
+    return header.split(" ")[1].trim();
   }
 
   @Override
   protected void doFilterInternal(
-      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+      @NotNull HttpServletRequest request,
+      @NotNull HttpServletResponse response,
+      @NotNull FilterChain filterChain)
       throws ServletException, IOException {
 
     String token = getToken(request);
@@ -45,10 +46,26 @@ public class JwtRequestFilter extends OncePerRequestFilter {
       filterChain.doFilter(request, response);
       return;
     }
+    Claims claims =
+        Jwts.parserBuilder()
+            .setSigningKey(props.getSecret().getBytes())
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
 
-    byte[] secretBytes = props.getSecret().getBytes(StandardCharsets.UTF_8);
-    Claims claims = Jwts.parser().setSigningKey(secretBytes).parseClaimsJws(token).getBody();
+    UsernamePasswordAuthenticationToken authentication =
+        getUsernamePasswordAuthenticationToken(claims);
 
+    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+    filterChain.doFilter(request, response);
+  }
+
+  @NotNull
+  private static UsernamePasswordAuthenticationToken getUsernamePasswordAuthenticationToken(
+      Claims claims) {
     UserDetails details =
         new UserDetails() {
           @Override
@@ -87,13 +104,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
           }
         };
 
-    UsernamePasswordAuthenticationToken authentication =
-        new UsernamePasswordAuthenticationToken(details, null, null);
-
-    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-    SecurityContextHolder.getContext().setAuthentication(authentication);
-
-    filterChain.doFilter(request, response);
+    return new UsernamePasswordAuthenticationToken(details, null, null);
   }
 }

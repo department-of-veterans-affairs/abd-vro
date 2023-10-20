@@ -1,4 +1,4 @@
-# https://camel.apache.org/camel-spring-boot/3.11.x/spring-boot.html
+# https://camel.apache.org/camel-spring-boot/4.0.x/spring-boot.html
 
 vro:
   context_path: "/vro"
@@ -14,4 +14,12 @@ vro:
 
 # To fix jackson error: Java 8 date/time type `java.time.Instant` not supported by default
 # https://stackoverflow.com/questions/33397359/how-to-configure-jackson-objectmapper-for-camel-in-spring-boot
-camel.dataformat.json-jackson.auto-discover-object-mapper: true
+camel:
+  component:
+    rest-api:
+      enabled: true
+  dataformat:
+    jackson:
+      auto-discover-object-mapper: true
+  rest:
+    api-context-path: "/vro"

@@ -8,7 +8,7 @@ public class JwtGenerator {
   private final JwtSpecification props;
 
   /**
-   * Henerates the JWT.
+   * Generates the JWT.
    *
    * @return The JWT
    */
@@ -16,7 +16,7 @@ public class JwtGenerator {
     return Jwts.builder()
         .setHeaderParam("typ", "JWT")
         .setClaims(props)
-        .signWith(props.getSignatureAlgorithm(), props.getSigningKey())
+        .signWith(props.getSigningKey(), props.getSignatureAlgorithm())
         .compact();
   }
 }
