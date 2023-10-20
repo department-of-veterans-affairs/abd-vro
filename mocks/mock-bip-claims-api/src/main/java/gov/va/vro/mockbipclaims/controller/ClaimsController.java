@@ -13,7 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.server.ResponseStatusException;
+
+import java.time.OffsetDateTime;
 
 @Controller
 @Slf4j
@@ -26,12 +27,10 @@ public class ClaimsController implements ClaimsApi {
     log.info("Getting claim (id: {})", claimId);
     ClaimStoreItem item = claimStore.get(claimId);
     if (item == null) {
-      String reason = "No claim found for id: " + claimId;
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
+      return new ResponseEntity<>(createNotFoundResponse(), HttpStatus.NOT_FOUND);
     }
 
     ClaimDetail claimDetail = item.getClaimDetail();
-
     ClaimDetailResponse response = new ClaimDetailResponse();
     response.setClaim(claimDetail);
 
@@ -43,8 +42,7 @@ public class ClaimsController implements ClaimsApi {
       Long claimId, CloseClaimRequest closeClaimRequest) {
     log.info("Canceling claim (id: {})", claimId);
     if (claimStore.get(claimId) == null) {
-      String reason = "No claim found for id: " + claimId;
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
+      return new ResponseEntity<>(createNotFoundCloseClaimResponse(), HttpStatus.NOT_FOUND);
     }
 
     claimStore.cancel(claimId);
@@ -55,5 +53,27 @@ public class ClaimsController implements ClaimsApi {
     message.setStatus(HttpStatus.OK.value());
     response.addMessagesItem(message);
     return new ResponseEntity<>(response, HttpStatus.OK);
+  }
+
+  private ClaimDetailResponse createNotFoundResponse() {
+    ClaimDetailResponse response = new ClaimDetailResponse();
+    response.addMessagesItem(createNotFoundMessage());
+    return response;
+  }
+
+  private CloseClaimResponse createNotFoundCloseClaimResponse() {
+    CloseClaimResponse response = new CloseClaimResponse();
+    response.addMessagesItem(createNotFoundMessage());
+    return response;
+  }
+
+  private Message createNotFoundMessage() {
+    Message message = new Message();
+    message.setText("Claim not found");
+    message.setStatus(HttpStatus.NOT_FOUND.value());
+    message.setSeverity("ERROR");
+    message.setKey("bip.vetservices.claim.notfound");
+    message.setTimestamp(OffsetDateTime.now());
+    return message;
   }
 }

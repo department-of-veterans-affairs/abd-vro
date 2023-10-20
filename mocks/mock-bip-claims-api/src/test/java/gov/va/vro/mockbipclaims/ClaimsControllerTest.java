@@ -5,6 +5,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import gov.va.vro.mockbipclaims.model.bip.ClaimDetail;
+import gov.va.vro.mockbipclaims.model.bip.Message;
 import gov.va.vro.mockbipclaims.model.bip.response.ClaimDetailResponse;
 import gov.va.vro.mockbipclaims.model.bip.response.CloseClaimResponse;
 import gov.va.vro.mockbipclaims.model.store.ClaimStore;
@@ -16,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.server.ResponseStatusException;
 
 public class ClaimsControllerTest {
 
@@ -48,11 +48,16 @@ public class ClaimsControllerTest {
     Long claimId = 1010L;
     when(claimStore.get(claimId)).thenReturn(null);
 
-    try {
-      claimsController.getClaimById(claimId);
-    } catch (ResponseStatusException e) {
-      assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
-    }
+    ResponseEntity<ClaimDetailResponse> response = claimsController.getClaimById(claimId);
+    Message message = response.getBody().getMessages().get(0);
+
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+    // Assertions for the message fields
+    assertEquals("Claim not found", message.getText());
+    assertEquals(HttpStatus.NOT_FOUND.value(), message.getStatus());
+    assertEquals("ERROR", message.getSeverity());
+    assertEquals("bip.vetservices.claim.notfound", message.getKey());
   }
 
   @Test
@@ -75,10 +80,15 @@ public class ClaimsControllerTest {
     Long claimId = 1010L;
     when(claimStore.get(claimId)).thenReturn(null);
 
-    try {
-      claimsController.cancelClaimById(claimId, null);
-    } catch (ResponseStatusException e) {
-      assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
-    }
+    ResponseEntity<CloseClaimResponse> response = claimsController.cancelClaimById(claimId, null);
+    Message message = response.getBody().getMessages().get(0);
+
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+    // Assertions for the message fields
+    assertEquals("Claim not found", message.getText());
+    assertEquals(HttpStatus.NOT_FOUND.value(), message.getStatus());
+    assertEquals("ERROR", message.getSeverity());
+    assertEquals("bip.vetservices.claim.notfound", message.getKey());
   }
 }
