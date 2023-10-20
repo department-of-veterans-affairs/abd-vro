@@ -26,6 +26,7 @@ public class FunctionProcessor<I, O> implements Processor {
   private final Function<I, O> function;
 
   @Override
+  @SuppressWarnings("unchecked")
   public void process(Exchange exchange) {
     I input = (I) exchange.getIn().getBody();
     O result = function.apply(input);

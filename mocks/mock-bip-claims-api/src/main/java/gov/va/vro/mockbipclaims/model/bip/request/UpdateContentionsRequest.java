@@ -1,11 +1,11 @@
 package gov.va.vro.mockbipclaims.model.bip.request;
 
 import gov.va.vro.mockbipclaims.model.bip.ExistingContention;
+import jakarta.validation.Valid;
 import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.validation.Valid;
 
 /** UpdateContentionsRequest. */
 @Data

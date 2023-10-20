@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
     message.setText(exception.getReason());
     ProviderResponse response = new ProviderResponse();
     response.addMessagesItem(message);
-    return new ResponseEntity<>(response, exception.getStatus());
+    return new ResponseEntity<>(response, exception.getStatusCode());
   }
 
   /**

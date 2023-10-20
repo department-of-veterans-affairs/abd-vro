@@ -24,18 +24,23 @@ public class RabbitMqCamelUtils {
   }
 
   public static String rabbitmqTopicConsumerEndpoint(String exchangeName, String queueName) {
-    return "rabbitmq:" + exchangeName + "?exchangeType=topic&queue=" + queueName;
+    return "spring-rabbitmq:" + exchangeName + "?exchangeType=topic&queues=" + queueName;
   }
 
   public static String rabbitmqFanoutConsumerEndpoint(String exchangeName, String queueName) {
-    return "rabbitmq:" + exchangeName + "?exchangeType=fanout&queue=" + queueName;
+    return "spring-rabbitmq:" + exchangeName + "?exchangeType=fanout&queues=" + queueName;
   }
 
   public static String rabbitmqConsumerEndpoint(String exchangeName, String routingKey) {
     // Name the queue so that it's easily identifiable; otherwise a random number is set as the
     // queue name
     // At least for Camel, the routingKey parameter is needed to route messages to the queue.
-    return "rabbitmq:" + exchangeName + "?routingKey=" + routingKey + "&queue=" + routingKey;
+    return "spring-rabbitmq:"
+        + exchangeName
+        + "?routingKey="
+        + routingKey
+        + "&queues="
+        + routingKey;
   }
 
   public static RouteDefinition fromRabbitmq(
@@ -49,7 +54,7 @@ public class RabbitMqCamelUtils {
   }
 
   public static RouteDefinition fromRabbitmq(RouteBuilder builder, String rabbitMqUri) {
-    if (!rabbitMqUri.startsWith("rabbitmq:"))
+    if (!rabbitMqUri.startsWith("spring-rabbitmq:"))
       throw new IllegalArgumentException("Endpoint URI must be for RabbitMQ: " + rabbitMqUri);
     return builder.from(rabbitMqUri);
   }
