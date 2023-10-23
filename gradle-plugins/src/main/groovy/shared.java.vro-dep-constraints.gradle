@@ -31,13 +31,13 @@ dependencies {
         implementation "org.springframework:spring-beans:${spring_framework_version}"
         implementation "io.github.classgraph:classgraph:4.8.149"
         implementation "com.fasterxml.jackson.core:jackson-databind:2.13.4.2"
-        implementation "com.squareup.okhttp3:okhttp:4.10.0"
+        implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+
         implementation "org.yaml:snakeyaml:${snakeyaml_version}"
         implementation "org.thymeleaf:thymeleaf:3.1.2.RELEASE"      // Fix for Security vulnerability
 
         // for mockserver-netty and hapi-fhir
         implementation 'org.apache.commons:commons-text:1.10.0'
-        implementation 'org.apache.commons:commons-compress:1.24.0'
 
         // for hapi-fhir-server-openapi
         implementation 'ca.uhn.hapi.fhir:org.hl7.fhir.utilities:5.6.92'
@@ -45,7 +45,7 @@ dependencies {
         implementation 'ca.uhn.hapi.fhir:org.hl7.fhir.r4b:5.6.92'
         implementation 'ca.uhn.hapi.fhir:org.hl7.fhir.convertors:5.6.92'
 
-        implementation('io.netty:netty-handler:4.1.94.Final')
+        implementation 'io.netty:netty-handler:4.1.100.Final'
 
         // For Kafka svc-bie-kafka service override
         implementation('org.xerial.snappy:snappy-java:1.1.10.4')
@@ -54,6 +54,14 @@ dependencies {
         implementation 'org.bouncycastle:bcpkix-jdk18on:1.74'
         implementation 'org.webjars:swagger-ui:4.1.3'
         implementation 'org.springframework.kafka:spring-kafka:2.9.11'
+
+        implementation 'org.apache.commons:commons-compress:1.24.0'
+
+        // for tomcat
+        implementation 'org.apache.tomcat.embed:tomcat-embed-core:10.1.14'
+
+        implementation 'org.springframework.amqp:spring-amqp:3.0.10'
+        implementation 'org.springframework.security:spring-security-config:6.1.5'
 
         // These are used indirectly but we need to specify versions, otherwise build error
         annotationProcessor "org.springframework.boot:spring-boot-autoconfigure-processor:${spring_boot_version}"

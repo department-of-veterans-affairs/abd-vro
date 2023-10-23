@@ -9,7 +9,6 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.servers.Server;
 import io.swagger.v3.oas.models.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,10 +20,13 @@ import java.util.stream.Collectors;
 @OpenAPIDefinition
 @Configuration
 public class OpenApiConfiguration {
-  @Autowired(required = false)
-  private List<CustomSecuritySchemeProvider> securitySchemeProviders;
+  private final List<CustomSecuritySchemeProvider> securitySchemeProviders;
 
-  @Autowired private final OpenApiProperties openApiProperties = new OpenApiProperties();
+  private final OpenApiProperties openApiProperties = new OpenApiProperties();
+
+  public OpenApiConfiguration(List<CustomSecuritySchemeProvider> securitySchemeProviders) {
+    this.securitySchemeProviders = securitySchemeProviders;
+  }
 
   /**
    * Configure OpenAPI processor.

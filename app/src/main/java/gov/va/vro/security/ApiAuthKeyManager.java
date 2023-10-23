@@ -1,7 +1,9 @@
 package gov.va.vro.security;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-
+@Getter
 @Component
 @Slf4j
 @NoArgsConstructor
@@ -22,10 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 public class ApiAuthKeyManager implements AuthenticationManager {
 
   private HttpServletRequest httpServletRequest;
-
-  public HttpServletRequest getHttpServletRequest() {
-    return httpServletRequest;
-  }
 
   @Autowired
   public void setHttpServletRequest(HttpServletRequest httpServletRequest) {
@@ -36,17 +33,9 @@ public class ApiAuthKeyManager implements AuthenticationManager {
 
   private JwtValidator jwtValidator;
 
-  public ApiAuthKeys getApiAuthKeys() {
-    return apiAuthKeys;
-  }
-
   @Autowired
   public void setApiAuthKeys(ApiAuthKeys apiAuthKeys) {
     this.apiAuthKeys = apiAuthKeys;
-  }
-
-  public JwtValidator getJwtValidator() {
-    return jwtValidator;
   }
 
   @Autowired

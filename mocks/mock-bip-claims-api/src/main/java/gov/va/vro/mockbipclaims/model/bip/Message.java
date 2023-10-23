@@ -1,11 +1,11 @@
 package gov.va.vro.mockbipclaims.model.bip;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.OffsetDateTime;
-import javax.validation.constraints.NotNull;
 
 /** Model for a message that are sent in REST responses. */
 @Data

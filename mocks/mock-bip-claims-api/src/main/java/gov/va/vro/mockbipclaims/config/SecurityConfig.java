@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @AllArgsConstructor
@@ -28,17 +30,35 @@ public class SecurityConfig {
    */
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.csrf().disable();
-    http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-    http.authorizeRequests().antMatchers("/updates/**").permitAll();
-    http.authorizeRequests().antMatchers("/actuator/health").permitAll();
-    http.authorizeRequests().antMatchers("/").permitAll();
-    http.authorizeRequests().antMatchers("/swagger-ui.html").permitAll();
-    http.authorizeRequests().antMatchers("/swagger-ui/**").permitAll();
-    http.authorizeRequests().antMatchers("/v3/api-docs/**").permitAll();
-    http.authorizeRequests().anyRequest().authenticated();
+    http.csrf((AbstractHttpConfigurer::disable));
+    http.sessionManagement(
+        (securitySessionManagementConfigurer) ->
+            securitySessionManagementConfigurer.sessionCreationPolicy(
+                SessionCreationPolicy.STATELESS));
+    http.authorizeHttpRequests(
+        (managerRequestMatcherRegistry) -> {
+          managerRequestMatcherRegistry
+              .requestMatchers(new AntPathRequestMatcher("/updates/**"))
+              .permitAll();
+          managerRequestMatcherRegistry
+              .requestMatchers(new AntPathRequestMatcher("/actuator/health"))
+              .permitAll();
+          managerRequestMatcherRegistry.requestMatchers(new AntPathRequestMatcher("/")).permitAll();
+          managerRequestMatcherRegistry
+              .requestMatchers(new AntPathRequestMatcher("/swagger-ui.html"))
+              .permitAll();
+          managerRequestMatcherRegistry
+              .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**"))
+              .permitAll();
+          managerRequestMatcherRegistry
+              .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**"))
+              .permitAll();
+          managerRequestMatcherRegistry.anyRequest().authenticated();
+        });
     http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
-    http.exceptionHandling().authenticationEntryPoint(authEntryPoint);
+    http.exceptionHandling(
+        (exceptionHandlingConfigurer) ->
+            exceptionHandlingConfigurer.authenticationEntryPoint(authEntryPoint));
     return http.build();
   }
 }
