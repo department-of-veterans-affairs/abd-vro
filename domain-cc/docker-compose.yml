@@ -23,6 +23,13 @@ x-common-sde-security: &common-sde-security
   ulimits:
     nproc: 65535
 
+x-postgres-vars: &postgres-vars
+  POSTGRES_URL: postgresql://postgres-service:5432/vro
+  POSTGRES_DB: ${POSTGRES_DB}
+  POSTGRES_USER: ${POSTGRES_USER}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  POSTGRES_SCHEMA: ${POSTGRES_SCHEMA}
+
 services:
   # Containers with the `svc-` prefix are microservices to support domain workflows.
 
@@ -30,7 +37,7 @@ services:
     image: va/abd_vro-cc-app:latest
     <<: [*common-sde-security, *common-security-opt]
     environment:
-      <<: *common-vars
+      <<: [*common-vars, *postgres-vars]
     ports:
       - "8120:8120"
     networks:
