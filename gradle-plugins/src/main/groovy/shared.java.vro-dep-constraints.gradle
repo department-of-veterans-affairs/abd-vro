@@ -31,7 +31,8 @@ dependencies {
         implementation "org.springframework:spring-beans:${spring_framework_version}"
         implementation "io.github.classgraph:classgraph:4.8.149"
         implementation "com.fasterxml.jackson.core:jackson-databind:2.13.4.2"
-        implementation "com.squareup.okhttp3:okhttp:4.10.0"
+        implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+
         implementation "org.yaml:snakeyaml:${snakeyaml_version}"
         implementation "org.thymeleaf:thymeleaf:3.1.2.RELEASE"      // Fix for Security vulnerability
 
@@ -60,6 +61,7 @@ dependencies {
         implementation 'org.apache.tomcat.embed:tomcat-embed-core:10.1.14'
 
         implementation 'org.springframework.amqp:spring-amqp:3.0.10'
+        implementation 'org.springframework.security:spring-security-config:6.1.5'
 
         // These are used indirectly but we need to specify versions, otherwise build error
         annotationProcessor "org.springframework.boot:spring-boot-autoconfigure-processor:${spring_boot_version}"
