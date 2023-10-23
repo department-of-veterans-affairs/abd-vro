@@ -15,7 +15,7 @@ x-common-vars: &common-vars
   ENV: ${ENV:-local}
 
 x-postgres-vars: &postgres-vars
-  POSTGRES_URL: jdbc:postgresql://postgres-service:5432/vro
+  POSTGRES_URL: postgresql://postgres-service:5432/vro
   POSTGRES_DB: ${POSTGRES_DB}
   POSTGRES_USER: ${POSTGRES_USER}
   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
