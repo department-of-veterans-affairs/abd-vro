@@ -45,7 +45,7 @@ dependencies {
         implementation 'ca.uhn.hapi.fhir:org.hl7.fhir.r4b:5.6.92'
         implementation 'ca.uhn.hapi.fhir:org.hl7.fhir.convertors:5.6.92'
 
-        implementation('io.netty:netty-handler:4.1.94.Final')
+        implementation 'io.netty:netty-handler:4.1.100.Final'
 
         // For Kafka svc-bie-kafka service override
         implementation('org.xerial.snappy:snappy-java:1.1.10.4')
