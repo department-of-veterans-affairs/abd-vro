@@ -1,7 +1,9 @@
 package gov.va.vro.mockbipclaims.api;
 
 import gov.va.vro.mockbipclaims.model.bip.ProviderResponse;
+import gov.va.vro.mockbipclaims.model.bip.request.CloseClaimRequest;
 import gov.va.vro.mockbipclaims.model.bip.response.ClaimDetailResponse;
+import gov.va.vro.mockbipclaims.model.bip.response.CloseClaimResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -12,9 +14,11 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * Generated using Open API Specification of BIP Claims API (bipclaim_3.1.1.json) amd
@@ -99,8 +103,7 @@ public interface ClaimsApi {
             })
       },
       security = {@SecurityRequirement(name = "bearerAuth")})
-  @RequestMapping(
-      method = RequestMethod.GET,
+  @GetMapping(
       value = "/claims/{claimId}",
       produces = {"application/json", "application/problem+json"})
   ResponseEntity<ClaimDetailResponse> getClaimById(
@@ -111,4 +114,65 @@ public interface ClaimsApi {
               in = ParameterIn.PATH)
           @PathVariable("claimId")
           Long claimId);
+
+  /**
+   * PUT /claims/{claimId}/cancel : Cancel an existing claim using the claimId. Cancel a claim using
+   * its claim ID. The claim must not already be closed or cancelled.
+   *
+   * @param claimId The CorpDB BNFT_CLAIM_ID (required)
+   * @return Claim Closed (status code 200) or The authentication mechanism failed and hence access
+   *     is forbidden. (status code 401) or Could not derive claim from request path (status code
+   *     404) or There was an error encountered processing the Request. Response will contain a
+   *     "messages" element that will provide further information on the error. Please retry. If
+   *     problem persists, please contact support with a copy of the Response. (status code 500)
+   */
+  @Operation(
+      operationId = "cancelClaimById",
+      summary = "Operation to cancel an existing claim",
+      description =
+          "Operation to cancel an existing claim. The claim must not already be closed or cancelled.",
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Claim Closed.",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = CloseClaimResponse.class))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "The authentication mechanism failed and hence access is forbidden.",
+            content =
+                @Content(
+                    mediaType = "application/problem+json",
+                    schema = @Schema(implementation = ProviderResponse.class))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Could not derive claim from request path",
+            content =
+                @Content(
+                    mediaType = "application/problem+json",
+                    schema = @Schema(implementation = ProviderResponse.class))),
+        @ApiResponse(
+            responseCode = "500",
+            description =
+                "There was an error encountered processing the Request. Response will contain a \"messages\" element that will provide further information on the error. Please retry. If problem persists, please contact support with a copy of the Response.",
+            content =
+                @Content(
+                    mediaType = "application/problem+json",
+                    schema = @Schema(implementation = ProviderResponse.class)))
+      },
+      security = {@SecurityRequirement(name = "bearerAuth")})
+  @PutMapping(
+      value = "/claims/{claimId}/cancel",
+      produces = {"application/json", "application/problem+json"})
+  ResponseEntity<CloseClaimResponse> cancelClaimById(
+      @Parameter(
+              name = "claimId",
+              description = "The CorpDB BNFT_CLAIM_ID",
+              required = true,
+              in = ParameterIn.PATH)
+          @PathVariable("claimId")
+          Long claimId,
+      @RequestBody CloseClaimRequest closeClaimRequest);
 }
