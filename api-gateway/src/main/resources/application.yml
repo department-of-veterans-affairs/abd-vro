@@ -108,9 +108,12 @@ springdoc:
       - name: 2. Contention Classification API
         # Use the route defined under spring.cloud.gateway below
         url: /contention-classification/openapi.json
-      - name: 3. Max CFI API
+      - name: 3. EE - Max CFI API
         # Use the route defined under spring.cloud.gateway below
         url: /cfi/openapi.json
+      - name: 4. EE - EP Merge App
+        # Use the route defined under spring.cloud.gateway below
+        url: /ep/openapi.json
 
 log4j2:
   formatMsgNoLookups: true

@@ -33,9 +33,15 @@ spring.cloud.gateway:
     - Path=/contention-classification/**
     filters:
     - StripPrefix=1
-  - id: max-cfi-route
+  - id: ee-max-cfi-route
     uri: http://${VRO_MAX_CFI_APP_HOSTNAME:localhost}:8130
     predicates:
     - Path=/cfi/**
+    filters:
+    - StripPrefix=1
+  - id: ee-ep-merge-route
+    uri: http://${VRO_EP_MERGE_APP_HOSTNAME:localhost}:8140
+    predicates:
+    - Path=/ep/**
     filters:
     - StripPrefix=1

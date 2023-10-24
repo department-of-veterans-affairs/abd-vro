@@ -153,5 +153,6 @@ services:
       VRO_APP_HOSTNAME: app
       VRO_CC_HOSTNAME: cc-app
       VRO_MAX_CFI_APP_HOSTNAME: ee-max-cfi-app
+      VRO_EP_MERGE_APP_HOSTNAME: ee-ep-merge-app
     networks:
       - intranet
