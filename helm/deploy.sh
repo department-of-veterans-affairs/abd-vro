@@ -102,7 +102,7 @@ case "$HELM_CHART" in
   svc-lighthouse-api)
     HELM_ARGS="$HELM_ARGS --set-string imageTag=$svclighthouseapi_VER ";;
   svc-bip-api)
-    HELM_ARGS="$HELM_ARGS -- set-string imageTag=$svcbgsapi_VER"
+    HELM_ARGS="$HELM_ARGS --set-string imageTag=$svcbgsapi_VER"
 esac
 
 #echo "HELM_ARGS: $HELM_ARGS"
