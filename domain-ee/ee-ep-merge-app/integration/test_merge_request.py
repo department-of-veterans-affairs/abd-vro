@@ -12,8 +12,8 @@ response_200 = f'{RESPONSE_DIR}/200_response.json'
 response_404 = f'{RESPONSE_DIR}/404_response.json'
 response_400 = f'{RESPONSE_DIR}/400_response.json'
 response_500 = f'{RESPONSE_DIR}/500_response.json'
-pending_contentions_200 = f'{RESPONSE_DIR}/get_pending_claim_contentions_200.json'
-ep400_contentions_200 = f'{RESPONSE_DIR}/get_ep400_claim_contentions_200.json'
+pending_contentions_200 = f'{RESPONSE_DIR}/get_pending_claim_contentions_increase_tendinitis_200.json'
+ep400_contentions_200 = f'{RESPONSE_DIR}/get_ep400_claim_contentions_increase_tinitus_200.json'
 
 
 @pytest.fixture(scope="session")
