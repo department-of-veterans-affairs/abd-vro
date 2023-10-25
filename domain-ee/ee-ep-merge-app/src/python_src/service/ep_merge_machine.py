@@ -145,7 +145,7 @@ class EpMergeMachine(StateMachine):
 
     def has_error(self):
         return self.job.state == JobState.COMPLETED_ERROR
-    
+
     def is_duplicate(self):
         return not ContentionsUtil.new_contentions(self.job.pending_contentions, self.job.ep400_contentions)
 

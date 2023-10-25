@@ -255,6 +255,7 @@ def test_process_succeeds_with_different_contention(machine, mock_hoppy_async_cl
         call(machine.job.job_id, cancel_ep400_claim_req)
     ])
 
+
 def test_process_succeeds_with_duplicate_contention(machine, mock_hoppy_async_client):
     mock_async_responses(mock_hoppy_async_client,
                          [
