@@ -36,7 +36,8 @@ class EpMergeMachine(StateMachine):
             | running_get_pending_contentions.to(completed_error, cond="has_error")
             | running_get_ep400_contentions.to(running_set_temp_station_of_jurisdiction, unless="has_error")
             | running_get_ep400_contentions.to(completed_error, cond="has_error")
-            | running_set_temp_station_of_jurisdiction.to(running_merge_contentions, unless="has_error")
+            | running_set_temp_station_of_jurisdiction.to(running_merge_contentions, unless=["is_duplicate", "has_error"])
+            | running_set_temp_station_of_jurisdiction.to(running_cancel_ep400_claim, cond="is_duplicate", unless="has_error")
             | running_set_temp_station_of_jurisdiction.to(completed_error, cond="has_error")
             | running_merge_contentions.to(running_update_pending_claim_contentions, unless="has_error")
             | running_merge_contentions.to(completed_error, cond="has_error")
@@ -78,6 +79,8 @@ class EpMergeMachine(StateMachine):
 
     @running_set_temp_station_of_jurisdiction.enter
     def on_set_temp_station_of_jurisdiction(self, pending_contentions=None, ep400_contentions=None):
+        self.job.pending_contentions = pending_contentions.contentions
+        self.job.ep400_contentions = ep400_contentions.contentions
         request = tsoj.Request(temp_station_of_jurisdiction="398", claim_id=self.job.pending_claim_id)
         self.make_request(
             request=request,
@@ -142,6 +145,9 @@ class EpMergeMachine(StateMachine):
 
     def has_error(self):
         return self.job.state == JobState.COMPLETED_ERROR
+    
+    def is_duplicate(self):
+        return not ContentionsUtil.new_contentions(self.job.pending_contentions, self.job.ep400_contentions)
 
     def log_error(self, error):
         logging.error(f"event=errorProcessingJob "

@@ -4,6 +4,8 @@ from uuid import UUID
 
 from pydantic import BaseModel, conint
 
+from .contention import ContentionSummary
+
 JobState = Enum('JobState', [
     'COMPLETED_ERROR',
     'PENDING',
@@ -23,6 +25,8 @@ class MergeJob(BaseModel):
     state: JobState = JobState.PENDING
     error_state: JobState | None = None
     messages: list[Any] | None = None
+    pending_contentions: list[ContentionSummary] | None = None
+    ep400_contentions: list[ContentionSummary] | None = None
 
     def error(self, current_state, message):
         self.error_state = current_state
