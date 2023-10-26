@@ -1,2 +1,6 @@
 # This will match all files and assign them to the 'benefits-vro-engineers' team when a new PR is created.
 * @department-of-veterans-affairs/benefits-vro-engineers
+
+# Employee Experience Team
+/domain-ee/ @department-of-veterans-affairs/benefits-employee-exp-engineers
+/shared/lib-hoppy/ @department-of-veterans-affairs/benefits-employee-exp-engineers
