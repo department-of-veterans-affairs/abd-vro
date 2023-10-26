@@ -4,3 +4,6 @@
 # Employee Experience Team
 /domain-ee/ @department-of-veterans-affairs/benefits-employee-exp-engineers
 /shared/lib-hoppy/ @department-of-veterans-affairs/benefits-employee-exp-engineers
+
+# Contention Classification Team
+/domain-cc/ @department-of-veterans-affairs/benefits-contention-classification-engineers
