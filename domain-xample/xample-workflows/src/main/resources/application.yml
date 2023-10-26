@@ -17,8 +17,8 @@ spring:
   rabbitmq:
     host: "${RABBITMQ_PLACEHOLDERS_HOST:localhost}"
     port: 5672
-    username: "${RABBITMQ_PLACEHOLDERS_USERNAME:guest}"
-    password: "${RABBITMQ_PLACEHOLDERS_USERPASSWORD:guest}"
+    username: "${RABBITMQ_USERNAME:guest}"
+    password: "${RABBITMQ_PASSWORD:guest}"
 
 ## Actuator for health check
 management:
