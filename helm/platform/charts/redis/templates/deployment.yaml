@@ -19,7 +19,7 @@ spec:
         - name: redis{{ include "vro.containerSuffix" . }}
           image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/vro-redis:{{ .Values.imageTag }}
           env:
-            - name: REDIS_PLACEHOLDERS_PASSWORD
+            - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: vro-redis
@@ -28,7 +28,7 @@ spec:
             - containerPort: {{ .Values.service.redis.sourcePort }}
               protocol: TCP
           command: ["redis-server"]
-          args: ["--requirepass", "$(REDIS_PLACEHOLDERS_PASSWORD)"]
+          args: ["--requirepass", "$(REDIS_PASSWORD)"]
           resources:
             requests:
               cpu: 150m

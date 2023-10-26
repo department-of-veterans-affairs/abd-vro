@@ -5,7 +5,7 @@
 {{- define "vro.redisClient.envVars" -}}
 - name: REDIS_PLACEHOLDERS_HOST
   value: {{ .Values.global.hostnamePrefix }}-redis
-- name: REDIS_PLACEHOLDERS_PASSWORD
+- name: REDIS_PASSWORD
   valueFrom:
     secretKeyRef:
       name: vro-redis
