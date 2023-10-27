@@ -151,6 +151,7 @@ class EpMergeMachine(StateMachine):
             return not ContentionsUtil.new_contentions(self.job.pending_contentions, self.job.ep400_contentions)
         except CompareException as e:
             self.log_error(e.message)
+        return None
 
     def log_error(self, error):
         logging.error(f"event=errorProcessingJob "
