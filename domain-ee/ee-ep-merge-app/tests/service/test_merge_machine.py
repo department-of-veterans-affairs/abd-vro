@@ -20,11 +20,11 @@ response_200 = f'{RESPONSE_DIR}/200_response.json'
 response_404 = f'{RESPONSE_DIR}/404_response.json'
 response_400 = f'{RESPONSE_DIR}/400_response.json'
 response_500 = f'{RESPONSE_DIR}/500_response.json'
-pending_contentions_increase_tendinitis_200 = f'{RESPONSE_DIR}/get_pending_claim_contentions_increase_tendinitis_200.json'
-ep400_contentions_increase_tinitus_200 = f'{RESPONSE_DIR}/get_ep400_claim_contentions_increase_tinitus_200.json'
-pending_contentions_increase_tinitus_200 = f'{RESPONSE_DIR}/get_pending_claim_contentions_increase_tinitus_200.json'
-ep400_contentions_new_tinitus_200 = f'{RESPONSE_DIR}/get_ep400_claim_contentions_new_tinitus_200.json'
-ep400_contentions_increase_multicontention_200 = f'{RESPONSE_DIR}/get_ep400_claim_contentions_increase_multicontention_200.json'
+pending_contentions_increase_tendinitis_200 = f'{RESPONSE_DIR}/claim_contentions_increase_tendinitis_200.json'
+ep400_contentions_increase_tinitus_200 = f'{RESPONSE_DIR}/claim_contentions_increase_tinitus_200.json'
+pending_contentions_increase_tinitus_200 = f'{RESPONSE_DIR}/claim_contentions_increase_tinitus_200.json'
+ep400_contentions_new_tinitus_200 = f'{RESPONSE_DIR}/claim_contentions_new_tinitus_200.json'
+ep400_contentions_increase_multicontention_200 = f'{RESPONSE_DIR}/claim_contentions_increase_multicontention_200.json'
 
 
 def load_response(file, response_type):
@@ -224,13 +224,13 @@ def test_invalid_request_at_cancel_claim_due_to_exception(machine, mock_hoppy_as
 @pytest.mark.parametrize("get_contentions_res",
                          [
                              pytest.param((load_response(pending_contentions_increase_tendinitis_200, get_contentions.Response),
-                                           load_response(ep400_contentions_increase_tinitus_200, get_contentions.Response))),
+                                           load_response(ep400_contentions_increase_tinitus_200, get_contentions.Response)), id="different contention name"),
 
                              pytest.param((load_response(pending_contentions_increase_tinitus_200, get_contentions.Response),
-                                          load_response(ep400_contentions_new_tinitus_200, get_contentions.Response))),
+                                          load_response(ep400_contentions_new_tinitus_200, get_contentions.Response)), id="different contention type"),
 
                              pytest.param((load_response(pending_contentions_increase_tinitus_200, get_contentions.Response),
-                                          load_response(ep400_contentions_increase_multicontention_200, get_contentions.Response)))
+                                          load_response(ep400_contentions_increase_multicontention_200, get_contentions.Response)), id="different contention name alongside duplicate")
                          ])
 def test_process_succeeds_with_different_contention(machine, mock_hoppy_async_client, get_contentions_res):
     pending, ep400 = get_contentions_res

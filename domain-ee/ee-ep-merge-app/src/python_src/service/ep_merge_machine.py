@@ -11,7 +11,7 @@ from model.response import GeneralResponse
 from pydantic import ValidationError
 from service.hoppy_service import HOPPY, ClientName
 from statemachine import State, StateMachine
-from util.contentions_util import ContentionsUtil, MergeException
+from util.contentions_util import CompareException, ContentionsUtil, MergeException
 
 CANCELLATION_REASON = "Issues moved to pending EP Claim ID #%d"
 
@@ -93,7 +93,7 @@ class EpMergeMachine(StateMachine):
         merged_contentions = None
         try:
             merged_contentions = ContentionsUtil.merge_claims(pending_contentions, ep400_contentions)
-        except MergeException as e:
+        except (MergeException, CompareException) as e:
             self.log_error(e.message)
         self.process(merged_contentions=merged_contentions)
 
@@ -147,7 +147,10 @@ class EpMergeMachine(StateMachine):
         return self.job.state == JobState.COMPLETED_ERROR
 
     def is_duplicate(self):
-        return not ContentionsUtil.new_contentions(self.job.pending_contentions, self.job.ep400_contentions)
+        try:
+            return not ContentionsUtil.new_contentions(self.job.pending_contentions, self.job.ep400_contentions)
+        except CompareException as e:
+            self.log_error(e.message)
 
     def log_error(self, error):
         logging.error(f"event=errorProcessingJob "
