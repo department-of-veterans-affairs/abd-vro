@@ -38,7 +38,17 @@
 # Wed Oct 11 19:06:17 UTC 2023 -- v3.5.1
 # Thu Oct 12 16:21:59 UTC 2023 -- v3.5.2
 # Tue Oct 24 11:02:54 PDT 2023 -- v3.5.3
-postgres_VER="v3.5.3"
-dbinit_VER="v3.5.3"
-ccapp_VER="v3.5.3"
-eemaxcfiapp_VER="v3.5.3"
+# Thu Oct 26 12:23:43 PDT 2023 -- v3.5.4
+# Thu Oct 26 13:03:08 PDT 2023 -- v3.5.6
+postgres_VER="v3.5.6"
+redis_VER="v3.5.6"
+rabbitmq_VER="v3.5.6"
+apigateway_VER="v3.5.6"
+app_VER="v3.5.6"
+dbinit_VER="v3.5.6"
+svclighthouseapi_VER="v3.5.6"
+svcbiekafka_VER="v3.5.6"
+svcbipapi_VER="v3.5.6"
+xampleworkflows_VER="v3.5.6"
+ccapp_VER="v3.5.6"
+eemaxcfiapp_VER="v3.5.6"
