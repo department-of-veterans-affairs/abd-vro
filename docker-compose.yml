@@ -29,7 +29,7 @@ x-api-vars: &api-vars
   LH_VRO_API_KEY: ${LH_VRO_API_KEY}
 
 x-postgres-vars: &postgres-vars
-  POSTGRES_URL: jdbc:postgresql://postgres-service:5432/vro
+  POSTGRES_URL: postgresql://postgres-service:5432/vro
   POSTGRES_DB: ${POSTGRES_DB}
   POSTGRES_USER: ${POSTGRES_USER}
   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -153,5 +153,6 @@ services:
       VRO_APP_HOSTNAME: app
       VRO_CC_HOSTNAME: cc-app
       VRO_MAX_CFI_APP_HOSTNAME: ee-max-cfi-app
+      VRO_EP_MERGE_APP_HOSTNAME: ee-ep-merge-app
     networks:
       - intranet

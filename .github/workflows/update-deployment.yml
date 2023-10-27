@@ -25,6 +25,7 @@ on:
         - domain-xample
         - svc-bgs-api
         - svc-bie-kafka
+        - svc-bip-api
         - svc-lighthouse-api
         - api-gateway
         - domain-ee

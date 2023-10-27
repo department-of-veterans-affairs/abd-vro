@@ -9,7 +9,7 @@ dependencies {
   // TODO: api-controller should not be dependent directly on services
   implementation project(':domain-rrd:rrd-workflows')
 
-  implementation "org.springdoc:springdoc-openapi-webmvc-core"
+  implementation "org.springdoc:springdoc-openapi-starter-webmvc-api:${spring_doc_version}"
   implementation 'io.micrometer:micrometer-core'
 
   //MAS oAuth2 webclient libs

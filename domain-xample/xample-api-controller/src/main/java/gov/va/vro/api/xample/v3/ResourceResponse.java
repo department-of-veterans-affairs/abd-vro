@@ -1,10 +1,9 @@
 package gov.va.vro.api.xample.v3;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import javax.validation.constraints.NotBlank;
 
 @Getter
 @AllArgsConstructor

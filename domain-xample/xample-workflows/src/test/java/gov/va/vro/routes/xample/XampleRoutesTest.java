@@ -10,6 +10,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.builder.AdviceWith;
+import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.junit5.CamelTestSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -88,7 +89,7 @@ public class XampleRoutesTest extends CamelTestSupport {
     assertEquals(someDtoModel.getResourceId(), response.getResourceId());
     assertEquals(StatusValue.PROCESSING.name(), response.getStatus());
 
-    assertMockEndpointsSatisfied();
+    MockEndpoint.assertIsSatisfied(context);
   }
 
   @Test
@@ -102,7 +103,7 @@ public class XampleRoutesTest extends CamelTestSupport {
     assertEquals(someDtoModel.getResourceId(), response.getResourceId());
     assertEquals(StatusValue.PROCESSING.name(), response.getStatus());
 
-    assertMockEndpointsSatisfied();
+    MockEndpoint.assertIsSatisfied(context);
   }
 
   void setExpectations(SomeDtoModel someDtoModel, String choice) {
@@ -139,9 +140,7 @@ public class XampleRoutesTest extends CamelTestSupport {
     } else {
       getMockEndpoint(logOutput)
           .whenAnyExchangeReceived(
-              exchange -> {
-                log.info("logOutput body: {}", exchange.getMessage().getBody());
-              });
+              exchange -> log.info("logOutput body: {}", exchange.getMessage().getBody()));
     }
   }
 
@@ -162,6 +161,6 @@ public class XampleRoutesTest extends CamelTestSupport {
     assertEquals(StatusValue.ERROR.name(), response.getStatus());
     assertTrue(response.getHeader().getStatusMessage().contains(errorMsg));
 
-    assertMockEndpointsSatisfied();
+    MockEndpoint.assertIsSatisfied(context);
   }
 }

@@ -1,0 +1,11 @@
+# pyproject.toml
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-rfesp"
+testpaths = [
+    "tests"
+]
+env = [
+    "REQUEST_TIMEOUT = 1",
+    "REQUEST_RETRIES = 1"
+]

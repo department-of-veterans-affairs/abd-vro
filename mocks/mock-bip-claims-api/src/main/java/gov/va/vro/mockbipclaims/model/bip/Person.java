@@ -2,12 +2,12 @@ package gov.va.vro.mockbipclaims.model.bip;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.List;
-import javax.validation.Valid;
 
 /** Model that identifies a single individual used in the security context. */
 @Schema(

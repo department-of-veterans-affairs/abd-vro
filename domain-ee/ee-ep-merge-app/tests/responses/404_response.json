@@ -1,0 +1,11 @@
+{
+  "statusCode": 404,
+  "statusMessage": "NOT FOUND",
+  "messages": [
+    {
+      "key": "TEST FAILURE",
+      "severity": "FATAL",
+      "status": 404
+    }
+  ]
+}
