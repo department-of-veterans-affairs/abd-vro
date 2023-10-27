@@ -32,7 +32,7 @@
 */}}
 {{- define "vro.flyway.envVars" -}}
 - name: FLYWAY_URL
-  value: {{ include "vro.postgresUrl" . }}
+  {{ include "vro.postgresUrl" . }}
 - name: FLYWAY_USER
   valueFrom:
     secretKeyRef:
