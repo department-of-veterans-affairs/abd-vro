@@ -1,8 +1,8 @@
 {{- define "vro.postgresUrl" -}}
-{{- printf "jdbc:postgresql://%s-postgres:%s/%s"
-  .Values.global.hostnamePrefix
-  (toString .Values.global.service.db.targetPort)
-  .Values.global.service.db.databaseName }}
+  valueFrom:
+    secretKeyRef:
+      name: rds-db
+      key: DB_URL
 {{- end }}
 
 {{/*
@@ -10,7 +10,7 @@
 */}}
 {{- define "vro.dbClient.envVars" -}}
 - name: POSTGRES_URL
-  value: {{ include "vro.postgresUrl" . }}
+  {{ include "vro.postgresUrl" . }}
 - name: POSTGRES_USER
   valueFrom:
     secretKeyRef:
