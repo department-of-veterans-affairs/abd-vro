@@ -45,7 +45,7 @@ jobs:
 
           ./gradlew :dockerComposeUp
 
-          ./gradlew -p mocks :mock-bie-kafka:docker
+          ./gradlew -p mocks docker
           ./gradlew -p mocks :dockerComposeUp
 
           ./gradlew :domain-xample:dockerComposeUp

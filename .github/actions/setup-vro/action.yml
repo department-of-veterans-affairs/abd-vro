@@ -38,4 +38,19 @@ runs:
       shell: bash
       run: |
         pip install -r domain-cc/*/*/requirements.txt
-        pip install -r domain-ee/*/*/requirements.txt
+
+    - name: "Install EE - Max CFI App Python dependencies"
+      shell: bash
+      run: |
+        VENV_MAX_CFI=~/.virtualenvs/domain-ee-max-cfi-app
+        python3 -m venv ${VENV_MAX_CFI}
+        source ${VENV_MAX_CFI}/bin/activate
+        pip install -r domain-ee/ee-max-cfi-app/src/requirements.txt
+
+    - name: "Install EE - EP Merge App Python dependencies"
+      shell: bash
+      run: |
+        VENV_EP_MERGE=~/.virtualenvs/domain-ee-ep-merge-app
+        python3 -m venv ${VENV_EP_MERGE}
+        source ${VENV_EP_MERGE}/bin/activate
+        pip install -r domain-ee/ee-ep-merge-app/src/requirements.txt

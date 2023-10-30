@@ -7,6 +7,10 @@ ext {
   jacocoExclude = ['**/*Application.*']
 }
 
+tasks.named('bootJar') {
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 dependencies {
   implementation project(':domain-xample:xample-shared')
   implementation project(':shared:lib-camel-connector')
@@ -20,13 +24,16 @@ dependencies {
 
   // Enables more expressive Camel Route definitions https://camel.apache.org/manual/Endpoint-dsl.html
   implementation "org.apache.camel:camel-endpointdsl:${camel_version}"
+  implementation "org.apache.camel.springboot:camel-jaxb-starter:${camel_version}"
+  implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
+  implementation "org.apache.camel:camel-spring-rabbitmq:${camel_version}"
 
   // Actuator for health check
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
   testImplementation "org.apache.camel:camel-test-junit5:${camel_version}"
-  testImplementation "com.github.fppt:jedis-mock:1.0.10"
+  testImplementation "com.github.fppt:jedis-mock:1.0.11"
   // testImplementation 'org.slf4j:slf4j-simple:2.0.7'
 
   // To fix jackson error: Java 8 date/time type `java.time.LocalDateTime` not supported by default

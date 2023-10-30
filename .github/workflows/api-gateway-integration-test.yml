@@ -93,10 +93,17 @@ jobs:
           method: "GET"
           accept: 200
 
-      - name: "Max CFI API Docs- Request"
+      - name: "EE - Max CFI API Docs- Request"
         uses: indiesdev/curl@v1.1
         with:
           url: "http://localhost:8060/cfi/openapi.json"
+          method: "GET"
+          accept: 200
+
+      - name: "EE - EP Merge API Docs- Request"
+        uses: indiesdev/curl@v1.1
+        with:
+          url: "http://localhost:8060/ep/openapi.json"
           method: "GET"
           accept: 200
 

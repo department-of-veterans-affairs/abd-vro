@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
   public ResponseEntity<VefsErrorResponse> handleException(ResponseStatusException exception) {
     log.info("Expected thrown exception", exception);
     VefsErrorResponse cpe = VefsErrorResponse.builder().message(exception.getReason()).build();
-    return new ResponseEntity<>(cpe, exception.getStatus());
+    return new ResponseEntity<>(cpe, exception.getStatusCode());
   }
 
   /**

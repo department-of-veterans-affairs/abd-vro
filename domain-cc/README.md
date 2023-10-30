@@ -22,10 +22,11 @@ which python3
 # /Users/<your_username>/.virtualenvs/domain-cc/bin/python
 ```
 
-Install dependencies and run webserver
+Navigate to `src` directory, install dependencies, and run webserver
 ```
+cd cc-app/src
 pip3 install -r requirements.txt
-uvicorn api:app --port 8120 --reload
+uvicorn python_src.api:app --port 8120 --reload
 ```
 
 ## testing it all together

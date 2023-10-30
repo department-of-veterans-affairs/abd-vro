@@ -17,7 +17,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
   // implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-  implementation "org.springdoc:springdoc-openapi-webmvc-core"
+  implementation "org.springdoc:springdoc-openapi-starter-webmvc-api:${spring_doc_version}"
 
   // testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
 }
