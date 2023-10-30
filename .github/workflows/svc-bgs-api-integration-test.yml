@@ -8,7 +8,7 @@ on:
   workflow_call:
 
 env:
-  COMPOSE_PROFILES: 'svc'
+  COMPOSE_PROFILES: 'bgs'
   CORRELATION_ID: '1234'
 
 jobs:
