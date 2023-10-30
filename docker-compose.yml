@@ -70,18 +70,15 @@ services:
   # Containers with the `mock-` prefix are used for development and testing.
 
   rabbitmq-service:
-    image: rabbitmq:3-management
+    image: va/abd_vro-rabbitmq
     <<: *image-platform
-    # Specifying user to reduce/eliminate startup error about erlang.cookie
-    # based on https://github.com/docker-library/rabbitmq/issues/318
-    user: rabbitmq
     healthcheck:
       test: rabbitmq-diagnostics check_port_connectivity
       interval: 5s
       timeout: 3s
       retries: 30
     volumes:
-      - var_rabbitmq:/var/lib/rabbitmq
+      - var_rabbitmq:/var/lib/rabbitmq/mnesia
     networks:
       - intranet
     ports:
