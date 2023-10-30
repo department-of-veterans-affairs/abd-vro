@@ -13,7 +13,8 @@ from service.hoppy_service import HOPPY, ClientName
 from statemachine import State, StateMachine
 from util.contentions_util import ContentionsUtil, MergeException
 
-CANCELLATION_REASON = "Issues moved to pending EP Claim ID #%d"
+CANCEL_TRACKING_EP = "60"
+CANCELLATION_REASON = "Issues moved into or confirmed in pending EP - claim #%d"
 
 
 class EpMergeMachine(StateMachine):
@@ -107,7 +108,7 @@ class EpMergeMachine(StateMachine):
     def on_cancel_ep400_claim(self):
         reason = CANCELLATION_REASON % self.job.pending_claim_id
         request = cancel_claim.Request(claim_id=self.job.ep400_claim_id,
-                                       lifecycle_status_reason_code="65",
+                                       lifecycle_status_reason_code=CANCEL_TRACKING_EP,
                                        close_reason_text=reason)
         self.make_request(
             request=request,

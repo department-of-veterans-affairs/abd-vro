@@ -8,7 +8,8 @@ from hoppy.exception import ResponseException
 from model import cancel_claim, get_contentions, update_contentions
 from model import update_temp_station_of_jurisdiction as tsoj
 from model.merge_job import JobState, MergeJob
-from service.ep_merge_machine import CANCELLATION_REASON, EpMergeMachine
+from service.ep_merge_machine import (CANCEL_TRACKING_EP, CANCELLATION_REASON,
+                                      EpMergeMachine)
 from util.contentions_util import ContentionsUtil, MergeException
 
 JOB_ID = uuid.uuid4()
@@ -45,7 +46,7 @@ update_pending_claim_req = update_contentions.Request(claim_id=PENDING_CLAIM_ID,
                                                       ).model_dump(by_alias=True)
 update_pending_claim_200 = load_response(response_200, update_contentions.Response)
 cancel_ep400_claim_req = cancel_claim.Request(claim_id=EP400_CLAIM_ID,
-                                              lifecycle_status_reason_code="65",
+                                              lifecycle_status_reason_code=CANCEL_TRACKING_EP,
                                               close_reason_text=CANCELLATION_REASON % PENDING_CLAIM_ID
                                               ).model_dump(by_alias=True)
 cancel_claim_200 = load_response(response_200, cancel_claim.Response)
