@@ -24,7 +24,8 @@ x-common-sde-security: &common-sde-security
     nproc: 65535
 
 x-postgres-vars: &postgres-vars
-  POSTGRES_URL: postgresql://postgres-service:5432/vro
+#  POSTGRES_URL: postgresql://postgres-service:5432/vro
+  POSTGRES_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@0.0.0.0:5432/vro
   POSTGRES_DB: ${POSTGRES_DB}
   POSTGRES_USER: ${POSTGRES_USER}
   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
