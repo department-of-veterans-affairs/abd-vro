@@ -70,6 +70,7 @@ class BaseQueueClient(ABC):
         self._channel = None
         self._max_reconnect_delay = self.config.get('max_reconnect_delay', 30)
         self._reconnect_delay = self.config.get('initial_reconnect_delay', 0)
+        self._is_ready = False
         self._stopping = False
         self._stopped = False
 
@@ -83,6 +84,7 @@ class BaseQueueClient(ABC):
     def _initialize_connection_session(self):
         """The following attributes are used per connection session. When a reconnect happens, they should be reset."""
         self._reconnect_delay = self.config.get('initial_reconnect_delay', 0)
+        self._is_ready = False
         self._stopping = False
         self._stopped = False
 
@@ -106,6 +108,10 @@ class BaseQueueClient(ABC):
             on_close_callback=self._on_connection_closed,
             custom_ioloop=loop)
         return self._connection
+
+    @property
+    def is_ready(self) -> bool:
+        return self._is_ready
 
     @abstractmethod
     def _ready(self):

@@ -54,9 +54,11 @@ class AsyncHoppyClient:
         self.responses = {}
         self.rejected = {}
 
-    def start(self, loop):
+    async def start(self, loop):
         self.async_publisher.connect(loop)
         self.async_consumer.connect(loop)
+        while not self.async_publisher.is_ready or not self.async_consumer.is_ready:
+            await asyncio.sleep(0)
 
     async def stop(self):
         self.async_publisher.stop()

@@ -39,13 +39,14 @@ def get_client(mock_async_publisher, mock_async_consumer, app_id="test", exchang
 
 
 class TestAsyncHoppyClient:
-    def test_start(self, mock_async_publisher, mock_async_consumer):
+    @pytest.mark.asyncio
+    async def test_start(self, mock_async_publisher, mock_async_consumer):
         # given
         client = get_client(mock_async_publisher, mock_async_consumer)
 
         # when
         loop = asyncio.new_event_loop()
-        client.start(loop)
+        await client.start(loop)
 
         client.async_publisher.connect.assert_called_once_with(loop)
         client.async_consumer.connect.assert_called_once_with(loop)
