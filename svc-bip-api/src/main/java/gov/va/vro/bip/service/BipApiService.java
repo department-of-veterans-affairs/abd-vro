@@ -3,12 +3,15 @@ package gov.va.vro.bip.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.bip.model.BipClaimResp;
-import gov.va.vro.bip.model.BipContentionResp;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
-import gov.va.vro.bip.model.ClaimContention;
 import gov.va.vro.bip.model.ClaimStatus;
 import gov.va.vro.bip.model.UpdateContentionReq;
-import io.jsonwebtoken.*;
+import gov.va.vro.bip.modelv2.contentions.GetClaimContentionsResponse;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ClaimsBuilder;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,10 +29,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -132,7 +133,7 @@ public class BipApiService implements IBipApiService {
   }
 
   @Override
-  public List<ClaimContention> getClaimContentions(long claimId) {
+  public GetClaimContentionsResponse getClaimContentions(long claimId) {
     try {
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
       log.info("Call {} to get claim contention for {}.", url, claimId);
@@ -140,20 +141,21 @@ public class BipApiService implements IBipApiService {
       HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(headers);
       ResponseEntity<String> bipResponse =
           restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
-      if (HttpStatus.OK == bipResponse.getStatusCode()) {
-        BipContentionResp resp = mapper.readValue(bipResponse.getBody(), BipContentionResp.class);
-        return resp.getContentions();
-      } else if (HttpStatus.NO_CONTENT == bipResponse.getStatusCode()) {
-        return new ArrayList<>();
-      } else {
-        log.error(
-            "getClaimContentions returned {} for {}. {}",
-            bipResponse.getStatusCode(),
-            claimId,
-            bipResponse.getBody());
-        throw new BipException(bipResponse.getStatusCode(), bipResponse.getBody());
-      }
-    } catch (RestClientException | JsonProcessingException e) {
+      log.info("event=getClaimContentionsResponseReceived status={}", bipResponse.getStatusCode());
+
+      GetClaimContentionsResponse getClaimContentionsResponse =
+          mapper.readValue(bipResponse.getBody(), GetClaimContentionsResponse.class);
+      return getClaimContentionsResponse.toBuilder()
+          .statusCode(bipResponse.getStatusCode().value())
+          .statusMessage(HttpStatus.valueOf(bipResponse.getStatusCode().value()).getReasonPhrase())
+          .build();
+    } catch (HttpStatusCodeException e) {
+      log.info(
+          "event=getClaimContentionsResponseReceived claimId={} status={}",
+          claimId,
+          e.getStatusCode());
+      throw e;
+    } catch (JsonProcessingException e) {
       log.error("failed to getClaimContentions for claim {}.", claimId, e);
       throw new BipException(e.getMessage(), e);
     }

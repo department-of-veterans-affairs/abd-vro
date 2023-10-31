@@ -2,11 +2,9 @@ package gov.va.vro.bip.service;
 
 import gov.va.vro.bip.model.BipClaimResp;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
-import gov.va.vro.bip.model.ClaimContention;
 import gov.va.vro.bip.model.ClaimStatus;
 import gov.va.vro.bip.model.UpdateContentionReq;
-
-import java.util.List;
+import gov.va.vro.bip.modelv2.contentions.GetClaimContentionsResponse;
 
 /**
  * BIP Claims API service.
@@ -50,7 +48,7 @@ public interface IBipApiService {
    * @return a list of contention objects.
    * @throws BipException error occurs.
    */
-  List<ClaimContention> getClaimContentions(long claimId) throws BipException;
+  GetClaimContentionsResponse getClaimContentions(long claimId) throws BipException;
 
   BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention);
 }
