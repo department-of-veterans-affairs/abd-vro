@@ -38,6 +38,10 @@ jobs:
           ./gradlew :dockerComposeUp
           ./gradlew :app:dockerComposeUp
 
+      - name: Sleep for 3 minutes
+        run: sleep 180s
+        shell: bash
+
       - name: 'Wait for RabbitMQ to be ready'
         uses: indiesdev/curl@v1.1
         with:
