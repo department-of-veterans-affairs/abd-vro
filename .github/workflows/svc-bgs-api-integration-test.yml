@@ -53,7 +53,6 @@ jobs:
           timeout: 2000
           # Quit after 60 seconds
           retries: 30
-          log-response: true
 
       # Temporary step added to avoid race condition. Currently, there is no health check in 'svc-bgs-api'; therefore,
       # at this step, it is unknown if svc-bgs-api has yet to create the 'bgs-api' exchange.
