@@ -149,7 +149,7 @@ export RABBITMQ_PLACEHOLDERS_USERPASSWORD=guest
 
 # Credentials for Redis
 # Redis assumes that the implicit username is "default" -- https://redis.io/commands/auth/
-export REDIS_PLACEHOLDERS_PASSWORD=vro_redis_password
+export REDIS_PASSWORD=vro_redis_password
 
 # For local testing of dev and qa environments
 # export PERSIST_TRACKING_FOLDER=/tmp/persist/tracking
