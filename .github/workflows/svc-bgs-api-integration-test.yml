@@ -45,8 +45,8 @@ jobs:
           method: 'GET'
           basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
           accept: 200
-          # Retry every 2 seconds
-          timeout: 2000
+          # Retry every 5 seconds
+          timeout: 5000
           # Quit after 60 seconds
           retries: 30
 
