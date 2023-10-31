@@ -26,8 +26,8 @@ valueFrom:
 {{- define "vro.mqClient.envVars" -}}
 - name: RABBITMQ_PLACEHOLDERS_HOST
   value: {{ .Values.global.hostnamePrefix }}-rabbitmq
-- name: RABBITMQ_USERNAME
+- name: RABBITMQ_PLACEHOLDERS_USERNAME
   {{- include "vro.valueFromSecret.rabbitmqUser" . | nindent 2 }}
-- name: RABBITMQ_PASSWORD
+- name: RABBITMQ_PLACEHOLDERS_USERPASSWORD
   {{- include "vro.valueFromSecret.rabbitmqPwd" . | nindent 2 }}
 {{- end }}

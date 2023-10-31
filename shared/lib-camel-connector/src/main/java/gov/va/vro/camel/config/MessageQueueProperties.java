@@ -14,6 +14,6 @@ import org.springframework.context.annotation.Configuration;
 public class MessageQueueProperties {
   private String host = "localhost";
   private int port = 5672;
-  private String username = "user";
-  private String password = "bitnami";
+  private String username = "guest";
+  private String password = "guest";
 }

@@ -17,9 +17,9 @@ public class MessageQueueEnvVariables {
   @Value("${RABBITMQ_PORT:0}")
   private int port = 0;
 
-  @Value("${RABBITMQ_USERNAME:#{null}}")
+  @Value("${RABBITMQ_PLACEHOLDERS_USERNAME:#{null}}")
   private String username;
 
-  @Value("${RABBITMQ_PASSWORD:#{null}}")
+  @Value("${RABBITMQ_PLACEHOLDERS_USERPASSWORD:#{null}}")
   private String password;
 }

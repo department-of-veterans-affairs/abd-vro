@@ -7,8 +7,8 @@ spring:
   rabbitmq:
     host: "${RABBITMQ_PLACEHOLDERS_HOST:localhost}"
     port: 5672
-    username: "${RABBITMQ_USERNAME:guest}"
-    password: "${RABBITMQ_PASSWORD:guest}"
+    username: "${RABBITMQ_PLACEHOLDERS_USERNAME:guest}"
+    password: "${RABBITMQ_PLACEHOLDERS_USERPASSWORD:guest}"
 
   # Specify how Spring connects to Kafka
   kafka:

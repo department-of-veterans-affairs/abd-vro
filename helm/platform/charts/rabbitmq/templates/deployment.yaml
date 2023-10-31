@@ -19,9 +19,9 @@ spec:
         - name: rabbitmq{{ include "vro.containerSuffix" . }}
           image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/vro-rabbitmq:{{ .Values.imageTag }}
           env:
-            - name: RABBITMQ_USERNAME
+            - name: RABBITMQ_DEFAULT_USER
               {{- include "vro.valueFromSecret.rabbitmqUser" . | nindent 14 }}
-            - name: RABBITMQ_PASSWORD
+            - name: RABBITMQ_DEFAULT_PASS
               {{- include "vro.valueFromSecret.rabbitmqPwd" . | nindent 14 }}
           ports:
             - containerPort: {{ .Values.service.mq.sourcePort }}

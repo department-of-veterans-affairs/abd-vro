@@ -144,8 +144,8 @@ export POSTGRES_FLYWAY_USER=vro_admin_user
 export POSTGRES_FLYWAY_PASSWORD=vro_admin_user_pw
 
 # Credentials for RabbitMQ and shared across containers
-export RABBITMQ_USERNAME=user
-export RABBITMQ_PASSWORD=bitnami
+export RABBITMQ_PLACEHOLDERS_USERNAME=guest
+export RABBITMQ_PLACEHOLDERS_USERPASSWORD=guest
 
 # Credentials for Redis
 # Redis assumes that the implicit username is "default" -- https://redis.io/commands/auth/
