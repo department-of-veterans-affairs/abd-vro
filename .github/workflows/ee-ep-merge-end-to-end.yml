@@ -36,6 +36,10 @@ jobs:
 
           ./gradlew :dockerComposeUp
 
+      - name: 'Wait for containers to start'
+        run: sleep 60s
+        shell: bash
+
       - name: 'Wait for RabbitMQ to be ready'
         uses: indiesdev/curl@v1.1
         with:
