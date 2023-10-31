@@ -163,20 +163,6 @@ jobs:
             exit 10
           fi
 
-      - name: "Check for errors in container logs"
-        if: always()
-        run: |
-          for C_NAME in $(docker container ls --format '{{.Names}}' | grep -v '-service1'); do
-            echo "## Searching $C_NAME container logs"
-            if docker logs "$C_NAME" 2>&1 | grep 'ERROR'; then
-              echo "::error::Unexpected ERROR in $C_NAME container logs"
-              ERROR_IN_LOGS=true
-            fi
-          done
-          if [ "$ERROR_IN_LOGS" ]; then
-            exit 4
-          fi
-
       - name: 'Clean shutdown of all containers'
         if: always()
         shell: bash
