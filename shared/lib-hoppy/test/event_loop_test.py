@@ -25,10 +25,7 @@ async def test_stop_with_caller_provided_event_loop(event_loop):
     consumer_connection = client.async_consumer._connection
     while not publisher_connection.is_open or not consumer_connection.is_open:
         await asyncio.sleep(0)
-
-    client.stop()
-    while not publisher_connection.is_closed or not consumer_connection.is_closed:
-        await asyncio.sleep(0)
+    await client.stop()
 
     # Then
     assert not event_loop.is_closed()
@@ -49,6 +46,4 @@ def test_stop_without_caller_provided_event_loop():
 
     # Then
     with pytest.raises(RuntimeError, match='Event loop stopped before Future completed.'):
-        client.stop()
-        while not loop.is_closed():
-            loop.run_until_complete(asyncio.sleep(0))
+        loop.run_until_complete(client.stop())

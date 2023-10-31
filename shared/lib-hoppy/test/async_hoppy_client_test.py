@@ -50,12 +50,13 @@ class TestAsyncHoppyClient:
         client.async_publisher.connect.assert_called_once_with(loop)
         client.async_consumer.connect.assert_called_once_with(loop)
 
-    def test_stop(self, mock_async_publisher, mock_async_consumer):
+    @pytest.mark.asyncio
+    async def test_stop(self, mock_async_publisher, mock_async_consumer):
         # Given
         client = get_client(mock_async_publisher, mock_async_consumer)
 
         # When
-        client.stop()
+        await client.stop()
 
         # Then
         client.async_publisher.stop.assert_called_once()

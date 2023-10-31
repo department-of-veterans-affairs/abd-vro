@@ -71,6 +71,7 @@ class BaseQueueClient(ABC):
         self._max_reconnect_delay = self.config.get('max_reconnect_delay', 30)
         self._reconnect_delay = self.config.get('initial_reconnect_delay', 0)
         self._stopping = False
+        self._stopped = False
 
     def _create_connection_parameters(self) -> ConnectionParameters:
         credentials = PlainCredentials(self.config["username"], self.config["password"])
@@ -83,6 +84,7 @@ class BaseQueueClient(ABC):
         """The following attributes are used per connection session. When a reconnect happens, they should be reset."""
         self._reconnect_delay = self.config.get('initial_reconnect_delay', 0)
         self._stopping = False
+        self._stopped = False
 
     def connect(self, loop=None):
         """
@@ -128,6 +130,10 @@ class BaseQueueClient(ABC):
             self._shut_down()
             self._debug('stopped')
 
+    @property
+    def is_stopped(self) -> bool:
+        return self._stopped
+
     def _on_connection_open(self, connection):
         self._debug('openedConnection')
         self._connection = connection
@@ -146,6 +152,7 @@ class BaseQueueClient(ABC):
             self._debug('closedConnection',
                         closing=self._connection.is_closing,
                         closed=self._connection.is_closed)
+            self._stopped = True
         else:
             self._warning('connectionClosedUnexpectedly', reason=reason)
             self._reconnect()

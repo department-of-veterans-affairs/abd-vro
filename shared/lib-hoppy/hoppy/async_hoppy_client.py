@@ -58,9 +58,11 @@ class AsyncHoppyClient:
         self.async_publisher.connect(loop)
         self.async_consumer.connect(loop)
 
-    def stop(self):
+    async def stop(self):
         self.async_publisher.stop()
         self.async_consumer.stop()
+        while not self.async_publisher.is_stopped or not self.async_consumer.is_stopped:
+            await asyncio.sleep(0)
 
     async def make_request(self, request_id, body):
         correlation_id = str(uuid.uuid4())
