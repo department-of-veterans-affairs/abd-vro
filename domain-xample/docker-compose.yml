@@ -27,8 +27,8 @@ x-redis-placeholder-vars: &redis-placeholder-vars
 
 x-rabbitmq-placeholder-vars: &rabbitmq-placeholder-vars
   RABBITMQ_PLACEHOLDERS_HOST: rabbitmq-service
-  RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
-  RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+  RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
+  RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
 
 x-rabbitmq-client-vars: &rabbitmq-client-vars
   RABBITMQ_PORT: 5672
