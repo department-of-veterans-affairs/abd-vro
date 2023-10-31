@@ -43,6 +43,5 @@
 postgres_VER="v3.5.6"
 redis_VER="v3.5.6"
 rabbitmq_VER="v3.5.6"
-dbinit_VER="v3.5.6"
 ccapp_VER="v3.5.6"
 eemaxcfiapp_VER="v3.5.6"
