@@ -30,6 +30,9 @@ jobs:
       - name: "Python isort"
         uses: isort/isort-action@v1
         with:
+          configuration: |
+            [settings]
+            profile=black
           requirementsFiles: "**/requirements.txt \
                               **/dev-requirements.txt"
 
