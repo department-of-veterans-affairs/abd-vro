@@ -20,6 +20,12 @@ DRUG_INDUCED_PULMONARY_PNEMONIA_CLASSIFICATION = {
     "classification_name": "Respiratory",
 }
 
+PLANTAR_FASCIITIS = {
+    "diagnostic_code": 5269,
+    "classification_code": 8994,
+    "classification_name": "Musculoskeletal - Foot",
+}
+
 
 @pytest.fixture
 def client() -> TestClient:

@@ -25,5 +25,6 @@ class Claim(BaseModel):
 class PredictedClassification(BaseModel):
     """Prediction result of our ML model"""
 
-    classification_code: int
-    classification_name: str
+    classification_code: Optional[int]
+    classification_name: Optional[str]
+    in_dropdown: bool

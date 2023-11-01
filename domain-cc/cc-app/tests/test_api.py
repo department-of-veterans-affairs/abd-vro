@@ -1,8 +1,10 @@
 from fastapi.testclient import TestClient
 
-from .conftest import (BENIGN_GROWTH_BRAIN_CLASSIFICATION,
-                       DRUG_INDUCED_PULMONARY_PNEMONIA_CLASSIFICATION,
-                       TUBERCULOSIS_CLASSIFICATION)
+from .conftest import (
+    BENIGN_GROWTH_BRAIN_CLASSIFICATION,
+    DRUG_INDUCED_PULMONARY_PNEMONIA_CLASSIFICATION,
+    TUBERCULOSIS_CLASSIFICATION,
+)
 
 
 def test_classification(client: TestClient):
@@ -23,6 +25,7 @@ def test_classification(client: TestClient):
         response.json()["classification_name"]
         == TUBERCULOSIS_CLASSIFICATION["classification_name"]
     )
+    assert response.json()["in_dropdown"] is False
 
 
 def test_missing_params(client: TestClient):
@@ -42,10 +45,11 @@ def test_unmapped_diagnostic_code(client: TestClient):
         "claim_id": 700,
         "form526_submission_id": 777,
     }
-
     response = client.post("/classifier", json=json_post_dict)
     assert response.status_code == 200
-    assert response.json() is None
+    assert response.json()["classification_code"] is None
+    assert response.json()["classification_name"] is None
+    assert response.json()["in_dropdown"] is False
 
 
 def test_unprocessable_content(client: TestClient):
