@@ -160,6 +160,10 @@ jobs:
           path: ./api-gw-itest-container-logs/**
           retention-days: 14
 
+      - name: "Check for errors in container logs"
+        run: |
+          docker logs vro_ee-ep-merge-app_1
+
       - name: "Clean shutdown of all containers"
         if: always()
         shell: bash
