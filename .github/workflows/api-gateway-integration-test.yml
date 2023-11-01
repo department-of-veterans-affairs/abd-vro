@@ -57,6 +57,11 @@ jobs:
           # Quit after 60 seconds
           timeout: 60000
 
+      - name: "Get status of containers"
+        shell: bash
+        run: |
+          docker ps
+
       - name: "Swagger UI - Request"
         id: "swaggerUI"
         uses: indiesdev/curl@v1.1
