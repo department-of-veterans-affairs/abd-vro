@@ -58,7 +58,7 @@ jobs:
           timeout: 60000
 
       - name: 'Wait for containers to reach healthy status'
-        run: sleep 120s
+        run: sleep 300s
         shell: bash
 
       - name: "Get status of containers"
