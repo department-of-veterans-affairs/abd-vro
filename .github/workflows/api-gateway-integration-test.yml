@@ -161,6 +161,7 @@ jobs:
           retention-days: 14
 
       - name: "Check for errors in container logs"
+        if: always()
         run: |
           docker logs vro_ee-ep-merge-app_1
 
