@@ -27,7 +27,7 @@ jobs:
 
           COMPOSE_PROFILES="gateway" ./gradlew :dockerComposeUp
 
-          sleep 300s
+          sleep 180s
           ./gradlew :app:dockerComposeUp
 
           # Run CC:
@@ -58,10 +58,6 @@ jobs:
           interval: 2000
           # Quit after 60 seconds
           timeout: 60000
-
-      - name: 'Wait for containers to reach healthy status'
-        run: sleep 300s
-        shell: bash
 
       - name: "Get status of containers"
         shell: bash
