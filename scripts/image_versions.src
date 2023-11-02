@@ -43,3 +43,13 @@
 postgres_VER="v3.5.6"
 ccapp_VER="v3.5.6"
 eemaxcfiapp_VER="v3.5.6"
+# Thu Nov  2 18:18:12 UTC 2023 -- v3.5.7
+redis_VER="v3.5.7"
+rabbitmq_VER="v3.5.7"
+apigateway_VER="v3.5.7"
+app_VER="v3.5.7"
+dbinit_VER="v3.5.7"
+svclighthouseapi_VER="v3.5.7"
+svcbiekafka_VER="v3.5.7"
+svcbipapi_VER="v3.5.7"
+xampleworkflows_VER="v3.5.7"
