@@ -3,6 +3,7 @@
 import pytest
 from fastapi.testclient import TestClient
 from src.python_src.api import app
+from src.python_src.database import Base, engine
 
 TUBERCULOSIS_CLASSIFICATION = {
     "diagnostic_code": 7710,
@@ -20,7 +21,8 @@ DRUG_INDUCED_PULMONARY_PNEMONIA_CLASSIFICATION = {
     "classification_name": "Respiratory",
 }
 
-SQLALCHEMY_DATABASE_URL = "sqlite://"
+# SQLALCHEMY_DATABASE_URL = "sqlite://"
+Base.metadata.create_all(bind=engine)
 
 
 @pytest.fixture
