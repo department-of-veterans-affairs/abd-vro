@@ -49,6 +49,8 @@ public class BipApiService implements IBipApiService {
 
   static final String HTTPS = "https://";
 
+  static final String JWT_TYPE = "JWT";
+
   @Qualifier("bipCERestTemplate")
   @NonNull
   final RestTemplate restTemplate;
@@ -221,20 +223,22 @@ public class BipApiService implements IBipApiService {
   String createJwt() throws BipException {
     Claims claims = bipApiProps.toCommonJwtClaims();
     Map<String, Object> headerType = new HashMap<>();
-    headerType.put("typ", Header.JWT_TYPE);
+    headerType.put("typ", JWT_TYPE);
 
     ClaimsBuilder claimsBuilder =
         Jwts.claims().add(claims).add("iss", bipApiProps.getClaimIssuer());
     claims = claimsBuilder.build();
     byte[] signSecretBytes = bipApiProps.getClaimSecret().getBytes(StandardCharsets.UTF_8);
-    Key signingKey = new SecretKeySpec(signSecretBytes, SignatureAlgorithm.HS256.getJcaName());
+    Key signingKey = new SecretKeySpec(signSecretBytes, "HmacSHA256");
     return Jwts.builder()
-        .setSubject("Claim")
-        .setIssuedAt(Calendar.getInstance().getTime())
-        .setExpiration(claims.getExpiration())
-        .setClaims(claims)
-        .signWith(SignatureAlgorithm.HS256, signingKey)
-        .setHeaderParams(headerType)
+        .subject("Claim")
+        .issuedAt(Calendar.getInstance().getTime())
+        .expiration(claims.getExpiration())
+        .claims(claims)
+        .signWith(signingKey)
+        .header()
+        .add(headerType)
+        .and()
         .compact();
   }
 }
