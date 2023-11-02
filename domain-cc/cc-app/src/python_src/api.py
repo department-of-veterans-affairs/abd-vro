@@ -10,13 +10,13 @@ from . import database_models
 from .database import Base, engine, get_db
 from .pydantic_models import Claim, PredictedClassification
 from .util.brd_classification_codes import get_classification_name
-from .util.lookup_table import ConditionDropdownLookupTable, DiagnosticCodeLookupTable
+from .util.lookup_table import (ConditionDropdownLookupTable,
+                                DiagnosticCodeLookupTable)
 
 dc_lookup_table = DiagnosticCodeLookupTable()
 dropdown_lookup_table = ConditionDropdownLookupTable()
 
 
-Base.metadata.create_all(bind=engine)
 app = FastAPI(
     title="Contention Classification",
     description="Mapping VA.gov disability form contentions to actual classifications defined in the [Benefits Reference Data API](https://developer.va.gov/explore/benefits/docs/benefits_reference_data) for use in downstream VA systems.",
