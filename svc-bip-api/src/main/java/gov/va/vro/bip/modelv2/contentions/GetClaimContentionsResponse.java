@@ -16,7 +16,7 @@ import java.util.List;
 @SuperBuilder(toBuilder = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public final class GetClaimContentionsResponse extends BipPayloadResponse {
+public class GetClaimContentionsResponse extends BipPayloadResponse {
   @JsonProperty("contentions")
   private final List<ClaimContention> contentions;
 }
