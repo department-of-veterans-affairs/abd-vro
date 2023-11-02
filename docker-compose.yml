@@ -37,7 +37,7 @@ x-postgres-vars: &postgres-vars
 
 x-redis-placeholder-vars: &redis-placeholder-vars
   REDIS_PLACEHOLDERS_HOST: redis-service
-  REDIS_PLACEHOLDERS_PASSWORD: ${REDIS_PLACEHOLDERS_PASSWORD}
+  REDIS_PASSWORD: ${REDIS_PASSWORD}
 
 x-rabbitmq-placeholder-vars: &rabbitmq-placeholder-vars
   RABBITMQ_PLACEHOLDERS_HOST: rabbitmq-service
@@ -92,7 +92,7 @@ services:
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
 
   redis-service:
-    image: redis
+    image: va/abd_vro-redis
     <<: *image-platform
     volumes:
       - var_redis:/data
@@ -100,7 +100,7 @@ services:
       - intranet
     ports:
       - "6379:6379"
-    command: redis-server --requirepass ${REDIS_PLACEHOLDERS_PASSWORD}
+    command: redis-server --requirepass ${REDIS_PASSWORD}
 
   postgres-service:
     image: va/abd_vro-postgres
