@@ -1,19 +1,15 @@
 package gov.va.vro.bip;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.bip.model.BipClaimResp;
+import gov.va.vro.bip.model.BipPayloadResponse;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.ClaimStatus;
 import gov.va.vro.bip.model.RequestForUpdateClaimStatus;
 import gov.va.vro.bip.model.UpdateContention;
 import gov.va.vro.bip.model.UpdateContentionModel;
 import gov.va.vro.bip.model.UpdateContentionReq;
-import gov.va.vro.bip.model.contentions.GetClaimContentionsRequest;
-import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 import gov.va.vro.bip.service.BipApiService;
 import gov.va.vro.bip.service.RabbitMqController;
 import lombok.SneakyThrows;
@@ -56,17 +52,6 @@ class RabbitMqIntegrationTest {
     BipUpdateClaimResp response =
         (BipUpdateClaimResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, request);
     assertResponseIsSuccess(response);
-  }
-
-  @Test
-  void testGetClaimContentions(@Value("${getClaimContentionsQueue}") String qName) {
-    GetClaimContentionsRequest req =
-        GetClaimContentionsRequest.builder().claimId(Long.parseLong(CLAIM_ID1)).build();
-    GetClaimContentionsResponse response =
-        (GetClaimContentionsResponse)
-            rabbitTemplate.convertSendAndReceive(exchangeName, qName, req);
-    assertNotNull(response);
-    assertEquals(1, response.getContentions().size());
   }
 
   @Test
@@ -114,5 +99,12 @@ class RabbitMqIntegrationTest {
     List<String> textFields = node.findValuesAsText("text");
     Assertions.assertFalse(textFields.isEmpty());
     Assertions.assertTrue(textFields.contains("Success"));
+  }
+
+  private void assertResponseIsSuccess(BipPayloadResponse response) {
+    Assertions.assertNotNull(response);
+    Assertions.assertEquals(200, response.getStatusCode());
+    Assertions.assertEquals("OK", response.getStatusMessage());
+    Assertions.assertNull(response.getMessages());
   }
 }

@@ -6,6 +6,8 @@ import gov.va.vro.bip.model.RequestForUpdateClaimStatus;
 import gov.va.vro.bip.model.UpdateContentionModel;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
+import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionRequest;
+import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -44,5 +46,13 @@ public class RabbitMqController {
   BipUpdateClaimResp updateClaimContention(UpdateContentionModel contention) {
     return service.updateClaimContention(
         contention.getClaimId(), contention.getUpdateContentions());
+  }
+
+  @RabbitListener(
+      queues = "putTempStationOfJurisdictionQueue",
+      errorHandler = "svcBipApiErrorHandlerV2")
+  PutTempStationOfJurisdictionResponse putTempStationOfJurisdictionEndpoint(
+      PutTempStationOfJurisdictionRequest request) {
+    return service.putTempStationOfJurisdiction(request);
   }
 }

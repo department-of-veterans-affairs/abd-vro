@@ -36,7 +36,7 @@ get_pending_contentions_req = get_contentions.Request(claim_id=PENDING_CLAIM_ID)
 get_pending_contentions_200 = load_response(pending_contentions_200, get_contentions.Response)
 get_ep400_contentions_req = get_contentions.Request(claim_id=EP400_CLAIM_ID).model_dump(by_alias=True)
 get_ep400_contentions_200 = load_response(ep400_contentions_200, get_contentions.Response)
-update_temporary_station_of_duty_req = tsoj.Request(claim_id=PENDING_CLAIM_ID,
+update_temporary_station_of_duty_req = tsoj.Request(claim_id=EP400_CLAIM_ID,
                                                     temp_station_of_jurisdiction="398").model_dump(by_alias=True)
 update_temporary_station_of_duty_200 = load_response(response_200, tsoj.Response)
 update_pending_claim_req = update_contentions.Request(claim_id=PENDING_CLAIM_ID,

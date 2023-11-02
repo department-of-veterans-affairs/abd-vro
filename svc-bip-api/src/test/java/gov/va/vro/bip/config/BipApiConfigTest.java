@@ -6,9 +6,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import gov.va.vro.bip.service.BipException;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
@@ -21,18 +18,13 @@ import java.io.InputStream;
  * @author warren @Date 1/5/23
  */
 @ActiveProfiles("test")
-@SpringBootTest
 class BipApiConfigTest {
-
-  @Autowired
-  @Qualifier("bipCERestTemplate")
-  private RestTemplate template;
 
   @Test
   public void testRestTemplate() {
     BipApiConfig config = new BipApiConfig();
     try {
-      RestTemplate temp = config.getHttpsRestTemplate(new RestTemplateBuilder());
+      config.getHttpsRestTemplate(new RestTemplateBuilder());
       fail();
     } catch (Exception e) {
       assertTrue(e.getCause() instanceof NullPointerException);
@@ -42,7 +34,7 @@ class BipApiConfigTest {
       config.setTrustStore("biptruststore.jks");
       config.setKeystore("biptruststore.jks");
       config.setPassword("bad");
-      RestTemplate temp = config.getHttpsRestTemplate(new RestTemplateBuilder());
+      config.getHttpsRestTemplate(new RestTemplateBuilder());
       fail();
     } catch (BipException e) {
       assertTrue(true);
@@ -59,8 +51,9 @@ class BipApiConfigTest {
       fail();
     }
 
-    try {
-      InputStream sourceStream = getClass().getClassLoader().getResourceAsStream("bipcert.jks");
+    try (InputStream sourceStream =
+        getClass().getClassLoader().getResourceAsStream("bipcert.jks")) {
+      assertNotNull(sourceStream);
       String store = new String(sourceStream.readAllBytes());
       config.setTrustStore(store);
       config.setKeystore(store);

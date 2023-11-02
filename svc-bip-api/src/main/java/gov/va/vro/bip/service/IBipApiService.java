@@ -5,6 +5,8 @@ import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.ClaimStatus;
 import gov.va.vro.bip.model.UpdateContentionReq;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
+import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionRequest;
+import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionResponse;
 
 /**
  * BIP Claims API service.
@@ -51,4 +53,14 @@ public interface IBipApiService {
   GetClaimContentionsResponse getClaimContentions(long claimId) throws BipException;
 
   BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention);
+
+  /**
+   * Sets the temporary station of jurisdiction for a claim.
+   *
+   * @param request request
+   * @return response
+   * @throws BipException error occurs
+   */
+  PutTempStationOfJurisdictionResponse putTempStationOfJurisdiction(
+      PutTempStationOfJurisdictionRequest request);
 }

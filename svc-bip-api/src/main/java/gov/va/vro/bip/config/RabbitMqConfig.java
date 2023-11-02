@@ -13,11 +13,14 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpStatusCodeException;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Configuration
 @Slf4j
@@ -58,26 +61,43 @@ public class RabbitMqConfig {
   @Bean
   RabbitListenerErrorHandler svcBipApiErrorHandlerV2(ObjectMapper mapper) {
     return (amqpMessage, message, exception) -> {
-      log.warn("Exception occurred while receiving BipPayloadResponse", exception);
-
-      int status = HttpStatus.INTERNAL_SERVER_ERROR.value();
-      String statusMessage = HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase();
-      List<BipMessage> messages = new ArrayList<>();
       if (exception.getCause() instanceof HttpStatusCodeException e) {
+        String url =
+            Optional.ofNullable(e.getResponseHeaders())
+                .map(HttpHeaders::getLocation)
+                .map(URI::getPath)
+                .orElse("No Headers");
+        int status = e.getStatusCode().value();
+        String statusMessage = ((HttpStatus) e.getStatusCode()).name();
+        log.info(
+            "event=responseReceived url={} status={} statusMessage={}", url, status, statusMessage);
+
+        List<BipMessage> messages = new ArrayList<>();
         try {
-          messages =
-              mapper.readValue(e.getResponseBodyAsString(), BipPayloadResponse.class).getMessages();
-          status = e.getStatusCode().value();
-          statusMessage = e.getStatusText();
+          messages.addAll(
+              mapper
+                  .readValue(e.getResponseBodyAsString(), BipPayloadResponse.class)
+                  .getMessages());
         } catch (JsonProcessingException ex) {
-          log.warn("failed to parse response error={}", e.getMessage());
+          log.info(
+              "event=failedToParseResponse url={} status={} statusMessage={} error={}",
+              url,
+              status,
+              statusMessage,
+              ex.getMessage());
         }
+        return BipPayloadResponse.builder()
+            .statusCode(status)
+            .statusMessage(statusMessage)
+            .messages(messages)
+            .build();
+
+      } else {
+        return BipPayloadResponse.builder()
+            .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+            .statusMessage(HttpStatus.INTERNAL_SERVER_ERROR.name())
+            .build();
       }
-      return BipPayloadResponse.builder()
-          .statusCode(status)
-          .statusMessage(statusMessage)
-          .messages(messages)
-          .build();
     };
   }
 }

@@ -78,7 +78,7 @@ class EpMergeMachine(StateMachine):
 
     @running_set_temp_station_of_jurisdiction.enter
     def on_set_temp_station_of_jurisdiction(self, pending_contentions=None, ep400_contentions=None):
-        request = tsoj.Request(temp_station_of_jurisdiction="398", claim_id=self.job.pending_claim_id)
+        request = tsoj.Request(temp_station_of_jurisdiction="398", claim_id=self.job.ep400_claim_id)
         self.make_request(
             request=request,
             hoppy_client=(HOPPY.get_client(ClientName.PUT_TSOJ)),
