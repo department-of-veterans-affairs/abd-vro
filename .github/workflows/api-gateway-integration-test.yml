@@ -26,6 +26,8 @@ jobs:
           export -p | sed 's/declare -x //'
 
           COMPOSE_PROFILES="gateway" ./gradlew :dockerComposeUp
+
+          sleep 300s
           ./gradlew :app:dockerComposeUp
 
           # Run CC:
