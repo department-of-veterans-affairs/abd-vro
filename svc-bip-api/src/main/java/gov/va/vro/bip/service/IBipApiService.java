@@ -4,7 +4,7 @@ import gov.va.vro.bip.model.BipClaimResp;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.ClaimStatus;
 import gov.va.vro.bip.model.UpdateContentionReq;
-import gov.va.vro.bip.modelv2.contentions.GetClaimContentionsResponse;
+import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 
 /**
  * BIP Claims API service.

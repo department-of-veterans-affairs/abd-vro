@@ -9,11 +9,11 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.bip.model.BipClaim;
+import gov.va.vro.bip.model.BipMessage;
+import gov.va.vro.bip.model.BipPayloadResponse;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.UpdateContentionReq;
-import gov.va.vro.bip.modelv2.BipMessage;
-import gov.va.vro.bip.modelv2.BipPayloadResponse;
-import gov.va.vro.bip.modelv2.contentions.GetClaimContentionsResponse;
+import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

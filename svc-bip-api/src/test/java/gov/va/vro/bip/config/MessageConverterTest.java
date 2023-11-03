@@ -3,7 +3,7 @@ package gov.va.vro.bip.config;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.bip.model.ClaimContention;
-import gov.va.vro.bip.modelv2.contentions.GetClaimContentionsResponse;
+import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;

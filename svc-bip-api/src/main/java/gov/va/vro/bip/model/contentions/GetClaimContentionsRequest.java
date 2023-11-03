@@ -1,4 +1,4 @@
-package gov.va.vro.bip.modelv2.contentions;
+package gov.va.vro.bip.model.contentions;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

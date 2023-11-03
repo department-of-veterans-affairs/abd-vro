@@ -2,9 +2,9 @@ package gov.va.vro.bip.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.bip.model.BipMessage;
+import gov.va.vro.bip.model.BipPayloadResponse;
 import gov.va.vro.bip.model.HasStatusCodeAndMessage;
-import gov.va.vro.bip.modelv2.BipMessage;
-import gov.va.vro.bip.modelv2.BipPayloadResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.listener.api.RabbitListenerErrorHandler;
