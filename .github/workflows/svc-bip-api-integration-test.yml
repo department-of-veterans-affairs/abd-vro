@@ -11,7 +11,7 @@ on:
     branches: [josiah/bip-integration-test]
 
 env:
-  COMPOSE_PROFILES: 'svc'
+  COMPOSE_PROFILES: 'bip'
   VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"
 
 jobs:
@@ -44,6 +44,14 @@ jobs:
 
       - name: 'Start the containers'
         run: |
+          # create basic auth token for RabbitMQ and export to github environment
+          BASIC_AUTH=$(echo "${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}" | base64)
+          {
+            echo "RABBITMQ_USERNAME=${RABBITMQ_USERNAME}"
+            echo "RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}"
+            echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}"
+          } >> "$GITHUB_ENV"
+          
           source scripts/setenv.sh
           export -p | sed 's/declare -x //'
 
