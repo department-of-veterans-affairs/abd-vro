@@ -21,6 +21,14 @@ jobs:
       - name: 'Checkout source code'
         uses: actions/checkout@v3
 
+      - name: "Checkout abd-vro-dev-secrets repo"
+        uses: actions/checkout@v3
+        with:
+          # Checkout using a PAT so that we can access the internal repo
+          token: ${{ secrets.ACCESS_TOKEN_CHECKOUT_INTERNAL_REPO }}
+          repository: 'department-of-veterans-affairs/abd-vro-dev-secrets'
+          path: "${{ env.VRO_DEV_SECRETS_FOLDER }}"
+
       - name: 'Build the images'
         uses: ./.github/actions/build-images
 
