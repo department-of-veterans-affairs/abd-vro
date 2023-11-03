@@ -78,7 +78,7 @@ jobs:
       - name: 'Wait for svc-bip-api to be ready'
         uses: nev7n/wait_for_response@v1
         with:
-          url: 'http://localhost:10301/actuator/health'
+          url: 'http://localhost:10401/actuator/health'
           responseCode: 200
           # Retry every 2 seconds
           interval: 2000
