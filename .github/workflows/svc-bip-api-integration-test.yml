@@ -21,19 +21,13 @@ jobs:
       - name: 'Checkout source code'
         uses: actions/checkout@v3
 
-      - name: "Checkout abd-vro-dev-secrets repo"
-        uses: actions/checkout@v3
-        with:
-          # Checkout using a PAT so that we can access the internal repo
-          token: ${{ secrets.ACCESS_TOKEN_CHECKOUT_INTERNAL_REPO }}
-          repository: 'department-of-veterans-affairs/abd-vro-dev-secrets'
-          path: "${{ env.VRO_DEV_SECRETS_FOLDER }}"
-
       - name: 'Build the images'
         uses: ./.github/actions/build-images
 
       - name: 'Start the containers'
         run: |
+          source scripts/setenv.sh
+          
           # create basic auth token for RabbitMQ and export to github environment
           BASIC_AUTH=$(echo "${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}" | base64)
           {
@@ -42,7 +36,6 @@ jobs:
             echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}"
           } >> "$GITHUB_ENV"
           
-          source scripts/setenv.sh
           export -p | sed 's/declare -x //'
 
           ./gradlew :dockerComposeUp
@@ -57,6 +50,10 @@ jobs:
 
           ./gradlew :domain-xample:dockerComposeUp
           ./gradlew :app:dockerComposeUp
+
+      - name: 'Wait for containers to start'
+        run: sleep 60s
+        shell: bash
 
       - name: 'Wait for RabbitMQ to be ready'
         uses: indiesdev/curl@v1.1
