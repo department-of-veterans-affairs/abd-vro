@@ -7,9 +7,6 @@ on:
   # Allow being called by another GitHub Action
   workflow_call:
 
-  push:
-    branches: [josiah/bip-integration-test]
-
 env:
   COMPOSE_PROFILES: 'bip'
   VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"
