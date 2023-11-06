@@ -1,10 +1,10 @@
 spring:
   datasource:
-    url: ${POSTGRES_URL}
+    url: jdbc:${POSTGRES_URL}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
     hikari:
-      jdbc-url: ${POSTGRES_URL}
+      jdbc-url: jdbc:${POSTGRES_URL}
       username: ${POSTGRES_USER}
       password: ${POSTGRES_PASSWORD}
       schema: ${POSTGRES_SCHEMA}
@@ -17,8 +17,8 @@ spring:
   rabbitmq:
     host: "${RABBITMQ_PLACEHOLDERS_HOST:localhost}"
     port: 5672
-    username: "${RABBITMQ_PLACEHOLDERS_USERNAME:guest}"
-    password: "${RABBITMQ_PLACEHOLDERS_USERPASSWORD:guest}"
+    username: "${RABBITMQ_USERNAME:guest}"
+    password: "${RABBITMQ_PASSWORD:guest}"
 
 ## Actuator for health check
 management:

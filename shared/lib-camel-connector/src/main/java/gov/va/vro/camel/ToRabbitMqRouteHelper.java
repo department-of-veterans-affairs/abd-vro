@@ -54,12 +54,12 @@ public class ToRabbitMqRouteHelper {
   static String rabbitmqTopicProducerEndpoint(String exchangeName, String queueName) {
     // Using skipQueueDeclare=true option causes exception, so use skipQueueBind=true instead.
     // Create the queue but don't bind it to the exchange so that messages don't accumulate.
-    return "rabbitmq:" + exchangeName + "?skipQueueBind=true&exchangeType=topic&queue=" + queueName;
+    return "spring-rabbitmq:" + exchangeName + "?exchangeType=topic&queues=" + queueName;
   }
 
   public static String rabbitmqProducerEndpoint(String exchangeName, String routingKey) {
     // skipQueueBind=true prevents a randomly-named, unnecessary queue from being generated
-    return "rabbitmq:" + exchangeName + "?skipQueueBind=true&routingKey=" + routingKey;
+    return "spring-rabbitmq:" + exchangeName + "?routingKey=" + routingKey;
   }
 
   public RouteDefinition createRoute() {

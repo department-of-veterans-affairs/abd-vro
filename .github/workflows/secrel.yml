@@ -46,6 +46,7 @@ on:
 env:
   # Id for the #benefits-vro-devops Slack channel
   SLACK_CHANNEL: C04CA47HV96
+  HEAD_COMMIT_MSG: "${{ github.event.head_commit.message }}"
 
 jobs:
   gate-check:
@@ -62,31 +63,31 @@ jobs:
 
           # Use triggering_actor instead of actor to allow manually re-running this workflow as another user
           if [ "${{github.triggering_actor}}" == "abd-vro-machine" ]; then
-            if [ "${{ startsWith(github.event.head_commit.message, 'Automated commit: Pin versions') }}" == "true" ]; then
+            if echo "$HEAD_COMMIT_MSG" | grep '^Automated commit: Pin versions'; then
               CONTINUE=false
               echo "Skipping this workflow b/c it was triggered by a commit that pins image versions \
           immediately after a release. Otherwise, the workflow will fail.
           Until the release images are published to GHCR (so that they're available for comparison), \
-          the 'Publish to GHCR' step of this workflow will fail." | tee -a $GITHUB_STEP_SUMMARY
+          the 'Publish to GHCR' step of this workflow will fail." | tee -a "$GITHUB_STEP_SUMMARY"
 
-            elif [ "${{ startsWith(github.event.head_commit.message, 'Automated commit:') }}" == "true" ]; then
+            elif echo "$HEAD_COMMIT_MSG" | grep '^Automated commit:'; then
               CONTINUE=false
               echo "Skipping this workflow b/c it was triggered by an automated commit that \
-          doesn't change container images." | tee -a $GITHUB_STEP_SUMMARY
+          doesn't change container images." | tee -a "$GITHUB_STEP_SUMMARY"
             fi
           fi
 
           if [ "${{ github.event_name }}" == "pull_request" ]; then
-            if [ "${{ startsWith(github.head_ref, 'dependabot/')}}" == "true" ]; then
+            if echo "$GITHUB_HEAD_REF" | grep '^dependabot/'; then
               CONTINUE=true
-              echo "Running SecRel against a Dependabot PR" | tee -a $GITHUB_STEP_SUMMARY
+              echo "Running SecRel against a Dependabot PR" | tee -a "$GITHUB_STEP_SUMMARY"
             else
               CONTINUE=false
-              echo "For PRs, SecRel runs against only Dependabot PR" | tee -a $GITHUB_STEP_SUMMARY
+              echo "For PRs, SecRel runs against only Dependabot PR" | tee -a "$GITHUB_STEP_SUMMARY"
             fi
           fi
 
-          echo "continue=${CONTINUE:-true}" >> $GITHUB_OUTPUT
+          echo "continue=${CONTINUE:-true}" >> "$GITHUB_OUTPUT"
 
   publish-to-ghcr:
     name: Publish to GHCR
@@ -134,11 +135,13 @@ jobs:
             PUBLISH_MODE=${{ inputs.publish_mode }}
           fi
 
-          echo "image_tag=${IMG_TAG}" >> $GITHUB_OUTPUT
-          echo "image_prefix=${IMG_PREFIX}" >> $GITHUB_OUTPUT
-          echo "run_tests=${RUN_GRADLE_TESTS}" >> $GITHUB_OUTPUT
-          echo "run_secrel=${RUN_SECREL}" >> $GITHUB_OUTPUT
-          echo "publish_mode=${PUBLISH_MODE}" >> $GITHUB_OUTPUT
+          {
+            echo "image_tag=${IMG_TAG}"
+            echo "image_prefix=${IMG_PREFIX}"
+            echo "run_tests=${RUN_GRADLE_TESTS}"
+            echo "run_secrel=${RUN_SECREL}"
+            echo "publish_mode=${PUBLISH_MODE}"
+          } >> "$GITHUB_OUTPUT"
 
       - name: "DEBUG"
         run: |
@@ -199,7 +202,7 @@ jobs:
   secrel:
     name: SecRel Pipeline
     needs: publish-to-ghcr
-    if: needs.publish-to-ghcr.outputs.run-secrel == 'true' && needs.publish-to-ghcr.outputs.vro-images != ''
+    if: needs.publish-to-ghcr.outputs.run-secrel == 'true'
     # https://psychic-disco-c1251ea1.pages.github.io/pipeline/release_notes/v4.2.0/
     uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v4
     with:
@@ -232,28 +235,30 @@ jobs:
       - name: "Set status message"
         run: |
           URL=${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}
-          if [ "${{needs.publish-to-ghcr.result}}" == 'failure' ]; then
-            echo "WORKFLOW_STATE_TEXT=:panda_blank: <$URL|Publishing> failed!" >> $GITHUB_ENV
-            echo 'WORKFLOW_STATE_EMOJI=x' >> $GITHUB_ENV
-          elif [ "${{needs.secrel.result}}" == 'failure' ]; then
-            echo "WORKFLOW_STATE_TEXT=:panda_cop: <$URL|SecRel> failed!" >> $GITHUB_ENV
-            echo 'WORKFLOW_STATE_EMOJI=x' >> $GITHUB_ENV
-          elif [ "${{needs.secrel.result}}" == 'success' ]; then
-            echo "WORKFLOW_STATE_TEXT=:panda-yay: SecRel passed and images signed!" >> $GITHUB_ENV
-            echo 'WORKFLOW_STATE_EMOJI=panda-yay' >> $GITHUB_ENV
-          elif [ "${{needs.publish-to-ghcr.result}}" == 'skipped' ]; then
-            echo "WORKFLOW_STATE_TEXT=:black_square_for_stop: <$URL|Publishing> skipped" >> $GITHUB_ENV
-            echo 'WORKFLOW_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
-          elif [ "${{needs.publish-to-ghcr.outputs.run-secrel}}" == "true" ] && [ "${{needs.secrel.result}}" != 'success' ]; then
-            echo "WORKFLOW_STATE_TEXT=:black_square_for_stop: <$URL|SecRel> ${{needs.secrel.result}}" >> $GITHUB_ENV
-            echo 'WORKFLOW_STATE_EMOJI=black_square_for_stop' >> $GITHUB_ENV
-          elif [ "${{needs.publish-to-ghcr.outputs.run-secrel}}" == "false" ] && [ "${{needs.publish-to-ghcr.result}}" == 'success' ]; then
-            echo "WORKFLOW_STATE_TEXT=:heavy_check_mark: Run completed (without SecRel scans or signing images)" >> $GITHUB_ENV
-            echo 'WORKFLOW_STATE_EMOJI=heavy_check_mark' >> $GITHUB_ENV
-          else
-            echo "WORKFLOW_STATE_TEXT=publish: ${{needs.publish-to-ghcr.result}}; secrel: ${{needs.secrel.result}}" >> $GITHUB_ENV
-            echo 'WORKFLOW_STATE_EMOJI=shrug' >> $GITHUB_ENV
-          fi
+          {
+            if [ "${{needs.publish-to-ghcr.result}}" == 'failure' ]; then
+              echo "WORKFLOW_STATE_TEXT=:panda_blank: <$URL|Publishing> failed!"
+              echo 'WORKFLOW_STATE_EMOJI=x'
+            elif [ "${{needs.secrel.result}}" == 'failure' ]; then
+              echo "WORKFLOW_STATE_TEXT=:panda_cop: <$URL|SecRel> failed!"
+              echo 'WORKFLOW_STATE_EMOJI=x'
+            elif [ "${{needs.secrel.result}}" == 'success' ]; then
+              echo "WORKFLOW_STATE_TEXT=:panda-yay: SecRel passed and images signed!"
+              echo 'WORKFLOW_STATE_EMOJI=panda-yay'
+            elif [ "${{needs.publish-to-ghcr.result}}" == 'skipped' ]; then
+              echo "WORKFLOW_STATE_TEXT=:black_square_for_stop: <$URL|Publishing> skipped"
+              echo 'WORKFLOW_STATE_EMOJI=black_square_for_stop'
+            elif [ "${{needs.publish-to-ghcr.outputs.run-secrel}}" == "true" ] && [ "${{needs.secrel.result}}" != 'success' ]; then
+              echo "WORKFLOW_STATE_TEXT=:black_square_for_stop: <$URL|SecRel> ${{needs.secrel.result}}"
+              echo 'WORKFLOW_STATE_EMOJI=black_square_for_stop'
+            elif [ "${{needs.publish-to-ghcr.outputs.run-secrel}}" == "false" ] && [ "${{needs.publish-to-ghcr.result}}" == 'success' ]; then
+              echo "WORKFLOW_STATE_TEXT=:heavy_check_mark: Run completed (without SecRel scans or signing images)"
+              echo 'WORKFLOW_STATE_EMOJI=heavy_check_mark'
+            else
+              echo "WORKFLOW_STATE_TEXT=publish: ${{needs.publish-to-ghcr.result}}; secrel: ${{needs.secrel.result}}"
+              echo 'WORKFLOW_STATE_EMOJI=shrug'
+            fi
+          } >> "$GITHUB_ENV"
 
       - name: "Slack thread: Post final status"
         if: always() && needs.gate-check.outputs.continue == 'true'

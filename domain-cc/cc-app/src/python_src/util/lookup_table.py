@@ -1,47 +1,81 @@
 import csv
-import json
 import os
+from abc import ABC
 
-from .table_version import TABLE_VERSION
+from .condition_dropdown_table_version import CONDITION_DROPDOWN_TABLE_VERSION
+from .diagnostic_code_table_version import TABLE_VERSION
 
-# csv file exported from DC Lookup v0.1
 # https://docs.google.com/spreadsheets/d/18Mwnn9-cvJIRRupQyQ2zLYOBm3bd0pr4kKlsZtFiyc0/edit#gid=1711756762
-TABLE_NAME = f"Contention Classification Diagnostic Codes Lookup table master sheet - DC Lookup {TABLE_VERSION}.csv"
-
-# sourced from Lighthouse Benefits Reference Data /disabilities endpoint:
-# https://developer.va.gov/explore/benefits/docs/benefits_reference_data?version=current
-BRD_CLASSIFICATIONS_PATH = os.path.join(
-    os.path.dirname(__file__), "data", "lh_brd_classification_ids.json"
-)
+dc_table_name = f"Contention Classification Diagnostic Codes Lookup table master sheet - DC Lookup {TABLE_VERSION}.csv"
+# https://docs.google.com/spreadsheets/d/1A5JuYwn39mHE5Mk1HazN-mxCL2TENPeyUPHHhH10g_I/edit#gid=819850041
+condition_dropdown_table_name = f"Contention dropdown to classification master - Dropdown Lookup {CONDITION_DROPDOWN_TABLE_VERSION}.csv"
 
 
-def get_classification_names_by_code():
-    name_by_code = {}
-    with open(BRD_CLASSIFICATIONS_PATH, "r") as fh:
-        disability_items = json.load(fh)["items"]
-        for item in disability_items:
-            name_by_code[item["id"]] = item["name"]
-    return name_by_code
+class LookupTable(ABC):
+    """Generalized lookup table for mapping input strings to contention classification codes"""
+
+    CSV_FILEPATH = None
+    input_key = None
+    output_key = None
+
+    def __init__(self):
+        if not self.CSV_FILEPATH:
+            raise NotImplementedError("csv_filepath must be set in child class")
+        self.mappings = get_lookup_table(
+            self.CSV_FILEPATH, input_key=self.input_key, output_key=self.output_key
+        )
+
+    def __len__(self):
+        return len(self.mappings)
+
+    def get(self, input_str, fallback=None):
+        return self.mappings.get(input_str, fallback)
 
 
-CLASSIFICATION_NAMES_BY_CODE = get_classification_names_by_code()
+class ConditionDropdownLookupTable(LookupTable):
+    """Lookup table for mapping condition dropdown values to contention classification codes"""
+
+    CSV_FILEPATH = os.path.join(
+        os.path.dirname(__file__), "data", "condition_dropdown_lookup_table", condition_dropdown_table_name
+    )
+    input_key = "CONTENTION_TEXT"
+    output_key = "CLASSIFICATION_CODE"
+
+    def __init__(self):
+        super().__init__()
+
+    def get(self, input_str: str, fallback=None):
+        input_str = input_str.strip().lower()
+        return self.mappings.get(input_str, fallback)
 
 
-def get_lookup_table():
-    filename = os.path.join(os.path.dirname(__file__), "data", TABLE_NAME)
-    diagnostic_code_to_classification_code = {}
-    with open(filename, "r") as fh:
+class DiagnosticCodeLookupTable(LookupTable):
+    """Lookup table for mapping diagnostic codes to contention classification codes"""
+
+    CSV_FILEPATH = os.path.join(
+        os.path.dirname(__file__), "data", "dc_lookup_table", dc_table_name
+    )
+    input_key = "DIAGNOSTIC_CODE"
+    output_key = "CLASSIFICATION_CODE"
+
+    def __init__(self):
+        super().__init__()
+
+
+def get_lookup_table(filepath, input_key, output_key):
+    classification_code_mappings = {}
+    with open(filepath, "r") as fh:
         csv_reader = csv.DictReader(fh)
         for csv_line in csv_reader:
-            diagnostic_code = int(csv_line["CNTNTN_CLSFCN_CLMNT_TXT_ID"])
-            classification_code = int(csv_line["CNTNTN_CLSFCN_ID"])
-            diagnostic_code_to_classification_code[diagnostic_code] = classification_code
+            try:
+                try:
+                    text_to_convert = int(csv_line[input_key])
+                except ValueError:
+                    text_to_convert = csv_line[input_key].lower()
+                classification_code = int(csv_line[output_key])
+                classification_code_mappings[text_to_convert] = classification_code
+            except KeyError:
+                print(f"csv_line: {csv_line}")
+                raise
 
-    return diagnostic_code_to_classification_code
-
-
-def get_classification_name(classification_code):
-    try:
-        return CLASSIFICATION_NAMES_BY_CODE[classification_code]
-    except KeyError:
-        return None
+    return classification_code_mappings

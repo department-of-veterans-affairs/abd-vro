@@ -15,6 +15,5 @@ import java.util.List;
 @Setter
 @Builder
 public class UpdateContentionReq {
-  long claimId;
-  private List<UpdateContention> updateContentions;
+  List<UpdateContention> updateContentions;
 }

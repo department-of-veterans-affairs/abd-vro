@@ -3,8 +3,10 @@ package gov.va.vro.services.bie;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.model.biekafka.BieMessagePayload;
+import gov.va.vro.model.biekafka.ContentionEvent;
+import gov.va.vro.model.biekafka.test.BieMessagePayloadFactory;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.junit.jupiter.api.Test;
@@ -19,11 +21,9 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * Start RabbitMQ: docker compose up -d rabbitmq-service
@@ -39,19 +39,18 @@ public class BieKafkaApplicationTest {
 
   @Autowired private FanoutExchange fanoutExchange;
   @Autowired private RabbitTemplate rabbitTemplate;
-  @Autowired private ObjectMapper objectMapper;
 
-  private List<Message> receivedMessages = new ArrayList<>();
+  private final List<BieMessagePayload> receivedMessages = new ArrayList<>();
   private CountDownLatch latch;
 
   @RabbitListener(queues = "#{bieEventQueue.name}")
-  public void receiveMqMessage(Message message) {
+  public void receiveMqMessage(BieMessagePayload message) {
     log.info("Received message: {}", message);
     receivedMessages.add(message);
     latch.countDown();
   }
 
-  @Autowired private KafkaTemplate<byte[], byte[]> kafkaTemplate;
+  @Autowired private KafkaTemplate<String, String> kafkaTemplate;
 
   @Value("#{kafkaTopic}")
   private String kafkaTopic;
@@ -62,33 +61,31 @@ public class BieKafkaApplicationTest {
     latch = new CountDownLatch(2);
 
     // Message 1 goes directly to MQ
-    String msgBody = "Message to ensure MQ's fanout exchange is working";
+    BieMessagePayload msgBody = BieMessagePayloadFactory.create();
     rabbitTemplate.convertAndSend(fanoutExchange.getName(), "anyRoutingKey", msgBody);
 
     // Message 2 comes through Kafka
-    val kafkaEventBody = "a Kafka event payload";
+    BieMessagePayload kafkaEventBody = BieMessagePayloadFactory.create();
+    kafkaEventBody.setEventType(null);
+    kafkaEventBody.setContentionId(1234567890);
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    val kafkaSentMessage = objectMapper.writeValueAsString(kafkaEventBody);
+    log.info("kafkaEventBody: {}", kafkaSentMessage);
+
     val key = "some key";
     log.info("Producing event in Kafka topic: {}", kafkaTopic);
-    kafkaTemplate.send(kafkaTopic, key.getBytes(), kafkaEventBody.getBytes());
+    kafkaTemplate.send(kafkaTopic, key, kafkaSentMessage);
 
     log.info("Waiting for svc-bie-kafka to publish Kafka event to RabbitMQ exchange...");
-    assertTrue(latch.await(30, TimeUnit.SECONDS));
-
-    log.info("Received Messages: " + printMessages(receivedMessages, "\n  "));
+    assertTrue(latch.await(20, TimeUnit.SECONDS));
 
     // Check message 1
-    assertEquals(msgBody, objectMapper.readValue(receivedMessages.get(0).getBody(), String.class));
+    assertEquals(msgBody, receivedMessages.get(0));
 
     // Check message 2
-    // Read Kafka event as a generic JSON object
-    val jsonObj =
-        objectMapper.readValue(
-            receivedMessages.get(1).getBody(), new TypeReference<HashMap<String, Object>>() {});
-    assertEquals(kafkaEventBody, jsonObj.get("eventDetails"));
-  }
-
-  static String printMessages(List<Message> messages, String delimiter) {
-    return delimiter
-        + messages.stream().map(Object::toString).collect(Collectors.joining(delimiter)).toString();
+    kafkaEventBody.setEventType(
+        ContentionEvent.valueOf(ContentionEvent.mapTopicToEvent(kafkaTopic).toString()));
+    assertEquals(kafkaEventBody, receivedMessages.get(1));
   }
 }

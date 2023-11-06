@@ -7,9 +7,6 @@ on:
   # Allow being called by another GitHub Action
   workflow_call:
 
-concurrency:
-  group: xampleIntegrationTest-${{ github.ref }}
-
 env:
   COMPOSE_PROFILES: ""
 
@@ -28,9 +25,33 @@ jobs:
           source scripts/setenv.sh
           export -p | sed 's/declare -x //'
 
+          # create basic auth token for RabbitMQ and export to github environment
+          BASIC_AUTH=$(echo "${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}" | base64)
+          {
+            echo "RABBITMQ_USERNAME=${RABBITMQ_USERNAME}"
+            echo "RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}"
+            echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}"
+          } >> "$GITHUB_ENV"
+
           ./gradlew :dockerComposeUp
           ./gradlew :domain-xample:dockerComposeUp
           COMPOSE_PROFILES="" ./gradlew :app:dockerComposeUp
+
+      - name: 'Wait for containers to start'
+        run: sleep 60s
+        shell: bash
+
+      - name: 'Check for RabbitMQ to be ready'
+        uses: indiesdev/curl@v1.1
+        with:
+          url: 'http://localhost:15672/api/vhosts'
+          method: 'GET'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          accept: 200
+          # Retry every 2 seconds
+          timeout: 2000
+          # Quit after 60 seconds
+          retries: 30
 
       - name: "Wait for VRO to be ready"
         uses: nev7n/wait_for_response@v1

@@ -6,8 +6,8 @@ import lombok.Builder;
 @AllArgsConstructor
 @Builder
 public class HasStatusCodeAndMessage {
-  public int statusCode = 200;
-  public String statusMessage = "OK";
+  @Builder.Default public int statusCode = 0;
+  @Builder.Default public String statusMessage;
 
   HasStatusCodeAndMessage() {}
 }

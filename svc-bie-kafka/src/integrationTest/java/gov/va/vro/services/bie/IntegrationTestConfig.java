@@ -1,5 +1,6 @@
 package gov.va.vro.services.bie;
 
+import gov.va.vro.model.biekafka.ContentionEvent;
 import gov.va.vro.services.bie.config.BieProperties;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -21,8 +22,8 @@ public class IntegrationTestConfig {
   @Bean
   String kafkaTopic() {
     // Pick a random kafka topic
-    val topics = bieProperties.getKafkaTopicToAmqpExchangeMap().keySet().stream().toList();
-    return topics.get(new Random().nextInt(topics.size()));
+    val topics = bieProperties.topicNames();
+    return topics[new Random().nextInt(topics.length)];
   }
 
   // ###### MQ configuration:
@@ -33,7 +34,7 @@ public class IntegrationTestConfig {
   }
 
   String mqExchangeName() {
-    return bieProperties.getKafkaTopicToAmqpExchangeMap().get(kafkaTopic());
+    return ContentionEvent.rabbitMqExchangeName(kafkaTopic());
   }
 
   @Bean

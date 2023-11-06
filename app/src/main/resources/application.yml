@@ -127,11 +127,11 @@ spring:
       force: true
 
   datasource:
-    url: ${POSTGRES_URL}
+    url: jdbc:${POSTGRES_URL}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
     hikari:
-      jdbc-url: ${POSTGRES_URL}
+      jdbc-url: jdbc:${POSTGRES_URL}
       username: ${POSTGRES_USER}
       password: ${POSTGRES_PASSWORD}
       schema: ${POSTGRES_SCHEMA}
@@ -199,7 +199,7 @@ spring.redis:
   database: 0
   host: ${REDIS_PLACEHOLDERS_HOST}
   port: 6379
-  password: ${REDIS_PLACEHOLDERS_PASSWORD}
+  password: ${REDIS_PASSWORD}
 
 claim:
   special_issue_1: "RDR1"

@@ -16,14 +16,15 @@ dependencies {
     // Fix MacOS error: Unable to load io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider,
     // which may result in incorrect DNS resolutions.
     // Spring Cloud Gateway uses Netty
-    runtimeOnly("io.netty:netty-resolver-dns-native-macos:4.1.92.Final:${osdetector.classifier}")
+    runtimeOnly "io.netty:netty-resolver-dns-native-macos:4.1.92.Final:${osdetector.classifier}"
   }
 
   // Swagger UI for WebFlux
-  implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.2.0'
+  implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:${spring_doc_version}"
+  implementation 'io.netty:netty-codec-http2:4.1.100.Final'
 
   constraints {
     // To address Snyk alert on DoS vulnerability
-    implementation 'org.springframework.boot:spring-boot-autoconfigure:3.1.2'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure:3.1.5'
   }
 }

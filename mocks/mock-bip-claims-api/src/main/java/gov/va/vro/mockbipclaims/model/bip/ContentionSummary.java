@@ -1,11 +1,11 @@
 package gov.va.vro.mockbipclaims.model.bip;
 
+import jakarta.validation.Valid;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import javax.validation.Valid;
 
 /** ContentionSummary. */
 @Data

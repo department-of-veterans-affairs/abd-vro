@@ -1,0 +1,76 @@
+name: 'CI: EE - EP Merge - Integration Test'
+
+on:
+  # Allow manual triggering
+  workflow_dispatch:
+
+  # Allow being called by another GitHub Action
+  workflow_call:
+
+env:
+  COMPOSE_PROFILES: ''
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout source code'
+        uses: actions/checkout@v3
+
+      - name: 'Build the images'
+        uses: ./.github/actions/build-images
+
+      - name: 'Start the containers'
+        run: |
+          source scripts/setenv.sh
+
+          # create basic auth token for RabbitMQ and export to github environment
+          BASIC_AUTH=$(echo "${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}" | base64)
+          {
+            echo "RABBITMQ_USERNAME=${RABBITMQ_USERNAME}"
+            echo "RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}"
+            echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}"
+          } >> "$GITHUB_ENV"
+
+          export -p | sed 's/declare -x //'
+
+          ./gradlew :dockerComposeUp
+
+      - name: 'Wait for containers to start'
+        run: sleep 60s
+        shell: bash
+
+      - name: 'Wait for RabbitMQ to be ready'
+        uses: indiesdev/curl@v1.1
+        with:
+          url: 'http://localhost:15672/api/vhosts'
+          method: 'GET'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          accept: 200
+          # Retry every 2 seconds
+          timeout: 2000
+          # Quit after 60 seconds
+          retries: 30
+
+      # Temporary step added to avoid condition where bipApiExchange is not yet created.
+      - name: 'Create bipApiExchange exchange'
+        uses: indiesdev/curl@v1.1
+        with:
+          url: 'http://localhost:15672/api/exchanges/%2f/bipApiExchange'
+          method: 'PUT'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          body: '{"type":"direct", "durable":true, "auto_delete":true}'
+          accept: 201, 204
+          retries: 3
+          log-response: true
+
+      - name: "Run Employee Experience Integration Tests"
+        run: |
+          ./gradlew :domain-ee:ee-ep-merge-app:integrationTest
+
+      - name: 'Clean shutdown of all containers'
+        if: always()
+        shell: bash
+        run: |
+          docker ps
+          COMPOSE_PROFILES="all" ./gradlew dockerComposeDown

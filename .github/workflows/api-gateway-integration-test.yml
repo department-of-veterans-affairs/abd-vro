@@ -7,9 +7,6 @@ on:
   # Allow being called by another GitHub Action
   workflow_call:
 
-concurrency:
-  group: apiGatewayIntegrationTest-${{ github.ref }}
-
 env:
   COMPOSE_PROFILES: ""
 
@@ -29,6 +26,8 @@ jobs:
           export -p | sed 's/declare -x //'
 
           COMPOSE_PROFILES="gateway" ./gradlew :dockerComposeUp
+
+          sleep 180s
           ./gradlew :app:dockerComposeUp
 
           # Run CC:
@@ -59,6 +58,11 @@ jobs:
           interval: 2000
           # Quit after 60 seconds
           timeout: 60000
+
+      - name: "Get status of containers"
+        shell: bash
+        run: |
+          docker ps
 
       - name: "Swagger UI - Request"
         id: "swaggerUI"
@@ -96,10 +100,17 @@ jobs:
           method: "GET"
           accept: 200
 
-      - name: "Max CFI API Docs- Request"
+      - name: "EE - Max CFI API Docs- Request"
         uses: indiesdev/curl@v1.1
         with:
           url: "http://localhost:8060/cfi/openapi.json"
+          method: "GET"
+          accept: 200
+
+      - name: "EE - EP Merge API Docs- Request"
+        uses: indiesdev/curl@v1.1
+        with:
+          url: "http://localhost:8060/ep/openapi.json"
           method: "GET"
           accept: 200
 
@@ -116,7 +127,7 @@ jobs:
       - name: "API Gateway Rest Controller GET /hello - Validate Response"
         run: |
           # Validate Response:
-          if [ "${{ fromJson(steps.apiGatewayHello.outputs.response).data }}" != "Hi!"]; then
+          if [ "${{ fromJson(steps.apiGatewayHello.outputs.response).data }}" != "Hi!" ]; then
             echo "Unexpected Response: ${{ steps.apiGatewayHello.outputs.response }}"
             exit 10
           else
@@ -146,6 +157,11 @@ jobs:
           name: api-gw-itest-container-logs
           path: ./api-gw-itest-container-logs/**
           retention-days: 14
+
+      - name: "Check for errors in container logs"
+        if: always()
+        run: |
+          docker logs vro_ee-ep-merge-app_1
 
       - name: "Clean shutdown of all containers"
         if: always()

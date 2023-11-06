@@ -16,7 +16,11 @@ def test_max_rating_with_no_dc(client: TestClient):
     }
 
     response = client.post(MAX_RATING, json=json_post_dict)
-    assert response.status_code == 422
+    assert response.status_code == 200
+    response_json = response.json()
+
+    ratings = response_json["ratings"]
+    assert len(ratings) == 0
 
 
 def test_max_rating_with_one_dc(client: TestClient):
@@ -41,6 +45,22 @@ def test_max_rating_with_duplicate_dc(client: TestClient):
         "diagnostic_codes": [
             TINNITUS["diagnostic_code"],
             TINNITUS["diagnostic_code"]
+        ]
+    }
+
+    response = client.post(MAX_RATING, json=json_post_dict)
+    assert response.status_code == 200
+    response_json = response.json()
+    ratings = response_json["ratings"]
+    assert len(ratings) == 1
+    assert ratings[0]["diagnostic_code"] == TINNITUS["diagnostic_code"]
+    assert ratings[0]["max_rating"] == TINNITUS["max_rating"]
+
+
+def test_max_rating_with_too_many_dc(client: TestClient):
+    json_post_dict = {
+        "diagnostic_codes": [
+            *range(5000, 6001)
         ]
     }
 
@@ -94,9 +114,18 @@ def test_missing_params(client: TestClient):
     assert response.status_code == 422
 
 
-def test_unprocessable_content(client: TestClient):
+def test_unprocessable_content_request_does_not_have_array(client: TestClient):
     json_post_dict = {
         "diagnostic_codes": 6510,  # Should be an array
+    }
+
+    response = client.post(MAX_RATING, json=json_post_dict)
+    assert response.status_code == 422
+
+
+def test_unprocessable_content_request_array_has_non_int_value(client: TestClient):
+    json_post_dict = {
+        "diagnostic_codes": ["6510"],  # Should be an int
     }
 
     response = client.post(MAX_RATING, json=json_post_dict)

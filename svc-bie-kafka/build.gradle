@@ -26,9 +26,10 @@ dependencies {
   implementation project(":shared:lib-bie-kafka")
 
   // avro schema and kafka
-  implementation 'org.apache.avro:avro:1.11.2'
+  implementation 'org.apache.avro:avro:1.11.3'
   implementation 'io.confluent:kafka-avro-serializer:7.4.0'
-  implementation 'org.apache.kafka:connect-api:3.5.1'
+  implementation 'org.apache.kafka:connect-api:3.6.0'
+  implementation 'org.apache.commons:commons-compress:1.24.0'
 
   // RabbitMQ
   implementation 'org.springframework.boot:spring-boot-starter-amqp'
@@ -38,7 +39,6 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-  //testImplementation 'org.slf4j:slf4j-simple:2.0.7'
   testImplementation 'org.springframework.amqp:spring-rabbit-test'
   testImplementation 'org.springframework.kafka:spring-kafka-test'
 }

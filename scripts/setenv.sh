@@ -144,12 +144,12 @@ export POSTGRES_FLYWAY_USER=vro_admin_user
 export POSTGRES_FLYWAY_PASSWORD=vro_admin_user_pw
 
 # Credentials for RabbitMQ and shared across containers
-export RABBITMQ_PLACEHOLDERS_USERNAME=guest
-export RABBITMQ_PLACEHOLDERS_USERPASSWORD=guest
+export RABBITMQ_USERNAME=user
+export RABBITMQ_PASSWORD=bitnami
 
 # Credentials for Redis
 # Redis assumes that the implicit username is "default" -- https://redis.io/commands/auth/
-export REDIS_PLACEHOLDERS_PASSWORD=vro_redis_password
+export REDIS_PASSWORD=vro_redis_password
 
 # For local testing of dev and qa environments
 # export PERSIST_TRACKING_FOLDER=/tmp/persist/tracking
@@ -191,7 +191,7 @@ export MAS_API_BASE_URL=https://viccs-api-dev.ibm-intelligent-automation.com/pca
 ## There is some discussion in stackoverflow 63846115 for solutions.
 ##
 export BIP_CLAIM_USERID=VRO_USER
-export BIP_CLAIM_SECRET=theSecret
+export BIP_CLAIM_SECRET=theSecretThatComesFromSestenv.ShAndNeedsToBeLongEnoughForHS256
 # Credentials for BIP Claim Evidence API
 export BIP_EVIDENCE_USERID=VRO_USER
 export BIP_EVIDENCE_SECRET=daSecret

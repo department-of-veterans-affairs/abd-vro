@@ -7,11 +7,8 @@ on:
   # Allow being called by another GitHub Action
   workflow_call:
 
-concurrency:
-  group: svcBgsApiIntegrationTest-${{ github.ref }}
-
 env:
-  COMPOSE_PROFILES: 'svc'
+  COMPOSE_PROFILES: 'bgs'
   CORRELATION_ID: '1234'
 
 jobs:
@@ -27,19 +24,25 @@ jobs:
       - name: 'Start the containers'
         run: |
           source scripts/setenv.sh
-          
+
           # create basic auth token for RabbitMQ and export to github environment
-          BASIC_AUTH=`echo "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" | base64`
-          echo "RABBITMQ_PLACEHOLDERS_USERNAME=${RABBITMQ_PLACEHOLDERS_USERNAME}" >> $GITHUB_ENV
-          echo "RABBITMQ_PLACEHOLDERS_USERPASSWORD=${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" >> $GITHUB_ENV
-          echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}" >> $GITHUB_ENV
+          BASIC_AUTH=$(echo "${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}" | base64)
+          {
+            echo "RABBITMQ_USERNAME=${RABBITMQ_USERNAME}"
+            echo "RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}"
+            echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}"
+          } >> "$GITHUB_ENV"
 
           export -p | sed 's/declare -x //'
 
           ./gradlew :dockerComposeUp
           ./gradlew :app:dockerComposeUp
 
-      - name: 'Wait for RabbitMQ to be ready'
+      - name: 'Wait for containers to start'
+        run: sleep 60s
+        shell: bash
+
+      - name: 'Check for RabbitMQ to be ready'
         uses: indiesdev/curl@v1.1
         with:
           url: 'http://localhost:15672/api/vhosts'
@@ -152,9 +155,9 @@ jobs:
             echo "Unexpected correlation_id: Expected ${{env.CORRELATION_ID}}. Found ${{ fromJson(steps.addNoteResponse.outputs.response).data[0].properties.correlation_id }}"
             CHECKS_FAILED=true
           fi
-          
+
           echo "Skip checking payload until bgs-api is connected..."
-                    
+
           if $CHECKS_FAILED; then
             echo "Some checks failed."
             exit 10

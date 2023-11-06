@@ -13,6 +13,7 @@
 # Don't add annotations that change frequently (like global.commitSha) as it will cause the pod to be updated
 vro/environment: {{ .Values.global.environment }}
 vro/image-repo: {{ .Values.global.images.repo }}
+vro/triggering-actor: {{ .Values.global.triggeringActor }}
 # annotations is a map[string] to string values; print and quote it in case it's a number
 vro/image-tag: {{ include "vro.imageTag" . | print | quote }}
 {{- end }}

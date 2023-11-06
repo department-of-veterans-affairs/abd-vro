@@ -1,0 +1,16 @@
+plugins {
+  id 'local.python.app-conventions'
+  id 'local.python.container-service-conventions'
+}
+
+// Runs pytest integration tests when './gradlew integration-test' is run
+tasks.register('integrationPytest', PythonTask) {
+  dependsOn 'pyflake8'
+  module = 'pytest'
+  command = './integration'
+}
+
+tasks.register('integrationTest', Test) {
+  dependsOn 'integrationPytest'
+  group = 'verification'
+}

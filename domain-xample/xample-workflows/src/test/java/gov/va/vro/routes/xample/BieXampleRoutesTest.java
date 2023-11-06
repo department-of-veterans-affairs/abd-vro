@@ -3,10 +3,12 @@ package gov.va.vro.routes.xample;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import gov.va.vro.model.biekafka.BieMessagePayload;
+import gov.va.vro.model.biekafka.test.BieMessagePayloadFactory;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.builder.AdviceWith;
+import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.junit5.CamelTestSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +18,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -54,24 +55,26 @@ class BieXampleRoutesTest extends CamelTestSupport {
     if (isUseAdviceWith()) context.start();
   }
 
-  final BieMessagePayload testItem =
-      BieMessagePayload.builder()
-          .event("testEvent")
-          .eventDetails("testEventDetails")
-          .notifiedAt(LocalDateTime.now().toString())
-          .build();
+  final BieMessagePayload testItem = BieMessagePayloadFactory.create();
 
   @Test
   @SneakyThrows
   void testSaveContentionEventRoute() {
     final BieMessagePayload response =
         template.requestBody(STARTING_URI, testItem, BieMessagePayload.class);
-    assertThat(response.getEvent()).isEqualTo(testItem.getEvent());
-    assertThat(response.getEventDetails()).isEqualTo(testItem.getEventDetails());
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+    assertThat(response.getEventType()).isEqualTo(testItem.getEventType());
     assertThat(response.getStatusMessage()).isNull();
+    assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+    assertThat(response.getClaimId()).isEqualTo(testItem.getClaimId());
+    assertThat(response.getContentionClassificationName())
+        .isEqualTo(testItem.getContentionClassificationName());
+    assertThat(response.getContentionId()).isEqualTo(testItem.getContentionId());
+    assertThat(response.getContentionTypeCode()).isEqualTo(testItem.getContentionTypeCode());
+    assertThat(response.getDiagnosticTypeCode()).isEqualTo(testItem.getDiagnosticTypeCode());
+    assertThat(response.getActionName()).isEqualTo(testItem.getActionName());
+    assertThat(response.getActionResultName()).isEqualTo(testItem.getActionResultName());
 
-    assertMockEndpointsSatisfied();
+    MockEndpoint.assertIsSatisfied(context);
   }
 
   @Test
@@ -83,11 +86,10 @@ class BieXampleRoutesTest extends CamelTestSupport {
     // send a message in the original route
     final BieMessagePayload response =
         template.requestBody(STARTING_URI, testItem, BieMessagePayload.class);
-    assertThat(response.getEvent()).isEqualTo(testItem.getEvent());
-    assertThat(response.getEventDetails()).isEqualTo(testItem.getEventDetails());
+    assertThat(response.getEventType()).isEqualTo(testItem.getEventType());
     assertThat(response.getStatus()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     assertThat(response.getStatusMessage()).isEqualTo(exception.toString());
 
-    assertMockEndpointsSatisfied();
+    MockEndpoint.assertIsSatisfied(context);
   }
 }

@@ -1,40 +1,45 @@
 package gov.va.vro.services.bie.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.core.Declarables;
-import org.springframework.amqp.core.Exchange;
-
-import java.util.Map;
 
 @ExtendWith(MockitoExtension.class)
 class MessageExchangeConfigTest {
 
-  @Test
-  void createTopicBindingsWithEmptyTopicMap_ShouldReturnEmptyListOfDeclarables() {
-    final BieProperties bieProperties = new BieProperties();
-    bieProperties.setKafkaTopicToAmqpExchangeMap(Map.of());
+  private BieProperties bieProperties;
 
-    final MessageExchangeConfig config = new MessageExchangeConfig();
-    final Declarables declarables = config.topicBindings(bieProperties);
-
-    assertThat(declarables).isNotNull();
-    assertThat(declarables.getDeclarables()).hasSize(0);
+  @BeforeEach
+  void setUp() {
+    bieProperties = new BieProperties();
+    bieProperties.kakfaTopicPrefix = "TST_";
   }
 
   @Test
-  void createTopicBindingsWithNonEmptyTopicMap_ShouldReturnEmptyListOfDeclarables() {
-    final BieProperties bieProperties = new BieProperties();
-    bieProperties.setKafkaTopicToAmqpExchangeMap(Map.of("kafkaTopic", "rabbitExchange"));
-
+  void createTopicBindingsWithContentionEvents_ShouldReturnNumberOfEvents() {
     final MessageExchangeConfig config = new MessageExchangeConfig();
     final Declarables declarables = config.topicBindings(bieProperties);
 
     assertThat(declarables).isNotNull();
-    assertThat(declarables.getDeclarables()).hasSize(1);
-    assertThat(declarables.getDeclarablesByType(Exchange.class)).hasSize(1);
+    assertThat(declarables.getDeclarables()).hasSize(bieProperties.topicNames().length);
+  }
+
+  @Test
+  void topicNames() {
+    final String[] topicNames = bieProperties.topicNames();
+    assertArrayEquals(
+        new String[] {
+          "TST_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02",
+          "TST_CONTENTION_BIE_CONTENTION_UPDATED_V02",
+          "TST_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02",
+          "TST_CONTENTION_BIE_CONTENTION_COMPLETED_V02",
+          "TST_CONTENTION_BIE_CONTENTION_DELETED_V02"
+        },
+        topicNames);
   }
 }

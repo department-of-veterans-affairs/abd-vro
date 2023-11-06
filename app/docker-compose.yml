@@ -27,7 +27,7 @@ x-api-vars: &api-vars
   LH_VRO_API_KEY: ${LH_VRO_API_KEY}
 
 x-postgres-vars: &postgres-vars
-  POSTGRES_URL: jdbc:postgresql://postgres-service:5432/vro
+  POSTGRES_URL: postgresql://postgres-service:5432/vro
   POSTGRES_DB: ${POSTGRES_DB}
   POSTGRES_USER: ${POSTGRES_USER}
   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -35,12 +35,12 @@ x-postgres-vars: &postgres-vars
 
 x-redis-placeholder-vars: &redis-placeholder-vars
   REDIS_PLACEHOLDERS_HOST: redis-service
-  REDIS_PLACEHOLDERS_PASSWORD: ${REDIS_PLACEHOLDERS_PASSWORD}
+  REDIS_PASSWORD: ${REDIS_PASSWORD}
 
 x-rabbitmq-placeholder-vars: &rabbitmq-placeholder-vars
   RABBITMQ_PLACEHOLDERS_HOST: rabbitmq-service
-  RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
-  RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
+  RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+  RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
 
 x-common-security-opt: &common-security-opt
   security_opt:
@@ -98,6 +98,8 @@ services:
       BIP_KEYSTORE: ${BIP_KEYSTORE}
       BIP_CLAIM_URL: "mock-bip-claims-api:20300"
       BIP_EVIDENCE_URL: "mock-bip-ce-api:20310"
+    ports:
+      - "10401:10401"
     networks:
       - vro_intranet
 
@@ -121,6 +123,7 @@ services:
     environment:
       <<: [*rabbitmq-placeholder-vars, *common-vars]
       BIE_KAFKA_PLACEHOLDERS_BROKERS: mock-bie-kafka:9092
+      BIE_KAFKA_PLACEHOLDERS_SCHEMA_REGISTRY: mock-bie-schema-registry:8081
       BIE_KAFKA_KEYSTORE_INBASE64: ${BIE_KAFKA_KEYSTORE_INBASE64}
       BIE_KAFKA_KEYSTORE_PASSWORD: ${BIE_KAFKA_KEYSTORE_PASSWORD}
       BIE_KAFKA_TRUSTSTORE_INBASE64: ${BIE_KAFKA_TRUSTSTORE_INBASE64}

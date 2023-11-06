@@ -20,9 +20,6 @@ on:
   # Trigger when called by another GitHub Action
   workflow_call:
 
-concurrency:
-  group: end2end-${{ github.ref }}
-
 env:
   LH_ACCESS_CLIENT_ID: ${{ secrets.LH_ACCESS_CLIENT_ID }}
   LH_PRIVATE_KEY: ${{ secrets.LH_PRIVATE_KEY }}
@@ -72,7 +69,7 @@ jobs:
           ENV: "end2end-test"
         run: |
           docker ps
-          ./gradlew :domain-rrd:rrd-app-test:end2EndTest --info
+          ./gradlew :domain-rrd:rrd-app-test:end2EndTest
 
       - name: "Collect docker logs on failure"
         if: always()

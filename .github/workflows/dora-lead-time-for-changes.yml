@@ -1,0 +1,168 @@
+###################### DO NOT DELETE OR MODIFY THIS FILE #######################
+#
+# This workflow calculates the Lead Time for Changes DORA metric for PRs merged into your
+# default branch.
+#
+###################### DO NOT DELETE OR MODIFY THIS FILE #######################
+
+name: dora-lead-time-for-changes
+run-name: "Calculate DORA Lead Time for Changes"
+on:
+  create:
+jobs:
+  calculate-lead-time-for-changes:
+    if: ${{ github.ref_type == 'tag' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Calculate Lead Time
+        uses: actions/github-script@v6
+        env:
+          DATADOG_API_KEY_FOR_LEAD_TIME_METRIC: ${{ secrets.DATADOG_API_KEY_FOR_LEAD_TIME_METRIC }}
+          DATADOG_APP_KEY_FOR_LEAD_TIME_METRIC: ${{ secrets.DATADOG_APP_KEY_FOR_LEAD_TIME_METRIC }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          script: |
+            const { GITHUB_TOKEN, DATADOG_API_KEY_FOR_LEAD_TIME_METRIC, DATADOG_APP_KEY_FOR_LEAD_TIME_METRIC } = process.env
+
+            if(!DATADOG_API_KEY_FOR_LEAD_TIME_METRIC || !DATADOG_APP_KEY_FOR_LEAD_TIME_METRIC || !GITHUB_TOKEN) {
+              core.setFailed('DATADOG_API_KEY_FOR_LEAD_TIME_METRIC or DATADOG_APP_KEY_FOR_LEAD_TIME_METRIC or GITHUB_TOKEN is falsy. All must be set.')
+              process.exit(1)
+            }
+
+            const millisecondsPerSecond = 1000
+            const datadogGuageMetricType = 3
+            const datadogSubmitMetricsUrl = 'https://api.ddog-gov.com/api/v2/series'
+
+            const repoName = context?.payload?.repository?.name
+            if (!repoName) {
+              core.setFailed('Error: Github context object > context.payload.repository.name not defined. Exiting script.')
+              process.exit(1)
+            }
+            const ghBaseUrl = `https://api.github.com/repos/department-of-veterans-affairs/${repoName}`
+
+            async function doFetch(url, options) {
+              const response = await fetch(url, options)
+              return await response.json()
+            }
+
+            function concatDedupe (newElements, dedupedArray, dedupeByKey) {
+              for (let newElement of newElements) {
+                let elementAlreadyInArray = true
+                elementAlreadyInArray = dedupedArray.find(p => p[dedupeByKey] === newElement[dedupeByKey])
+                if (!elementAlreadyInArray) {
+                  dedupedArray.push(newElement)
+                }
+              }
+              return dedupedArray
+            }
+
+            async function getPulls() {
+              const githubOptions = {
+                method: 'GET',
+                headers: {
+                  Authorization: `bearer ${GITHUB_TOKEN}`,
+                  Accept: 'application/vnd.github+json',
+                  'X-GitHub-Api-Version': '2022-11-28'
+                }
+              }
+              const tagsData = await doFetch(`${ghBaseUrl}/tags`, githubOptions)
+
+              if (!tagsData || !tagsData.length || tagsData.length < 2) {
+                core.setFailed('Unable to calculate DORA Lead Time for Changes for PRs between the most recent and second most recent git tags because this repo has less than two git tags.')
+                process.exit(1)
+              }
+
+              // Per the requirements in the ticket (API-28959) and the spike ticket (API-28443),
+              // we *assume* the second element in the array of tags is the second-most recent tag.
+              const newTag = tagsData[0].name
+              const previousTag = tagsData[1].name
+
+              core.info(`The new tag is: ${newTag}. The previous tag is: ${previousTag}`)
+
+              const commitsData = await doFetch(`${ghBaseUrl}/compare/${previousTag}...${newTag}`, githubOptions)
+
+              if (!commitsData || !commitsData.commits || !commitsData.commits.length || commitsData.commits.length < 1) {
+                core.setFailed('Unable to calculate DORA Lead Time for Changes for PRs between the most recent and second most recent git tags because there are no commits between these two tags.')
+                process.exit(1)
+              }
+
+              let dedupedPulls = []
+              for (let commit of commitsData.commits) {
+                let pullsData = await doFetch(`${ghBaseUrl}/commits/${commit.sha}/pulls`, githubOptions)
+                dedupedPulls = concatDedupe(pullsData, dedupedPulls, 'id')
+              }
+
+              if (!dedupedPulls || !dedupedPulls.length || dedupedPulls.length < 1) {
+                core.setFailed('Unable to calculate DORA Lead Time for Changes for PRs between the most recent and second most recent git tags because there are no PRs between these two tags.')
+                process.exit(1)
+              }
+
+              return dedupedPulls
+            }
+
+            function calculateAvergeLeadTime(pulls) {
+              let averageLeadTime = 0
+              let mergedPullsCount = 0
+
+              for (let pull of dedupedPulls) {
+                if (pull.merged_at === null) {
+                  core.info(`Pull number ${pull.number} was never merged. Skipping...`)
+                  continue
+                }
+
+                mergedPullsCount++
+
+                let millisecondsBetween = new Date().getTime() - new Date(pull.created_at).getTime()
+                averageLeadTime += Math.round(millisecondsBetween / millisecondsPerSecond)
+
+                core.info(`Lead Time for pull number ${pull.number} is ${Math.round(millisecondsBetween / millisecondsPerSecond)} seconds.`)
+              }
+
+              if (mergedPullsCount === 0) {
+                core.setFailed('Unable to calculate DORA Lead Time for Changes for PRs between the most recent and second most recent git tags because there are no merged PRs between these two tags.')
+                process.exit(1)
+              }
+
+              return Math.round(averageLeadTime / mergedPullsCount)
+            }
+
+            async function submitMetrics(averageLeadTime) {
+              let datadogPostBody = {
+                series: [
+                  {
+                    metric: "lead_time_for_changes",
+                    points: [
+                      {
+                        timestamp: Math.round(new Date().getTime() / millisecondsPerSecond),
+                        value: averageLeadTime
+                      }
+                    ],
+                    type: datadogGuageMetricType,
+                    "tags": [ `repo_name:${repoName}` ],
+                    "unit": "second"
+                  }
+                ]
+              }
+
+              let datadogOptions = {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'DD-API-KEY': DATADOG_API_KEY_FOR_LEAD_TIME_METRIC,
+                  'DD-APPLICATION-KEY': DATADOG_APP_KEY_FOR_LEAD_TIME_METRIC
+                },
+                body: JSON.stringify(datadogPostBody),
+              }
+
+              const datadogData = await doFetch(datadogSubmitMetricsUrl, datadogOptions)
+              core.info('Datadog metric submission response body is:')
+              core.info(JSON.stringify(datadogData, null, 2))
+            }
+
+            const dedupedPulls = await getPulls()
+
+            const averageLeadTime = calculateAvergeLeadTime(dedupedPulls)
+
+            core.info(`Average Lead Time of the merged PRs is ${averageLeadTime} seconds.`)
+
+            await submitMetrics(averageLeadTime)

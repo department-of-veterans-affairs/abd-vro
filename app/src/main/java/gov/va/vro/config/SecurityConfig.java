@@ -11,9 +11,11 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -53,6 +55,10 @@ public class SecurityConfig {
 
   private final ApiAuthKeyManager apiAuthKeyManager;
 
+  private final String ACTUATOR_URLS = "/actuator/**";
+
+  private final String V3_URLS = "/v3/**";
+
   /**
    * Sets the security filter chain.
    *
@@ -66,24 +72,43 @@ public class SecurityConfig {
     ApiAuthKeyFilter apiAuthKeyFilter = new ApiAuthKeyFilter(apiKeyAuthHeaderName);
     apiAuthKeyFilter.setAuthenticationManager(apiAuthKeyManager);
 
-    httpSecurity
-        .exceptionHandling()
-        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+    httpSecurity.exceptionHandling(
+        (httpSecurityExceptionHandlingConfigurer ->
+            httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(
+                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))));
     // Secure end point
     httpSecurity
-        .requestMatchers()
-        .antMatchers(
-            claimInfo, claimMetrics, evidencePdf, fullHealth, healthAssessment, immediatePdf)
-        .and()
-        .csrf()
-        .disable()
-        .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
-        .addFilter(apiAuthKeyFilter)
-        .authorizeRequests()
-        .anyRequest()
-        .authenticated();
+        .securityMatchers(
+            (matchers) ->
+                matchers.requestMatchers(
+                    new AntPathRequestMatcher(claimInfo),
+                    new AntPathRequestMatcher(claimMetrics),
+                    new AntPathRequestMatcher(evidencePdf),
+                    new AntPathRequestMatcher(fullHealth),
+                    new AntPathRequestMatcher(healthAssessment),
+                    new AntPathRequestMatcher(immediatePdf)))
+        .authorizeHttpRequests(
+            (authz) -> {
+              authz
+                  .requestMatchers(
+                      new AntPathRequestMatcher(claimInfo),
+                      new AntPathRequestMatcher(claimMetrics),
+                      new AntPathRequestMatcher(evidencePdf),
+                      new AntPathRequestMatcher(fullHealth),
+                      new AntPathRequestMatcher(healthAssessment),
+                      new AntPathRequestMatcher(immediatePdf),
+                      new AntPathRequestMatcher(ACTUATOR_URLS),
+                      new AntPathRequestMatcher(V3_URLS))
+                  .permitAll()
+                  .anyRequest()
+                  .authenticated();
+            })
+        .csrf(AbstractHttpConfigurer::disable)
+        .sessionManagement(
+            httpSecuritySessionManagementConfigurer ->
+                httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
+                    SessionCreationPolicy.STATELESS))
+        .addFilter(apiAuthKeyFilter);
     return httpSecurity.build();
   }
 
@@ -100,23 +125,34 @@ public class SecurityConfig {
     ApiAuthKeyFilter apiAuthKeyFilter = new ApiAuthKeyFilter(jwtAuthHeaderName);
     apiAuthKeyFilter.setAuthenticationManager(apiAuthKeyManager);
 
-    httpSecurity
-        .exceptionHandling()
-        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+    httpSecurity.exceptionHandling(
+        (httpSecurityExceptionHandlingConfigurer ->
+            httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(
+                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))));
     // Secure end point
     httpSecurity
-        .requestMatchers()
-        .antMatchers(automatedClaim, examOrder)
-        .and()
-        .csrf()
-        .disable()
-        .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
-        .addFilter(apiAuthKeyFilter)
-        .authorizeRequests()
-        .anyRequest()
-        .authenticated();
+        .securityMatchers(
+            (matchers) ->
+                matchers.requestMatchers(
+                    new AntPathRequestMatcher(automatedClaim),
+                    new AntPathRequestMatcher(examOrder)))
+        .authorizeHttpRequests(
+            (authz) ->
+                authz
+                    .requestMatchers(
+                        new AntPathRequestMatcher(automatedClaim),
+                        new AntPathRequestMatcher(examOrder),
+                        new AntPathRequestMatcher(ACTUATOR_URLS),
+                        new AntPathRequestMatcher(V3_URLS))
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
+        .csrf(AbstractHttpConfigurer::disable)
+        .sessionManagement(
+            httpSecuritySessionManagementConfigurer ->
+                httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
+                    SessionCreationPolicy.STATELESS))
+        .addFilter(apiAuthKeyFilter);
     return httpSecurity.build();
   }
 }
