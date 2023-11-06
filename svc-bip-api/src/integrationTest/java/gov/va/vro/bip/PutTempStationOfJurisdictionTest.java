@@ -5,7 +5,7 @@ import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-class TempStationOfJurisdictionTest extends BaseIntegrationTest {
+class PutTempStationOfJurisdictionTest extends BaseIntegrationTest {
 
   @Test
   void testPutTempStationOfJurisdiction_200() {

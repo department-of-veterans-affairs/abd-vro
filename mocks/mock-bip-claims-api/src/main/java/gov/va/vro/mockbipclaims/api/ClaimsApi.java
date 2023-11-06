@@ -38,11 +38,11 @@ public interface ClaimsApi {
    *
    * @param claimId The CorpDB BNFT_CLAIM_ID (required)
    * @return Details for the given claim id. (status code 200) or The authentication mechanism
-   *     failed and hence access is forbidden. (status code 401) or Could not derive claim from
-   *     request path (status code 404) or There was an error encountered processing the Request.
-   *     Response will contain a "messages" element that will provide further information on the
-   *     error. Please retry. If problem persists, please contact support with a copy of the
-   *     Response. (status code 500)
+   * failed and hence access is forbidden. (status code 401) or Could not derive claim from
+   * request path (status code 404) or There was an error encountered processing the Request.
+   * Response will contain a "messages" element that will provide further information on the
+   * error. Please retry. If problem persists, please contact support with a copy of the
+   * Response. (status code 500)
    */
   @Operation(
       operationId = "getClaimById",
@@ -53,56 +53,56 @@ public interface ClaimsApi {
               regardless of veteran.
               """,
       responses = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Details for the given claim id.",
-            content = {
-              @Content(
-                  mediaType = "application/json",
-                  schema = @Schema(implementation = ClaimDetailResponse.class)),
-              @Content(
-                  mediaType = "application/problem+json",
-                  schema = @Schema(implementation = ClaimDetailResponse.class))
-            }),
-        @ApiResponse(
-            responseCode = "401",
-            description = "The authentication mechanism failed and hence access is forbidden.",
-            content = {
-              @Content(
-                  mediaType = "application/json",
-                  schema = @Schema(implementation = ProviderResponse.class)),
-              @Content(
-                  mediaType = "application/problem+json",
-                  schema = @Schema(implementation = ProviderResponse.class))
-            }),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Could not derive claim from request path",
-            content = {
-              @Content(
-                  mediaType = "application/json",
-                  schema = @Schema(implementation = ProviderResponse.class)),
-              @Content(
-                  mediaType = "application/problem+json",
-                  schema = @Schema(implementation = ProviderResponse.class))
-            }),
-        @ApiResponse(
-            responseCode = "500",
-            description =
-                """
+          @ApiResponse(
+              responseCode = "200",
+              description = "Details for the given claim id.",
+              content = {
+                  @Content(
+                      mediaType = "application/json",
+                      schema = @Schema(implementation = ClaimDetailResponse.class)),
+                  @Content(
+                      mediaType = "application/problem+json",
+                      schema = @Schema(implementation = ClaimDetailResponse.class))
+              }),
+          @ApiResponse(
+              responseCode = "401",
+              description = "The authentication mechanism failed and hence access is forbidden.",
+              content = {
+                  @Content(
+                      mediaType = "application/json",
+                      schema = @Schema(implementation = ProviderResponse.class)),
+                  @Content(
+                      mediaType = "application/problem+json",
+                      schema = @Schema(implementation = ProviderResponse.class))
+              }),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Could not derive claim from request path",
+              content = {
+                  @Content(
+                      mediaType = "application/json",
+                      schema = @Schema(implementation = ProviderResponse.class)),
+                  @Content(
+                      mediaType = "application/problem+json",
+                      schema = @Schema(implementation = ProviderResponse.class))
+              }),
+          @ApiResponse(
+              responseCode = "500",
+              description =
+                  """
                       There was an error encountered processing the Request.  Response will contain
                       a  "messages" element that will provide further information on the error.
                       Please retry.  If problem persists, please contact support with a copy of the
                       Response.
                       """,
-            content = {
-              @Content(
-                  mediaType = "application/json",
-                  schema = @Schema(implementation = ProviderResponse.class)),
-              @Content(
-                  mediaType = "application/problem+json",
-                  schema = @Schema(implementation = ProviderResponse.class))
-            })
+              content = {
+                  @Content(
+                      mediaType = "application/json",
+                      schema = @Schema(implementation = ProviderResponse.class)),
+                  @Content(
+                      mediaType = "application/problem+json",
+                      schema = @Schema(implementation = ProviderResponse.class))
+              })
       },
       security = {@SecurityRequirement(name = "bearerAuth")})
   @GetMapping(
@@ -110,12 +110,12 @@ public interface ClaimsApi {
       produces = {"application/json", "application/problem+json"})
   ResponseEntity<ClaimDetailResponse> getClaimById(
       @Parameter(
-              name = "claimId",
-              description = "The CorpDB BNFT_CLAIM_ID",
-              required = true,
-              in = ParameterIn.PATH)
-          @PathVariable("claimId")
-          Long claimId);
+          name = "claimId",
+          description = "The CorpDB BNFT_CLAIM_ID",
+          required = true,
+          in = ParameterIn.PATH)
+      @PathVariable("claimId")
+      Long claimId);
 
   /**
    * PUT /claims/{claimId}/cancel : Cancel an existing claim using the claimId. Cancel a claim using
@@ -123,10 +123,10 @@ public interface ClaimsApi {
    *
    * @param claimId The CorpDB BNFT_CLAIM_ID (required)
    * @return Claim Closed (status code 200) or The authentication mechanism failed and hence access
-   *     is forbidden. (status code 401) or Could not derive claim from request path (status code
-   *     404) or There was an error encountered processing the Request. Response will contain a
-   *     "messages" element that will provide further information on the error. Please retry. If
-   *     problem persists, please contact support with a copy of the Response. (status code 500)
+   * is forbidden. (status code 401) or Could not derive claim from request path (status code
+   * 404) or There was an error encountered processing the Request. Response will contain a
+   * "messages" element that will provide further information on the error. Please retry. If
+   * problem persists, please contact support with a copy of the Response. (status code 500)
    */
   @Operation(
       operationId = "cancelClaimById",
@@ -134,35 +134,35 @@ public interface ClaimsApi {
       description =
           "Operation to cancel an existing claim. The claim must not already be closed or cancelled.",
       responses = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Claim Closed.",
-            content =
-                @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = CloseClaimResponse.class))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "The authentication mechanism failed and hence access is forbidden.",
-            content =
-                @Content(
-                    mediaType = "application/problem+json",
-                    schema = @Schema(implementation = ProviderResponse.class))),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Could not derive claim from request path",
-            content =
-                @Content(
-                    mediaType = "application/problem+json",
-                    schema = @Schema(implementation = ProviderResponse.class))),
-        @ApiResponse(
-            responseCode = "500",
-            description =
-                "There was an error encountered processing the Request. Response will contain a \"messages\" element that will provide further information on the error. Please retry. If problem persists, please contact support with a copy of the Response.",
-            content =
-                @Content(
-                    mediaType = "application/problem+json",
-                    schema = @Schema(implementation = ProviderResponse.class)))
+          @ApiResponse(
+              responseCode = "200",
+              description = "Claim Closed.",
+              content =
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = CloseClaimResponse.class))),
+          @ApiResponse(
+              responseCode = "401",
+              description = "The authentication mechanism failed and hence access is forbidden.",
+              content =
+              @Content(
+                  mediaType = "application/problem+json",
+                  schema = @Schema(implementation = ProviderResponse.class))),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Could not derive claim from request path",
+              content =
+              @Content(
+                  mediaType = "application/problem+json",
+                  schema = @Schema(implementation = ProviderResponse.class))),
+          @ApiResponse(
+              responseCode = "500",
+              description =
+                  "There was an error encountered processing the Request. Response will contain a \"messages\" element that will provide further information on the error. Please retry. If problem persists, please contact support with a copy of the Response.",
+              content =
+              @Content(
+                  mediaType = "application/problem+json",
+                  schema = @Schema(implementation = ProviderResponse.class)))
       },
       security = {@SecurityRequirement(name = "bearerAuth")})
   @PutMapping(
@@ -170,12 +170,12 @@ public interface ClaimsApi {
       produces = {"application/json", "application/problem+json"})
   ResponseEntity<CloseClaimResponse> cancelClaimById(
       @Parameter(
-              name = "claimId",
-              description = "The CorpDB BNFT_CLAIM_ID",
-              required = true,
-              in = ParameterIn.PATH)
-          @PathVariable("claimId")
-          Long claimId,
+          name = "claimId",
+          description = "The CorpDB BNFT_CLAIM_ID",
+          required = true,
+          in = ParameterIn.PATH)
+      @PathVariable("claimId")
+      Long claimId,
       @RequestBody CloseClaimRequest closeClaimRequest);
 
   /**
@@ -184,10 +184,10 @@ public interface ClaimsApi {
    *
    * @param claimId The CorpDB BNFT_CLAIM_ID (required)
    * @return Updated (status code 200) or The authentication mechanism failed and hence access is
-   *     forbidden. (status code 401) or Could not derive claim from request path (status code 404)
-   *     or There was an error encountered processing the Request. Response will contain a
-   *     "messages" element that will provide further information on the error. Please retry. If
-   *     problem persists, please contact support with a copy of the Response. (status code 500)
+   * forbidden. (status code 401) or Could not derive claim from request path (status code 404)
+   * or There was an error encountered processing the Request. Response will contain a
+   * "messages" element that will provide further information on the error. Please retry. If
+   * problem persists, please contact support with a copy of the Response. (status code 500)
    */
   @Operation(
       operationId = "setTemporaryStationOfJurisdictionById",
@@ -195,35 +195,35 @@ public interface ClaimsApi {
       description =
           "Set the temporary station of jurisdiction on an existing claim using the claimId. ",
       responses = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Updated.",
-            content =
-                @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = CloseClaimResponse.class))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "The authentication mechanism failed and hence access is forbidden.",
-            content =
-                @Content(
-                    mediaType = "application/problem+json",
-                    schema = @Schema(implementation = ProviderResponse.class))),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Could not derive claim from request path",
-            content =
-                @Content(
-                    mediaType = "application/problem+json",
-                    schema = @Schema(implementation = ProviderResponse.class))),
-        @ApiResponse(
-            responseCode = "500",
-            description =
-                "There was an error encountered processing the Request. Response will contain a \"messages\" element that will provide further information on the error. Please retry. If problem persists, please contact support with a copy of the Response.",
-            content =
-                @Content(
-                    mediaType = "application/problem+json",
-                    schema = @Schema(implementation = ProviderResponse.class)))
+          @ApiResponse(
+              responseCode = "200",
+              description = "Updated.",
+              content =
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = PutTemporaryStationOfJurisdictionResponse.class))),
+          @ApiResponse(
+              responseCode = "401",
+              description = "The authentication mechanism failed and hence access is forbidden.",
+              content =
+              @Content(
+                  mediaType = "application/problem+json",
+                  schema = @Schema(implementation = ProviderResponse.class))),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Could not derive claim from request path",
+              content =
+              @Content(
+                  mediaType = "application/problem+json",
+                  schema = @Schema(implementation = ProviderResponse.class))),
+          @ApiResponse(
+              responseCode = "500",
+              description =
+                  "There was an error encountered processing the Request. Response will contain a \"messages\" element that will provide further information on the error. Please retry. If problem persists, please contact support with a copy of the Response.",
+              content =
+              @Content(
+                  mediaType = "application/problem+json",
+                  schema = @Schema(implementation = ProviderResponse.class)))
       },
       security = {@SecurityRequirement(name = "bearerAuth")})
   @PutMapping(
@@ -231,12 +231,12 @@ public interface ClaimsApi {
       produces = {"application/json", "application/problem+json"})
   ResponseEntity<PutTemporaryStationOfJurisdictionResponse> putTemporaryStationOfJurisdictionById(
       @Parameter(
-              name = "claimId",
-              description = "The CorpDB BNFT_CLAIM_ID",
-              required = true,
-              in = ParameterIn.PATH)
-          @PathVariable("claimId")
-          Long claimId,
+          name = "claimId",
+          description = "The CorpDB BNFT_CLAIM_ID",
+          required = true,
+          in = ParameterIn.PATH)
+      @PathVariable("claimId")
+      Long claimId,
       @RequestBody
-          PutTemporaryStationOfJurisdictionRequest putTemporaryStationOfJurisdictionRequest);
+      PutTemporaryStationOfJurisdictionRequest putTemporaryStationOfJurisdictionRequest);
 }

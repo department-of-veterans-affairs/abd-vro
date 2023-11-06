@@ -8,19 +8,20 @@ import org.springframework.http.ResponseEntity;
 import java.time.OffsetDateTime;
 
 public class BaseController {
+  protected static final int CLAIM_YIELDS_500 = 500;
 
   protected <T extends ProviderResponse> ResponseEntity<T> create200(T response) {
-    return new ResponseEntity<T>(response, HttpStatus.OK);
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   protected <T extends ProviderResponse> ResponseEntity<T> create500(T response) {
     response.addMessagesItem(createInternalServerMessage());
-    return new ResponseEntity<T>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   protected <T extends ProviderResponse> ResponseEntity<T> create404(T response) {
     response.addMessagesItem(createNotFoundMessage());
-    return new ResponseEntity<T>(response, HttpStatus.NOT_FOUND);
+    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
   }
 
   public static Message createNotFoundMessage() {

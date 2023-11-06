@@ -31,7 +31,7 @@ public class ClaimsController extends BaseController implements ClaimsApi {
     if (item == null) {
       return create404(response);
     }
-    if (claimId == 500) {
+    if (claimId == CLAIM_YIELDS_500) {
       return create500(response);
     }
 
@@ -52,7 +52,7 @@ public class ClaimsController extends BaseController implements ClaimsApi {
       return create404(response);
     }
 
-    if (claimId == 500) {
+    if (claimId == CLAIM_YIELDS_500) {
       return create500(response);
     }
 
@@ -74,8 +74,8 @@ public class ClaimsController extends BaseController implements ClaimsApi {
 
   @Override
   public ResponseEntity<PutTemporaryStationOfJurisdictionResponse>
-      putTemporaryStationOfJurisdictionById(
-          Long claimId, PutTemporaryStationOfJurisdictionRequest request) {
+  putTemporaryStationOfJurisdictionById(
+      Long claimId, PutTemporaryStationOfJurisdictionRequest request) {
 
     log.info("Updating temporary station of jurisdiction (id: {})", claimId);
 
@@ -86,7 +86,7 @@ public class ClaimsController extends BaseController implements ClaimsApi {
       return create404(response);
     }
 
-    if (claimId == 500) {
+    if (claimId == CLAIM_YIELDS_500) {
       return create500(response);
     }
 
