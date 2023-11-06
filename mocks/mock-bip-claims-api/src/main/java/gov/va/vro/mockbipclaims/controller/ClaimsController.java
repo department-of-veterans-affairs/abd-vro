@@ -74,8 +74,8 @@ public class ClaimsController extends BaseController implements ClaimsApi {
 
   @Override
   public ResponseEntity<PutTemporaryStationOfJurisdictionResponse>
-  putTemporaryStationOfJurisdictionById(
-      Long claimId, PutTemporaryStationOfJurisdictionRequest request) {
+      putTemporaryStationOfJurisdictionById(
+          Long claimId, PutTemporaryStationOfJurisdictionRequest request) {
 
     log.info("Updating temporary station of jurisdiction (id: {})", claimId);
 
