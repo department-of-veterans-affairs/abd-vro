@@ -17,10 +17,6 @@ bip:
   env: local
   claimBaseUrl: ${BIP_CLAIM_URL:localhost}
 
-spring.config.import: >
-  client-keystore.yml
-  server-truststore.yml
-
 truststore_password: keystore_pw
 
 spring:
