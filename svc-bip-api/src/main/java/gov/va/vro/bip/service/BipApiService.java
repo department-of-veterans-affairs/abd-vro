@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.bip.model.BipClaimResp;
 import gov.va.vro.bip.model.BipPayloadResponse;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
+import gov.va.vro.bip.model.ClaimContention;
 import gov.va.vro.bip.model.ClaimStatus;
 import gov.va.vro.bip.model.UpdateContentionReq;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;

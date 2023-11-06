@@ -35,12 +35,12 @@ x-postgres-vars: &postgres-vars
 
 x-redis-placeholder-vars: &redis-placeholder-vars
   REDIS_PLACEHOLDERS_HOST: redis-service
-  REDIS_PLACEHOLDERS_PASSWORD: ${REDIS_PLACEHOLDERS_PASSWORD}
+  REDIS_PASSWORD: ${REDIS_PASSWORD}
 
 x-rabbitmq-placeholder-vars: &rabbitmq-placeholder-vars
   RABBITMQ_PLACEHOLDERS_HOST: rabbitmq-service
-  RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
-  RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
+  RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+  RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
 
 x-common-security-opt: &common-security-opt
   security_opt:
