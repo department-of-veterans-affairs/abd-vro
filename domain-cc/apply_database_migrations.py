@@ -6,7 +6,6 @@ service can properly CRUD postgres tables
 
 import os
 import subprocess
-import sys
 
 from alembic import command
 from alembic.config import Config
@@ -81,20 +80,18 @@ def generate_flyway_migration(alembic_cfg, new_migration_path):
     mv new_sql_file.sql abd-vro/db-init/src/main/resources/database/migrations/domain_cc_<hash>_migration.sql
     """
     revision_hash = get_revision_hash(new_migration_path)
-    cmd = ["alembic", "upgrade", revision_hash, "--sql", ">", "new_sql_file.sql"]
-    # process = subprocess.Popen(cmd, stdout=subprocess.PIPE)  # Execute the command
-    output = subprocess.getoutput(cmd)
-    print("writing out .sql file")
-    print(output)
-    # process.communicate()
 
-    # upgrade_response = command.upgrade(alembic_cfg, revision_hash, sql=True)
-    # print(f'upgrade_response: {upgrade_response}')
     print("writing to new_sql_file.sql")
+    cmd = ["alembic", "upgrade", revision_hash, "--sql"]
     with open("new_sql_file.sql", "w") as f:
-        f.write(output)
+        subprocess.run(cmd, stdout=f)
 
-    # new_sql_migration_filename = f'abd-vro/db-init/src/main/resources/database/migrations/domain_cc_{revision_hash}_migration.sql'
+    # Remove the first line of the file (Using database_url: "postgresql://...")
+    with open("new_sql_file.sql", "r") as fin:
+        data = fin.read().splitlines(True)
+    with open("new_sql_file.sql", "w") as fout:
+        fout.writelines(data[1:])
+
     print("generating new .sql migration filename")
     new_migration_name = f"V{generate_flyway_migration_version()}__domain_cc_{revision_hash}_migration.sql"
     new_sql_migration_filepath = os.path.join(
@@ -108,20 +105,11 @@ def generate_flyway_migration(alembic_cfg, new_migration_path):
 
 def re_run_db_init():
     """
-    docker restart vro-db-init-1
+    docker compose up -d db-init --build
     """
-    cmd = ["docker", "restart", "vro-db-init-1"]
+    cmd = ["docker", "compose", "up", "-d", "db-init", "--build"]
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE)  # Execute the command
     process.communicate()
-
-    # gradle_commands = [
-    #     ':domain-cc:dockerComposeDown', ':app:dockerComposeDown', ':dockerComposeDown',
-    #     ':dockerComposeUp', ':app:dockerComposeUp', ':domain-cc:dockerComposeUp',
-    # ]
-    # for cmd in gradle_commands:
-    #     print(f'running gradle command: {cmd}')
-    #     process = subprocess.Popen(['./gradlew', cmd], stdout=subprocess.PIPE)
-    #     process.communicate()
 
 
 def main():

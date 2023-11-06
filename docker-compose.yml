@@ -126,6 +126,9 @@ services:
 
   db-init:
     image: va/abd_vro-db-init:latest
+    build:
+      context: ./db-init/src/main/resources
+      dockerfile: ../../../Dockerfile
     depends_on:
       postgres-service:
         condition: service_healthy
