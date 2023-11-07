@@ -105,11 +105,13 @@ def generate_flyway_migration(alembic_cfg, new_migration_path):
 
 def re_run_db_init():
     """
-    docker compose up -d db-init --build
+    docker rm db-init
+    ./gradlew :db-init:dockerStart
     """
-    cmd = ["docker", "compose", "up", "-d", "db-init", "--build"]
-    process = subprocess.Popen(cmd, stdout=subprocess.PIPE)  # Execute the command
-    process.communicate()
+    rm = ["docker", "rm", "db-init"]
+    start = ["./gradlew", ":db-init:dockerStart"]
+    subprocess.run(rm, stdout=subprocess.PIPE)  # Execute the command
+    subprocess.run(start, stdout=subprocess.PIPE)  # Execute the command
 
 
 def main():
