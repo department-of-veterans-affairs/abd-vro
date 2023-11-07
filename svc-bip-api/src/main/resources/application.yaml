@@ -33,3 +33,11 @@ getClaimContentionsQueue: getClaimContentionsQueue
 updateClaimContentionQueue: updateClaimContentionQueue
 verifySpecialIssueTypeQueue: confirmCanCallSpecialIssueTypesQueue
 exchangeName: bipApiExchange
+
+management:
+  server.port: 10401
+  endpoint:
+    health:
+      show-details: always
+      enabled: true
+      probes.enabled: true
