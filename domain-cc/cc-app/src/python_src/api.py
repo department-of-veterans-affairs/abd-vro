@@ -66,21 +66,24 @@ def get_classification(claim: Claim) -> Optional[PredictedClassification]:
         else:
             logging.info("No dropdown match for contention_text")
 
-    in_dropdown = False
-    if claim.contention_text:
+    if claim.claim_type == "new":
         dropdown_values = [term.strip().lower() for term in DROPDOWN_OPTIONS.values()]
-        in_dropdown = claim.contention_text.strip().lower() in dropdown_values
+        is_in_dropdown = claim.contention_text.strip().lower() in dropdown_values
+        log_contention_text = (
+            claim.contention_text if is_in_dropdown else "Not in dropdown"
+        )
+        logging.info(
+            f"claim_type: {claim.claim_type}, is_in_dropdown: {is_in_dropdown}, contention_text: {log_contention_text}"
+        )
 
     if classification_code:
         classification_name = get_classification_name(classification_code)
         classification = {
             "classification_code": classification_code,
             "classification_name": classification_name,
-            "in_dropdown": in_dropdown,
         }
-
     else:
-        classification = {"in_dropdown": in_dropdown}
+        classification = None
 
     logging.info(f"classification: {classification}")
     return classification
