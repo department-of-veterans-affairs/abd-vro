@@ -25,7 +25,6 @@ def test_classification(client: TestClient):
         response.json()["classification_name"]
         == TUBERCULOSIS_CLASSIFICATION["classification_name"]
     )
-    assert response.json()["in_dropdown"] is False
 
 
 def test_missing_params(client: TestClient):
@@ -47,9 +46,7 @@ def test_unmapped_diagnostic_code(client: TestClient):
     }
     response = client.post("/classifier", json=json_post_dict)
     assert response.status_code == 200
-    assert response.json()["classification_code"] is None
-    assert response.json()["classification_name"] is None
-    assert response.json()["in_dropdown"] is False
+    assert response.json() is None
 
 
 def test_unprocessable_content(client: TestClient):

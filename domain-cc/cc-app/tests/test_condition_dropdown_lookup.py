@@ -2,7 +2,7 @@
 
 from fastapi.testclient import TestClient
 
-from .conftest import PLANTAR_FASCIITIS, TUBERCULOSIS_CLASSIFICATION
+from .conftest import TUBERCULOSIS_CLASSIFICATION
 
 
 def test_diagnostic_code_mapping(client: TestClient):
@@ -21,7 +21,6 @@ def test_diagnostic_code_mapping(client: TestClient):
         response.json()["classification_code"]
         == TUBERCULOSIS_CLASSIFICATION["classification_code"]
     )
-    assert response.json()["in_dropdown"] is False
 
 
 def test_classification_dropdown_cfi(client: TestClient):
@@ -40,7 +39,6 @@ def test_classification_dropdown_cfi(client: TestClient):
         response.json()["classification_code"]
         == TUBERCULOSIS_CLASSIFICATION["classification_code"]
     )
-    assert response.json()["in_dropdown"] is True
 
 
 def test_dropdown_lut_case_insensitive(client: TestClient):
@@ -59,8 +57,6 @@ def test_dropdown_lut_case_insensitive(client: TestClient):
         == TUBERCULOSIS_CLASSIFICATION["classification_code"]
     )
 
-    assert response.json()["in_dropdown"] is True
-
 
 def test_dropdown_lut_whitespace(client: TestClient):
     """dropdown lookup table doesn't care about whitespace"""
@@ -77,7 +73,6 @@ def test_dropdown_lut_whitespace(client: TestClient):
         response.json()["classification_code"]
         == TUBERCULOSIS_CLASSIFICATION["classification_code"]
     )
-    assert response.json()["in_dropdown"] is True
 
 
 def test_classification_dropdown_new(client: TestClient):
@@ -94,7 +89,6 @@ def test_classification_dropdown_new(client: TestClient):
         response.json()["classification_code"]
         == TUBERCULOSIS_CLASSIFICATION["classification_code"]
     )
-    assert response.json()["in_dropdown"] is True
 
 
 def test_null_response(client: TestClient):
@@ -109,28 +103,4 @@ def test_null_response(client: TestClient):
 
     response = client.post("/classifier", json=json_post_dict)
     assert response.status_code == 200
-    assert response.json()["classification_code"] is None
-    assert response.json()["classification_name"] is None
-    assert response.json()["in_dropdown"] is False
-
-
-def test_plantar_fasciitis_classification(client: TestClient):
-    """Tests plantar fasciitis"""
-    json_post_dict = {
-        "diagnostic_code": PLANTAR_FASCIITIS["diagnostic_code"],
-        "claim_id": 700,
-        "form526_submission_id": 777,
-        "claim_type": "new",
-        "contention_text": "Plantar Fasciitis",
-    }
-    response = client.post("/classifier", json=json_post_dict)
-    assert response.status_code == 200
-    assert response.json()["in_dropdown"] is True
-    assert (
-        response.json()["classification_code"]
-        == PLANTAR_FASCIITIS["classification_code"]
-    )
-    assert (
-        response.json()["classification_name"]
-        == PLANTAR_FASCIITIS["classification_name"]
-    )
+    assert response.json() is None
