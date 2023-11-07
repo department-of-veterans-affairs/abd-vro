@@ -241,20 +241,15 @@ public class BipApiService implements IBipApiService {
   }
 
   HttpHeaders getBipHeader() throws BipException {
-    try {
-      HttpHeaders bipHttpHeaders = new HttpHeaders();
-      bipHttpHeaders.setContentType(MediaType.APPLICATION_JSON);
+    HttpHeaders bipHttpHeaders = new HttpHeaders();
+    bipHttpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-      String jwt = createJwt();
-      bipHttpHeaders.add("Authorization", "Bearer " + jwt);
-      return bipHttpHeaders;
-    } catch (Exception e) {
-      log.error("Failed to build BIP HTTP Headers.", e);
-      throw new BipException(e.getMessage(), e);
-    }
+    String jwt = createJwt();
+    bipHttpHeaders.add("Authorization", "Bearer " + jwt);
+    return bipHttpHeaders;
   }
 
-  String createJwt() throws BipException {
+  String createJwt() {
     Claims claims = bipApiProps.toCommonJwtClaims();
     Map<String, Object> headerType = new HashMap<>();
     headerType.put("typ", JWT_TYPE);

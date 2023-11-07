@@ -224,8 +224,31 @@ public class BipApiServiceTest {
     }
 
     try {
-      BipUpdateClaimResp result = service.setClaimToRfdStatus(BAD_CLAIM_ID);
+      service.setClaimToRfdStatus(BAD_CLAIM_ID);
       log.error("Negative setClaimToRfdStatus test failed.");
+      fail();
+    } catch (BipException e) {
+      assertSame(HttpStatus.INTERNAL_SERVER_ERROR, e.getStatus());
+    }
+  }
+
+  @Test
+  public void testSetClaimToRfdStatus_500() {
+    String body = "{}";
+    mockResponseForUrl(
+        Mockito.doThrow(
+            new HttpClientErrorException(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+                body.getBytes(),
+                Charset.defaultCharset())),
+        formatClaimUrl(UPDATE_CLAIM_STATUS, BAD_STATUS_CLAIM_ID),
+        HttpMethod.PUT);
+    mockBipApiProp();
+
+    try {
+      service.setClaimToRfdStatus(BAD_STATUS_CLAIM_ID);
+      log.error("Negative updateClaimContention test failed.");
       fail();
     } catch (BipException e) {
       assertSame(HttpStatus.INTERNAL_SERVER_ERROR, e.getStatus());
@@ -305,11 +328,35 @@ public class BipApiServiceTest {
     }
 
     try {
-      BipUpdateClaimResp result = service.updateClaimContention(BAD_CLAIM_ID, request);
+      service.updateClaimContention(BAD_CLAIM_ID, request);
       log.error("Negative updateClaimContention test failed.");
       fail();
     } catch (BipException e) {
       assertSame(HttpStatus.PRECONDITION_FAILED, e.getStatus());
+    }
+  }
+
+  @Test
+  public void testUpdateClaimContention_500() {
+    String body = "{}";
+    mockResponseForUrl(
+        Mockito.doThrow(
+            new HttpClientErrorException(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+                body.getBytes(),
+                Charset.defaultCharset())),
+        formatClaimUrl(CONTENTION, BAD_STATUS_CLAIM_ID),
+        HttpMethod.PUT);
+    mockBipApiProp();
+
+    UpdateContentionReq request = UpdateContentionReq.builder().build();
+    try {
+      service.updateClaimContention(BAD_STATUS_CLAIM_ID, request);
+      log.error("Negative updateClaimContention test failed.");
+      fail();
+    } catch (BipException e) {
+      assertSame(HttpStatus.INTERNAL_SERVER_ERROR, e.getStatus());
     }
   }
 
@@ -373,7 +420,28 @@ public class BipApiServiceTest {
   }
 
   @Test
-  public void testIsApiFunctioning() throws Exception {
+  public void testPutTemporaryStationOfJurisdiction_500() {
+    mockResponseForUrl(
+        Mockito.doThrow(new RuntimeException("nope")),
+        formatClaimUrl(TEMP_STATION_OF_JURISDICTION, BAD_CLAIM_ID),
+        HttpMethod.PUT);
+    mockBipApiProp();
+
+    try {
+      PutTempStationOfJurisdictionRequest request =
+          PutTempStationOfJurisdictionRequest.builder()
+              .claimId(BAD_CLAIM_ID)
+              .tempStationOfJurisdiction("398")
+              .build();
+      service.putTempStationOfJurisdiction(request);
+      fail("Valid 2XX response received. Expected 500");
+    } catch (BipException e) {
+      assertSame(HttpStatus.INTERNAL_SERVER_ERROR, e.getStatus());
+    }
+  }
+
+  @Test
+  public void testIsApiFunctioning() {
     ResponseEntity<String> resp200 = ResponseEntity.ok(API_RESPONSE_200);
 
     String goodUrl = HTTPS + CLAIM_URL + SPECIAL_ISSUE_TYPES;

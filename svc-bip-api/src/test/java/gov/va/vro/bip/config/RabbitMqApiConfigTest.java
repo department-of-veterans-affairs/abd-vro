@@ -1,5 +1,7 @@
 package gov.va.vro.bip.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.bip.service.BipRequestErrorHandler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.core.DirectExchange;
@@ -23,7 +25,7 @@ class RabbitMqApiConfigTest {
     Assertions.assertNotNull(messageConverter);
     DirectExchange directExchange = rmqConfig.bipApiExchange();
     Assertions.assertNotNull(directExchange);
-    RabbitListenerErrorHandler errorHandler = rmqConfig.svcBipApiErrorHandler();
+    RabbitListenerErrorHandler errorHandler = new BipRequestErrorHandler(new ObjectMapper());
     try {
       var headers = new HashMap<>();
       headers.put("replyChannel", "mock ReplyChannel");
