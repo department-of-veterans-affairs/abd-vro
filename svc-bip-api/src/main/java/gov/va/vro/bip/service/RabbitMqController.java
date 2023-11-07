@@ -1,10 +1,11 @@
 package gov.va.vro.bip.service;
 
 import gov.va.vro.bip.model.BipClaimResp;
-import gov.va.vro.bip.model.BipContentionResp;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.RequestForUpdateClaimStatus;
 import gov.va.vro.bip.model.UpdateContentionModel;
+import gov.va.vro.bip.model.contentions.GetClaimContentionsRequest;
+import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -34,9 +35,9 @@ public class RabbitMqController {
     return result;
   }
 
-  @RabbitListener(queues = "getClaimContentionsQueue", errorHandler = "svcBipApiErrorHandler")
-  BipContentionResp getClaimContentions(long claimId) {
-    return new BipContentionResp(service.getClaimContentions(claimId));
+  @RabbitListener(queues = "getClaimContentionsQueue", errorHandler = "svcBipApiErrorHandlerV2")
+  GetClaimContentionsResponse getClaimContentions(GetClaimContentionsRequest request) {
+    return service.getClaimContentions(request.getClaimId());
   }
 
   @RabbitListener(queues = "updateClaimContentionQueue", errorHandler = "svcBipApiErrorHandler")

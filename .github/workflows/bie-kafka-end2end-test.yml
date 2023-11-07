@@ -30,7 +30,7 @@ jobs:
           source scripts/setenv.sh
 
           # create basic auth token for RabbitMQ and export to github environment
-          BASIC_AUTH=$(echo "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" | base64)
+          BASIC_AUTH=$(echo "${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}" | base64)
           echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}" >> "$GITHUB_ENV"
 
           export -p | sed 's/declare -x //'
