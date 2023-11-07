@@ -3,15 +3,15 @@ package gov.va.vro.bip.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.bip.model.BipClaimResp;
+import gov.va.vro.bip.model.BipCloseClaimPayload;
+import gov.va.vro.bip.model.BipCloseClaimResp;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.ClaimStatus;
 import gov.va.vro.bip.model.UpdateContentionReq;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ClaimsBuilder;
-import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +44,7 @@ import javax.crypto.spec.SecretKeySpec;
 @Slf4j
 public class BipApiService implements IBipApiService {
   static final String CLAIM_DETAILS = "/claims/%s";
+  static final String CANCEL_CLAIM = "/claims/%s/cancel";
   static final String UPDATE_CLAIM_STATUS = "/claims/%s/lifecycle_status";
   static final String CONTENTION = "/claims/%s/contentions";
   static final String SPECIAL_ISSUE_TYPES = "/contentions/special_issue_types";
@@ -183,6 +184,29 @@ public class BipApiService implements IBipApiService {
     }
   }
 
+  @Override
+  public BipCloseClaimResp cancelClaim(BipCloseClaimPayload request) {
+    long claimId = request.getClaimId();
+    try {
+      String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CANCEL_CLAIM, claimId);
+      HttpHeaders headers = getBipHeader();
+      HttpEntity<BipCloseClaimPayload> httpEntity = new HttpEntity<>(request, headers);
+      ResponseEntity<String> bipResponse =
+          restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
+
+      if (bipResponse.getStatusCode() == HttpStatus.OK) {
+        BipCloseClaimResp result = mapper.readValue(bipResponse.getBody(), BipCloseClaimResp.class);
+        result.statusCode = HttpStatus.OK.value();
+        result.statusMessage = HttpStatus.OK.getReasonPhrase();
+        return result;
+      } else {
+        throw new BipException(bipResponse.getStatusCode(), bipResponse.getBody());
+      }
+    } catch (RestClientException | JsonProcessingException e) {
+      log.error("failed to cancelClaim for claim {}.", claimId, e);
+      throw new BipException(e.getMessage(), e);
+    }
+  }
   /**
    * Verifies that the BIP Api responds to a request. Calls the special_issue_types URL and confirms
    * the response status is OK and body is not empty
@@ -222,7 +246,7 @@ public class BipApiService implements IBipApiService {
     }
   }
 
-  String createJwt() throws BipException {
+  public String createJwt() throws BipException {
     Claims claims = bipApiProps.toCommonJwtClaims();
     Map<String, Object> headerType = new HashMap<>();
     headerType.put("typ", JWT_TYPE);

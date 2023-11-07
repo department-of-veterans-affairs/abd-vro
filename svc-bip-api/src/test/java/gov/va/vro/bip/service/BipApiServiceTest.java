@@ -3,12 +3,16 @@ package gov.va.vro.bip.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.bip.model.BipClaim;
+import gov.va.vro.bip.model.BipCloseClaimPayload;
+import gov.va.vro.bip.model.BipCloseClaimReason;
+import gov.va.vro.bip.model.BipCloseClaimResp;
 import gov.va.vro.bip.model.BipMessage;
 import gov.va.vro.bip.model.BipPayloadResponse;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
@@ -57,6 +61,7 @@ public class BipApiServiceTest {
   private static final String CLAIM_RESPONSE_200 = "bip-test-data/claim_response_200.json";
   private static final String CLAIM_DETAILS = "/claims/%s";
   private static final String UPDATE_CLAIM_STATUS = "/claims/%s/lifecycle_status";
+  private static final String CANCEL_CLAIM = "/claims/%s/cancel";
   private static final String CONTENTION = "/claims/%s/contentions";
   private static final String HTTPS = "https://";
   private static final String CLAIM_URL = "claims.bip.va.gov";
@@ -300,10 +305,46 @@ public class BipApiServiceTest {
 
     try {
       BipUpdateClaimResp result = service.updateClaimContention(BAD_CLAIM_ID, request);
-      log.error("Negative updateClaimContention test failed.");
+      assertNull(result, "Negative updateClaimContention test failed.");
       fail();
     } catch (BipException e) {
       assertSame(HttpStatus.PRECONDITION_FAILED, e.getStatus());
+    }
+  }
+
+  @Test
+  public void testCancelClaim() {
+    BipCloseClaimReason reason =
+        BipCloseClaimReason.builder()
+            .closeReasonText("because we are testing")
+            .lifecycleStatusReasonCode("60")
+            .build();
+    ResponseEntity<String> resp200 = ResponseEntity.ok("{}");
+    ResponseEntity<String> resp500 =
+        ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+    mockResponseForUrl(
+        Mockito.doReturn(resp200), formatClaimUrl(CANCEL_CLAIM, GOOD_CLAIM_ID), HttpMethod.PUT);
+    mockResponseForUrl(
+        Mockito.doReturn(resp500), formatClaimUrl(CANCEL_CLAIM, BAD_CLAIM_ID), HttpMethod.PUT);
+
+    mockBipApiProp();
+    try {
+      var goodRequest =
+          BipCloseClaimPayload.builder().claimId(GOOD_CLAIM_ID).reason(reason).build();
+      BipCloseClaimResp result = service.cancelClaim(goodRequest);
+      assertEquals(result.getStatus(), 200);
+    } catch (BipException e) {
+      log.error("Positive cancelClaim test failed.", e);
+      fail();
+    }
+
+    try {
+      var badRequest = BipCloseClaimPayload.builder().claimId(BAD_CLAIM_ID).reason(reason).build();
+      BipCloseClaimResp responseNotFound = service.cancelClaim(badRequest);
+      assertNull(responseNotFound);
+      fail();
+    } catch (BipException e) {
+      assertSame(HttpStatus.INTERNAL_SERVER_ERROR, e.getStatus());
     }
   }
 

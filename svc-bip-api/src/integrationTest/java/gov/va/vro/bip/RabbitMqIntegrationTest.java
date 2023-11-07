@@ -6,8 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.bip.model.BipClaimResp;
+import gov.va.vro.bip.model.BipCloseClaimPayload;
+import gov.va.vro.bip.model.BipCloseClaimReason;
+import gov.va.vro.bip.model.BipCloseClaimResp;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.ClaimStatus;
+import gov.va.vro.bip.model.HasStatusCodeAndMessage;
 import gov.va.vro.bip.model.RequestForUpdateClaimStatus;
 import gov.va.vro.bip.model.UpdateContention;
 import gov.va.vro.bip.model.UpdateContentionModel;
@@ -26,12 +30,14 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
 import java.util.List;
 
 @SpringBootTest
+@ActiveProfiles("local")
 @ExtendWith(SpringExtension.class)
 @Slf4j
 class RabbitMqIntegrationTest {
@@ -106,7 +112,28 @@ class RabbitMqIntegrationTest {
   }
 
   @SneakyThrows
-  private void assertResponseIsSuccess(BipUpdateClaimResp response) {
+  @Test
+  void testCancelClaim(@Value("${cancelClaimQueue}") String qName) {
+    BipCloseClaimReason reason =
+        BipCloseClaimReason.builder()
+            .closeReasonText("because we are testing")
+            .lifecycleStatusReasonCode("60")
+            .build();
+    BipCloseClaimPayload req =
+        BipCloseClaimPayload.builder().claimId(CLAIM_ID1_LONG).reason(reason).build();
+    BipCloseClaimResp response =
+        (BipCloseClaimResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, req);
+    assertResponseIsSuccess(response);
+  }
+
+  @Test
+  void testJWT(){
+    var jwt = service.createJwt();
+    System.out.println(jwt);
+  }
+
+  @SneakyThrows
+  private void assertResponseIsSuccess(HasStatusCodeAndMessage response) {
     Assertions.assertNotNull(response);
     Assertions.assertEquals(response.statusCode, 200);
     // There should be a message with 'Success' in the 'text' field
