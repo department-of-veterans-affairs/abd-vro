@@ -1,3 +1,7 @@
+"""
+This list is the list of dropdown options in the vets-website repo:
+https://github.com/department-of-veterans-affairs/vets-website/blob/main/src/applications/disability-benefits/all-claims/content/disabilityLabels.js
+"""
 DROPDOWN_OPTIONS = {
     10: "abnormal heart",
     20: "abnormal mitral valve",
