@@ -58,23 +58,24 @@ def get_classification(claim: Claim) -> Optional[PredictedClassification]:
 
     if claim.contention_text and not classification_code:
         classification_code = dropdown_lookup_table.get(claim.contention_text, None)
-        if classification_code:
-            already_mapped_text = (  # being explicit, do not leak PII
-                claim.contention_text.strip().lower()
-            )
-            logging.info(f"Lookup table match: {already_mapped_text}")
-        else:
-            logging.info("No dropdown match for contention_text")
-
-    if claim.claim_type == "new":
         dropdown_values = [term.strip().lower() for term in DROPDOWN_OPTIONS.values()]
         is_in_dropdown = claim.contention_text.strip().lower() in dropdown_values
         log_contention_text = (
             claim.contention_text if is_in_dropdown else "Not in dropdown"
         )
-        logging.info(
-            f"claim_type: {claim.claim_type}, is_in_dropdown: {is_in_dropdown}, contention_text: {log_contention_text}"
-        )
+        if classification_code:
+            already_mapped_text = (  # being explicit, do not leak PII
+                claim.contention_text.strip().lower()
+            )
+            logging.info(
+                f"Claim Type: {claim.claim_type}, In Dropdown: {is_in_dropdown}, "
+                f" Contention Text: {log_contention_text}, Lookup table match: {already_mapped_text}"
+            )
+        else:
+            logging.info(
+                f"Claim Type: {claim.claim_type}, In Dropdown: {is_in_dropdown}, "
+                f"Contention Text: {log_contention_text}, No Lookup table match"
+            )
 
     if classification_code:
         classification_name = get_classification_name(classification_code)
