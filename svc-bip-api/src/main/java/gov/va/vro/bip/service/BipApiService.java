@@ -3,6 +3,7 @@ package gov.va.vro.bip.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.bip.model.BipClaimResp;
+import gov.va.vro.bip.model.BipCloseClaimReason;
 import gov.va.vro.bip.model.BipCloseClaimPayload;
 import gov.va.vro.bip.model.BipCloseClaimResp;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
@@ -187,10 +188,11 @@ public class BipApiService implements IBipApiService {
   @Override
   public BipCloseClaimResp cancelClaim(BipCloseClaimPayload request) {
     long claimId = request.getClaimId();
+    var reason = request.getReason();
     try {
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CANCEL_CLAIM, claimId);
       HttpHeaders headers = getBipHeader();
-      HttpEntity<BipCloseClaimPayload> httpEntity = new HttpEntity<>(request, headers);
+      HttpEntity<BipCloseClaimReason> httpEntity = new HttpEntity<>(reason, headers);
       ResponseEntity<String> bipResponse =
           restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
 

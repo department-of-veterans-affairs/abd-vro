@@ -1,11 +1,10 @@
 package gov.va.vro.bip.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @RequiredArgsConstructor
 @EqualsAndHashCode(callSuper = false)

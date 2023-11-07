@@ -111,7 +111,6 @@ class RabbitMqIntegrationTest {
     assertResponseIsSuccess(response);
   }
 
-  @SneakyThrows
   @Test
   void testCancelClaim(@Value("${cancelClaimQueue}") String qName) {
     BipCloseClaimReason reason =
@@ -124,12 +123,6 @@ class RabbitMqIntegrationTest {
     BipCloseClaimResp response =
         (BipCloseClaimResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, req);
     assertResponseIsSuccess(response);
-  }
-
-  @Test
-  void testJWT(){
-    var jwt = service.createJwt();
-    System.out.println(jwt);
   }
 
   @SneakyThrows
