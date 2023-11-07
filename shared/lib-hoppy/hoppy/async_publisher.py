@@ -52,6 +52,7 @@ class AsyncPublisher(BaseQueueClient):
 
         self._debug('enabledDeliveryConfirmation')
         self._channel.confirm_delivery(self._on_delivery_confirmation)
+        self._is_ready = True
 
     def _shut_down(self):
         """Called when the client is requested to stop.

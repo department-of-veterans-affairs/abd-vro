@@ -10,7 +10,8 @@ dependencies = [
     "pika",
     "pytest",
     "pytest-mock",
-    "pytest-asyncio"
+    "pytest-asyncio",
+    "pytest-timeout"
 ]
 dynamic = ["version"]
 
@@ -25,3 +26,4 @@ addopts = [
 testpaths = [
     "tests"
 ]
+timeout=5
