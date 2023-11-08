@@ -32,7 +32,8 @@ public class RabbitMqController {
 
   @RabbitListener(queues = "updateClaimStatusQueue", errorHandler = "bipRequestErrorHandler")
   BipUpdateClaimResp updateClaimStatus(RequestForUpdateClaimStatus statusAndClaimId) {
-    return service.updateClaimStatus(statusAndClaimId.getClaimId(), statusAndClaimId.getClaimStatus());
+    return service.updateClaimStatus(
+        statusAndClaimId.getClaimId(), statusAndClaimId.getClaimStatus());
   }
 
   @RabbitListener(queues = "getClaimContentionsQueue", errorHandler = "bipRequestErrorHandler")

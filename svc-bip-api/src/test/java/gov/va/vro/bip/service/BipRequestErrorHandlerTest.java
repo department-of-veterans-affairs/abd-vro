@@ -2,6 +2,8 @@ package gov.va.vro.bip.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -11,7 +13,6 @@ import gov.va.vro.bip.model.BipPayloadResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.mockito.ArgumentMatchers;
 import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
@@ -74,8 +75,7 @@ class BipRequestErrorHandlerTest {
   @Test
   public void testHandleError_InvalidResponseBody() throws Exception {
     ObjectMapper mapper = mock(ObjectMapper.class);
-    when(mapper.readValue(
-        ArgumentMatchers.anyString(), ArgumentMatchers.eq(BipPayloadResponse.class)))
+    when(mapper.readValue(anyString(), eq(BipPayloadResponse.class)))
         .thenThrow(JsonProcessingException.class);
     BipRequestErrorHandler handler = new BipRequestErrorHandler(mapper);
 
