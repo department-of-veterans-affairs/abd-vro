@@ -26,6 +26,10 @@ spring:
     username: ${RABBITMQ_USERNAME:guest}
     password: ${RABBITMQ_PASSWORD:guest}
 
+  config.import: >
+    client-keystore.yml
+    server-truststore.yml
+
 getClaimDetailsQueue: getClaimDetailsQueue
 setClaimToRfdStatusQueue: setClaimToRfdStatusQueue
 updateClaimStatusQueue: updateClaimStatusQueue
