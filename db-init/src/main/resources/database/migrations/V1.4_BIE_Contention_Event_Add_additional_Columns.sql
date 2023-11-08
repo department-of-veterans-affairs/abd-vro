@@ -4,7 +4,7 @@ ADD COLUMN "date_completed" TIMESTAMP,
 ADD COLUMN "date_updated" TIMESTAMP,
 ADD COLUMN "actor_station" VARCHAR(255),
 ADD COLUMN "automation_indicator" boolean,
-ADD COLUMN "benefi_claim_type_code" VARCHAR(255),
+ADD COLUMN "benefit_claim_type_code" VARCHAR(255),
 ADD COLUMN "contention_status_type_code" VARCHAR(255),
 ADD COLUMN "current_lifecycle_status" VARCHAR(255),
 

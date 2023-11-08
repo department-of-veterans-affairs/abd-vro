@@ -6,7 +6,7 @@ import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 
-import gov.va.vro.model.biekafka.BieMessagePayload;
+import gov.va.vro.model.biekafka.BieMessageBasePayload;
 import gov.va.vro.model.biekafka.test.BieMessagePayloadFactory;
 import gov.va.vro.model.xample.SomeDtoModel;
 import gov.va.vro.persistence.model.ClaimEntity;
@@ -56,19 +56,19 @@ public class DbHelperTest {
 
   @Test
   void saveContentionEvent() {
-    final BieMessagePayload bieMessagePayload = BieMessagePayloadFactory.create();
-    final ContentionEventEntity entity = dbHelper.saveContentionEvent(bieMessagePayload);
+    final BieMessageBasePayload bieMessageBasePayload = BieMessagePayloadFactory.create();
+    final ContentionEventEntity entity = dbHelper.saveContentionEvent(bieMessageBasePayload);
 
     assertNotNull(entity);
-    assertEquals(bieMessagePayload.getEventType().toString(), entity.getEventType());
-    assertEquals(bieMessagePayload.getClaimId(), entity.getClaimId());
-    assertEquals(bieMessagePayload.getContentionId(), entity.getContentionId());
-    assertEquals(bieMessagePayload.getContentionTypeCode(), entity.getContentionTypeCode());
+    assertEquals(bieMessageBasePayload.getEventType().toString(), entity.getEventType());
+    assertEquals(bieMessageBasePayload.getClaimId(), entity.getClaimId());
+    assertEquals(bieMessageBasePayload.getContentionId(), entity.getContentionId());
+    assertEquals(bieMessageBasePayload.getContentionTypeCode(), entity.getContentionTypeCode());
     assertEquals(
-        bieMessagePayload.getContentionClassificationName(),
+        bieMessageBasePayload.getContentionClassificationName(),
         entity.getContentionClassificationName());
-    assertEquals(bieMessagePayload.getDiagnosticTypeCode(), entity.getDiagnosticTypeCode());
-    assertEquals(dbHelper.convertTime(bieMessagePayload.getOccurredAt()), entity.getOccurredAt());
-    assertEquals(dbHelper.convertTime(bieMessagePayload.getNotifiedAt()), entity.getNotifiedAt());
+    assertEquals(bieMessageBasePayload.getDiagnosticTypeCode(), entity.getDiagnosticTypeCode());
+    assertEquals(dbHelper.convertTime(bieMessageBasePayload.getOccurredAt()), entity.getOccurredAt());
+    assertEquals(dbHelper.convertTime(bieMessageBasePayload.getNotifiedAt()), entity.getNotifiedAt());
   }
 }

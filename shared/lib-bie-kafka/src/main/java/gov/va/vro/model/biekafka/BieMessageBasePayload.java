@@ -9,7 +9,7 @@ import lombok.*;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode
-public class BieMessagePayload {
+public class BieMessageBasePayload {
   private Integer status;
   private String statusMessage;
   private ContentionEvent eventType;
@@ -29,15 +29,6 @@ public class BieMessagePayload {
   private long dateCompleted;
   private long dateUpdated;
 
-  private String actorStation;
-  private boolean automationIndicator;
-  private String benefitClaimTypeCode;
-  private String contentionStatusTypeCode;
-  private String currentLifecycleStatus;
-
-  private String details;
-  private long eventTime;
-  private String journalStatusTypeCode;
-  private long veteranParticipantId;
   private String eventDetails;
+
 }

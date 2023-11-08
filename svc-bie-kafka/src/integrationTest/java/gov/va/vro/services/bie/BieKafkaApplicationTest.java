@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.model.biekafka.BieMessagePayload;
+import gov.va.vro.model.biekafka.BieMessageBasePayload;
 import gov.va.vro.model.biekafka.ContentionEvent;
 import gov.va.vro.model.biekafka.test.BieMessagePayloadFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -40,11 +40,11 @@ public class BieKafkaApplicationTest {
   @Autowired private FanoutExchange fanoutExchange;
   @Autowired private RabbitTemplate rabbitTemplate;
 
-  private final List<BieMessagePayload> receivedMessages = new ArrayList<>();
+  private final List<BieMessageBasePayload> receivedMessages = new ArrayList<>();
   private CountDownLatch latch;
 
   @RabbitListener(queues = "#{bieEventQueue.name}")
-  public void receiveMqMessage(BieMessagePayload message) {
+  public void receiveMqMessage(BieMessageBasePayload message) {
     log.info("Received message: {}", message);
     receivedMessages.add(message);
     latch.countDown();
@@ -61,11 +61,11 @@ public class BieKafkaApplicationTest {
     latch = new CountDownLatch(2);
 
     // Message 1 goes directly to MQ
-    BieMessagePayload msgBody = BieMessagePayloadFactory.create();
+    BieMessageBasePayload msgBody = BieMessagePayloadFactory.create();
     rabbitTemplate.convertAndSend(fanoutExchange.getName(), "anyRoutingKey", msgBody);
 
     // Message 2 comes through Kafka
-    BieMessagePayload kafkaEventBody = BieMessagePayloadFactory.create();
+    BieMessageBasePayload kafkaEventBody = BieMessagePayloadFactory.create();
     kafkaEventBody.setEventType(null);
     kafkaEventBody.setContentionId(1234567890);
 
@@ -81,7 +81,7 @@ public class BieKafkaApplicationTest {
     assertTrue(latch.await(10, TimeUnit.SECONDS));
 
     // Check message 1
-    assertEquals(msgBody, receivedMessages.get(0));
+    assertEquals(msgBody, receivedMxessages.get(0));
 
     // Check message 2
     kafkaEventBody.setEventType(
