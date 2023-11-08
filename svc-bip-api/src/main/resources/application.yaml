@@ -17,18 +17,12 @@ bip:
   env: local
   claimBaseUrl: ${BIP_CLAIM_URL:localhost}
 
-truststore_password: keystore_pw
-
 spring:
   rabbitmq:
     host: ${RABBITMQ_PLACEHOLDERS_HOST:localhost}
     port: 5672
     username: ${RABBITMQ_USERNAME:guest}
     password: ${RABBITMQ_PASSWORD:guest}
-
-  config.import: >
-    client-keystore.yml
-    server-truststore.yml
 
 getClaimDetailsQueue: getClaimDetailsQueue
 setClaimToRfdStatusQueue: setClaimToRfdStatusQueue
