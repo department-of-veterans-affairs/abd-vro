@@ -3,6 +3,7 @@ from enum import Enum
 
 from hoppy.base_queue_declarer import BaseQueueDeclarer
 from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
+from pika import ConnectionParameters, PlainCredentials
 
 ClientType = Enum('ClientType', ['CONSUMER', 'PUBLISHER', 'CHANNEL_ONLY'])
 
