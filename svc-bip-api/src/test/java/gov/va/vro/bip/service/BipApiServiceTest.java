@@ -7,10 +7,13 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.bip.model.BipClaim;
+import gov.va.vro.bip.model.BipMessage;
+import gov.va.vro.bip.model.BipPayloadResponse;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
-import gov.va.vro.bip.model.ClaimContention;
 import gov.va.vro.bip.model.UpdateContentionReq;
+import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -27,12 +30,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Objects;
 
 @ExtendWith(MockitoExtension.class)
@@ -224,32 +228,50 @@ public class BipApiServiceTest {
   }
 
   @Test
-  public void testGetClaimContention() throws Exception {
+  public void testGetClaimContention_200() throws Exception {
     String resp200Body = getTestData(CONTENTION_RESPONSE_200);
-    String resp404Body = getTestData(CLAIM_RESPONSE_404);
     ResponseEntity<String> resp200 = ResponseEntity.ok(resp200Body);
-    ResponseEntity<String> resp404 = ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp404Body);
 
     mockResponseForUrl(
         Mockito.doReturn(resp200), formatClaimUrl(CONTENTION, GOOD_CLAIM_ID), HttpMethod.GET);
-    mockResponseForUrl(
-        Mockito.doReturn(resp404), formatClaimUrl(CONTENTION, BAD_CLAIM_ID), HttpMethod.GET);
 
     mockBipApiProp();
     try {
-      List<ClaimContention> result = service.getClaimContentions(GOOD_CLAIM_ID);
-      assertTrue(result.size() > 0);
+      GetClaimContentionsResponse result = service.getClaimContentions(GOOD_CLAIM_ID);
+      assertEquals(1, result.getContentions().size());
     } catch (BipException e) {
       log.error("Positive getClaimContentions test failed.", e);
       fail();
     }
+  }
+
+  @Test
+  public void testGetClaimContentions_404() throws Exception {
+    String resp404Body = getTestData(CLAIM_RESPONSE_404);
+
+    mockResponseForUrl(
+        Mockito.doThrow(
+            new HttpClientErrorException(
+                HttpStatus.NOT_FOUND,
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                resp404Body.getBytes(),
+                Charset.defaultCharset())),
+        formatClaimUrl(CONTENTION, BAD_CLAIM_ID),
+        HttpMethod.GET);
+    mockBipApiProp();
 
     try {
-      List<ClaimContention> result = service.getClaimContentions(BAD_CLAIM_ID);
-      log.error("Negative getClaimContentions test failed.");
-      fail();
-    } catch (BipException e) {
-      assertSame(HttpStatus.NOT_FOUND, e.getStatus());
+      service.getClaimContentions(BAD_CLAIM_ID);
+      fail("Valid 2XX response received. Expected 404");
+    } catch (HttpStatusCodeException e) {
+      String resultAsString = e.getResponseBodyAsString();
+      assertNotNull(resultAsString);
+      ObjectMapper mapper = new ObjectMapper();
+      BipPayloadResponse result = mapper.readValue(resultAsString, BipPayloadResponse.class);
+
+      BipMessage message = result.getMessages().get(0);
+      assertEquals(HttpStatus.NOT_FOUND.value(), message.getStatus());
+      assertEquals(HttpStatus.NOT_FOUND.name(), message.getHttpStatus());
     }
   }
 

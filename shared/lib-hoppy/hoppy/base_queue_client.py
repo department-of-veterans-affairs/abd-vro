@@ -67,6 +67,10 @@ class BaseQueueClient(BaseQueueDeclarer):
     def is_ready(self) -> bool:
         return self._is_ready
 
+    @property
+    def is_ready(self) -> bool:
+        return self._is_ready
+
     @abstractmethod
     def _ready(self):
         """Method to be called after the asyncio connection has successfully opened the connection, created the
