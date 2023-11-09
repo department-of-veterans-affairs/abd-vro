@@ -8,6 +8,7 @@
 # server.max-http-header-size=48000
 
 # Lighthouse FHIR API
-lh.tokenurl=https://sandbox-api.va.gov/oauth2/health/system/v1/token
-lh.fhirurl=https://sandbox-api.va.gov/services/fhir/v0/r4
-lh.assertionurl=https://deptva-eval.okta.com/oauth2/aus8nm1q0f7VQ0a482p7/v1/token
+lh:
+  tokenurl: https://sandbox-api.va.gov/oauth2/health/system/v1/token
+  fhirurl: https://sandbox-api.va.gov/services/fhir/v0/r4
+  assertionurl: https://deptva-eval.okta.com/oauth2/aus8nm1q0f7VQ0a482p7/v1/token
