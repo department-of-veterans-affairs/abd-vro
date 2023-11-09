@@ -16,6 +16,9 @@ dependencies = [
 ]
 dynamic = ["version"]
 
+[tool.setuptools]
+packages = ["hoppy"]
+
 [tool.setuptools.dynamic]
 version = { attr = "hoppy.__version__" }
 
