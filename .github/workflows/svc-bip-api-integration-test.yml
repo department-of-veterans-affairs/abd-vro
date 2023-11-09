@@ -32,7 +32,7 @@ jobs:
       - name: 'Start the containers'
         run: |
           source scripts/setenv.sh
-          
+
           # create basic auth token for RabbitMQ and export to github environment
           BASIC_AUTH=$(echo "${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}" | base64)
           {
@@ -40,7 +40,7 @@ jobs:
             echo "RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}"
             echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}"
           } >> "$GITHUB_ENV"
-          
+
           export -p | sed 's/declare -x //'
 
           ./gradlew :dockerComposeUp
@@ -114,11 +114,11 @@ jobs:
 
       - name: "Check for errors in container logs"
         run: |
-          if docker logs vro_svc-bip-api_1 | grep 'ERROR'; then
+          if docker logs vro_svc-bip-api_1 | grep -E '\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z\b\s+ERROR'; then
             echo "Unexpected ERROR logs in svc-bip-api container"
             exit 11
           fi
-          if docker logs vro_svc-bip-api_1 | grep 'ERROR\|WARN' | grep -v 'Simulated error'; then
+          if docker logs vro_svc-bip-api_1 | grep -E '\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z\b\s+(ERROR|WARNING)' | grep -v 'Simulated error'; then
             echo "Unexpected ERROR logs in svc-bip-api container"
             exit 12
           fi
