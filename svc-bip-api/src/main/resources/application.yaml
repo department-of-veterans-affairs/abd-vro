@@ -30,6 +30,7 @@ updateClaimStatusQueue: updateClaimStatusQueue
 getClaimContentionsQueue: getClaimContentionsQueue
 updateClaimContentionQueue: updateClaimContentionQueue
 verifySpecialIssueTypeQueue: confirmCanCallSpecialIssueTypesQueue
+putTempStationOfJurisdictionQueue: putTempStationOfJurisdictionQueue
 exchangeName: bipApiExchange
 
 management:
