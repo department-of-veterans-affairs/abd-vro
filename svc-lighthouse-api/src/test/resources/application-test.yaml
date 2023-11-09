@@ -3,8 +3,7 @@
 
 # Not used: lh.clientId
 
-lh.pemkey: >
-  -----BEGIN RSA PRIVATE KEY-----\n\
+lh.pemkey: -----BEGIN RSA PRIVATE KEY-----\n\
   MIIEpAIBAAKCAQEA2a7LnzMhQBK1bFqfAvTdaT3EAelAjzHsgBaTSOkCBWQc7xg+\n\
   Ee8OiFZzSfrjbu4O9hlOeHeQGXI1ighJzx3TMQNaTEyuBzimBOgkwLPLU2zbvr0v\n\
   bHnQ+XCMzXge74+p0A2fAw6v9rIDPCVgG8t6K5WtonQiTERqt6rlXDZ22GWLU3n+\n\
