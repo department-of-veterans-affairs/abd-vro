@@ -39,8 +39,8 @@ x-redis-placeholder-vars: &redis-placeholder-vars
 
 x-rabbitmq-placeholder-vars: &rabbitmq-placeholder-vars
   RABBITMQ_PLACEHOLDERS_HOST: rabbitmq-service
-  RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
-  RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
+  RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+  RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
 
 x-common-security-opt: &common-security-opt
   security_opt:
@@ -98,6 +98,8 @@ services:
       BIP_KEYSTORE: ${BIP_KEYSTORE}
       BIP_CLAIM_URL: "mock-bip-claims-api:20300"
       BIP_EVIDENCE_URL: "mock-bip-ce-api:20310"
+    ports:
+      - "10401:10401"
     networks:
       - vro_intranet
 

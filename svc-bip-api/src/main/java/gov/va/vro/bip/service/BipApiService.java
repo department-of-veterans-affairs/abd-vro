@@ -3,12 +3,13 @@ package gov.va.vro.bip.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.bip.model.BipClaimResp;
-import gov.va.vro.bip.model.BipContentionResp;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
-import gov.va.vro.bip.model.ClaimContention;
 import gov.va.vro.bip.model.ClaimStatus;
 import gov.va.vro.bip.model.UpdateContentionReq;
-import io.jsonwebtoken.*;
+import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ClaimsBuilder;
+import io.jsonwebtoken.Jwts;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,10 +27,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -48,6 +47,8 @@ public class BipApiService implements IBipApiService {
   static final String SPECIAL_ISSUE_TYPES = "/contentions/special_issue_types";
 
   static final String HTTPS = "https://";
+
+  static final String JWT_TYPE = "JWT";
 
   @Qualifier("bipCERestTemplate")
   @NonNull
@@ -132,7 +133,7 @@ public class BipApiService implements IBipApiService {
   }
 
   @Override
-  public List<ClaimContention> getClaimContentions(long claimId) {
+  public GetClaimContentionsResponse getClaimContentions(long claimId) {
     try {
       String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
       log.info("Call {} to get claim contention for {}.", url, claimId);
@@ -140,20 +141,21 @@ public class BipApiService implements IBipApiService {
       HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(headers);
       ResponseEntity<String> bipResponse =
           restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
-      if (HttpStatus.OK == bipResponse.getStatusCode()) {
-        BipContentionResp resp = mapper.readValue(bipResponse.getBody(), BipContentionResp.class);
-        return resp.getContentions();
-      } else if (HttpStatus.NO_CONTENT == bipResponse.getStatusCode()) {
-        return new ArrayList<>();
-      } else {
-        log.error(
-            "getClaimContentions returned {} for {}. {}",
-            bipResponse.getStatusCode(),
-            claimId,
-            bipResponse.getBody());
-        throw new BipException(bipResponse.getStatusCode(), bipResponse.getBody());
-      }
-    } catch (RestClientException | JsonProcessingException e) {
+      log.info("event=getClaimContentionsResponseReceived status={}", bipResponse.getStatusCode());
+
+      GetClaimContentionsResponse getClaimContentionsResponse =
+          mapper.readValue(bipResponse.getBody(), GetClaimContentionsResponse.class);
+      return getClaimContentionsResponse.toBuilder()
+          .statusCode(bipResponse.getStatusCode().value())
+          .statusMessage(HttpStatus.valueOf(bipResponse.getStatusCode().value()).getReasonPhrase())
+          .build();
+    } catch (HttpStatusCodeException e) {
+      log.info(
+          "event=getClaimContentionsResponseReceived claimId={} status={}",
+          claimId,
+          e.getStatusCode());
+      throw e;
+    } catch (JsonProcessingException e) {
       log.error("failed to getClaimContentions for claim {}.", claimId, e);
       throw new BipException(e.getMessage(), e);
     }
@@ -221,20 +223,22 @@ public class BipApiService implements IBipApiService {
   String createJwt() throws BipException {
     Claims claims = bipApiProps.toCommonJwtClaims();
     Map<String, Object> headerType = new HashMap<>();
-    headerType.put("typ", Header.JWT_TYPE);
+    headerType.put("typ", JWT_TYPE);
 
     ClaimsBuilder claimsBuilder =
         Jwts.claims().add(claims).add("iss", bipApiProps.getClaimIssuer());
     claims = claimsBuilder.build();
     byte[] signSecretBytes = bipApiProps.getClaimSecret().getBytes(StandardCharsets.UTF_8);
-    Key signingKey = new SecretKeySpec(signSecretBytes, SignatureAlgorithm.HS256.getJcaName());
+    Key signingKey = new SecretKeySpec(signSecretBytes, "HmacSHA256");
     return Jwts.builder()
-        .setSubject("Claim")
-        .setIssuedAt(Calendar.getInstance().getTime())
-        .setExpiration(claims.getExpiration())
-        .setClaims(claims)
-        .signWith(SignatureAlgorithm.HS256, signingKey)
-        .setHeaderParams(headerType)
+        .subject("Claim")
+        .issuedAt(Calendar.getInstance().getTime())
+        .expiration(claims.getExpiration())
+        .claims(claims)
+        .signWith(signingKey)
+        .header()
+        .add(headerType)
+        .and()
         .compact();
   }
 }

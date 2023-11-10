@@ -63,6 +63,8 @@ dependencies {
         implementation 'org.springframework.amqp:spring-amqp:3.0.10'
         implementation 'org.springframework.security:spring-security-config:6.1.5'
 
+        implementation 'com.rabbitmq:amqp-client:5.18.0'
+
         // These are used indirectly but we need to specify versions, otherwise build error
         annotationProcessor "org.springframework.boot:spring-boot-autoconfigure-processor:${spring_boot_version}"
         annotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct_version}"
