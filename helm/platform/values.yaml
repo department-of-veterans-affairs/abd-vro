@@ -1,7 +1,5 @@
 # Best practices: https://helm.sh/docs/chart_best_practices/values/
 
-postgres:
-  enabled: true
 rabbitmq:
   enabled: true
 redis:
@@ -16,7 +14,5 @@ redis-chart:
 global:
   # Persistent Volumes
   pv:
-    pgdata:
-      storageSize: 2Gi
     tracking:
       storageSize: 1Gi
