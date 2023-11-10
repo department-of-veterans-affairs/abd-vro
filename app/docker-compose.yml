@@ -98,6 +98,8 @@ services:
       BIP_KEYSTORE: ${BIP_KEYSTORE}
       BIP_CLAIM_URL: "mock-bip-claims-api:20300"
       BIP_EVIDENCE_URL: "mock-bip-ce-api:20310"
+    ports:
+      - "10401:10401"
     networks:
       - vro_intranet
 

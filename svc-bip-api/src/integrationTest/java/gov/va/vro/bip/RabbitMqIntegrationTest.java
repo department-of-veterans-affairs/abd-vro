@@ -1,17 +1,19 @@
 package gov.va.vro.bip;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.bip.model.BipClaimResp;
-import gov.va.vro.bip.model.BipContentionResp;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.ClaimStatus;
 import gov.va.vro.bip.model.RequestForUpdateClaimStatus;
 import gov.va.vro.bip.model.UpdateContention;
 import gov.va.vro.bip.model.UpdateContentionModel;
 import gov.va.vro.bip.model.UpdateContentionReq;
+import gov.va.vro.bip.model.contentions.GetClaimContentionsRequest;
+import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 import gov.va.vro.bip.service.BipApiService;
 import gov.va.vro.bip.service.RabbitMqController;
 import lombok.SneakyThrows;
@@ -24,7 +26,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
@@ -34,7 +35,7 @@ import java.util.List;
 @ExtendWith(SpringExtension.class)
 @Slf4j
 class RabbitMqIntegrationTest {
-  @MockBean BipApiService service;
+  @Autowired BipApiService service;
   @Autowired RabbitMqController controller;
   @Autowired RabbitTemplate rabbitTemplate;
   @Autowired RabbitAdmin rabbitAdmin;
@@ -59,9 +60,13 @@ class RabbitMqIntegrationTest {
 
   @Test
   void testGetClaimContentions(@Value("${getClaimContentionsQueue}") String qName) {
-    BipContentionResp response =
-        (BipContentionResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, CLAIM_ID1);
-    assertTrue(response.getContentions().size() == 1);
+    GetClaimContentionsRequest req =
+        GetClaimContentionsRequest.builder().claimId(Long.parseLong(CLAIM_ID1)).build();
+    GetClaimContentionsResponse response =
+        (GetClaimContentionsResponse)
+            rabbitTemplate.convertSendAndReceive(exchangeName, qName, req);
+    assertNotNull(response);
+    assertEquals(1, response.getContentions().size());
   }
 
   @Test
