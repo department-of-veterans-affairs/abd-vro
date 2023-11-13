@@ -27,6 +27,7 @@ dependencies {
     implementation 'org.barfuin.gradle.jacocolog:org.barfuin.gradle.jacocolog.gradle.plugin:3.1.0'
     implementation 'org.barfuin.gradle.taskinfo:org.barfuin.gradle.taskinfo.gradle.plugin:2.1.0'
     implementation 'nebula.lint:nebula.lint.gradle.plugin:18.1.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.3'
 
     implementation 'ru.vyarus.use-python:ru.vyarus.use-python.gradle.plugin:3.0.0'
 }
