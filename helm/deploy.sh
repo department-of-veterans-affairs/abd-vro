@@ -53,19 +53,6 @@ do
   fi
 done
 
-# Workaround for postgres StatefulSet
-# If upgrading existing deployment and you want postgres and it's already enabled, then
-# apply the workaround to delete StatefulSets without deleting pods (allow pods to be temporarily orphaned)
-deletePostgresStatefulSet(){
-  echo "Deleting StatefulSet for Postgres"
-  # This is a workaround for `helm upgrade` reporting error due to a StatefulSet:
-  #   Error: UPGRADE FAILED: cannot patch "vro-postgres" with kind StatefulSet:
-  #     Forbidden: updates to statefulset spec for fields other than ...
-  # See https://github.com/helm/helm/issues/2149#issuecomment-341701817
-  kubectl delete statefulsets vro-postgres -n "$NAMESPACE" \
-    --cascade=orphan --wait --ignore-not-found=true
-}
-
 helmArgsForSubchart(){
   if [ -z "$2" ] || [ "$2" == "(disable)" ]; then
     echo "--set $1.enabled=false"
@@ -77,7 +64,6 @@ platformChartArgs(){
   HELM_ARGS="$HELM_ARGS \
     $(helmArgsForSubchart rabbitmq "$RABBITMQ_VER") \
     $(helmArgsForSubchart redis "$REDIS_VER") \
-    $(helmArgsForSubchart postgres "$postgres_VER") \
   "
   echo "Platform HELM_ARGS: $HELM_ARGS"
 }
@@ -86,8 +72,6 @@ case "$HELM_CHART" in
   platform)
     if [ "${SHUTDOWN_FIRST}" == "true" ]; then
       : echo "Since Helm chart was shut down, don't need to delete other charts."
-    else
-      deletePostgresStatefulSet
     fi
     platformChartArgs
     ;;
