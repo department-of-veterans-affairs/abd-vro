@@ -49,13 +49,6 @@ class BaseQueueClient(BaseQueueDeclarer):
         self._stopping = False
         self._stopped = False
 
-    def _create_connection_parameters(self) -> ConnectionParameters:
-        credentials = PlainCredentials(self.config["username"], self.config["password"])
-        return ConnectionParameters(
-            host=self.config['host'],
-            port=self.config['port'],
-            credentials=credentials)
-
     def _initialize_connection_session(self):
         """The following attributes are used per connection session. When a reconnect happens, they should be reset."""
         super()._initialize_connection_session()
