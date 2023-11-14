@@ -11,9 +11,13 @@ dependencies = [
     "pytest",
     "pytest-mock",
     "pytest-asyncio",
+    "pytest-env",
     "pytest-timeout"
 ]
 dynamic = ["version"]
+
+[tool.setuptools]
+packages = ["hoppy"]
 
 [tool.setuptools.dynamic]
 version = { attr = "hoppy.__version__" }
@@ -23,7 +27,12 @@ addopts = [
     "--import-mode=importlib",
     "-rfesp"
 ]
+env = [
+    "RABBITMQ_USERNAME=user",
+    "RABBITMQ_PASSWORD=bitnami"
+]
 testpaths = [
-    "tests"
+    "test",
+    "integration" # depends on rabbitmq-service
 ]
 timeout=5
