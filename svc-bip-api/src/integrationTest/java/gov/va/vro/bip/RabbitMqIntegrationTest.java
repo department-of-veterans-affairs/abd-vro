@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import gov.va.vro.bip.config.BipApiConfig;
 import gov.va.vro.bip.model.BipClaimResp;
 import gov.va.vro.bip.model.BipCloseClaimPayload;
 import gov.va.vro.bip.model.BipCloseClaimReason;
@@ -18,6 +20,7 @@ import gov.va.vro.bip.model.UpdateContentionModel;
 import gov.va.vro.bip.model.UpdateContentionReq;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
+import gov.va.vro.bip.service.BipApiProps;
 import gov.va.vro.bip.service.BipApiService;
 import gov.va.vro.bip.service.RabbitMqController;
 import lombok.SneakyThrows;
@@ -25,12 +28,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ContextHierarchy;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
@@ -38,7 +46,14 @@ import java.util.List;
 
 @SpringBootTest
 @ActiveProfiles("local")
+@EnableConfigurationProperties
+@ContextHierarchy({
+   @ContextConfiguration(classes = {BipApiProps.class}),
+   @ContextConfiguration(classes = {BipApiConfig.class})
+})
+@TestPropertySource({"classpath:application.yaml", "classpath:application-test.yaml"})
 @ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 @Slf4j
 class RabbitMqIntegrationTest {
   @Autowired BipApiService service;

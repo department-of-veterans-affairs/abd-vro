@@ -112,3 +112,6 @@ mocks/mock-bie-kafka/kafka.truststore.jks
 svc-bie-kafka/keystore.p12
 svc-bie-kafka/truststore.p12
 scripts/certificates/
+all-mocks.sh
+tom-bip.sh
+up
