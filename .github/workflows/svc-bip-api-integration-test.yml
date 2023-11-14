@@ -32,7 +32,7 @@ jobs:
       - name: 'Start the containers'
         run: |
           source scripts/setenv.sh
-          
+
           # create basic auth token for RabbitMQ and export to github environment
           BASIC_AUTH=$(echo "${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}" | base64)
           {
@@ -40,17 +40,13 @@ jobs:
             echo "RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}"
             echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}"
           } >> "$GITHUB_ENV"
-          
+
           export -p | sed 's/declare -x //'
 
           ./gradlew :dockerComposeUp
 
-          ./gradlew -p mocks :build
-          ./gradlew -p mocks :mock-bip-claims-api:docker
-          ./gradlew -p mocks :mock-bip-ce-api:docker
-          ./gradlew -p mocks :mock-slack:docker
-          ./gradlew -p mocks :mock-lighthouse-api:docker
-          ./gradlew -p mocks :mock-bie-kafka:docker
+          ./gradlew -p mocks docker
+
           ./gradlew -p mocks :dockerComposeUp
 
           ./gradlew :domain-xample:dockerComposeUp

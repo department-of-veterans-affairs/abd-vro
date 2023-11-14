@@ -29,7 +29,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,7 +58,6 @@ class RabbitMqIntegrationTest {
   @Autowired BipApiService service;
   @Autowired RabbitMqController controller;
   @Autowired RabbitTemplate rabbitTemplate;
-  @Autowired RabbitAdmin rabbitAdmin;
 
   @Value("${exchangeName}")
   String exchangeName;
@@ -76,6 +74,7 @@ class RabbitMqIntegrationTest {
         new RequestForUpdateClaimStatus(ClaimStatus.RFD, Long.parseLong(CLAIM_ID1));
     BipUpdateClaimResp response =
         (BipUpdateClaimResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, request);
+
     assertResponseIsSuccess(response);
   }
 
@@ -86,6 +85,7 @@ class RabbitMqIntegrationTest {
     GetClaimContentionsResponse response =
         (GetClaimContentionsResponse)
             rabbitTemplate.convertSendAndReceive(exchangeName, qName, req);
+    log.info("testGetClaimContentions response: {}", response);
     assertNotNull(response);
     assertEquals(1, response.getContentions().size());
   }
@@ -94,7 +94,7 @@ class RabbitMqIntegrationTest {
   void testGetClaimDetails(@Value("${getClaimDetailsQueue}") String qName) {
     BipClaimResp response =
         (BipClaimResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, CLAIM_ID1);
-
+    log.info("testGetClaimDetails response: {}", response);
     Assertions.assertNotNull(response);
     Assertions.assertEquals(200, response.statusCode);
     Assertions.assertEquals(CLAIM_ID1, response.getClaim().getClaimId());
@@ -107,6 +107,7 @@ class RabbitMqIntegrationTest {
   void testSetClaimToRfdStatus(@Value("${setClaimToRfdStatusQueue}") String qName) {
     BipUpdateClaimResp response =
         (BipUpdateClaimResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, CLAIM_ID1);
+    log.info("testSetClaimToRfdStatus response: {}", response);
     assertResponseIsSuccess(response);
   }
 
@@ -142,6 +143,7 @@ class RabbitMqIntegrationTest {
 
   @SneakyThrows
   private void assertResponseIsSuccess(HasStatusCodeAndMessage response) {
+    log.info("response: {}", response);
     Assertions.assertNotNull(response);
     Assertions.assertEquals(response.statusCode, 200);
     // There should be a message with 'Success' in the 'text' field

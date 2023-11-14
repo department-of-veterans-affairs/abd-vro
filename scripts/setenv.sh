@@ -243,3 +243,9 @@ exportSecretIfUnset BIE_KAFKA_TRUSTSTORE_PASSWORD
 # 8. Ensure GitHub Action workflow `bie-kafka-end2end-test.yml`` works.
 # 9. Clean up: The files created by `kafka-generate-ssl.sh` and the `p12` files can be deleted.
 #    Nothing needs to be committed to the public abd-vro repo.
+
+
+exportSecretIfUnset BIP_TRUSTSTORE
+exportSecretIfUnset BIP_KEYSTORE
+
+export truststore_password=keystore_pw
