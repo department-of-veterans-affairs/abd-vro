@@ -27,8 +27,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,11 +37,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
 import java.util.List;
 
+@ActiveProfiles("test")
 @SpringBootTest
 @ActiveProfiles("local")
 @EnableConfigurationProperties
@@ -51,7 +50,6 @@ import java.util.List;
    @ContextConfiguration(classes = {BipApiConfig.class})
 })
 @TestPropertySource({"classpath:application.yaml", "classpath:application-test.yaml"})
-@ExtendWith(SpringExtension.class)
 @ExtendWith(MockitoExtension.class)
 @Slf4j
 class RabbitMqIntegrationTest {

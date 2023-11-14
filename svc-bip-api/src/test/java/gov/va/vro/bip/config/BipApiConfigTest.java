@@ -40,7 +40,8 @@ class BipApiConfigTest {
       RestTemplate template = config.getHttpsRestTemplate(new RestTemplateBuilder());
       assertNotNull(template);
     } catch (Exception e) {
-      fail();
+      e.printStackTrace();
+      fail("Test failed due to exception: " + e.getMessage());
     }
   }
 }
