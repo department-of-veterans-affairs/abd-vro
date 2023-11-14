@@ -68,12 +68,12 @@ def get_classification(claim: Claim) -> Optional[PredictedClassification]:
                 claim.contention_text.strip().lower()
             )
             logging.info(
-                f"Claim Type: {claim.claim_type}, In Dropdown: {is_in_dropdown}, "
+                f"In Dropdown: {is_in_dropdown}, "
                 f" Contention Text: {log_contention_text}, Lookup table match: {already_mapped_text}"
             )
         else:
             logging.info(
-                f"Claim Type: {claim.claim_type}, In Dropdown: {is_in_dropdown}, "
+                f"In Dropdown: {is_in_dropdown}, "
                 f"Contention Text: {log_contention_text}, No Lookup table match"
             )
 
