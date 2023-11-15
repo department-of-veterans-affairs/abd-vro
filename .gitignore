@@ -28,8 +28,9 @@ target/
 
 helm-app/envsecrets.env
 tasks/config.temp.dev
-/bin
+bin/
 !**/app/bin
+app/bin
 opa/ingress/test.rego
 helm-app/opa-policies/ingress/test.rego
 
@@ -111,3 +112,7 @@ mocks/mock-bie-kafka/kafka.keystore.jks
 mocks/mock-bie-kafka/kafka.truststore.jks
 svc-bie-kafka/keystore.p12
 svc-bie-kafka/truststore.p12
+scripts/certificates/
+all-mocks.sh
+tom-bip.sh
+up

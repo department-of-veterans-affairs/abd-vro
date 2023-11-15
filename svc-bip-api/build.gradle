@@ -45,3 +45,10 @@ testing {
     }
   }
 }
+
+test {
+  // Set test logging options
+  testLogging {
+    events "passed", "skipped", "failed"
+  }
+}

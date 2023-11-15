@@ -8,6 +8,8 @@ FROM ${BASE_IMAGE}
 # hadolint ignore=DL3018
 RUN apk update && apk --no-cache upgrade && apk add git curl && rm -rf /var/cache/apk/*
 
+RUN pip install --upgrade pip
+
 WORKDIR /app
 
 # Used to specify the service folder you want to build if running locally

@@ -1,6 +1,7 @@
 plugins {
-  id 'org.flywaydb.flyway' version '9.22.3'
+  id 'org.flywaydb.flyway' version '10.0.1'
   id 'shared.docker.container-conventions'
+  id 'shared.java.vro-dep-constraints'
 }
 
 docker {
@@ -14,6 +15,9 @@ configurations {
 dependencies {
   //  flywayMigration platform("gov.va.starter:starter-bom:${starter_boot_version}")
   flywayMigration "org.postgresql:postgresql:${postgresql_version}"
+  constraints {
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.3'
+  }
 }
 
 flyway {

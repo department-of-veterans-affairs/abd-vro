@@ -1,6 +1,6 @@
 name: "1. (Internal) Update Deployment - Platform"
 # To deploy updates to VRO Base Platform container images
-run-name: "${{inputs.target_env}}: Update deployment platform: postgres ${{inputs.postgres}}"
+run-name: "${{inputs.target_env}}: Update deployment platform"
 
 on:
   workflow_dispatch:
@@ -45,11 +45,6 @@ on:
         - latest
         - 7
         - (disable)
-      postgres:
-        description: 'Postgres DB image tag'
-        required: true
-        default: 'latest'
-        type: string
 
   # Allow other workflows to call this one
   workflow_call:
@@ -74,10 +69,6 @@ on:
         required: false
         type: string
         default: "latest"
-      postgres:
-        required: false
-        type: string
-        default: "latest"
 
 jobs:
   update-deployment-platform:
@@ -91,4 +82,3 @@ jobs:
       deploy_prep_script: |
         export RABBITMQ_VER=${{ inputs.rabbitmq }}
         export REDIS_VER=${{ inputs.redis }}
-        export postgres_VER=${{ inputs.postgres }}
