@@ -44,7 +44,6 @@ def test_unmapped_diagnostic_code(client: TestClient):
         "claim_id": 700,
         "form526_submission_id": 777,
     }
-
     response = client.post("/classifier", json=json_post_dict)
     assert response.status_code == 200
     assert response.json() is None
