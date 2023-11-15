@@ -10,11 +10,9 @@ import org.springframework.amqp.rabbit.listener.api.RabbitListenerErrorHandler;
 import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.messaging.support.GenericMessage;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.HashMap;
 
-@ActiveProfiles("test")
 class RabbitMqApiConfigTest {
 
   @Test

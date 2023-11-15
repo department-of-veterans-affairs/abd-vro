@@ -39,13 +39,13 @@ import javax.net.ssl.SSLContext;
 @Setter
 public class BipApiConfig {
 
-  @Value("${BIP_TRUSTSTORE}")
+  @Value("#{environment.BIP_TRUSTSTORE}")
   private String trustStore;
 
   @Value("${truststore_password:keystore_pw}")
   private String password;
 
-  @Value("${BIP_KEYSTORE}")
+  @Value("#{environment.BIP_KEYSTORE}")
   private String keystore;
 
   @Bean
@@ -65,6 +65,7 @@ public class BipApiConfig {
     byte[] decodedBytes = java.util.Base64.getDecoder().decode(noSpaceBase64);
     InputStream stream = new ByteArrayInputStream(decodedBytes);
     keyStore.load(stream, password.toCharArray());
+    stream.close();
     return keyStore;
   }
 
@@ -78,20 +79,16 @@ public class BipApiConfig {
   @Bean(name = "bipCERestTemplate")
   public RestTemplate getHttpsRestTemplate(RestTemplateBuilder builder) throws BipException {
     try {
-      log.info("trustStore:" + trustStore.substring(0, 60));
-      log.info("password:" + password);
-      if (trustStore.isEmpty() & password.isEmpty()) { // skip if it is test.
+      if (trustStore.isEmpty() && password.isEmpty()) { // skip if it is test.
         log.info("No valid BIP mTLS setup. Skip related setup.");
         return new RestTemplate();
       }
-
       log.info("-------load keystore");
       KeyStore keyStoreObj = getKeyStore(keystore, password);
       log.info("-------load truststore");
       KeyStore trustStoreObj = getKeyStore(trustStore, password);
-      log.info("trustStoreObj", trustStoreObj);
 
-      log.info("------build SSLContext");
+      log.info("-------build SSLContext");
       SSLContext sslContext =
           new SSLContextBuilder()
               .loadTrustMaterial(trustStoreObj, null)

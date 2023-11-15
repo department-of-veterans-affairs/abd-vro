@@ -5,9 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import gov.va.vro.bip.service.BipException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.InputStream;
@@ -17,40 +18,47 @@ import java.io.InputStream;
  *
  * @author warren @Date 1/5/23
  */
-@ActiveProfiles("test")
 class BipApiConfigTest {
 
+  private BipApiConfig config;
+
+  @BeforeEach
+  public void setUp() {
+    config = new BipApiConfig();
+  }
+
   @Test
-  public void testRestTemplate() {
-    BipApiConfig config = new BipApiConfig();
+  public void testGetHttpsRestTemplate_WithoutConfiguringCerts() {
     try {
       config.getHttpsRestTemplate(new RestTemplateBuilder());
       fail();
     } catch (Exception e) {
       assertTrue(e.getCause() instanceof NullPointerException);
     }
+  }
 
-    try {
-      config.setTrustStore("biptruststore.jks");
-      config.setKeystore("biptruststore.jks");
-      config.setPassword("bad");
-      config.getHttpsRestTemplate(new RestTemplateBuilder());
-      fail();
-    } catch (BipException e) {
-      assertTrue(true);
-    } catch (Exception e) {
-      fail();
-    }
+  @Test
+  public void testGetHttpsRestTemplate_WithBadCerts() {
+    Assertions.assertThrows(
+        BipException.class,
+        () -> {
+          config.setTrustStore("biptruststore.jks");
+          config.setKeystore("biptruststore.jks");
+          config.setPassword("bad");
+          config.getHttpsRestTemplate(new RestTemplateBuilder());
+        });
+  }
 
-    try {
-      config.setTrustStore("");
-      config.setPassword("");
-      RestTemplate temp = config.getHttpsRestTemplate(new RestTemplateBuilder());
-      assertNotNull(temp);
-    } catch (Exception e) {
-      fail();
-    }
+  @Test
+  public void testGetHttpsRestTemplate_WithoutTrustStore() {
+    config.setTrustStore("");
+    config.setPassword("");
+    RestTemplate temp = config.getHttpsRestTemplate(new RestTemplateBuilder());
+    assertNotNull(temp);
+  }
 
+  @Test
+  public void testGetHttpsRestTemplate_WithValidCerts() {
     try (InputStream sourceStream =
         getClass().getClassLoader().getResourceAsStream("bipcert.jks")) {
       assertNotNull(sourceStream);

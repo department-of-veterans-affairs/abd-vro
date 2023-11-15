@@ -49,7 +49,7 @@ public class RabbitMqController {
         contention.getClaimId(), contention.getUpdateContentions());
   }
 
-  @RabbitListener(queues = "cancelClaimQueue", errorHandler = "svcBipApiErrorHandler")
+  @RabbitListener(queues = "cancelClaimQueue", errorHandler = "bipRequestErrorHandler")
   BipCloseClaimResp cancelClaim(BipCloseClaimPayload cancelRequest) {
     return service.cancelClaim(cancelRequest);
   }
