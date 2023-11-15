@@ -37,7 +37,10 @@ class BipApiConfigTest {
       // config.setTrustStore(store);
       // config.setKeystore(store);
       // config.setPassword("vropassword");
-      assertEquals(config.getPassword(), "keystore_pw", "This failure indicates that config is no longer loading according to spring's layered configuration behavior");
+      assertEquals(
+          config.getPassword(),
+          "keystore_pw",
+          "This failure indicates that config is no longer loading according to spring's layered configuration behavior");
       assertNotNull(config.getTruststore());
       assertNotNull(config.getKeystore());
       RestTemplate template = config.getHttpsRestTemplate(new RestTemplateBuilder());
