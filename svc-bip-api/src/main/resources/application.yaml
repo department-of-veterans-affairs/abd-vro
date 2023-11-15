@@ -40,3 +40,7 @@ management:
       show-details: always
       enabled: true
       probes.enabled: true
+
+truststore: ${BIP_TRUSTSTORE}
+keystore: ${BIP_KEYSTORE}
+truststore_password: ${BIP_PASSWORD}
