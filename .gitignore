@@ -99,6 +99,7 @@ __pycache__
 /.vs/abd-vro/FileContentIndex/d645400a-4168-45dd-9581-09680a72a8ce.vsidx
 /.vs/abd-vro/FileContentIndex/c3518251-e5db-40fa-ae34-3e693cabee02.vsidx
 /.vs/abd-vro/FileContentIndex/95bd278b-111f-47e3-ba07-4bd218c9f0f2.vsidx
+*.egg-info/
 
 ### PDF Generator Specific Files
 test.pdf
