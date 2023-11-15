@@ -15,7 +15,7 @@ bip:
   applicationId: ${BIP_APPLICATION_ID:VRO}
   stationId: ${BIP_STATION_ID:456}
   env: local
-  claimBaseUrl: ${BIP_CLAIM_URL:localhost}
+  claimBaseUrl: ${BIP_CLAIM_URL:localhost:20300}
 
 spring:
   rabbitmq:
