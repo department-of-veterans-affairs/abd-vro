@@ -3,10 +3,6 @@
 # Since we want tests to be as close as possible to the deployed app, don't create test/resources/application.yml.
 # If test/resources/application.yml exists, it will override main/resources/application.yml.
 
-# Load main/resources/application-nonprod.yml and main/resources/application-local.yml
-spring.config.import: >
-  application-nonprod.yml,
-  application-local.yml
 
 # Since this is for tests, override some main/resources/application.yml Spring settings
 spring:
@@ -37,3 +33,17 @@ lhAPIProvider:
   vroAudURL: "${VRO_AUD_URL:placeholderUrl}"
   apiKey: "${LH_VRO_API_KEY:placeholderKey}"
   validateToken: "NO"
+
+bip:
+  claimBaseUrl: localhost
+  claimClientId: "${BIP_CLAIM_USERID:VRO_USER}"
+  claimSecret: "${BIP_CLAIM_SECRET:7zEJ+xepTPakl7KfX58bVR+t0zQGpsElg9bDdKmoVJM=}"
+  evidenceClientId: "${BIP_EVIDENCE_USERID:VRO_USER}"
+  evidenceSecret: "${BIP_EVIDENCE_SECRET:daSecret}"
+  applicationId: "${BIP_APPLICATION_ID:VRO}"
+  stationId: "${BIP_STATION_ID:456}"
+
+spring.config.import: >
+  client-keystore.yml,
+  server-truststore.yml
+truststore_password: keystore_pw
