@@ -39,13 +39,13 @@ import javax.net.ssl.SSLContext;
 @Setter
 public class BipApiConfig {
 
-  @Value("${BIP_TRUSTSTORE}")
+  @Value("${truststore}")
   private String trustStore;
 
-  @Value("${truststore_password:keystore_pw}")
+  @Value("${truststore_password}")
   private String password;
 
-  @Value("${BIP_KEYSTORE}")
+  @Value("${keystore}")
   private String keystore;
 
   @Bean
