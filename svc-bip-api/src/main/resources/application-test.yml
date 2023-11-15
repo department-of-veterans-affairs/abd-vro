@@ -47,6 +47,6 @@ spring.config.import: >
   client-keystore.yml,
   server-truststore.yml
 
-truststore_password: ${BIP_PASSWORD}
+truststore_password: "${BIP_PASSWORD:keystore_pw}"
 truststore: ${BIP_TRUSTSTORE}
 keystore: ${BIP_KEYSTORE}
