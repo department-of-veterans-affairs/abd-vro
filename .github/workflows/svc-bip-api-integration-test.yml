@@ -49,7 +49,6 @@ jobs:
 
           ./gradlew -p mocks :dockerComposeUp
 
-          ./gradlew :domain-xample:dockerComposeUp
           ./gradlew :app:dockerComposeUp
 
       - name: 'Wait for containers to start'
