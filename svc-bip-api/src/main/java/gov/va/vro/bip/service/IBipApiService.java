@@ -1,6 +1,8 @@
 package gov.va.vro.bip.service;
 
 import gov.va.vro.bip.model.BipClaimResp;
+import gov.va.vro.bip.model.BipCloseClaimPayload;
+import gov.va.vro.bip.model.BipCloseClaimResp;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.ClaimStatus;
 import gov.va.vro.bip.model.UpdateContentionReq;
@@ -52,7 +54,24 @@ public interface IBipApiService {
    */
   GetClaimContentionsResponse getClaimContentions(long claimId) throws BipException;
 
+  /**
+   * Updates a claim contention record.
+   *
+   * @param claimId claim ID.
+   * @param contention model defining the details of the update being applied to the contention.
+   * @return a contention response object now containing the updated contention information.
+   * @throws BipException error occurs.
+   */
   BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention);
+
+  /**
+   * Cancels a claim record.
+   *
+   * @param request model defining the details of the cancellation requested.
+   * @return a contention response object now containing the updated contention information.
+   * @throws BipException error occurs.
+   */
+  BipCloseClaimResp cancelClaim(BipCloseClaimPayload request);
 
   /**
    * Sets the temporary station of jurisdiction for a claim.

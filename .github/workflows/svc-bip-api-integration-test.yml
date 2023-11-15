@@ -45,12 +45,8 @@ jobs:
 
           ./gradlew :dockerComposeUp
 
-          ./gradlew -p mocks :build
-          ./gradlew -p mocks :mock-bip-claims-api:docker
-          ./gradlew -p mocks :mock-bip-ce-api:docker
-          ./gradlew -p mocks :mock-slack:docker
-          ./gradlew -p mocks :mock-lighthouse-api:docker
-          ./gradlew -p mocks :mock-bie-kafka:docker
+          ./gradlew -p mocks docker
+
           ./gradlew -p mocks :dockerComposeUp
 
           ./gradlew :domain-xample:dockerComposeUp

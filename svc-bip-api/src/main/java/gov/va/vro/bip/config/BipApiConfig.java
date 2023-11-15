@@ -39,13 +39,13 @@ import javax.net.ssl.SSLContext;
 @Setter
 public class BipApiConfig {
 
-  @Value("${truststore}")
+  @Value("${BIP_TRUSTSTORE}")
   private String trustStore;
 
-  @Value("${truststore_password}")
+  @Value("${truststore_password:keystore_pw}")
   private String password;
 
-  @Value("${keystore}")
+  @Value("${BIP_KEYSTORE}")
   private String keystore;
 
   @Bean
@@ -78,6 +78,8 @@ public class BipApiConfig {
   @Bean(name = "bipCERestTemplate")
   public RestTemplate getHttpsRestTemplate(RestTemplateBuilder builder) throws BipException {
     try {
+      log.info("trustStore:" + trustStore.substring(0, 60));
+      log.info("password:" + password);
       if (trustStore.isEmpty() & password.isEmpty()) { // skip if it is test.
         log.info("No valid BIP mTLS setup. Skip related setup.");
         return new RestTemplate();
@@ -87,6 +89,7 @@ public class BipApiConfig {
       KeyStore keyStoreObj = getKeyStore(keystore, password);
       log.info("-------load truststore");
       KeyStore trustStoreObj = getKeyStore(trustStore, password);
+      log.info("trustStoreObj", trustStoreObj);
 
       log.info("------build SSLContext");
       SSLContext sslContext =
