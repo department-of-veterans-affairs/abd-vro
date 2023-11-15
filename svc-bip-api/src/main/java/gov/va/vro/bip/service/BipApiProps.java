@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -17,6 +18,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
+@Component
 @ConfigurationProperties(prefix = "bip")
 public class BipApiProps {
 

@@ -43,7 +43,7 @@ bip:
   applicationId: "${BIP_APPLICATION_ID:VRO}"
   stationId: "${BIP_STATION_ID:456}"
 
-spring.config.import: >
+spring.config.import:
   client-keystore.yml,
   server-truststore.yml
 truststore_password: keystore_pw

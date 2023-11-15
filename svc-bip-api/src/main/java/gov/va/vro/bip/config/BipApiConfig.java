@@ -3,6 +3,7 @@ package gov.va.vro.bip.config;
 import gov.va.vro.bip.service.BipApiProps;
 import gov.va.vro.bip.service.BipException;
 import gov.va.vro.bip.service.ClaimProps;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -36,16 +37,17 @@ import javax.net.ssl.SSLContext;
  */
 @Configuration
 @Slf4j
+@Getter
 @Setter
 public class BipApiConfig {
 
-  @Value("${BIP_TRUSTSTORE}")
-  private String trustStore;
+  @Value("${truststore}")
+  private String truststore;
 
   @Value("${truststore_password:keystore_pw}")
   private String password;
 
-  @Value("${BIP_KEYSTORE}")
+  @Value("${keystore}")
   private String keystore;
 
   @Bean
@@ -78,9 +80,9 @@ public class BipApiConfig {
   @Bean(name = "bipCERestTemplate")
   public RestTemplate getHttpsRestTemplate(RestTemplateBuilder builder) throws BipException {
     try {
-      log.info("trustStore:" + trustStore.substring(0, 60));
+      log.info("trustStore:" + truststore.substring(0, 60));
       log.info("password:" + password);
-      if (trustStore.isEmpty() & password.isEmpty()) { // skip if it is test.
+      if (truststore.isEmpty() & password.isEmpty()) { // skip if it is test.
         log.info("No valid BIP mTLS setup. Skip related setup.");
         return new RestTemplate();
       }
@@ -88,7 +90,7 @@ public class BipApiConfig {
       log.info("-------load keystore");
       KeyStore keyStoreObj = getKeyStore(keystore, password);
       log.info("-------load truststore");
-      KeyStore trustStoreObj = getKeyStore(trustStore, password);
+      KeyStore trustStoreObj = getKeyStore(truststore, password);
       log.info("trustStoreObj", trustStoreObj);
 
       log.info("------build SSLContext");

@@ -9,9 +9,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.client.RestTemplate;
-
-import java.io.InputStream;
 
 /**
  * BIP API configuration tests.
@@ -20,6 +19,7 @@ import java.io.InputStream;
  */
 @ActiveProfiles("test")
 @SpringBootTest
+@TestPropertySource({"classpath:application.yaml", "classpath:application-test.yaml"})
 @Slf4j
 class BipApiConfigTest {
 
@@ -32,11 +32,14 @@ class BipApiConfigTest {
   @Test
   public void testRestTemplate() {
     try {
-      InputStream sourceStream = getClass().getClassLoader().getResourceAsStream("bipcert.jks");
-      String store = new String(sourceStream.readAllBytes());
-      config.setTrustStore(store);
-      config.setKeystore(store);
-      config.setPassword("vropassword");
+      // InputStream sourceStream = getClass().getClassLoader().getResourceAsStream("bipcert.jks");
+      // String store = new String(sourceStream.readAllBytes());
+      // config.setTrustStore(store);
+      // config.setKeystore(store);
+      // config.setPassword("vropassword");
+      assertEquals(config.getPassword(), "keystore_pw", "This failure indicates that config is no longer loading according to spring's layered configuration behavior");
+      assertNotNull(config.getTruststore());
+      assertNotNull(config.getKeystore());
       RestTemplate template = config.getHttpsRestTemplate(new RestTemplateBuilder());
       assertNotNull(template);
     } catch (Exception e) {

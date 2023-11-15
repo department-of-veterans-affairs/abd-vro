@@ -74,11 +74,12 @@ public class BipApiServiceTest {
   private static final String API_RESPONSE_200 = "{\"mock response\"}";
   private static final String SPECIAL_ISSUE_TYPES = "/contentions/special_issue_types";
 
-  @InjectMocks private BipApiService service;
-
-  @Mock private RestTemplate restTemplate;
+  @Mock(name = "bipCERestTemplate")
+  private RestTemplate restTemplate;
 
   @Mock private BipApiProps bipApiProps;
+
+  @InjectMocks private BipApiService service;
 
   private String getTestData(String dataFile) throws Exception {
     String filename =
