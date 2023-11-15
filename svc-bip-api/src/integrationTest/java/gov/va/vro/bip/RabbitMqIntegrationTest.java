@@ -27,7 +27,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,7 +42,6 @@ import java.util.List;
 
 @ActiveProfiles("test")
 @SpringBootTest
-@ActiveProfiles("local")
 @EnableConfigurationProperties
 @ContextHierarchy({
    @ContextConfiguration(classes = {BipApiProps.class}),
