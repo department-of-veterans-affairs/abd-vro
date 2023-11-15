@@ -43,9 +43,10 @@ bip:
   applicationId: "${BIP_APPLICATION_ID:VRO}"
   stationId: "${BIP_STATION_ID:456}"
 
-#spring.config.import: >
-#  client-keystore.yml,
-#  server-truststore.yml
-#truststore_password: ${BIP_PASSWORD}
-#truststore: ${BIP_TRUSTSTORE}
-#keystore: ${BIP_KEYSTORE}
+spring.config.import: >
+  client-keystore.yml,
+  server-truststore.yml
+
+truststore_password: ${BIP_PASSWORD}
+truststore: ${BIP_TRUSTSTORE}
+keystore: ${BIP_KEYSTORE}
