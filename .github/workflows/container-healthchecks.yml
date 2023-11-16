@@ -44,7 +44,6 @@ jobs:
           # Build and start Kafka mock required for svc-bie-kafka
           ./gradlew -p mocks :mock-bie-kafka:docker
           COMPOSE_PROFILES="kafka" ./gradlew -p mocks :dockerComposeUp
-          COMPOSE_PROFILES="bip" ./gradlew -p mocks :dockerComposeUp
           COMPOSE_PROFILES="svc" ./gradlew :app:dockerComposeUp
 
       - name: "Start containers: domain-cc"

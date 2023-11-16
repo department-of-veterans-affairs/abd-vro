@@ -29,13 +29,6 @@ jobs:
       - name: 'Build the images'
         uses: ./.github/actions/build-images
 
-      - name: 'Prune Docker'
-        run: |
-          # Prune Docker to free up space
-          docker system prune -af
-          # Optionally, prune volumes if they are not persistent
-          # docker volume prune -f
-
       - name: 'Start the containers'
         run: |
           source scripts/setenv.sh
