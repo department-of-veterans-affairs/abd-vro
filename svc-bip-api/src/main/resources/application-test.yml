@@ -35,7 +35,7 @@ lhAPIProvider:
   validateToken: "NO"
 
 bip:
-  claimBaseUrl: localhost:20300
+  claimBaseUrl: ${BIP_CLAIM_URL}
   claimClientId: "${BIP_CLAIM_USERID:VRO_USER}"
   claimSecret: "${BIP_CLAIM_SECRET:7zEJ+xepTPakl7KfX58bVR+t0zQGpsElg9bDdKmoVJM=}"
   evidenceClientId: "${BIP_EVIDENCE_USERID:VRO_USER}"
