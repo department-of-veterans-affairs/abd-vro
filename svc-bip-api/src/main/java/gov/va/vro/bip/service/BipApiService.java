@@ -59,8 +59,7 @@ public class BipApiService implements IBipApiService {
   static final String JWT_TYPE = "JWT";
 
   @Qualifier("bipCERestTemplate")
-  @NonNull
-  final RestTemplate restTemplate;
+  @NonNull final RestTemplate restTemplate;
 
   final BipApiProps bipApiProps;
 
@@ -213,6 +212,10 @@ public class BipApiService implements IBipApiService {
       String url, HttpMethod method, Map<String, String> requestBody, Class<T> expectedResponse) {
     try {
       HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(requestBody, getBipHeader());
+      log.info(
+          "event=requestSent url={} method={}",
+          url,
+          method);
       ResponseEntity<String> bipResponse =
           restTemplate.exchange(url, method, httpEntity, String.class);
       log.info(
