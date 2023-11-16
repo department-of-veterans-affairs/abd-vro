@@ -43,14 +43,11 @@ jobs:
 
           export -p | sed 's/declare -x //'
 
-          yes | ./gradlew :dockerComposeUp
-
-          ./gradlew -p mocks docker
-
+          ./gradlew :dockerComposeUp
+          ./gradlew -p mocks :build
+          ./gradlew -p mocks :mock-bip-claims-api:docker
           ./gradlew -p mocks :dockerComposeUp
-
           ./gradlew :app:dockerComposeUp
-
       - name: 'Wait for containers to start'
         run: sleep 60s
         shell: bash
