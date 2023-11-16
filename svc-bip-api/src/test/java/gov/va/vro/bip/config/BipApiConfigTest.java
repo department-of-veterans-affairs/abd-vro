@@ -2,7 +2,6 @@ package gov.va.vro.bip.config;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import gov.va.vro.bip.service.BipException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.web.client.RestTemplateBuilder;
