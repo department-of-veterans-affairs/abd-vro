@@ -39,13 +39,13 @@ import javax.net.ssl.SSLContext;
 @Setter
 public class BipApiConfig {
 
-  @Value("#{environment.BIP_TRUSTSTORE}")
+  @Value("${truststore}")
   private String trustStore;
 
-  @Value("${truststore_password:keystore_pw}")
+  @Value("${truststore_password}")
   private String password;
 
-  @Value("#{environment.BIP_KEYSTORE}")
+  @Value("${keystore}")
   private String keystore;
 
   @Bean
@@ -83,6 +83,7 @@ public class BipApiConfig {
         log.info("No valid BIP mTLS setup. Skip related setup.");
         return new RestTemplate();
       }
+
       log.info("-------load keystore");
       KeyStore keyStoreObj = getKeyStore(keystore, password);
       log.info("-------load truststore");

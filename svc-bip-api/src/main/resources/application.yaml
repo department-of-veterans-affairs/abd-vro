@@ -42,5 +42,6 @@ management:
       enabled: true
       probes.enabled: true
 
-# Self-signed certificates. Created by scripts/build-certificates.sh.
-truststore_password: keystore_pw
+truststore: ${BIP_TRUSTSTORE}
+keystore: ${BIP_KEYSTORE}
+truststore_password: ${BIP_PASSWORD}
