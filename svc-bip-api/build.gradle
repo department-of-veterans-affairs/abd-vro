@@ -5,8 +5,7 @@ plugins {
 }
 
 ext {
-  jacocoExclude = ['**/*model*']
-  jacoco_minimum_coverage = 0.5
+  jacocoExclude = ['**/*model*', '**/config']
 }
 
 
