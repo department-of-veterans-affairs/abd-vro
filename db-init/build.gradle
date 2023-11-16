@@ -16,7 +16,7 @@ dependencies {
   //  flywayMigration platform("gov.va.starter:starter-bom:${starter_boot_version}")
   flywayMigration "org.postgresql:postgresql:${postgresql_version}"
   constraints {
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.3'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.0'
   }
 }
 
