@@ -45,10 +45,10 @@ jobs:
 
           ./gradlew :dockerComposeUp
 
-          ./gradlew -p mocks :mock-bip-claims-api:build
+          ./gradlew -p mocks docker
 
-          ./gradlew -p mocks :mock-bip-claims-api:docker
           ./gradlew -p mocks :dockerComposeUp
+
           ./gradlew :app:dockerComposeUp
       - name: 'Wait for containers to start'
         run: sleep 60s
