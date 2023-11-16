@@ -44,7 +44,6 @@ jobs:
           export -p | sed 's/declare -x //'
 
           ./gradlew :dockerComposeUp
-          ./gradlew -p mocks :build
 
           ./gradlew -p mocks :mock-bip-claims-api:build
 
