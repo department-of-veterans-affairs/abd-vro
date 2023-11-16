@@ -87,7 +87,6 @@ jobs:
       - name: "Run the integration test"
         run: |
           source scripts/setenv.sh
-          echo ${BIP_CLAIM_URL}
 
           ./gradlew :svc-bip-api:integrationTest
 
