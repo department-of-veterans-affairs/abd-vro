@@ -14,8 +14,6 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.HashMap;
 import java.util.Map;
 
-@ActiveProfiles("test")
-@SpringBootTest
 class RabbitMqApiConfigTest {
   @Test
   public void testRabbitMqConfig() {

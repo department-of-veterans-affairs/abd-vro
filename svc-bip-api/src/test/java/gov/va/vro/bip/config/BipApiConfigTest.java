@@ -18,20 +18,13 @@ import java.io.InputStream;
  *
  * @author warren @Date 1/5/23
  */
-@ActiveProfiles("test")
-@SpringBootTest
 @Slf4j
 class BipApiConfigTest {
-
-  @Autowired
-  @Qualifier("bipCERestTemplate")
-  private RestTemplate template;
-
-  @Autowired private BipApiConfig config;
 
   @Test
   public void testRestTemplate() {
     try {
+      BipApiConfig config = new BipApiConfig();
       InputStream sourceStream = getClass().getClassLoader().getResourceAsStream("bipcert.jks");
       String store = new String(sourceStream.readAllBytes());
       config.setTrustStore(store);
