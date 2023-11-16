@@ -96,8 +96,8 @@ services:
       BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
       BIP_PASSWORD: ${BIP_PASSWORD}
       BIP_KEYSTORE: ${BIP_KEYSTORE}
-      BIP_CLAIM_URL: "mock-bip-claims-api:20300"
-      BIP_EVIDENCE_URL: "mock-bip-ce-api:20310"
+      BIP_CLAIM_URL: ${BIP_CLAIM_URL}
+      BIP_EVIDENCE_URL: ${BIP_CLAIM_URL}
     ports:
       - "10401:10401"
     networks:
