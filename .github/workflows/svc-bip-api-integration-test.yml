@@ -50,7 +50,7 @@ jobs:
 
           export -p | sed 's/declare -x //'
 
-          ./gradlew :dockerComposeUp
+          yes | ./gradlew :dockerComposeUp
 
           ./gradlew -p mocks docker
 
