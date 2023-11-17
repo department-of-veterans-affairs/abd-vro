@@ -41,8 +41,13 @@ class RabbitMqIntegrationTest {
   @Autowired RabbitTemplate rabbitTemplate;
   @Autowired private AmqpAdmin amqpAdmin;
 
-  private final List<String> purgeQueues = Arrays.asList("updateClaimStatusQueue", "getClaimContentionsQueue", "getClaimDetailsQueue", "setClaimToRfdStatusQueue", "updateClaimContentionQueue");
-
+  private final List<String> purgeQueues =
+      Arrays.asList(
+          "updateClaimStatusQueue",
+          "getClaimContentionsQueue",
+          "getClaimDetailsQueue",
+          "setClaimToRfdStatusQueue",
+          "updateClaimContentionQueue");
 
   @Value("${exchangeName}")
   String exchangeName;

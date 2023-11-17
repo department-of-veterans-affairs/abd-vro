@@ -64,7 +64,7 @@ jobs:
     secrets: inherit
 
   svc-bie-kafka-end-to-end:
-    needs: nondraft-pr
+    needs: svc-bip-api
     uses: ./.github/workflows/bie-kafka-end2end-test.yml
     secrets: inherit
 
