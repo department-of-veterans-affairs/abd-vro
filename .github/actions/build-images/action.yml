@@ -10,4 +10,6 @@ runs:
     - name: "Build Docker images without testing"
       shell: bash
       # Do not call ./gradlew build, which will run tests
-      run: ./gradlew docker
+      run: |
+        ./gradlew docker
+        ./gradlew -p mocks docker
