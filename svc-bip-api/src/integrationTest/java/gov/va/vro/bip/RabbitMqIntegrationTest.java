@@ -18,8 +18,11 @@ import gov.va.vro.bip.service.BipApiService;
 import gov.va.vro.bip.service.RabbitMqController;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +39,10 @@ class RabbitMqIntegrationTest {
   @Autowired BipApiService service;
   @Autowired RabbitMqController controller;
   @Autowired RabbitTemplate rabbitTemplate;
+  @Autowired private AmqpAdmin amqpAdmin;
+
+  private final List<String> purgeQueues = Arrays.asList("updateClaimStatusQueue", "getClaimContentionsQueue", "getClaimDetailsQueue", "setClaimToRfdStatusQueue", "updateClaimContentionQueue");
+
 
   @Value("${exchangeName}")
   String exchangeName;
@@ -45,6 +52,16 @@ class RabbitMqIntegrationTest {
   private static final long CLAIM_ID1_LONG = 1015L;
   private static final long CONTENTION_ID = 1011L;
   final ObjectMapper mapper = new ObjectMapper();
+
+  @BeforeEach
+  public void setUp() {
+    purgeQueues.forEach(queueName -> amqpAdmin.purgeQueue(queueName, true));
+  }
+
+  @AfterEach
+  public void tearDown() {
+    purgeQueues.forEach(queueName -> amqpAdmin.purgeQueue(queueName, true));
+  }
 
   @Test
   void testUpdateClaimStatus(@Value("${updateClaimStatusQueue}") String qName) {
