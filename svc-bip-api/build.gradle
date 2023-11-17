@@ -8,6 +8,7 @@ ext {
   jacocoExclude = ['**/*model*', '**/config']
 }
 
+
 dependencies {
   implementation project(':domain-xample:xample-shared')
 

@@ -26,6 +26,12 @@ jobs:
           repository: 'department-of-veterans-affairs/abd-vro-dev-secrets'
           path: "${{ env.VRO_DEV_SECRETS_FOLDER }}"
 
+      - name: "Set up VRO build env"
+        uses: ./.github/actions/setup-vro
+
+      - name: 'Check disk space'
+        uses: ./.github/actions/check-disk-space
+
       - name: 'Build the images'
         uses: ./.github/actions/build-images
 
@@ -42,16 +48,14 @@ jobs:
           } >> "$GITHUB_ENV"
 
           export -p | sed 's/declare -x //'
-
           ./gradlew :dockerComposeUp
-
           ./gradlew -p mocks docker
-
           ./gradlew -p mocks :dockerComposeUp
+      - name: 'Post-Build Docker Cleanup'
+        uses: ./.github/actions/docker-prune
 
-      - name: 'Wait for containers to start'
-        run: sleep 60s
-        shell: bash
+      - name: 'Check disk space (Post-Build)'
+        uses: ./.github/actions/check-disk-space
 
       - name: 'Wait for RabbitMQ to be ready'
         uses: indiesdev/curl@v1.1
@@ -65,11 +69,16 @@ jobs:
           # Quit after 60 seconds
           retries: 30
 
+      - name: 'Wait for containers to start'
+        run: sleep 60s
+        shell: bash
+
       - name: "Run the integration test"
         run: |
           source scripts/setenv.sh
 
           ./gradlew :svc-bip-api:integrationTest
+        timeout-minutes: 15
 
       - name: "Collect docker logs"
         if: always()
@@ -87,11 +96,11 @@ jobs:
 
       - name: "Check for errors in container logs"
         run: |
-          if docker logs vro_svc-bip-api_1 | grep -E '\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z\b\s+ERROR'; then
+          if docker logs vro_svc-bip-api_1 | grep 'ERROR'; then
             echo "Unexpected ERROR logs in svc-bip-api container"
             exit 11
           fi
-          if docker logs vro_svc-bip-api_1 | grep -E '\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z\b\s+(ERROR|WARNING)' | grep -v 'Simulated error'; then
+          if docker logs vro_svc-bip-api_1 | grep 'ERROR\|WARN' | grep -v 'Simulated error'; then
             echo "Unexpected ERROR logs in svc-bip-api container"
             exit 12
           fi

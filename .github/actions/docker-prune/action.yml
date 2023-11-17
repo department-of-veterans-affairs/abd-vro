@@ -1,0 +1,14 @@
+name: Docker prune cleanup
+description: Prune unused docker images, containers, volumes, networks and systems
+
+runs:
+  using: composite
+  steps:
+    - name: 'Docker Cleanup'
+      shell: bash
+      run: |
+        docker image prune -af
+        docker container prune -f
+        docker volume prune -f
+        docker network prune -f
+        docker system prune -af

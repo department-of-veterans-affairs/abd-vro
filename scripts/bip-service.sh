@@ -11,4 +11,3 @@ source scripts/setenv.sh
 ./gradlew :dockerComposeUp
 ./gradlew -p mocks docker
 ./gradlew -p mocks :dockerComposeUp
-./gradlew :app:dockerComposeUp
