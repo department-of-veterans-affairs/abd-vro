@@ -51,9 +51,8 @@ jobs:
           ./gradlew :domain-xample:dockerComposeUp
           ./gradlew :app:dockerComposeUp
 
-      - name: 'Wait for containers to start'
-        run: sleep 60s
-        shell: bash
+      - name: 'purge RabbitMQ volume'
+        run: source scripts/purge-rabbitmq-volume.sh
 
       - name: 'Wait for RabbitMQ to be ready'
         uses: indiesdev/curl@v1.1
@@ -66,6 +65,10 @@ jobs:
           timeout: 2000
           # Quit after 60 seconds
           retries: 30
+
+      - name: 'Wait for containers to start'
+        run: sleep 60s
+        shell: bash
 
       - name: "Run the integration test"
         run: |
