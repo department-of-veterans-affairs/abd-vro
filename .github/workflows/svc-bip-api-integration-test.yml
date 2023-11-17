@@ -15,6 +15,12 @@ jobs:
   integration-test:
     runs-on: ubuntu-latest
     steps:
+      - name: Check disk space
+        run: |
+          df -h
+          echo "Free space on /:"
+          df -h --output=avail /
+
       - name: 'Checkout source code'
         uses: actions/checkout@v3
 
