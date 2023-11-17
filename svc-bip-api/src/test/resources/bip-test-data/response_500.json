@@ -1,0 +1,12 @@
+{
+  "messages": [
+    {
+      "timestamp": "2023-02-06T18:10:59.288",
+      "key": "bip.vetservices.internalServerError",
+      "severity": "FATAL",
+      "status": "500",
+      "text": "internal server error",
+      "httpStatus": "INTERNAL_SERVER_ERROR"
+    }
+  ]
+}

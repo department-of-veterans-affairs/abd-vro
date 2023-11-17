@@ -6,11 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import gov.va.vro.bip.model.BipPayloadRequest;
 import gov.va.vro.bip.model.BipPayloadResponse;
-import gov.va.vro.bip.service.BipApiService;
-import gov.va.vro.bip.service.RabbitMqController;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,9 +21,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @Slf4j
 public class BaseIntegrationTest {
-  @Autowired private BipApiService service;
-  @Autowired private RabbitMqController controller;
-  @Autowired private RabbitAdmin rabbitAdmin;
   @Autowired protected RabbitTemplate rabbitTemplate;
 
   protected static final long CLAIM_ID_200 = 1000L;
