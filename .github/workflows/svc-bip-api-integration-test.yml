@@ -15,9 +15,6 @@ jobs:
   integration-test:
     runs-on: ubuntu-latest
     steps:
-      - name: 'Check disk space'
-        uses: ./.github/actions/check-disk-space
-
       - name: 'Checkout source code'
         uses: actions/checkout@v3
 
@@ -31,6 +28,9 @@ jobs:
 
       - name: "Set up VRO build env"
         uses: ./.github/actions/setup-vro
+
+      - name: 'Check disk space'
+        uses: ./.github/actions/check-disk-space
 
       - name: 'Build the images'
         uses: ./.github/actions/build-images
