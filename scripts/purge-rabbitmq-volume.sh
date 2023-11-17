@@ -3,28 +3,29 @@
 # Define the volume name
 volume_name="vro_var_rabbitmq"
 
-# Find all containers using the volume
-container_ids=$(docker ps -a --filter volume=$volume_name -q)
+# Get container IDs using the volume
+container_ids=$(docker ps -q --filter volume=$volume_name)
 
-# Check if any container IDs were found and stop them
-if [ -n "$container_ids" ]; then
-    echo "Stopping containers using volume $volume_name..."
-    docker stop $container_ids
-
-    echo "Waiting for containers to fully stop..."
-    sleep 60  # Wait for a few seconds to ensure containers are fully stopped
-else
+# Check if any container IDs were found
+if [ -z "$container_ids" ]; then
     echo "No container found using volume $volume_name."
+else
+    # Iterate over each container ID
+    for id in $container_ids; do
+        # Get container name
+        container_name=$(docker inspect --format='{{.Name}}' $id | sed 's/^\/\+//')
+
+        # Print container name
+        echo "Forcefully stopping container $container_name ($id) using volume $volume_name..."
+
+        # Forcefully stop the container
+        docker kill $id
+    done
 fi
 
 # Remove the volume
 echo "Removing volume $volume_name..."
-if docker volume rm $volume_name; then
-    echo "Volume $volume_name removed successfully."
-else
-    echo "Failed to remove volume $volume_name. It might still be in use."
-    exit 1
-fi
+docker volume rm $volume_name
 
 # Optionally, recreate the volume
 echo "Recreating volume $volume_name..."
