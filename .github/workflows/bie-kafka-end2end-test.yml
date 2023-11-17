@@ -25,22 +25,21 @@ jobs:
           repository: 'department-of-veterans-affairs/abd-vro-dev-secrets'
           path: "${{ env.VRO_DEV_SECRETS_FOLDER }}"
 
-      - name: 'Set RABBITMQ_BASIC_AUTH'
-        run: |
-          source scripts/setenv.sh
-
-          # create basic auth token for RabbitMQ and export to github environment
-          BASIC_AUTH=$(echo "${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}" | base64)
-          echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}" >> "$GITHUB_ENV"
-
-          export -p | sed 's/declare -x //'
-
       - name: 'Build the images'
         uses: ./.github/actions/build-images
 
       - name: 'Start the containers'
         run: |
           source scripts/setenv.sh
+
+          # create basic auth token for RabbitMQ and export to github environment
+          BASIC_AUTH=$(echo "${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}" | base64)
+          {
+            echo "RABBITMQ_USERNAME=${RABBITMQ_USERNAME}"
+            echo "RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}"
+            echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}"
+          } >> "$GITHUB_ENV"
+
           export -p | sed 's/declare -x //'
 
           ./gradlew :dockerComposeUp
