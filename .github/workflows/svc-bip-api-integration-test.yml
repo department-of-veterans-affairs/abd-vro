@@ -70,6 +70,7 @@ jobs:
           source scripts/setenv.sh
 
           ./gradlew :svc-bip-api:integrationTest
+        timeout-minutes: 15
 
       - name: "Collect docker logs"
         if: always()
