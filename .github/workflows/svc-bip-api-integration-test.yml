@@ -35,6 +35,11 @@ jobs:
       - name: "Set up VRO build env"
         uses: ./.github/actions/setup-vro
 
+      - name: 'Pre-Build Docker Cleanup'
+        run: |
+          docker container prune -f
+          docker image prune -f
+
       - name: 'Build the images'
         uses: ./.github/actions/build-images
 
@@ -57,8 +62,14 @@ jobs:
           ./gradlew :domain-xample:dockerComposeUp
           ./gradlew :app:dockerComposeUp
 
-      - name: 'purge RabbitMQ volume'
-        run: source scripts/purge-rabbitmq-volume.sh
+      - name: 'Post-Build Docker Cleanup'
+        run: |
+          docker image prune -af
+          docker container prune -f
+          docker volume prune -f
+          docker network prune -f
+          docker system prune -af
+
 
       - name: 'Wait for RabbitMQ to be ready'
         uses: indiesdev/curl@v1.1
