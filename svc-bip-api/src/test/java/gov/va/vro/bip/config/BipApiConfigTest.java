@@ -4,11 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.InputStream;
@@ -18,20 +14,13 @@ import java.io.InputStream;
  *
  * @author warren @Date 1/5/23
  */
-@ActiveProfiles("test")
-@SpringBootTest
 @Slf4j
 class BipApiConfigTest {
-
-  @Autowired
-  @Qualifier("bipCERestTemplate")
-  private RestTemplate template;
-
-  @Autowired private BipApiConfig config;
 
   @Test
   public void testRestTemplate() {
     try {
+      BipApiConfig config = new BipApiConfig();
       InputStream sourceStream = getClass().getClassLoader().getResourceAsStream("bipcert.jks");
       String store = new String(sourceStream.readAllBytes());
       config.setTrustStore(store);

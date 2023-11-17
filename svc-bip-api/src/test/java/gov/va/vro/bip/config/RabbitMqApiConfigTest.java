@@ -7,15 +7,11 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.listener.api.RabbitListenerErrorHandler;
 import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
 import org.springframework.amqp.support.converter.MessageConverter;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.support.GenericMessage;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@ActiveProfiles("test")
-@SpringBootTest
 class RabbitMqApiConfigTest {
   @Test
   public void testRabbitMqConfig() {

@@ -15,7 +15,7 @@ bip:
   applicationId: ${BIP_APPLICATION_ID:VRO}
   stationId: ${BIP_STATION_ID:456}
   env: local
-  claimBaseUrl: ${BIP_CLAIM_URL:localhost}
+  claimBaseUrl: ${BIP_CLAIM_URL:localhost:20300}
 
 spring:
   rabbitmq:
@@ -30,6 +30,7 @@ updateClaimStatusQueue: updateClaimStatusQueue
 getClaimContentionsQueue: getClaimContentionsQueue
 updateClaimContentionQueue: updateClaimContentionQueue
 verifySpecialIssueTypeQueue: confirmCanCallSpecialIssueTypesQueue
+cancelClaimQueue: cancelClaimQueue
 exchangeName: bipApiExchange
 
 management:
@@ -39,3 +40,7 @@ management:
       show-details: always
       enabled: true
       probes.enabled: true
+
+truststore: ${BIP_TRUSTSTORE}
+keystore: ${BIP_KEYSTORE}
+truststore_password: ${BIP_PASSWORD}

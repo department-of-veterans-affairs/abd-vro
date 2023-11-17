@@ -25,22 +25,21 @@ jobs:
           repository: 'department-of-veterans-affairs/abd-vro-dev-secrets'
           path: "${{ env.VRO_DEV_SECRETS_FOLDER }}"
 
-      - name: 'Set RABBITMQ_BASIC_AUTH'
-        run: |
-          source scripts/setenv.sh
-
-          # create basic auth token for RabbitMQ and export to github environment
-          BASIC_AUTH=$(echo "${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}" | base64)
-          echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}" >> "$GITHUB_ENV"
-
-          export -p | sed 's/declare -x //'
-
       - name: 'Build the images'
         uses: ./.github/actions/build-images
 
       - name: 'Start the containers'
         run: |
           source scripts/setenv.sh
+
+          # create basic auth token for RabbitMQ and export to github environment
+          BASIC_AUTH=$(echo "${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}" | base64)
+          {
+            echo "RABBITMQ_USERNAME=${RABBITMQ_USERNAME}"
+            echo "RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}"
+            echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}"
+          } >> "$GITHUB_ENV"
+
           export -p | sed 's/declare -x //'
 
           ./gradlew :dockerComposeUp
@@ -50,6 +49,12 @@ jobs:
 
           ./gradlew :domain-xample:dockerComposeUp
           ./gradlew :app:dockerComposeUp
+
+      - name: 'Post-Build Docker Cleanup'
+        uses: ./.github/actions/docker-prune
+
+      - name: 'Check disk space (Post-Build)'
+        uses: ./.github/actions/check-disk-space
 
       - name: 'Wait for RabbitMQ to be ready'
         uses: indiesdev/curl@v1.1
@@ -156,7 +161,6 @@ jobs:
           name: bie-kafka-end2end-test-with-mock-container-logs
           path: ./bie-kafka-end2end-test-with-mock-container-logs/**
           retention-days: 14
-
 
       - name: 'Clean shutdown of all containers'
         if: always()

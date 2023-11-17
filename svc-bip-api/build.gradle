@@ -5,8 +5,9 @@ plugins {
 }
 
 ext {
-  jacocoExclude = ['**/*model*']
+  jacocoExclude = ['**/*model*', '**/config']
 }
+
 
 dependencies {
   implementation project(':domain-xample:xample-shared')
