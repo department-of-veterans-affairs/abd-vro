@@ -49,8 +49,8 @@ jobs:
 
           export -p | sed 's/declare -x //'
           ./gradlew :dockerComposeUp
+          ./gradlew -p mocks docker
           ./gradlew -p mocks :dockerComposeUp
-
       - name: 'Post-Build Docker Cleanup'
         uses: ./.github/actions/docker-prune
 

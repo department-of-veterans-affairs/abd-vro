@@ -12,4 +12,3 @@ runs:
       # Do not call ./gradlew build, which will run tests
       run: |
         ./gradlew docker
-        ./gradlew -p mocks docker

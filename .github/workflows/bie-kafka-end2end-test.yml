@@ -51,6 +51,12 @@ jobs:
           ./gradlew :domain-xample:dockerComposeUp
           ./gradlew :app:dockerComposeUp
 
+      - name: 'Post-Build Docker Cleanup'
+        uses: ./.github/actions/docker-prune
+
+      - name: 'Check disk space (Post-Build)'
+        uses: ./.github/actions/check-disk-space
+
       - name: 'Wait for RabbitMQ to be ready'
         uses: indiesdev/curl@v1.1
         with:
@@ -156,7 +162,6 @@ jobs:
           name: bie-kafka-end2end-test-with-mock-container-logs
           path: ./bie-kafka-end2end-test-with-mock-container-logs/**
           retention-days: 14
-
 
       - name: 'Clean shutdown of all containers'
         if: always()
