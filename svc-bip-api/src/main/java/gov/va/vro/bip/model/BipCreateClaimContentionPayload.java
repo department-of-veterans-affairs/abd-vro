@@ -20,5 +20,5 @@ public class BipCreateClaimContentionPayload {
   private long claimId;
 
   @JsonProperty("contention")
-  private CreateContention contention;
+  private Contention contention;
 }

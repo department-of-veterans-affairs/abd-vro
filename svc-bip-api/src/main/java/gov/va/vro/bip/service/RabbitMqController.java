@@ -4,11 +4,12 @@ import gov.va.vro.bip.model.BipCloseClaimPayload;
 import gov.va.vro.bip.model.BipCloseClaimResp;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.RequestForUpdateClaimStatus;
-import gov.va.vro.bip.model.UpdateContentionModel;
 import gov.va.vro.bip.model.claim.GetClaimRequest;
 import gov.va.vro.bip.model.claim.GetClaimResponse;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
+import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
+import gov.va.vro.bip.model.contentions.UpdateClaimContentionsResponse;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionRequest;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionResponse;
 import lombok.RequiredArgsConstructor;
@@ -44,10 +45,9 @@ public class RabbitMqController {
     return service.getClaimContentions(request.getClaimId());
   }
 
-  @RabbitListener(queues = "updateClaimContentionQueue", errorHandler = "bipRequestErrorHandler")
-  BipUpdateClaimResp updateClaimContention(UpdateContentionModel contention) {
-    return service.updateClaimContention(
-        contention.getClaimId(), contention.getUpdateContentions());
+  @RabbitListener(queues = "updateClaimContentionsQueue", errorHandler = "bipRequestErrorHandler")
+  UpdateClaimContentionsResponse updateClaimContentions(UpdateClaimContentionsRequest request) {
+    return service.updateClaimContentions(request);
   }
 
   @RabbitListener(queues = "cancelClaimQueue", errorHandler = "bipRequestErrorHandler")

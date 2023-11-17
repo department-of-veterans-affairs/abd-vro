@@ -19,17 +19,41 @@ public class BaseController {
     return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
-  protected <T extends ProviderResponse> ResponseEntity<T> create404(T response) {
-    response.addMessagesItem(createNotFoundMessage());
+  protected <T extends ProviderResponse> ResponseEntity<T> createClaim404(
+      T response, long claimId) {
+    response.addMessagesItem(createClaimNotFoundMessage(claimId, HttpStatus.NOT_FOUND));
     return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
   }
 
-  public static Message createNotFoundMessage() {
+  protected <T extends ProviderResponse> ResponseEntity<T> createClaim400(
+      T response, long claimId) {
+    response.addMessagesItem(createClaimNotFoundMessage(claimId, HttpStatus.BAD_REQUEST));
+    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+  }
+
+  protected <T extends ProviderResponse> ResponseEntity<T> createContention400(
+      T response, long claimId, long contentionId) {
+    response.addMessagesItem(createContentionNotAssociatedToClaimMessage(claimId, contentionId));
+    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+  }
+
+  public static Message createClaimNotFoundMessage(long claimId, HttpStatus status) {
     Message message = new Message();
-    message.setText("Claim not found");
-    message.setStatus(HttpStatus.NOT_FOUND.value());
+    message.setText("Claim ID " + claimId + " not found");
+    message.setStatus(status.value());
     message.setSeverity("ERROR");
     message.setKey("bip.vetservices.claim.notfound");
+    message.setTimestamp(OffsetDateTime.now());
+    return message;
+  }
+
+  public static Message createContentionNotAssociatedToClaimMessage(
+      long claimId, long contentionId) {
+    Message message = new Message();
+    message.setText("contentionId " + contentionId + " is not associated to claimId " + claimId);
+    message.setStatus(HttpStatus.NOT_FOUND.value());
+    message.setSeverity("ERROR");
+    message.setKey("bip.vetservices.conention.notfound");
     message.setTimestamp(OffsetDateTime.now());
     return message;
   }

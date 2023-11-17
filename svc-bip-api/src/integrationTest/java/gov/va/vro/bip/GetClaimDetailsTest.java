@@ -11,7 +11,7 @@ class GetClaimDetailsTest extends BaseIntegrationTest {
   void testGetClaim_200() {
     GetClaimRequest request = GetClaimRequest.builder().claimId(CLAIM_ID_200).build();
     GetClaimResponse response = sendAndReceive(getClaimDetailsQueue, request);
-    assertBaseResponseIs200(response);
+    assertBaseResponseIs2xx(response, HttpStatus.OK);
   }
 
   @Test

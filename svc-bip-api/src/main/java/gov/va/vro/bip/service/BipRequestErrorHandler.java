@@ -43,20 +43,22 @@ public class BipRequestErrorHandler implements RabbitListenerErrorHandler {
               .orElse("No Headers");
       int status = e.getStatusCode().value();
       String statusMessage = ((HttpStatus) e.getStatusCode()).name();
-      log.info(
-          "event=responseReceived url={} status={} statusMessage={}", url, status, statusMessage);
 
       List<BipMessage> messages = new ArrayList<>();
-      try {
-        messages.addAll(
-            mapper.readValue(e.getResponseBodyAsString(), BipPayloadResponse.class).getMessages());
-      } catch (JsonProcessingException ex) {
-        log.info(
-            "event=failedToParseResponse url={} status={} statusMessage={} error={}",
-            url,
-            status,
-            statusMessage,
-            ex.getMessage());
+      if (!e.getResponseBodyAsString().isBlank()) {
+        try {
+          messages.addAll(
+              mapper
+                  .readValue(e.getResponseBodyAsString(), BipPayloadResponse.class)
+                  .getMessages());
+        } catch (JsonProcessingException ex) {
+          log.info(
+              "event=failedToParseResponse url={} status={} statusMessage={} error={}",
+              url,
+              status,
+              statusMessage,
+              ex.getMessage());
+        }
       }
       return BipPayloadResponse.builder()
           .statusCode(status)
