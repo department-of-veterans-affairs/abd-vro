@@ -26,8 +26,8 @@ jobs:
           repository: 'department-of-veterans-affairs/abd-vro-dev-secrets'
           path: "${{ env.VRO_DEV_SECRETS_FOLDER }}"
 
-      - name: 'Build the images'
-        uses: ./.github/actions/build-images
+#      - name: 'Build the images'
+#        uses: ./.github/actions/build-images
 
       - name: 'Start the containers'
         run: |
@@ -42,12 +42,12 @@ jobs:
           } >> "$GITHUB_ENV"
 
           export -p | sed 's/declare -x //'
-
-          ./gradlew :dockerComposeUp
-
-          ./gradlew -p mocks docker
-
-          ./gradlew -p mocks :dockerComposeUp
+          source scripts/bip-service.sh
+#          ./gradlew :dockerComposeUp
+#
+#          ./gradlew -p mocks docker
+#
+#          ./gradlew -p mocks :dockerComposeUp
 
       - name: 'Wait for containers to start'
         run: sleep 60s
