@@ -32,6 +32,9 @@ jobs:
       - name: 'Build the images'
         uses: ./.github/actions/build-images
 
+      - name: 'purge RabbitMQ volume'
+        run: source scripts/purge-rabbitmq-volume.sh
+
       - name: 'Start the containers'
         run: |
           source scripts/setenv.sh
@@ -50,9 +53,6 @@ jobs:
 
           ./gradlew :domain-xample:dockerComposeUp
           ./gradlew :app:dockerComposeUp
-
-      - name: 'purge RabbitMQ volume'
-        run: source scripts/purge-rabbitmq-volume.sh
 
       - name: 'Wait for RabbitMQ to be ready'
         uses: indiesdev/curl@v1.1
