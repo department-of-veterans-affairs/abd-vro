@@ -8,6 +8,8 @@ import gov.va.vro.bip.model.RequestForUpdateClaimStatus;
 import gov.va.vro.bip.model.UpdateContentionModel;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
+import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionRequest;
+import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -20,36 +22,43 @@ public class RabbitMqController {
 
   final BipApiService service;
 
-  @RabbitListener(queues = "getClaimDetailsQueue", errorHandler = "svcBipApiErrorHandler")
+  @RabbitListener(queues = "getClaimDetailsQueue", errorHandler = "bipRequestErrorHandler")
   BipClaimResp getClaimDetails(long collectionId) {
     return service.getClaimDetails(collectionId);
   }
 
-  @RabbitListener(queues = "setClaimToRfdStatusQueue", errorHandler = "svcBipApiErrorHandler")
+  @RabbitListener(queues = "setClaimToRfdStatusQueue", errorHandler = "bipRequestErrorHandler")
   BipUpdateClaimResp setClaimToRfdStatus(long collectionId) {
     return service.setClaimToRfdStatus(collectionId);
   }
 
-  @RabbitListener(queues = "updateClaimStatusQueue", errorHandler = "svcBipApiErrorHandler")
+  @RabbitListener(queues = "updateClaimStatusQueue", errorHandler = "bipRequestErrorHandler")
   BipUpdateClaimResp updateClaimStatus(RequestForUpdateClaimStatus statusAndClaimId) {
-    BipUpdateClaimResp result =
-        service.updateClaimStatus(statusAndClaimId.getClaimId(), statusAndClaimId.getClaimStatus());
-    return result;
+    return service.updateClaimStatus(
+        statusAndClaimId.getClaimId(), statusAndClaimId.getClaimStatus());
   }
 
-  @RabbitListener(queues = "getClaimContentionsQueue", errorHandler = "svcBipApiErrorHandlerV2")
+  @RabbitListener(queues = "getClaimContentionsQueue", errorHandler = "bipRequestErrorHandler")
   GetClaimContentionsResponse getClaimContentions(GetClaimContentionsRequest request) {
     return service.getClaimContentions(request.getClaimId());
   }
 
-  @RabbitListener(queues = "updateClaimContentionQueue", errorHandler = "svcBipApiErrorHandler")
+  @RabbitListener(queues = "updateClaimContentionQueue", errorHandler = "bipRequestErrorHandler")
   BipUpdateClaimResp updateClaimContention(UpdateContentionModel contention) {
     return service.updateClaimContention(
         contention.getClaimId(), contention.getUpdateContentions());
   }
 
-  @RabbitListener(queues = "cancelClaimQueue", errorHandler = "svcBipApiErrorHandler")
+  @RabbitListener(queues = "cancelClaimQueue", errorHandler = "bipRequestErrorHandler")
   BipCloseClaimResp cancelClaim(BipCloseClaimPayload cancelRequest) {
     return service.cancelClaim(cancelRequest);
+  }
+
+  @RabbitListener(
+      queues = "putTempStationOfJurisdictionQueue",
+      errorHandler = "bipRequestErrorHandler")
+  PutTempStationOfJurisdictionResponse putTempStationOfJurisdictionEndpoint(
+      PutTempStationOfJurisdictionRequest request) {
+    return service.putTempStationOfJurisdiction(request);
   }
 }

@@ -6,14 +6,11 @@ import gov.va.vro.bip.model.ClaimContention;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 
 import java.util.List;
 
 @Slf4j
 public class MessageConverterTest {
-
-  Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter();
 
   @Test
   public void test() {

@@ -28,9 +28,10 @@ getClaimDetailsQueue: getClaimDetailsQueue
 setClaimToRfdStatusQueue: setClaimToRfdStatusQueue
 updateClaimStatusQueue: updateClaimStatusQueue
 getClaimContentionsQueue: getClaimContentionsQueue
+cancelClaimQueue: cancelClaimQueue
 updateClaimContentionQueue: updateClaimContentionQueue
 verifySpecialIssueTypeQueue: confirmCanCallSpecialIssueTypesQueue
-cancelClaimQueue: cancelClaimQueue
+putTempStationOfJurisdictionQueue: putTempStationOfJurisdictionQueue
 exchangeName: bipApiExchange
 
 management:
