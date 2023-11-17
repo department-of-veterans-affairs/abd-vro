@@ -29,7 +29,7 @@ public class ClaimsController extends BaseController implements ClaimsApi {
 
     ClaimDetailResponse response = new ClaimDetailResponse();
     if (item == null) {
-      return create404(response);
+      return createClaim404(response, claimId);
     }
     if (claimId == CLAIM_YIELDS_500) {
       return create500(response);
@@ -49,7 +49,7 @@ public class ClaimsController extends BaseController implements ClaimsApi {
 
     CloseClaimResponse response = new CloseClaimResponse();
     if (item == null) {
-      return create404(response);
+      return createClaim404(response, claimId);
     }
 
     if (claimId == CLAIM_YIELDS_500) {
@@ -83,7 +83,7 @@ public class ClaimsController extends BaseController implements ClaimsApi {
 
     var response = new PutTemporaryStationOfJurisdictionResponse();
     if (item == null) {
-      return create404(response);
+      return createClaim404(response, claimId);
     }
 
     if (claimId == CLAIM_YIELDS_500) {

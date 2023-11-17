@@ -17,9 +17,9 @@ import java.util.List;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true) // BIP API can send messages
 public class BipContentionResp extends HasStatusCodeAndMessage {
-  public BipContentionResp(List<ClaimContention> contentions) {
+  private List<ContentionSummary> contentions;
+
+  public BipContentionResp(List<ContentionSummary> contentions) {
     this.contentions = contentions;
   }
-
-  private List<ClaimContention> contentions;
 }

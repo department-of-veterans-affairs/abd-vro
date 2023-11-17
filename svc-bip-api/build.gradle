@@ -42,6 +42,11 @@ testing {
         implementation "org.springframework.boot:spring-boot-starter-test"
         implementation "org.springframework.boot:spring-boot-starter-amqp"
         implementation "com.fasterxml.jackson.core:jackson-databind"
+
+        def jjwt_version = "0.12.3"
+        implementation "io.jsonwebtoken:jjwt-api:${jjwt_version}"
+        implementation "io.jsonwebtoken:jjwt-impl:${jjwt_version}"
+        implementation "io.jsonwebtoken:jjwt-jackson:${jjwt_version}"
       }
     }
   }

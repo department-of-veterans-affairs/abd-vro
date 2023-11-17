@@ -9,9 +9,6 @@ import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.ClaimStatus;
 import gov.va.vro.bip.model.HasStatusCodeAndMessage;
 import gov.va.vro.bip.model.RequestForUpdateClaimStatus;
-import gov.va.vro.bip.model.UpdateContention;
-import gov.va.vro.bip.model.UpdateContentionModel;
-import gov.va.vro.bip.model.UpdateContentionReq;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -24,7 +21,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Arrays;
 import java.util.List;
 
 @SpringBootTest
@@ -39,9 +35,7 @@ class RabbitMqIntegrationTest {
 
   // known good values from mocks/mock-bip-claims-api/src/main/resources/mock-claims.json
   private static final String CLAIM_ID1 = "1015";
-  private static final long CLAIM_ID1_LONG = 1015L;
   private static final long CANCEL_CLAIM_ID = 1370L;
-  private static final long CONTENTION_ID = 1011L;
   final ObjectMapper mapper = new ObjectMapper();
 
   @Test
@@ -58,22 +52,6 @@ class RabbitMqIntegrationTest {
   void testSetClaimToRfdStatus(@Value("${setClaimToRfdStatusQueue}") String qName) {
     BipUpdateClaimResp response =
         (BipUpdateClaimResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, CLAIM_ID1);
-    assertResponseIsSuccess(response);
-  }
-
-  @SneakyThrows
-  @Test
-  void testUpdateClaimContention(@Value("${updateClaimContentionQueue}") String qName) {
-    UpdateContention builtContention =
-        UpdateContention.builder().contentionId(CONTENTION_ID).build();
-    List<UpdateContention> builtUpdates = Arrays.asList(builtContention);
-    UpdateContentionReq testReq =
-        UpdateContentionReq.builder().updateContentions(builtUpdates).build();
-    UpdateContentionModel req =
-        UpdateContentionModel.builder().claimId(CLAIM_ID1_LONG).updateContentions(testReq).build();
-
-    BipUpdateClaimResp response =
-        (BipUpdateClaimResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, req);
     assertResponseIsSuccess(response);
   }
 

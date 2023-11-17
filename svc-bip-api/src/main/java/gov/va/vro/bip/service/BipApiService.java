@@ -8,9 +8,10 @@ import gov.va.vro.bip.model.BipCloseClaimResp;
 import gov.va.vro.bip.model.BipPayloadResponse;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.ClaimStatus;
-import gov.va.vro.bip.model.UpdateContentionReq;
 import gov.va.vro.bip.model.claim.GetClaimResponse;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
+import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
+import gov.va.vro.bip.model.contentions.UpdateClaimContentionsResponse;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionRequest;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionResponse;
 import io.jsonwebtoken.Claims;
@@ -120,23 +121,12 @@ public class BipApiService implements IBipApiService {
   }
 
   @Override
-  public BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention) {
-    try {
-      String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
-      log.info("Call {} to update contention for {}.", url, claimId);
-      HttpHeaders headers = getBipHeader();
-      HttpEntity<UpdateContentionReq> httpEntity = new HttpEntity<>(contention, headers);
-      ResponseEntity<String> bipResponse =
-          restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
-      if (bipResponse.getStatusCode() == HttpStatus.OK) {
-        return new BipUpdateClaimResp(HttpStatus.OK, bipResponse.getBody());
-      } else {
-        throw new BipException(bipResponse.getStatusCode(), bipResponse.getBody());
-      }
-    } catch (RestClientException e) {
-      log.error("failed to updateClaimContentions for claim {}.", claimId, e);
-      throw new BipException(e.getMessage(), e);
-    }
+  public UpdateClaimContentionsResponse updateClaimContentions(
+      UpdateClaimContentionsRequest request) {
+    long claimId = request.getClaimId();
+    String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
+    Map<String, Object> requestBody = Map.of("updateContentions", request.getUpdateContentions());
+    return makeRequest(url, HttpMethod.PUT, requestBody, UpdateClaimContentionsResponse.class);
   }
 
   @Override
@@ -182,10 +172,10 @@ public class BipApiService implements IBipApiService {
 
   @SuppressWarnings("unchecked")
   private <T extends BipPayloadResponse> T makeRequest(
-      String url, HttpMethod method, Map<String, String> requestBody, Class<T> expectedResponse) {
+      String url, HttpMethod method, Object requestBody, Class<T> expectedResponse) {
     try {
       log.info("event=requestMade url={} method={}", url, method);
-      HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(requestBody, getBipHeader());
+      HttpEntity<Object> httpEntity = new HttpEntity<>(requestBody, getBipHeader());
       log.info("event=requestSent url={} method={}", url, method);
       ResponseEntity<String> bipResponse =
           restTemplate.exchange(url, method, httpEntity, String.class);
@@ -197,10 +187,14 @@ public class BipApiService implements IBipApiService {
       return (T)
           mapper.readValue(bipResponse.getBody(), expectedResponse).toBuilder()
               .statusCode(bipResponse.getStatusCode().value())
-              .statusMessage(
-                  HttpStatus.valueOf(bipResponse.getStatusCode().value()).getReasonPhrase())
+              .statusMessage(HttpStatus.valueOf(bipResponse.getStatusCode().value()).name())
               .build();
     } catch (HttpStatusCodeException e) {
+      log.info(
+          "event=responseReceived url={} status={} statusMessage={}",
+          url,
+          e.getStatusCode(),
+          ((HttpStatus) e.getStatusCode()).name());
       throw e;
     } catch (Exception e) {
       log.error(

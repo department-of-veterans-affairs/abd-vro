@@ -15,5 +15,5 @@ import java.util.List;
 @Setter
 @Builder
 public class UpdateContentionReq {
-  List<UpdateContention> updateContentions;
+  List<ExistingContention> updateContentions;
 }
