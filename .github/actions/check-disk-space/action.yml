@@ -1,0 +1,12 @@
+name: Check Current Disk Space
+description: provides current host machine disk space summery
+
+runs:
+  using: composite
+  steps:
+    - name: 'Check disk space'
+      shell: bash
+      run: |
+        df -h
+        echo "Free space on /:"
+        df -h --output=avail /

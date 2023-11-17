@@ -25,7 +25,7 @@ import java.util.List;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-public class ContentionsController implements ContentionsApi {
+public class ContentionsController extends BaseController implements ContentionsApi {
   private final ClaimStore claimStore;
 
   private final UpdatesStore actionStore;
@@ -36,16 +36,20 @@ public class ContentionsController implements ContentionsApi {
   public ResponseEntity<ContentionSummariesResponse> getContentionsForClaim(Long claimId) {
     log.info("Getting contentions for claim (id: {})", claimId);
     ClaimStoreItem item = claimStore.get(claimId);
+    ContentionSummariesResponse response = new ContentionSummariesResponse();
+
     if (item == null) {
-      String reason = "No claim found for id: " + claimId;
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
+      return create404(response);
     }
+    if (claimId == 500) {
+      return create500(response);
+    }
+
     List<ContentionSummary> contentions = item.getContentions();
 
-    ContentionSummariesResponse response = new ContentionSummariesResponse();
     response.setContentions(contentions);
 
-    return new ResponseEntity<>(response, HttpStatus.OK);
+    return create200(response);
   }
 
   private static int findContention(List<ContentionSummary> contentions, Long contentionId) {
