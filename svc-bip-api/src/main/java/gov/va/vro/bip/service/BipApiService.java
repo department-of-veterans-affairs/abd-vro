@@ -1,13 +1,11 @@
 package gov.va.vro.bip.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.bip.model.BipCloseClaimPayload;
-import gov.va.vro.bip.model.BipCloseClaimReason;
-import gov.va.vro.bip.model.BipCloseClaimResp;
 import gov.va.vro.bip.model.BipPayloadResponse;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.ClaimStatus;
+import gov.va.vro.bip.model.cancel.CancelClaimRequest;
+import gov.va.vro.bip.model.cancel.CancelClaimResponse;
 import gov.va.vro.bip.model.claim.GetClaimResponse;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
@@ -141,28 +139,18 @@ public class BipApiService implements IBipApiService {
   }
 
   @Override
-  public BipCloseClaimResp cancelClaim(BipCloseClaimPayload request) {
+  public CancelClaimResponse cancelClaim(CancelClaimRequest request) {
     long claimId = request.getClaimId();
-    var reason = request.getReason();
-    try {
-      String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CANCEL_CLAIM, claimId);
-      HttpHeaders headers = getBipHeader();
-      HttpEntity<BipCloseClaimReason> httpEntity = new HttpEntity<>(reason, headers);
-      ResponseEntity<String> bipResponse =
-          restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
+    String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CANCEL_CLAIM, claimId);
 
-      if (bipResponse.getStatusCode() == HttpStatus.OK) {
-        BipCloseClaimResp result = mapper.readValue(bipResponse.getBody(), BipCloseClaimResp.class);
-        result.statusCode = HttpStatus.OK.value();
-        result.statusMessage = HttpStatus.OK.getReasonPhrase();
-        return result;
-      } else {
-        throw new BipException(bipResponse.getStatusCode(), bipResponse.getBody());
-      }
-    } catch (RestClientException | JsonProcessingException e) {
-      log.error("failed to cancelClaim for claim {}.", claimId, e);
-      throw new BipException(e.getMessage(), e);
-    }
+    String lifecycleStatusReasonCode = request.getLifecycleStatusReasonCode();
+    String closeReasonText = request.getCloseReasonText();
+    Map<String, String> requestBody =
+        Map.of(
+            "lifecycleStatusReasonCode", lifecycleStatusReasonCode,
+            "closeReasonText", closeReasonText);
+
+    return makeRequest(url, HttpMethod.PUT, requestBody, CancelClaimResponse.class);
   }
 
   @Override

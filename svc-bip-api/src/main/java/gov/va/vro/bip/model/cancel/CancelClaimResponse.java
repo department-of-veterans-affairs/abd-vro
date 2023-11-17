@@ -1,4 +1,4 @@
-package gov.va.vro.bip.model.tsoj;
+package gov.va.vro.bip.model.cancel;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -12,4 +12,4 @@ import lombok.extern.jackson.Jacksonized;
 @SuperBuilder(toBuilder = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class PutTempStationOfJurisdictionResponse extends BipPayloadResponse {}
+public class CancelClaimResponse extends BipPayloadResponse {}
