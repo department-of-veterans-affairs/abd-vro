@@ -15,7 +15,7 @@ jobs:
   integration-test:
     runs-on: ubuntu-latest
     steps:
-      - name: Check disk space
+      - name: 'Check disk space'
         run: |
           df -h
           echo "Free space on /:"
@@ -34,11 +34,6 @@ jobs:
 
       - name: "Set up VRO build env"
         uses: ./.github/actions/setup-vro
-
-      - name: 'Pre-Build Docker Cleanup'
-        run: |
-          docker container prune -f
-          docker image prune -f
 
       - name: 'Build the images'
         uses: ./.github/actions/build-images
@@ -59,8 +54,11 @@ jobs:
           ./gradlew :dockerComposeUp
           ./gradlew -p mocks :dockerComposeUp
 
-          ./gradlew :domain-xample:dockerComposeUp
-          ./gradlew :app:dockerComposeUp
+      - name: 'Check disk space (Post-Build)'
+        run: |
+          df -h
+          echo "Free space on /:"
+          df -h --output=avail /
 
       - name: 'Post-Build Docker Cleanup'
         run: |
@@ -69,7 +67,6 @@ jobs:
           docker volume prune -f
           docker network prune -f
           docker system prune -af
-
 
       - name: 'Wait for RabbitMQ to be ready'
         uses: indiesdev/curl@v1.1
