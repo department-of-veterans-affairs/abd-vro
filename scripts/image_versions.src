@@ -43,3 +43,16 @@
 postgres_VER="v3.5.6"
 # Thu Nov  2 18:18:12 UTC 2023 -- v3.5.7
 # Thu Nov  9 00:56:04 UTC 2023 -- v3.5.8
+# Fri Nov 17 21:33:22 UTC 2023 -- v3.5.9
+redis_VER="v3.5.9"
+rabbitmq_VER="v3.5.9"
+apigateway_VER="v3.5.9"
+app_VER="v3.5.9"
+dbinit_VER="v3.5.9"
+svcbgsapi_VER="v3.5.9"
+svclighthouseapi_VER="v3.5.9"
+svcbiekafka_VER="v3.5.9"
+svcbipapi_VER="v3.5.9"
+xampleworkflows_VER="v3.5.9"
+ccapp_VER="v3.5.9"
+eemaxcfiapp_VER="v3.5.9"
