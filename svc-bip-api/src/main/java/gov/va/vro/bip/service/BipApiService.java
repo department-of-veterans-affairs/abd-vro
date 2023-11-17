@@ -9,6 +9,8 @@ import gov.va.vro.bip.model.BipPayloadResponse;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.ClaimStatus;
 import gov.va.vro.bip.model.claim.GetClaimResponse;
+import gov.va.vro.bip.model.contentions.CreateClaimContentionsRequest;
+import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsResponse;
@@ -118,6 +120,15 @@ public class BipApiService implements IBipApiService {
     String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
 
     return makeRequest(url, HttpMethod.GET, GetClaimContentionsResponse.class);
+  }
+
+  @Override
+  public CreateClaimContentionsResponse createClaimContentions(
+      CreateClaimContentionsRequest request) {
+    long claimId = request.getClaimId();
+    String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
+    Map<String, Object> requestBody = Map.of("createContentions", request.getCreateContentions());
+    return makeRequest(url, HttpMethod.POST, requestBody, CreateClaimContentionsResponse.class);
   }
 
   @Override
