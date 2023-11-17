@@ -54,12 +54,6 @@ jobs:
           ./gradlew :dockerComposeUp
           ./gradlew -p mocks :dockerComposeUp
 
-      - name: 'Check disk space (Post-Build)'
-        run: |
-          df -h
-          echo "Free space on /:"
-          df -h --output=avail /
-
       - name: 'Post-Build Docker Cleanup'
         run: |
           docker image prune -af
@@ -67,6 +61,12 @@ jobs:
           docker volume prune -f
           docker network prune -f
           docker system prune -af
+
+      - name: 'Check disk space (Post-Build)'
+        run: |
+          df -h
+          echo "Free space on /:"
+          df -h --output=avail /
 
       - name: 'Wait for RabbitMQ to be ready'
         uses: indiesdev/curl@v1.1
