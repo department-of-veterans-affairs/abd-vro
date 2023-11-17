@@ -6,22 +6,20 @@ labels: ''
 assignees: ''
 
 ---
+### Description
+_Is this connected to a bigger project? Is there a deadline? Label the story as appropriate._
 
-<!-- Template items below are optional but encouraged -->
+### Why, What is the value? 
 
-**User Story**
-
-As a (persona), I want (behavior), so that (goal).
-
-**Acceptance Criteria**
+### Dependencies
+_List all (internal and external) and use #XXXX to link related work._ 
+ 
+### Acceptance Criteria 
+_Include non functional requirements, e.g. for design when are reviews/collaboration scheduled?_ 
 
 1. _Acceptance criteria 1_
 2. _Acceptance criteria 2_
 3. _Acceptance criteria 3_
 
-**Not included in this work**
-
-A note about things that should not be considered necessary.
-
-**Notes about work**
-- _(links to documentation, resources, code, etc that might inform the person doing the work)_
+### Notes / Documentation
+_Share relevant information that might inform the person doing the work, note anything out of scope, link to relevant resources, documentation, code, or artifacts_ 
