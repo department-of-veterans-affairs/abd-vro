@@ -12,7 +12,7 @@ if [ -n "$container_ids" ]; then
     docker stop $container_ids
 
     echo "Waiting for containers to fully stop..."
-    sleep 5  # Wait for a few seconds to ensure containers are fully stopped
+    sleep 10  # Wait for a few seconds to ensure containers are fully stopped
 else
     echo "No container found using volume $volume_name."
 fi
