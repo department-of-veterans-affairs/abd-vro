@@ -1,7 +1,6 @@
 package gov.va.vro.mockbipclaims.controller;
 
 import gov.va.vro.mockbipclaims.api.ClaimsApi;
-import gov.va.vro.mockbipclaims.model.bip.Message;
 import gov.va.vro.mockbipclaims.model.bip.request.CloseClaimRequest;
 import gov.va.vro.mockbipclaims.model.bip.request.PutTemporaryStationOfJurisdictionRequest;
 import gov.va.vro.mockbipclaims.model.bip.response.ClaimDetailResponse;
@@ -11,7 +10,6 @@ import gov.va.vro.mockbipclaims.model.store.ClaimStore;
 import gov.va.vro.mockbipclaims.model.store.ClaimStoreItem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
@@ -63,12 +61,8 @@ public class ClaimsController extends BaseController implements ClaimsApi {
       log.info("Received closeReasonText: {}", closeClaimRequest.getCloseReasonText());
     }
 
-    claimStore.cancel(claimId);
+    item.getClaimDetail().setClaimLifecycleStatus("Cancelled");
 
-    Message message = new Message();
-    message.setText("Successfully canceled the claim with id: " + claimId);
-    message.setStatus(HttpStatus.OK.value());
-    response.addMessagesItem(message);
     return create200(response);
   }
 
