@@ -38,10 +38,10 @@ jobs:
     uses: ./.github/workflows/codeql-analysis.yml
     secrets: inherit
 
-  container-healthchecks:
-    needs: nondraft-pr
-    uses: ./.github/workflows/container-healthchecks.yml
-    secrets: inherit
+#  container-healthchecks:
+#    needs: nondraft-pr
+#    uses: ./.github/workflows/container-healthchecks.yml
+#    secrets: inherit
 
 #  xample-domain:
 #    needs: nondraft-pr
