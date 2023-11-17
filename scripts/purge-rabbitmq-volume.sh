@@ -2,7 +2,7 @@
 
 # Define the service and volume names
 service_name="rabbitmq-service"
-volume_name="var_rabbitmq"
+volume_name="vro_var_rabbitmq"
 
 # Stop the RabbitMQ service using Docker Compose
 echo "Stopping the $service_name service using Docker Compose..."
