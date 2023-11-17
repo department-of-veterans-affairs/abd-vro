@@ -247,5 +247,6 @@ exportSecretIfUnset BIE_KAFKA_TRUSTSTORE_PASSWORD
 
 exportSecretIfUnset BIP_TRUSTSTORE
 exportSecretIfUnset BIP_KEYSTORE
-
-export truststore_password=keystore_pw
+exportSecretIfUnset BIP_PASSWORD
+exportSecretIfUnset BIP_CLAIM_URL
+exportSecretIfUnset BIP_EVIDENCE_URL

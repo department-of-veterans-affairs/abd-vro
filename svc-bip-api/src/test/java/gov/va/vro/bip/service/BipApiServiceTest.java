@@ -18,8 +18,11 @@ import gov.va.vro.bip.model.BipPayloadResponse;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.UpdateContentionReq;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
+import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionRequest;
+import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionResponse;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -63,6 +66,8 @@ public class BipApiServiceTest {
   private static final String UPDATE_CLAIM_STATUS = "/claims/%s/lifecycle_status";
   private static final String CANCEL_CLAIM = "/claims/%s/cancel";
   private static final String CONTENTION = "/claims/%s/contentions";
+  private static final String TEMP_STATION_OF_JURISDICTION =
+      "/claims/%s/temporary_station_of_jurisdiction";
   private static final String HTTPS = "https://";
   private static final String CLAIM_URL = "claims.bip.va.gov";
   private static final String CLAIM_SECRET = "thesecretissecurenowthatitislongenough2184vnrwma";
@@ -224,8 +229,31 @@ public class BipApiServiceTest {
     }
 
     try {
-      BipUpdateClaimResp result = service.setClaimToRfdStatus(BAD_CLAIM_ID);
+      service.setClaimToRfdStatus(BAD_CLAIM_ID);
       log.error("Negative setClaimToRfdStatus test failed.");
+      fail();
+    } catch (BipException e) {
+      assertSame(HttpStatus.INTERNAL_SERVER_ERROR, e.getStatus());
+    }
+  }
+
+  @Test
+  public void testSetClaimToRfdStatus_500() {
+    String body = "{}";
+    mockResponseForUrl(
+        Mockito.doThrow(
+            new HttpClientErrorException(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+                body.getBytes(),
+                Charset.defaultCharset())),
+        formatClaimUrl(UPDATE_CLAIM_STATUS, BAD_STATUS_CLAIM_ID),
+        HttpMethod.PUT);
+    mockBipApiProp();
+
+    try {
+      service.setClaimToRfdStatus(BAD_STATUS_CLAIM_ID);
+      log.error("Negative updateClaimContention test failed.");
       fail();
     } catch (BipException e) {
       assertSame(HttpStatus.INTERNAL_SERVER_ERROR, e.getStatus());
@@ -243,6 +271,7 @@ public class BipApiServiceTest {
     mockBipApiProp();
     try {
       GetClaimContentionsResponse result = service.getClaimContentions(GOOD_CLAIM_ID);
+      assertResponseIsSuccess(result);
       assertEquals(1, result.getContentions().size());
     } catch (BipException e) {
       log.error("Positive getClaimContentions test failed.", e);
@@ -304,11 +333,35 @@ public class BipApiServiceTest {
     }
 
     try {
-      BipUpdateClaimResp result = service.updateClaimContention(BAD_CLAIM_ID, request);
-      assertNull(result, "Negative updateClaimContention test failed.");
+      service.updateClaimContention(BAD_CLAIM_ID, request);
+      log.error("Negative updateClaimContention test failed.");
       fail();
     } catch (BipException e) {
       assertSame(HttpStatus.PRECONDITION_FAILED, e.getStatus());
+    }
+  }
+
+  @Test
+  public void testUpdateClaimContention_500() {
+    String body = "{}";
+    mockResponseForUrl(
+        Mockito.doThrow(
+            new HttpClientErrorException(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+                body.getBytes(),
+                Charset.defaultCharset())),
+        formatClaimUrl(CONTENTION, BAD_STATUS_CLAIM_ID),
+        HttpMethod.PUT);
+    mockBipApiProp();
+
+    UpdateContentionReq request = UpdateContentionReq.builder().build();
+    try {
+      service.updateClaimContention(BAD_STATUS_CLAIM_ID, request);
+      log.error("Negative updateClaimContention test failed.");
+      fail();
+    } catch (BipException e) {
+      assertSame(HttpStatus.INTERNAL_SERVER_ERROR, e.getStatus());
     }
   }
 
@@ -349,7 +402,87 @@ public class BipApiServiceTest {
   }
 
   @Test
-  public void testIsApiFunctioning() throws Exception {
+  public void testPutTemporaryStationOfJurisdiction_200() {
+    ResponseEntity<String> resp200 = ResponseEntity.ok("{}");
+
+    mockResponseForUrl(
+        Mockito.doReturn(resp200),
+        formatClaimUrl(TEMP_STATION_OF_JURISDICTION, GOOD_CLAIM_ID),
+        HttpMethod.PUT);
+
+    mockBipApiProp();
+    try {
+      PutTempStationOfJurisdictionRequest request =
+          PutTempStationOfJurisdictionRequest.builder()
+              .claimId(GOOD_CLAIM_ID)
+              .tempStationOfJurisdiction("398")
+              .build();
+      PutTempStationOfJurisdictionResponse result = service.putTempStationOfJurisdiction(request);
+      assertResponseIsSuccess(result);
+    } catch (BipException e) {
+      log.error("Positive putTempStationOfJurisdiction test failed.", e);
+      fail();
+    }
+  }
+
+  @Test
+  public void testPutTemporaryStationOfJurisdiction_404() throws Exception {
+    String resp404Body = getTestData(CLAIM_RESPONSE_404);
+
+    mockResponseForUrl(
+        Mockito.doThrow(
+            new HttpClientErrorException(
+                HttpStatus.NOT_FOUND,
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                resp404Body.getBytes(),
+                Charset.defaultCharset())),
+        formatClaimUrl(TEMP_STATION_OF_JURISDICTION, BAD_CLAIM_ID),
+        HttpMethod.PUT);
+    mockBipApiProp();
+
+    try {
+      PutTempStationOfJurisdictionRequest request =
+          PutTempStationOfJurisdictionRequest.builder()
+              .claimId(BAD_CLAIM_ID)
+              .tempStationOfJurisdiction("398")
+              .build();
+      service.putTempStationOfJurisdiction(request);
+      fail("Valid 2XX response received. Expected 404");
+    } catch (HttpStatusCodeException e) {
+      String resultAsString = e.getResponseBodyAsString();
+      assertNotNull(resultAsString);
+      ObjectMapper mapper = new ObjectMapper();
+      BipPayloadResponse result = mapper.readValue(resultAsString, BipPayloadResponse.class);
+
+      BipMessage message = result.getMessages().get(0);
+      assertEquals(HttpStatus.NOT_FOUND.value(), message.getStatus());
+      assertEquals(HttpStatus.NOT_FOUND.name(), message.getHttpStatus());
+    }
+  }
+
+  @Test
+  public void testPutTemporaryStationOfJurisdiction_500() {
+    mockResponseForUrl(
+        Mockito.doThrow(new RuntimeException("nope")),
+        formatClaimUrl(TEMP_STATION_OF_JURISDICTION, BAD_CLAIM_ID),
+        HttpMethod.PUT);
+    mockBipApiProp();
+
+    try {
+      PutTempStationOfJurisdictionRequest request =
+          PutTempStationOfJurisdictionRequest.builder()
+              .claimId(BAD_CLAIM_ID)
+              .tempStationOfJurisdiction("398")
+              .build();
+      service.putTempStationOfJurisdiction(request);
+      fail("Valid 2XX response received. Expected 500");
+    } catch (BipException e) {
+      assertSame(HttpStatus.INTERNAL_SERVER_ERROR, e.getStatus());
+    }
+  }
+
+  @Test
+  public void testIsApiFunctioning() {
     ResponseEntity<String> resp200 = ResponseEntity.ok(API_RESPONSE_200);
 
     String goodUrl = HTTPS + CLAIM_URL + SPECIAL_ISSUE_TYPES;
@@ -381,5 +514,12 @@ public class BipApiServiceTest {
       log.error("Negative testIsApiResponding test failed.", e);
       fail();
     }
+  }
+
+  private void assertResponseIsSuccess(BipPayloadResponse response) {
+    Assertions.assertNotNull(response);
+    Assertions.assertEquals(200, response.getStatusCode());
+    Assertions.assertEquals("OK", response.getStatusMessage());
+    Assertions.assertNull(response.getMessages());
   }
 }

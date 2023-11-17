@@ -26,6 +26,12 @@ jobs:
           repository: 'department-of-veterans-affairs/abd-vro-dev-secrets'
           path: "${{ env.VRO_DEV_SECRETS_FOLDER }}"
 
+      - name: "Set up VRO build env"
+        uses: ./.github/actions/setup-vro
+
+      - name: 'Check disk space'
+        uses: ./.github/actions/check-disk-space
+
       - name: 'Build the images'
         uses: ./.github/actions/build-images
 
@@ -42,19 +48,14 @@ jobs:
           } >> "$GITHUB_ENV"
 
           export -p | sed 's/declare -x //'
-
           ./gradlew :dockerComposeUp
-
           ./gradlew -p mocks docker
-
           ./gradlew -p mocks :dockerComposeUp
+      - name: 'Post-Build Docker Cleanup'
+        uses: ./.github/actions/docker-prune
 
-          ./gradlew :domain-xample:dockerComposeUp
-          ./gradlew :app:dockerComposeUp
-
-      - name: 'Wait for containers to start'
-        run: sleep 60s
-        shell: bash
+      - name: 'Check disk space (Post-Build)'
+        uses: ./.github/actions/check-disk-space
 
       - name: 'Wait for RabbitMQ to be ready'
         uses: indiesdev/curl@v1.1
@@ -68,31 +69,16 @@ jobs:
           # Quit after 60 seconds
           retries: 30
 
-      - name: 'Wait for svc-bip-api to be ready'
-        uses: nev7n/wait_for_response@v1
-        with:
-          url: 'http://localhost:10401/actuator/health'
-          responseCode: 200
-          # Retry every 2 seconds
-          interval: 2000
-          # Quit after 60 seconds
-          timeout: 60000
-
-      - name: "Wait for VRO to be ready"
-        uses: nev7n/wait_for_response@v1
-        with:
-          url: 'http://localhost:8111/actuator/health'
-          responseCode: 200
-          # Retry every 2 seconds
-          interval: 2000
-          # Quit after 100 seconds
-          timeout: 100000
+      - name: 'Wait for containers to start'
+        run: sleep 60s
+        shell: bash
 
       - name: "Run the integration test"
         run: |
           source scripts/setenv.sh
 
           ./gradlew :svc-bip-api:integrationTest
+        timeout-minutes: 15
 
       - name: "Collect docker logs"
         if: always()
