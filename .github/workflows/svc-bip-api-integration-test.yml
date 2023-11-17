@@ -16,10 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Check disk space'
-        run: |
-          df -h
-          echo "Free space on /:"
-          df -h --output=avail /
+        uses: ./.github/actions/check-disk-space
 
       - name: 'Checkout source code'
         uses: actions/checkout@v3
@@ -55,18 +52,10 @@ jobs:
           ./gradlew -p mocks :dockerComposeUp
 
       - name: 'Post-Build Docker Cleanup'
-        run: |
-          docker image prune -af
-          docker container prune -f
-          docker volume prune -f
-          docker network prune -f
-          docker system prune -af
+        uses: ./.github/actions/docker-prune
 
       - name: 'Check disk space (Post-Build)'
-        run: |
-          df -h
-          echo "Free space on /:"
-          df -h --output=avail /
+        uses: ./.github/actions/check-disk-space
 
       - name: 'Wait for RabbitMQ to be ready'
         uses: indiesdev/curl@v1.1
