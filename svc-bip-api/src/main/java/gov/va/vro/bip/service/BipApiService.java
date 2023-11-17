@@ -2,7 +2,6 @@ package gov.va.vro.bip.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.bip.model.BipClaimResp;
 import gov.va.vro.bip.model.BipCloseClaimPayload;
 import gov.va.vro.bip.model.BipCloseClaimReason;
 import gov.va.vro.bip.model.BipCloseClaimResp;
@@ -10,6 +9,7 @@ import gov.va.vro.bip.model.BipPayloadResponse;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.ClaimStatus;
 import gov.va.vro.bip.model.UpdateContentionReq;
+import gov.va.vro.bip.model.claim.GetClaimResponse;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionRequest;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionResponse;
@@ -67,38 +67,10 @@ public class BipApiService implements IBipApiService {
   final ObjectMapper mapper = new ObjectMapper();
 
   @Override
-  public BipClaimResp getClaimDetails(long claimId) {
-    try {
-      log.info("getClaimDetails({}) invoked", claimId);
-      String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CLAIM_DETAILS, claimId);
-      log.info("call {} to get claim info.", url);
-      HttpHeaders headers = getBipHeader();
-      HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(headers);
-      ResponseEntity<String> bipResponse =
-          restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
-      if (bipResponse.getStatusCode() == HttpStatus.OK) {
-        BipClaimResp result = mapper.readValue(bipResponse.getBody(), BipClaimResp.class);
-        result.statusCode = HttpStatus.OK.value();
-        result.statusMessage = HttpStatus.OK.getReasonPhrase();
-        return result;
-      } else {
-        log.error(
-            "Failed to get claim details for {}. {} \n{}",
-            claimId,
-            bipResponse.getStatusCode(),
-            bipResponse.getBody());
-        throw new BipException(bipResponse.getStatusCode(), bipResponse.getBody());
-      }
-    } catch (JsonProcessingException e) {
-      log.error("json processing error", e);
-      throw new BipException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-    } catch (HttpStatusCodeException e) {
-      log.error("Failed to get claim info for claim ID {}.", claimId, e);
-      throw new BipException(e.getStatusCode(), e.getMessage());
-    } catch (RestClientException e) {
-      log.error("Failed to get claim info for claim ID {}.", claimId, e);
-      throw new BipException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-    }
+  public GetClaimResponse getClaimDetails(long claimId) {
+    String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CLAIM_DETAILS, claimId);
+
+    return makeRequest(url, HttpMethod.GET, GetClaimResponse.class);
   }
 
   /**
@@ -212,6 +184,7 @@ public class BipApiService implements IBipApiService {
   private <T extends BipPayloadResponse> T makeRequest(
       String url, HttpMethod method, Map<String, String> requestBody, Class<T> expectedResponse) {
     try {
+      log.info("event=requestMade url={} method={}", url, method);
       HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(requestBody, getBipHeader());
       log.info("event=requestSent url={} method={}", url, method);
       ResponseEntity<String> bipResponse =

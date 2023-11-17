@@ -1,11 +1,12 @@
 package gov.va.vro.bip.service;
 
-import gov.va.vro.bip.model.BipClaimResp;
 import gov.va.vro.bip.model.BipCloseClaimPayload;
 import gov.va.vro.bip.model.BipCloseClaimResp;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.RequestForUpdateClaimStatus;
 import gov.va.vro.bip.model.UpdateContentionModel;
+import gov.va.vro.bip.model.claim.GetClaimRequest;
+import gov.va.vro.bip.model.claim.GetClaimResponse;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionRequest;
@@ -23,8 +24,8 @@ public class RabbitMqController {
   final BipApiService service;
 
   @RabbitListener(queues = "getClaimDetailsQueue", errorHandler = "bipRequestErrorHandler")
-  BipClaimResp getClaimDetails(long collectionId) {
-    return service.getClaimDetails(collectionId);
+  GetClaimResponse getClaimDetails(GetClaimRequest request) {
+    return service.getClaimDetails(request.getClaimId());
   }
 
   @RabbitListener(queues = "setClaimToRfdStatusQueue", errorHandler = "bipRequestErrorHandler")

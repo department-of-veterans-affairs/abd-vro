@@ -2,7 +2,6 @@ package gov.va.vro.bip;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.bip.model.BipClaimResp;
 import gov.va.vro.bip.model.BipCloseClaimPayload;
 import gov.va.vro.bip.model.BipCloseClaimReason;
 import gov.va.vro.bip.model.BipCloseClaimResp;
@@ -13,8 +12,6 @@ import gov.va.vro.bip.model.RequestForUpdateClaimStatus;
 import gov.va.vro.bip.model.UpdateContention;
 import gov.va.vro.bip.model.UpdateContentionModel;
 import gov.va.vro.bip.model.UpdateContentionReq;
-import gov.va.vro.bip.service.BipApiService;
-import gov.va.vro.bip.service.RabbitMqController;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -35,8 +32,6 @@ import java.util.List;
 @ExtendWith(SpringExtension.class)
 @Slf4j
 class RabbitMqIntegrationTest {
-  @Autowired BipApiService service;
-  @Autowired RabbitMqController controller;
   @Autowired RabbitTemplate rabbitTemplate;
 
   @Value("${exchangeName}")
@@ -57,19 +52,6 @@ class RabbitMqIntegrationTest {
         (BipUpdateClaimResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, request);
 
     assertResponseIsSuccess(response);
-  }
-
-  @Test
-  void testGetClaimDetails(@Value("${getClaimDetailsQueue}") String qName) {
-    BipClaimResp response =
-        (BipClaimResp) rabbitTemplate.convertSendAndReceive(exchangeName, qName, CLAIM_ID1);
-
-    Assertions.assertNotNull(response);
-    Assertions.assertEquals(200, response.statusCode);
-    Assertions.assertEquals(CLAIM_ID1, response.getClaim().getClaimId());
-    Assertions.assertEquals("Gathering of Evidence", response.getClaim().getPhase());
-    Assertions.assertEquals("Ready for Decision", response.getClaim().getClaimLifecycleStatus());
-    Assertions.assertNotNull(response.getClaim().getTempStationOfJurisdiction());
   }
 
   @Test

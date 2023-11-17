@@ -1,11 +1,11 @@
 package gov.va.vro.bip.service;
 
-import gov.va.vro.bip.model.BipClaimResp;
 import gov.va.vro.bip.model.BipCloseClaimPayload;
 import gov.va.vro.bip.model.BipCloseClaimResp;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.ClaimStatus;
 import gov.va.vro.bip.model.UpdateContentionReq;
+import gov.va.vro.bip.model.claim.GetClaimResponse;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionRequest;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionResponse;
@@ -24,7 +24,7 @@ public interface IBipApiService {
    * @return a BipClaim object.
    * @throws BipException error occurs.
    */
-  BipClaimResp getClaimDetails(long collectionId);
+  GetClaimResponse getClaimDetails(long collectionId);
 
   /**
    * Updates claim status to RFD.
