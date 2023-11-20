@@ -639,12 +639,12 @@ public class BipApiServiceTest {
       this.ex =
           status == HttpStatus.INTERNAL_SERVER_ERROR
               ? new HttpServerErrorException(
-              status, status.name(), getTestData(dataFile).getBytes(), Charset.defaultCharset())
+                  status, status.name(), getTestData(dataFile).getBytes(), Charset.defaultCharset())
               : new HttpClientErrorException(
-              status,
-              status.name(),
-              getTestData(dataFile).getBytes(),
-              Charset.defaultCharset());
+                  status,
+                  status.name(),
+                  getTestData(dataFile).getBytes(),
+                  Charset.defaultCharset());
     }
   }
 }
