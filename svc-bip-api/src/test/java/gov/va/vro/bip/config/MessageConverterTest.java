@@ -2,7 +2,7 @@ package gov.va.vro.bip.config;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.bip.model.ClaimContention;
+import gov.va.vro.bip.model.ContentionSummary;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ public class MessageConverterTest {
             .statusCode(200)
             .statusMessage("OK")
             .contentions(
-                List.of(ClaimContention.builder().build(), ClaimContention.builder().build()))
+                List.of(ContentionSummary.builder().build(), ContentionSummary.builder().build()))
             .build();
     JsonNode jsonNode = mapper.valueToTree(resp);
     log.info(jsonNode.toPrettyString());
@@ -30,7 +30,7 @@ public class MessageConverterTest {
         resp.toBuilder()
             .statusCode(400)
             .statusMessage("NOPE")
-            .contentions(List.of(ClaimContention.builder().build()))
+            .contentions(List.of(ContentionSummary.builder().build()))
             .build();
     jsonNode = mapper.valueToTree(nope);
     log.info(jsonNode.toPrettyString());

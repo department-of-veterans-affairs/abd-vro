@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import gov.va.vro.mockbipclaims.controller.BaseController;
 import gov.va.vro.mockbipclaims.controller.ClaimsController;
 import gov.va.vro.mockbipclaims.model.bip.ClaimDetail;
 import gov.va.vro.mockbipclaims.model.bip.Message;
@@ -59,7 +60,7 @@ public class ClaimsControllerTest {
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 
     // Assertions for the message fields
-    assertEquals("Claim not found", message.getText());
+    assertEquals("Claim ID " + claimId + " not found", message.getText());
     assertEquals(HttpStatus.NOT_FOUND.value(), message.getStatus());
     assertEquals("ERROR", message.getSeverity());
     assertEquals("bip.vetservices.claim.notfound", message.getKey());
@@ -96,7 +97,7 @@ public class ClaimsControllerTest {
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 
     // Assertions for the message fields
-    assertEquals("Claim not found", message.getText());
+    assertEquals("Claim ID " + claimId + " not found", message.getText());
     assertEquals(HttpStatus.NOT_FOUND.value(), message.getStatus());
     assertEquals("ERROR", message.getSeverity());
     assertEquals("bip.vetservices.claim.notfound", message.getKey());
@@ -138,7 +139,8 @@ public class ClaimsControllerTest {
     assertNotNull(response.getBody());
     assertEquals(1, response.getBody().getMessages().size());
     assertMessageEquals(
-        claimsController.createNotFoundMessage(), response.getBody().getMessages().get(0));
+        BaseController.createClaimNotFoundMessage(claimId, HttpStatus.NOT_FOUND),
+        response.getBody().getMessages().get(0));
   }
 
   @Test
@@ -161,7 +163,7 @@ public class ClaimsControllerTest {
     assertNotNull(response.getBody());
     assertEquals(1, response.getBody().getMessages().size());
     assertMessageEquals(
-        claimsController.createInternalServerMessage(), response.getBody().getMessages().get(0));
+        ClaimsController.createInternalServerMessage(), response.getBody().getMessages().get(0));
   }
 
   private void assertMessageEquals(Message expected, Message actual) {

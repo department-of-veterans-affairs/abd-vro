@@ -12,7 +12,7 @@ class GetClaimContentionsTest extends BaseIntegrationTest {
     GetClaimContentionsRequest request =
         GetClaimContentionsRequest.builder().claimId(CLAIM_ID_200).build();
     GetClaimContentionsResponse response = sendAndReceive(getClaimContentionsQueue, request);
-    assertBaseResponseIs200(response);
+    assertBaseResponseIs2xx(response, HttpStatus.OK);
   }
 
   @Test

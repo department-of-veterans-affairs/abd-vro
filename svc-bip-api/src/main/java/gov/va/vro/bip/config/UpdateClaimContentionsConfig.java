@@ -10,22 +10,22 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class UpdateClaimContentionConfig {
+public class UpdateClaimContentionsConfig {
 
-  @Value("${updateClaimContentionQueue}")
-  String updateClaimContentionQueue;
+  @Value("${updateClaimContentionsQueue}")
+  String updateClaimContentionsQueue;
 
   @Autowired DirectExchange bipApiExchange;
 
   @Bean
-  Queue updateClaimContentionQueue() {
-    return new Queue(updateClaimContentionQueue, true, false, true);
+  Queue updateClaimContentionsQueue() {
+    return new Queue(updateClaimContentionsQueue, true, false, true);
   }
 
   @Bean
-  Binding updateClaimContentionBinding() {
-    return BindingBuilder.bind(updateClaimContentionQueue())
+  Binding updateClaimContentionsBinding() {
+    return BindingBuilder.bind(updateClaimContentionsQueue())
         .to(bipApiExchange)
-        .with(updateClaimContentionQueue);
+        .with(updateClaimContentionsQueue);
   }
 }
