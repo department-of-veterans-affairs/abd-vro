@@ -16,8 +16,11 @@ import gov.va.vro.bip.model.BipCloseClaimResp;
 import gov.va.vro.bip.model.BipMessage;
 import gov.va.vro.bip.model.BipPayloadResponse;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
+import gov.va.vro.bip.model.Contention;
 import gov.va.vro.bip.model.ExistingContention;
 import gov.va.vro.bip.model.claim.GetClaimResponse;
+import gov.va.vro.bip.model.contentions.CreateClaimContentionsRequest;
+import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsResponse;
@@ -310,6 +313,76 @@ public class BipApiServiceTest {
     BipException ex =
         Assertions.assertThrows(
             BipException.class, () -> service.getClaimContentions(INTERNAL_SERVER_ERROR_CLAIM_ID));
+    assertSame(HttpStatus.INTERNAL_SERVER_ERROR, ex.getStatus());
+  }
+
+  @Test
+  public void testCreateClaimContentions_201() {
+    String resp200Body = "{\"contentionIds\":[1]}";
+    ResponseEntity<String> resp200 = new ResponseEntity<>(resp200Body, HttpStatus.CREATED);
+    mockResponseForUrl(
+        Mockito.doReturn(resp200), formatClaimUrl(CONTENTION, GOOD_CLAIM_ID), HttpMethod.POST);
+    CreateClaimContentionsRequest request =
+        CreateClaimContentionsRequest.builder()
+            .claimId(GOOD_CLAIM_ID)
+            .createContentions(
+                List.of(
+                    Contention.builder()
+                        .medicalInd(true)
+                        .beginDate("2023-09-27T00:00:00-06:00")
+                        .contentionTypeCode("NEW")
+                        .claimantText("tendinitis/bilateral")
+                        .build()))
+            .build();
+    CreateClaimContentionsResponse response = service.createClaimContentions(request);
+    assertResponseIsSuccess(response, HttpStatus.CREATED);
+    assertNotNull(response.getContentionIds());
+    assertEquals(1, response.getContentionIds().size());
+    assertEquals(1, response.getContentionIds().get(0));
+  }
+
+  @ParameterizedTest(name = "testCreateClaimContentions_{0}")
+  @EnumSource(TestCase.class)
+  public void testCreateClaimContentions_Non2xx(TestCase test) throws JsonProcessingException {
+    mockResponseForUrl(
+        Mockito.doThrow(test.ex), formatClaimUrl(CONTENTION, test.claimId), HttpMethod.POST);
+    CreateClaimContentionsRequest request =
+        CreateClaimContentionsRequest.builder()
+            .claimId(test.claimId)
+            .createContentions(
+                List.of(
+                    Contention.builder()
+                        .medicalInd(true)
+                        .beginDate("2023-09-27T00:00:00-06:00")
+                        .contentionTypeCode("NEW")
+                        .claimantText("tendinitis/bilateral")
+                        .build()))
+            .build();
+    HttpStatusCodeException ex =
+        Assertions.assertThrows(test.ex.getClass(), () -> service.createClaimContentions(request));
+    assertResponseHasMessageWithStatus(ex.getResponseBodyAsString(), test.status);
+  }
+
+  @Test
+  public void testCreateClaimContentionsInternalServerError_500() {
+    mockResponseForUrl(
+        Mockito.doThrow(new RuntimeException("nope")),
+        formatClaimUrl(CONTENTION, INTERNAL_SERVER_ERROR_CLAIM_ID),
+        HttpMethod.POST);
+    CreateClaimContentionsRequest request =
+        CreateClaimContentionsRequest.builder()
+            .claimId(INTERNAL_SERVER_ERROR_CLAIM_ID)
+            .createContentions(
+                List.of(
+                    Contention.builder()
+                        .medicalInd(true)
+                        .beginDate("2023-09-27T00:00:00-06:00")
+                        .contentionTypeCode("NEW")
+                        .claimantText("tendinitis/bilateral")
+                        .build()))
+            .build();
+    BipException ex =
+        Assertions.assertThrows(BipException.class, () -> service.createClaimContentions(request));
     assertSame(HttpStatus.INTERNAL_SERVER_ERROR, ex.getStatus());
   }
 

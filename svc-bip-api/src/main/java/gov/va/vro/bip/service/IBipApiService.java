@@ -5,6 +5,8 @@ import gov.va.vro.bip.model.BipCloseClaimResp;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.ClaimStatus;
 import gov.va.vro.bip.model.claim.GetClaimResponse;
+import gov.va.vro.bip.model.contentions.CreateClaimContentionsRequest;
+import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsResponse;
@@ -56,13 +58,14 @@ public interface IBipApiService {
   GetClaimContentionsResponse getClaimContentions(long claimId) throws BipException;
 
   /**
-   * Updates a claim contention record.
+   * Create one or more contentions in a claim.
    *
-   * @param claimId claim ID.
-   * @param contention model defining the details of the update being applied to the contention.
-   * @return a contention response object now containing the updated contention information.
-   * @throws BipException error occurs.
+   * @param request request
+   * @return response
+   * @throws BipException error occurs
    */
+  CreateClaimContentionsResponse createClaimContentions(CreateClaimContentionsRequest request);
+
   /**
    * Updates one or more existing contentions in a claim.
    *

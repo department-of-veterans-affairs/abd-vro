@@ -6,6 +6,8 @@ import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.RequestForUpdateClaimStatus;
 import gov.va.vro.bip.model.claim.GetClaimRequest;
 import gov.va.vro.bip.model.claim.GetClaimResponse;
+import gov.va.vro.bip.model.contentions.CreateClaimContentionsRequest;
+import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
@@ -43,6 +45,11 @@ public class RabbitMqController {
   @RabbitListener(queues = "getClaimContentionsQueue", errorHandler = "bipRequestErrorHandler")
   GetClaimContentionsResponse getClaimContentions(GetClaimContentionsRequest request) {
     return service.getClaimContentions(request.getClaimId());
+  }
+
+  @RabbitListener(queues = "createClaimContentionsQueue", errorHandler = "bipRequestErrorHandler")
+  CreateClaimContentionsResponse createClaimContentions(CreateClaimContentionsRequest request) {
+    return service.createClaimContentions(request);
   }
 
   @RabbitListener(queues = "updateClaimContentionsQueue", errorHandler = "bipRequestErrorHandler")
