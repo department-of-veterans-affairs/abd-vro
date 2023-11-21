@@ -2,13 +2,23 @@ package gov.va.vro.bip.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.bip.model.BipClaimResp;
-import gov.va.vro.bip.model.BipContentionResp;
+import gov.va.vro.bip.model.BipCloseClaimPayload;
+import gov.va.vro.bip.model.BipCloseClaimReason;
+import gov.va.vro.bip.model.BipCloseClaimResp;
+import gov.va.vro.bip.model.BipPayloadResponse;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
-import gov.va.vro.bip.model.ClaimContention;
 import gov.va.vro.bip.model.ClaimStatus;
-import gov.va.vro.bip.model.UpdateContentionReq;
-import io.jsonwebtoken.*;
+import gov.va.vro.bip.model.claim.GetClaimResponse;
+import gov.va.vro.bip.model.contentions.CreateClaimContentionsRequest;
+import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
+import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
+import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
+import gov.va.vro.bip.model.contentions.UpdateClaimContentionsResponse;
+import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionRequest;
+import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionResponse;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ClaimsBuilder;
+import io.jsonwebtoken.Jwts;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,10 +36,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -43,11 +51,15 @@ import javax.crypto.spec.SecretKeySpec;
 @Slf4j
 public class BipApiService implements IBipApiService {
   static final String CLAIM_DETAILS = "/claims/%s";
+  static final String CANCEL_CLAIM = "/claims/%s/cancel";
+  static final String TEMP_STATION_OF_JURISDICTION = "/claims/%s/temporary_station_of_jurisdiction";
   static final String UPDATE_CLAIM_STATUS = "/claims/%s/lifecycle_status";
   static final String CONTENTION = "/claims/%s/contentions";
   static final String SPECIAL_ISSUE_TYPES = "/contentions/special_issue_types";
 
   static final String HTTPS = "https://";
+
+  static final String JWT_TYPE = "JWT";
 
   @Qualifier("bipCERestTemplate")
   @NonNull
@@ -58,38 +70,10 @@ public class BipApiService implements IBipApiService {
   final ObjectMapper mapper = new ObjectMapper();
 
   @Override
-  public BipClaimResp getClaimDetails(long claimId) {
-    try {
-      log.info("getClaimDetails({}) invoked", claimId);
-      String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CLAIM_DETAILS, claimId);
-      log.info("call {} to get claim info.", url);
-      HttpHeaders headers = getBipHeader();
-      HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(headers);
-      ResponseEntity<String> bipResponse =
-          restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
-      if (bipResponse.getStatusCode() == HttpStatus.OK) {
-        BipClaimResp result = mapper.readValue(bipResponse.getBody(), BipClaimResp.class);
-        result.statusCode = HttpStatus.OK.value();
-        result.statusMessage = HttpStatus.OK.getReasonPhrase();
-        return result;
-      } else {
-        log.error(
-            "Failed to get claim details for {}. {} \n{}",
-            claimId,
-            bipResponse.getStatusCode(),
-            bipResponse.getBody());
-        throw new BipException(bipResponse.getStatusCode(), bipResponse.getBody());
-      }
-    } catch (JsonProcessingException e) {
-      log.error("json processing error", e);
-      throw new BipException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-    } catch (HttpStatusCodeException e) {
-      log.error("Failed to get claim info for claim ID {}.", claimId, e);
-      throw new BipException(e.getStatusCode(), e.getMessage());
-    } catch (RestClientException e) {
-      log.error("Failed to get claim info for claim ID {}.", claimId, e);
-      throw new BipException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-    }
+  public GetClaimResponse getClaimDetails(long claimId) {
+    String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CLAIM_DETAILS, claimId);
+
+    return makeRequest(url, HttpMethod.GET, GetClaimResponse.class);
   }
 
   /**
@@ -132,51 +116,111 @@ public class BipApiService implements IBipApiService {
   }
 
   @Override
-  public List<ClaimContention> getClaimContentions(long claimId) {
+  public GetClaimContentionsResponse getClaimContentions(long claimId) {
+    String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
+
+    return makeRequest(url, HttpMethod.GET, GetClaimContentionsResponse.class);
+  }
+
+  @Override
+  public CreateClaimContentionsResponse createClaimContentions(
+      CreateClaimContentionsRequest request) {
+    long claimId = request.getClaimId();
+    String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
+    Map<String, Object> requestBody = Map.of("createContentions", request.getCreateContentions());
+    return makeRequest(url, HttpMethod.POST, requestBody, CreateClaimContentionsResponse.class);
+  }
+
+  @Override
+  public UpdateClaimContentionsResponse updateClaimContentions(
+      UpdateClaimContentionsRequest request) {
+    long claimId = request.getClaimId();
+    String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
+    Map<String, Object> requestBody = Map.of("updateContentions", request.getUpdateContentions());
+    return makeRequest(url, HttpMethod.PUT, requestBody, UpdateClaimContentionsResponse.class);
+  }
+
+  @Override
+  public BipCloseClaimResp cancelClaim(BipCloseClaimPayload request) {
+    long claimId = request.getClaimId();
+    var reason = request.getReason();
     try {
-      String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
-      log.info("Call {} to get claim contention for {}.", url, claimId);
+      String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CANCEL_CLAIM, claimId);
       HttpHeaders headers = getBipHeader();
-      HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(headers);
+      HttpEntity<BipCloseClaimReason> httpEntity = new HttpEntity<>(reason, headers);
       ResponseEntity<String> bipResponse =
-          restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
-      if (HttpStatus.OK == bipResponse.getStatusCode()) {
-        BipContentionResp resp = mapper.readValue(bipResponse.getBody(), BipContentionResp.class);
-        return resp.getContentions();
-      } else if (HttpStatus.NO_CONTENT == bipResponse.getStatusCode()) {
-        return new ArrayList<>();
+          restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
+
+      if (bipResponse.getStatusCode() == HttpStatus.OK) {
+        BipCloseClaimResp result = mapper.readValue(bipResponse.getBody(), BipCloseClaimResp.class);
+        result.statusCode = HttpStatus.OK.value();
+        result.statusMessage = HttpStatus.OK.getReasonPhrase();
+        return result;
       } else {
-        log.error(
-            "getClaimContentions returned {} for {}. {}",
-            bipResponse.getStatusCode(),
-            claimId,
-            bipResponse.getBody());
         throw new BipException(bipResponse.getStatusCode(), bipResponse.getBody());
       }
     } catch (RestClientException | JsonProcessingException e) {
-      log.error("failed to getClaimContentions for claim {}.", claimId, e);
+      log.error("failed to cancelClaim for claim {}.", claimId, e);
       throw new BipException(e.getMessage(), e);
     }
   }
 
   @Override
-  public BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention) {
+  public PutTempStationOfJurisdictionResponse putTempStationOfJurisdiction(
+      PutTempStationOfJurisdictionRequest request) {
+    long claimId = request.getClaimId();
+    String url =
+        HTTPS
+            + bipApiProps.getClaimBaseUrl()
+            + String.format(TEMP_STATION_OF_JURISDICTION, claimId);
+
+    String tsoj = request.getTempStationOfJurisdiction();
+    Map<String, String> requestBody = Map.of("tempStationOfJurisdiction", tsoj);
+
+    return makeRequest(
+        url, HttpMethod.PUT, requestBody, PutTempStationOfJurisdictionResponse.class);
+  }
+
+  @SuppressWarnings("unchecked")
+  private <T extends BipPayloadResponse> T makeRequest(
+      String url, HttpMethod method, Object requestBody, Class<T> expectedResponse) {
     try {
-      String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
-      log.info("Call {} to update contention for {}.", url, claimId);
-      HttpHeaders headers = getBipHeader();
-      HttpEntity<UpdateContentionReq> httpEntity = new HttpEntity<>(contention, headers);
+      log.info("event=requestMade url={} method={}", url, method);
+      HttpEntity<Object> httpEntity = new HttpEntity<>(requestBody, getBipHeader());
+      log.info("event=requestSent url={} method={}", url, method);
       ResponseEntity<String> bipResponse =
-          restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
-      if (bipResponse.getStatusCode() == HttpStatus.OK) {
-        return new BipUpdateClaimResp(HttpStatus.OK, bipResponse.getBody());
-      } else {
-        throw new BipException(bipResponse.getStatusCode(), bipResponse.getBody());
-      }
-    } catch (RestClientException e) {
-      log.error("failed to updateClaimContentions for claim {}.", claimId, e);
+          restTemplate.exchange(url, method, httpEntity, String.class);
+      log.info(
+          "event=responseReceived url={} method={} status={}",
+          url,
+          method,
+          bipResponse.getStatusCode().value());
+      return (T)
+          mapper.readValue(bipResponse.getBody(), expectedResponse).toBuilder()
+              .statusCode(bipResponse.getStatusCode().value())
+              .statusMessage(HttpStatus.valueOf(bipResponse.getStatusCode().value()).name())
+              .build();
+    } catch (HttpStatusCodeException e) {
+      log.info(
+          "event=responseReceived url={} status={} statusMessage={}",
+          url,
+          e.getStatusCode(),
+          ((HttpStatus) e.getStatusCode()).name());
+      throw e;
+    } catch (Exception e) {
+      log.error(
+          "event=requestFailed url={} method={} status={} error={}",
+          url,
+          method,
+          HttpStatus.INTERNAL_SERVER_ERROR.value(),
+          e.getMessage());
       throw new BipException(e.getMessage(), e);
     }
+  }
+
+  private <T extends BipPayloadResponse> T makeRequest(
+      String url, HttpMethod method, Class<T> expectedResponse) {
+    return makeRequest(url, method, null, expectedResponse);
   }
 
   /**
@@ -205,36 +249,33 @@ public class BipApiService implements IBipApiService {
   }
 
   HttpHeaders getBipHeader() throws BipException {
-    try {
-      HttpHeaders bipHttpHeaders = new HttpHeaders();
-      bipHttpHeaders.setContentType(MediaType.APPLICATION_JSON);
+    HttpHeaders bipHttpHeaders = new HttpHeaders();
+    bipHttpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-      String jwt = createJwt();
-      bipHttpHeaders.add("Authorization", "Bearer " + jwt);
-      return bipHttpHeaders;
-    } catch (Exception e) {
-      log.error("Failed to build BIP HTTP Headers.", e);
-      throw new BipException(e.getMessage(), e);
-    }
+    String jwt = createJwt();
+    bipHttpHeaders.add("Authorization", "Bearer " + jwt);
+    return bipHttpHeaders;
   }
 
-  String createJwt() throws BipException {
+  public String createJwt() {
     Claims claims = bipApiProps.toCommonJwtClaims();
     Map<String, Object> headerType = new HashMap<>();
-    headerType.put("typ", Header.JWT_TYPE);
+    headerType.put("typ", JWT_TYPE);
 
     ClaimsBuilder claimsBuilder =
         Jwts.claims().add(claims).add("iss", bipApiProps.getClaimIssuer());
     claims = claimsBuilder.build();
     byte[] signSecretBytes = bipApiProps.getClaimSecret().getBytes(StandardCharsets.UTF_8);
-    Key signingKey = new SecretKeySpec(signSecretBytes, SignatureAlgorithm.HS256.getJcaName());
+    Key signingKey = new SecretKeySpec(signSecretBytes, "HmacSHA256");
     return Jwts.builder()
-        .setSubject("Claim")
-        .setIssuedAt(Calendar.getInstance().getTime())
-        .setExpiration(claims.getExpiration())
-        .setClaims(claims)
-        .signWith(SignatureAlgorithm.HS256, signingKey)
-        .setHeaderParams(headerType)
+        .subject("Claim")
+        .issuedAt(Calendar.getInstance().getTime())
+        .expiration(claims.getExpiration())
+        .claims(claims)
+        .signWith(signingKey)
+        .header()
+        .add(headerType)
+        .and()
         .compact();
   }
 }

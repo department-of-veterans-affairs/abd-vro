@@ -35,7 +35,6 @@ jobs:
         - abd-vro-internal
         # Do NOT delete non-dev images, which will be managed in a different workflow
         package:
-        - dev_vro-postgres
         - dev_vro-api-gateway
         - dev_vro-app
         - dev_vro-db-init

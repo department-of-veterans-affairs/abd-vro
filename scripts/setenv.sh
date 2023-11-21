@@ -144,12 +144,12 @@ export POSTGRES_FLYWAY_USER=vro_admin_user
 export POSTGRES_FLYWAY_PASSWORD=vro_admin_user_pw
 
 # Credentials for RabbitMQ and shared across containers
-export RABBITMQ_PLACEHOLDERS_USERNAME=guest
-export RABBITMQ_PLACEHOLDERS_USERPASSWORD=guest
+export RABBITMQ_USERNAME=user
+export RABBITMQ_PASSWORD=bitnami
 
 # Credentials for Redis
 # Redis assumes that the implicit username is "default" -- https://redis.io/commands/auth/
-export REDIS_PLACEHOLDERS_PASSWORD=vro_redis_password
+export REDIS_PASSWORD=vro_redis_password
 
 # For local testing of dev and qa environments
 # export PERSIST_TRACKING_FOLDER=/tmp/persist/tracking
@@ -243,3 +243,10 @@ exportSecretIfUnset BIE_KAFKA_TRUSTSTORE_PASSWORD
 # 8. Ensure GitHub Action workflow `bie-kafka-end2end-test.yml`` works.
 # 9. Clean up: The files created by `kafka-generate-ssl.sh` and the `p12` files can be deleted.
 #    Nothing needs to be committed to the public abd-vro repo.
+
+
+exportSecretIfUnset BIP_TRUSTSTORE
+exportSecretIfUnset BIP_KEYSTORE
+exportSecretIfUnset BIP_PASSWORD
+exportSecretIfUnset BIP_CLAIM_URL
+exportSecretIfUnset BIP_EVIDENCE_URL

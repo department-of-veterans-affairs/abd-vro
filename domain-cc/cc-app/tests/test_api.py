@@ -1,8 +1,10 @@
 from fastapi.testclient import TestClient
 
-from .conftest import (BENIGN_GROWTH_BRAIN_CLASSIFICATION,
-                       DRUG_INDUCED_PULMONARY_PNEMONIA_CLASSIFICATION,
-                       TUBERCULOSIS_CLASSIFICATION)
+from .conftest import (
+    BENIGN_GROWTH_BRAIN_CLASSIFICATION,
+    DRUG_INDUCED_PULMONARY_PNEMONIA_CLASSIFICATION,
+    TUBERCULOSIS_CLASSIFICATION,
+)
 
 
 def test_classification(client: TestClient):
@@ -42,7 +44,6 @@ def test_unmapped_diagnostic_code(client: TestClient):
         "claim_id": 700,
         "form526_submission_id": 777,
     }
-
     response = client.post("/classifier", json=json_post_dict)
     assert response.status_code == 200
     assert response.json() is None

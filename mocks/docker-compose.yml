@@ -96,7 +96,7 @@ services:
       # Set up SSL -- see "Security" section of https://hub.docker.com/r/bitnami/kafka/
       KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:SSL
       KAFKA_CFG_SSL_CLIENT_AUTH: required
-      # PEM https://medium.com/analytics-vidhya/how-to-use-pem-certificates-with-apache-kafka-f3b444a00816
+    # PEM https://medium.com/analytics-vidhya/how-to-use-pem-certificates-with-apache-kafka-f3b444a00816
       KAFKA_TLS_TYPE: JKS
       KAFKA_CERTIFICATE_PASSWORD: mockKafka
 
@@ -124,7 +124,7 @@ services:
       - vro_intranet
 
   mock-bip-ce-api:
-    profiles: ["all","bip"]
+    profiles: ["all"]
     image: va/vro_mocks-mock-bip-ce-api:latest
     <<: [*common-sde-security, *common-security-opt]
     ports:

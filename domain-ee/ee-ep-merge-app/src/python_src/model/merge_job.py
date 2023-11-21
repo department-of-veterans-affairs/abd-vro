@@ -4,11 +4,10 @@ from uuid import UUID
 
 from pydantic import BaseModel, conint
 
-from .contention import ContentionSummary
-
 JobState = Enum('JobState', [
     'COMPLETED_ERROR',
     'PENDING',
+    'RUNNING_GET_PENDING_CLAIM',
     'RUNNING_GET_PENDING_CLAIM_CONTENTIONS',
     'RUNNING_GET_EP400_CLAIM_CONTENTIONS',
     'RUNNING_SET_TEMP_STATION_OF_JURISDICTION',

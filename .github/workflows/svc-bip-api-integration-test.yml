@@ -1,0 +1,113 @@
+name: 'CI: SVC BIP API integration test'
+
+on:
+  # Allow manual triggering
+  workflow_dispatch:
+
+  # Allow being called by another GitHub Action
+  workflow_call:
+
+env:
+  COMPOSE_PROFILES: 'bip'
+  VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout source code'
+        uses: actions/checkout@v3
+
+      - name: "Checkout abd-vro-dev-secrets repo"
+        uses: actions/checkout@v3
+        with:
+          # Checkout using a PAT so that we can access the internal repo
+          token: ${{ secrets.ACCESS_TOKEN_CHECKOUT_INTERNAL_REPO }}
+          repository: 'department-of-veterans-affairs/abd-vro-dev-secrets'
+          path: "${{ env.VRO_DEV_SECRETS_FOLDER }}"
+
+      - name: "Set up VRO build env"
+        uses: ./.github/actions/setup-vro
+
+      - name: 'Check disk space'
+        uses: ./.github/actions/check-disk-space
+
+      - name: 'Build the images'
+        uses: ./.github/actions/build-images
+
+      - name: 'Start the containers'
+        run: |
+          source scripts/setenv.sh
+
+          # create basic auth token for RabbitMQ and export to github environment
+          BASIC_AUTH=$(echo "${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}" | base64)
+          {
+            echo "RABBITMQ_USERNAME=${RABBITMQ_USERNAME}"
+            echo "RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}"
+            echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}"
+          } >> "$GITHUB_ENV"
+
+          export -p | sed 's/declare -x //'
+          ./gradlew :dockerComposeUp
+          ./gradlew -p mocks docker
+          ./gradlew -p mocks :dockerComposeUp
+      - name: 'Post-Build Docker Cleanup'
+        uses: ./.github/actions/docker-prune
+
+      - name: 'Check disk space (Post-Build)'
+        uses: ./.github/actions/check-disk-space
+
+      - name: 'Wait for RabbitMQ to be ready'
+        uses: indiesdev/curl@v1.1
+        with:
+          url: 'http://localhost:15672/api/vhosts'
+          method: 'GET'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          accept: 200
+          # Retry every 2 seconds
+          timeout: 2000
+          # Quit after 60 seconds
+          retries: 30
+
+      - name: 'Wait for containers to start'
+        run: sleep 60s
+        shell: bash
+
+      - name: "Run the integration test"
+        run: |
+          source scripts/setenv.sh
+
+          ./gradlew :svc-bip-api:integrationTest
+        timeout-minutes: 15
+
+      - name: "Collect docker logs"
+        if: always()
+        uses: jwalton/gh-docker-logs@v2
+        with:
+          dest: './svc-bip-api-container-logs'
+
+      - name: "Upload artifact"
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: svc-bip-api-container-logs
+          path: ./svc-bip-api-container-logs/**
+          retention-days: 14
+
+      - name: "Check for errors in container logs"
+        run: |
+          if docker logs vro_svc-bip-api_1 | grep 'ERROR'; then
+            echo "Unexpected ERROR logs in svc-bip-api container"
+            exit 11
+          fi
+          if docker logs vro_svc-bip-api_1 | grep 'ERROR\|WARN' | grep -v 'Simulated error'; then
+            echo "Unexpected ERROR logs in svc-bip-api container"
+            exit 12
+          fi
+
+      - name: 'Clean shutdown of all containers'
+        if: always()
+        shell: bash
+        run: |
+          docker ps
+          COMPOSE_PROFILES="all" ./gradlew dockerComposeDown

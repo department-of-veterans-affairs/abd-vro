@@ -5,8 +5,9 @@ plugins {
 }
 
 ext {
-  jacocoExclude = ['**/*model*']
+  jacocoExclude = ['**/*model*', '**/config']
 }
+
 
 dependencies {
   implementation project(':domain-xample:xample-shared')
@@ -18,7 +19,7 @@ dependencies {
   implementation "com.fasterxml.jackson.core:jackson-core"
   implementation "com.fasterxml.jackson.core:jackson-databind"
 
-  def jjwt_version="0.12.3"
+  def jjwt_version = "0.12.3"
   implementation "io.jsonwebtoken:jjwt-api:${jjwt_version}"
   implementation "io.jsonwebtoken:jjwt-impl:${jjwt_version}"
   implementation "io.jsonwebtoken:jjwt-jackson:${jjwt_version}"
@@ -41,7 +42,19 @@ testing {
         implementation "org.springframework.boot:spring-boot-starter-test"
         implementation "org.springframework.boot:spring-boot-starter-amqp"
         implementation "com.fasterxml.jackson.core:jackson-databind"
+
+        def jjwt_version = "0.12.3"
+        implementation "io.jsonwebtoken:jjwt-api:${jjwt_version}"
+        implementation "io.jsonwebtoken:jjwt-impl:${jjwt_version}"
+        implementation "io.jsonwebtoken:jjwt-jackson:${jjwt_version}"
       }
     }
+  }
+}
+
+test {
+  // Set test logging options
+  testLogging {
+    events "passed", "skipped", "failed"
   }
 }

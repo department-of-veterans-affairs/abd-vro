@@ -8,8 +8,8 @@ require 'bgs_client'
 
 BUNNY_ARGS = {
   host: ENV['RABBITMQ_PLACEHOLDERS_HOST'].presence || "localhost",
-  user: ENV['RABBITMQ_PLACEHOLDERS_USERNAME'].presence || "guest",
-  password: ENV['RABBITMQ_PLACEHOLDERS_USERPASSWORD'].presence || "guest"
+  user: ENV['RABBITMQ_USERNAME'].presence || "guest",
+  password: ENV['RABBITMQ_PASSWORD'].presence || "guest"
 }
 
 def initialize_subscriber(bgs_client)

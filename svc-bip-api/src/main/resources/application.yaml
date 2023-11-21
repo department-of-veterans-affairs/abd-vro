@@ -1,0 +1,48 @@
+logging:
+  level:
+    org.springframework.jdbc.core: INFO
+    org.springframework.jdbc.core.JdbcTemplate: INFO
+    org.springframework.jdbc.core.StatementCreatorUtils: INFO
+    org.hibernate.SQL: INFO
+    org.type.descriptor.sql.BasicBinder: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: INFO
+
+bip:
+  claimClientId: ${BIP_CLAIM_USERID:VRO_USER}
+  claimSecret: ${BIP_CLAIM_SECRET:7zEJ+xepTPakl7KfX58bVR+t0zQGpsElg9bDdKmoVJM=}
+  evidenceClientId: ${BIP_EVIDENCE_USERID:VRO_USER}
+  evidenceSecret: ${BIP_EVIDENCE_SECRET:daSecret}
+  applicationId: ${BIP_APPLICATION_ID:VRO}
+  stationId: ${BIP_STATION_ID:456}
+  env: local
+  claimBaseUrl: ${BIP_CLAIM_URL:localhost:20300}
+
+spring:
+  rabbitmq:
+    host: ${RABBITMQ_PLACEHOLDERS_HOST:localhost}
+    port: 5672
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+
+getClaimDetailsQueue: getClaimDetailsQueue
+setClaimToRfdStatusQueue: setClaimToRfdStatusQueue
+updateClaimStatusQueue: updateClaimStatusQueue
+cancelClaimQueue: cancelClaimQueue
+getClaimContentionsQueue: getClaimContentionsQueue
+createClaimContentionsQueue: createClaimContentionsQueue
+updateClaimContentionsQueue: updateClaimContentionsQueue
+verifySpecialIssueTypeQueue: confirmCanCallSpecialIssueTypesQueue
+putTempStationOfJurisdictionQueue: putTempStationOfJurisdictionQueue
+exchangeName: bipApiExchange
+
+management:
+  server.port: 10401
+  endpoint:
+    health:
+      show-details: always
+      enabled: true
+      probes.enabled: true
+
+truststore: ${BIP_TRUSTSTORE}
+keystore: ${BIP_KEYSTORE}
+truststore_password: ${BIP_PASSWORD}

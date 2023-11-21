@@ -1,14 +1,19 @@
-package gov.va.vro.mockbipclaims.controller;
+package gov.va.vro.mockbipclaims;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import gov.va.vro.mockbipclaims.controller.BaseController;
+import gov.va.vro.mockbipclaims.controller.ClaimsController;
 import gov.va.vro.mockbipclaims.model.bip.ClaimDetail;
 import gov.va.vro.mockbipclaims.model.bip.Message;
 import gov.va.vro.mockbipclaims.model.bip.request.CloseClaimRequest;
+import gov.va.vro.mockbipclaims.model.bip.request.PutTemporaryStationOfJurisdictionRequest;
 import gov.va.vro.mockbipclaims.model.bip.response.ClaimDetailResponse;
 import gov.va.vro.mockbipclaims.model.bip.response.CloseClaimResponse;
+import gov.va.vro.mockbipclaims.model.bip.response.PutTemporaryStationOfJurisdictionResponse;
 import gov.va.vro.mockbipclaims.model.store.ClaimStore;
 import gov.va.vro.mockbipclaims.model.store.ClaimStoreItem;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,7 +60,7 @@ public class ClaimsControllerTest {
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 
     // Assertions for the message fields
-    assertEquals("Claim not found", message.getText());
+    assertEquals("Claim ID " + claimId + " not found", message.getText());
     assertEquals(HttpStatus.NOT_FOUND.value(), message.getStatus());
     assertEquals("ERROR", message.getSeverity());
     assertEquals("bip.vetservices.claim.notfound", message.getKey());
@@ -92,9 +97,79 @@ public class ClaimsControllerTest {
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 
     // Assertions for the message fields
-    assertEquals("Claim not found", message.getText());
+    assertEquals("Claim ID " + claimId + " not found", message.getText());
     assertEquals(HttpStatus.NOT_FOUND.value(), message.getStatus());
     assertEquals("ERROR", message.getSeverity());
     assertEquals("bip.vetservices.claim.notfound", message.getKey());
+  }
+
+  @Test
+  public void testPutTemporaryStationOfJurisdiction_Success() {
+    Long claimId = 1010L;
+    ClaimStoreItem item = new ClaimStoreItem();
+    item.setClaimDetail(new ClaimDetail());
+
+    when(claimStore.get(claimId)).thenReturn(item);
+    PutTemporaryStationOfJurisdictionRequest request =
+        new PutTemporaryStationOfJurisdictionRequest();
+    request.setTempStationOfJurisdiction("0");
+
+    ResponseEntity<PutTemporaryStationOfJurisdictionResponse> response =
+        claimsController.putTemporaryStationOfJurisdictionById(claimId, request);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("0", item.getClaimDetail().getTempStationOfJurisdiction());
+  }
+
+  @Test
+  public void testPutTemporaryStationOfJurisdiction_NotFound() {
+    Long claimId = 1010L;
+
+    when(claimStore.get(claimId)).thenReturn(null);
+    PutTemporaryStationOfJurisdictionRequest request =
+        new PutTemporaryStationOfJurisdictionRequest();
+    request.setTempStationOfJurisdiction("0");
+
+    ResponseEntity<PutTemporaryStationOfJurisdictionResponse> response =
+        claimsController.putTemporaryStationOfJurisdictionById(claimId, request);
+
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+    // Assertions for the message fields
+    assertNotNull(response.getBody());
+    assertEquals(1, response.getBody().getMessages().size());
+    assertMessageEquals(
+        BaseController.createClaimNotFoundMessage(claimId, HttpStatus.NOT_FOUND),
+        response.getBody().getMessages().get(0));
+  }
+
+  @Test
+  public void testPutTemporaryStationOfJurisdiction_InternalServerError() {
+    Long claimId = 500L;
+    ClaimStoreItem item = new ClaimStoreItem();
+    item.setClaimDetail(new ClaimDetail());
+
+    when(claimStore.get(claimId)).thenReturn(item);
+    PutTemporaryStationOfJurisdictionRequest request =
+        new PutTemporaryStationOfJurisdictionRequest();
+    request.setTempStationOfJurisdiction("0");
+
+    ResponseEntity<PutTemporaryStationOfJurisdictionResponse> response =
+        claimsController.putTemporaryStationOfJurisdictionById(claimId, request);
+
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+
+    // Assertions for the message fields
+    assertNotNull(response.getBody());
+    assertEquals(1, response.getBody().getMessages().size());
+    assertMessageEquals(
+        ClaimsController.createInternalServerMessage(), response.getBody().getMessages().get(0));
+  }
+
+  private void assertMessageEquals(Message expected, Message actual) {
+    assertEquals(expected.getKey(), actual.getKey());
+    assertEquals(expected.getSeverity(), actual.getSeverity());
+    assertEquals(expected.getStatus(), actual.getStatus());
+    assertEquals(expected.getText(), actual.getText());
   }
 }
