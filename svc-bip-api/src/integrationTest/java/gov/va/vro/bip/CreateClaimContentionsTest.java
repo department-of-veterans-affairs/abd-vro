@@ -9,6 +9,7 @@ import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import java.time.Instant;
 import java.util.List;
 
 public class CreateClaimContentionsTest extends BaseIntegrationTest {
@@ -70,7 +71,7 @@ public class CreateClaimContentionsTest extends BaseIntegrationTest {
   private static Contention getNewContention() {
     return Contention.builder()
         .medicalInd(true)
-        .beginDate("2023-02-01T00:00:00Z")
+        .beginDate(Instant.parse("2023-02-01T00:00:00Z"))
         .contentionTypeCode("NEW")
         .classificationType(1250)
         .diagnosticTypeCode(6260)

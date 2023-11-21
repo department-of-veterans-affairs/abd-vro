@@ -42,9 +42,6 @@ public class BaseIntegrationTest {
   @Value("${putTempStationOfJurisdictionQueue}")
   protected String putTempStationOfJurisdictionQueue;
 
-  @Value("${updateClaimStatusQueue}")
-  protected String updateClaimStatusQueue;
-
   @Value("${getClaimContentionsQueue}")
   protected String getClaimContentionsQueue;
 
@@ -54,8 +51,8 @@ public class BaseIntegrationTest {
   @Value("${cancelClaimQueue}")
   protected String cancelClaimQueue;
 
-  @Value("${setClaimToRfdStatusQueue}")
-  protected String setClaimToRfdStatusQueue;
+  @Value("${putClaimLifecycleStatusQueue}")
+  protected String putClaimLifecycleStatusQueue;
 
   @Value("${updateClaimContentionsQueue}")
   protected String updateClaimContentionsQueue;

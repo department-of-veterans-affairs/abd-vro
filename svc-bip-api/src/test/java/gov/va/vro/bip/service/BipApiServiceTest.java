@@ -10,9 +10,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.bip.config.JacksonConfig;
 import gov.va.vro.bip.model.BipMessage;
 import gov.va.vro.bip.model.BipPayloadResponse;
-import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.Contention;
 import gov.va.vro.bip.model.ExistingContention;
 import gov.va.vro.bip.model.cancel.CancelClaimRequest;
@@ -23,9 +23,10 @@ import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsResponse;
+import gov.va.vro.bip.model.lifecycle.PutClaimLifecycleRequest;
+import gov.va.vro.bip.model.lifecycle.PutClaimLifecycleResponse;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionRequest;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionResponse;
-import io.jsonwebtoken.Claims;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -35,7 +36,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.ArgumentMatchers;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -52,6 +52,7 @@ import org.springframework.web.client.RestTemplate;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 
@@ -69,7 +70,7 @@ public class BipApiServiceTest {
   private static final String CLAIM_RESPONSE_404 = "bip-test-data/claim_response_404.json";
   private static final String CLAIM_RESPONSE_200 = "bip-test-data/claim_response_200.json";
   private static final String CLAIM_DETAILS = "/claims/%s";
-  private static final String UPDATE_CLAIM_STATUS = "/claims/%s/lifecycle_status";
+  private static final String CLAIM_LIFECYCLE_STATUS = "/claims/%s/lifecycle_status";
   private static final String CANCEL_CLAIM = "/claims/%s/cancel";
   private static final String CONTENTION = "/claims/%s/contentions";
   private static final String TEMP_STATION_OF_JURISDICTION =
@@ -85,11 +86,27 @@ public class BipApiServiceTest {
   private static final String API_RESPONSE_200 = "{\"mock response\"}";
   private static final String SPECIAL_ISSUE_TYPES = "/contentions/special_issue_types";
 
-  @InjectMocks private BipApiService service;
+  private BipApiService service;
 
   @Mock private RestTemplate restTemplate;
 
-  @Mock private BipApiProps bipApiProps;
+  @BeforeEach
+  public void setUp() {
+    BipApiProps bipApiProps = new BipApiProps();
+    bipApiProps.setClaimBaseUrl(CLAIM_URL);
+    bipApiProps.setClaimIssuer(CLAIM_ISSUER);
+    bipApiProps.setClaimSecret(CLAIM_SECRET);
+    bipApiProps.setApplicationId(APP_ID);
+    bipApiProps.setStationId(STATION_ID);
+    bipApiProps.setClaimClientId(CLAIM_USERID);
+
+    service = new BipApiService(restTemplate, bipApiProps, new JacksonConfig().objectMapper());
+  }
+
+  private String formatClaimUrl(String format, Long claimId) {
+    String baseUrl = HTTPS + CLAIM_URL;
+    return baseUrl + String.format(format, claimId);
+  }
 
   private static String getTestData(String dataFile) throws Exception {
     String filename =
@@ -97,27 +114,6 @@ public class BipApiServiceTest {
             .getPath();
     Path filePath = Path.of(filename);
     return Files.readString(filePath);
-  }
-
-  @BeforeEach
-  public void mockBipApiProp() {
-    BipApiProps props = new BipApiProps();
-    props.setApplicationId(APP_ID);
-    props.setApplicationId(CLAIM_ISSUER);
-    props.setStationId(STATION_ID);
-    props.setClaimClientId(CLAIM_USERID);
-
-    Claims claims = props.toCommonJwtClaims();
-
-    Mockito.doReturn(CLAIM_URL).when(bipApiProps).getClaimBaseUrl();
-    Mockito.doReturn(CLAIM_ISSUER).when(bipApiProps).getClaimIssuer();
-    Mockito.doReturn(CLAIM_SECRET).when(bipApiProps).getClaimSecret();
-    Mockito.doReturn(claims).when(bipApiProps).toCommonJwtClaims();
-  }
-
-  private String formatClaimUrl(String format, Long claimId) {
-    String baseUrl = HTTPS + CLAIM_URL;
-    return baseUrl + String.format(format, claimId);
   }
 
   private void mockResponseForUrl(Stubber response, String claimUrl, HttpMethod httpMethod) {
@@ -193,59 +189,6 @@ public class BipApiServiceTest {
         Assertions.assertThrows(
             BipException.class, () -> service.getClaimDetails(INTERNAL_SERVER_ERROR_CLAIM_ID));
     assertSame(HttpStatus.INTERNAL_SERVER_ERROR, ex.getStatus());
-  }
-
-  @Test
-  public void testSetClaimToRfdStatus() {
-    ResponseEntity<String> resp200 = ResponseEntity.ok("{}");
-    ResponseEntity<String> resp500 =
-        ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
-    mockResponseForUrl(
-        Mockito.doReturn(resp200),
-        formatClaimUrl(UPDATE_CLAIM_STATUS, GOOD_CLAIM_ID),
-        HttpMethod.PUT);
-    mockResponseForUrl(
-        Mockito.doReturn(resp500),
-        formatClaimUrl(UPDATE_CLAIM_STATUS, BAD_CLAIM_ID),
-        HttpMethod.PUT);
-
-    try {
-      BipUpdateClaimResp result = service.setClaimToRfdStatus(GOOD_CLAIM_ID);
-      assertEquals(result.getStatus(), 200);
-    } catch (BipException e) {
-      log.error("Positive setClaimToRfdStatus test failed.", e);
-      fail();
-    }
-
-    try {
-      service.setClaimToRfdStatus(BAD_CLAIM_ID);
-      log.error("Negative setClaimToRfdStatus test failed.");
-      fail();
-    } catch (BipException e) {
-      assertSame(HttpStatus.INTERNAL_SERVER_ERROR, e.getStatus());
-    }
-  }
-
-  @Test
-  public void testSetClaimToRfdStatus_500() {
-    String body = "{}";
-    mockResponseForUrl(
-        Mockito.doThrow(
-            new HttpClientErrorException(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                HttpStatus.INTERNAL_SERVER_ERROR.name(),
-                body.getBytes(),
-                Charset.defaultCharset())),
-        formatClaimUrl(UPDATE_CLAIM_STATUS, INTERNAL_SERVER_ERROR_CLAIM_ID),
-        HttpMethod.PUT);
-
-    try {
-      service.setClaimToRfdStatus(INTERNAL_SERVER_ERROR_CLAIM_ID);
-      log.error("Negative updateClaimContention test failed.");
-      fail();
-    } catch (BipException e) {
-      assertSame(HttpStatus.INTERNAL_SERVER_ERROR, e.getStatus());
-    }
   }
 
   @Test
@@ -328,7 +271,7 @@ public class BipApiServiceTest {
                 List.of(
                     Contention.builder()
                         .medicalInd(true)
-                        .beginDate("2023-09-27T00:00:00-06:00")
+                        .beginDate(Instant.parse("2023-09-27T00:00:00-06:00"))
                         .contentionTypeCode("NEW")
                         .claimantText("tendinitis/bilateral")
                         .build()))
@@ -352,7 +295,7 @@ public class BipApiServiceTest {
                 List.of(
                     Contention.builder()
                         .medicalInd(true)
-                        .beginDate("2023-09-27T00:00:00-06:00")
+                        .beginDate(Instant.parse("2023-09-27T00:00:00-06:00"))
                         .contentionTypeCode("NEW")
                         .claimantText("tendinitis/bilateral")
                         .build()))
@@ -375,7 +318,7 @@ public class BipApiServiceTest {
                 List.of(
                     Contention.builder()
                         .medicalInd(true)
-                        .beginDate("2023-09-27T00:00:00-06:00")
+                        .beginDate(Instant.parse("2023-09-27T00:00:00-06:00"))
                         .contentionTypeCode("NEW")
                         .claimantText("tendinitis/bilateral")
                         .build()))
@@ -399,7 +342,7 @@ public class BipApiServiceTest {
                 List.of(
                     ExistingContention.builder()
                         .medicalInd(true)
-                        .beginDate("2023-09-27T00:00:00-06:00")
+                        .beginDate(Instant.parse("2023-09-27T00:00:00-06:00"))
                         .contentionTypeCode("NEW")
                         .claimantText("tendinitis/bilateral")
                         .build()))
@@ -421,7 +364,7 @@ public class BipApiServiceTest {
                 List.of(
                     ExistingContention.builder()
                         .medicalInd(true)
-                        .beginDate("2023-09-27T00:00:00-06:00")
+                        .beginDate(Instant.parse("2023-09-27T00:00:00-06:00"))
                         .contentionTypeCode("NEW")
                         .claimantText("tendinitis/bilateral")
                         .build()))
@@ -444,7 +387,7 @@ public class BipApiServiceTest {
                 List.of(
                     ExistingContention.builder()
                         .medicalInd(true)
-                        .beginDate("2023-09-27T00:00:00-06:00")
+                        .beginDate(Instant.parse("2023-09-27T00:00:00-06:00"))
                         .contentionTypeCode("NEW")
                         .claimantText("tendinitis/bilateral")
                         .build()))
@@ -483,6 +426,74 @@ public class BipApiServiceTest {
     HttpStatusCodeException ex =
         Assertions.assertThrows(test.ex.getClass(), () -> service.cancelClaim(request));
     assertResponseHasMessageWithStatus(ex.getResponseBodyAsString(), test.status);
+  }
+
+  @Test
+  public void testCancelClaimInternalServerError_500() {
+    mockResponseForUrl(
+        Mockito.doThrow(new RuntimeException("nope")),
+        formatClaimUrl(CANCEL_CLAIM, INTERNAL_SERVER_ERROR_CLAIM_ID),
+        HttpMethod.PUT);
+
+    CancelClaimRequest request =
+        CancelClaimRequest.builder()
+            .claimId(INTERNAL_SERVER_ERROR_CLAIM_ID)
+            .closeReasonText("because we are testing")
+            .lifecycleStatusReasonCode("60")
+            .build();
+    BipException ex =
+        Assertions.assertThrows(BipException.class, () -> service.cancelClaim(request));
+    assertSame(HttpStatus.INTERNAL_SERVER_ERROR, ex.getStatus());
+  }
+
+  @Test
+  public void testPutLifecycleStatus_200() {
+    ResponseEntity<String> resp200 = ResponseEntity.ok("{}");
+    mockResponseForUrl(
+        Mockito.doReturn(resp200),
+        formatClaimUrl(CLAIM_LIFECYCLE_STATUS, GOOD_CLAIM_ID),
+        HttpMethod.PUT);
+    PutClaimLifecycleRequest request =
+        PutClaimLifecycleRequest.builder()
+            .claimId(GOOD_CLAIM_ID)
+            .claimLifecycleStatus("Just a test")
+            .build();
+    PutClaimLifecycleResponse response = service.putClaimLifecycleStatus(request);
+    assertResponseIsSuccess(response, HttpStatus.OK);
+  }
+
+  @ParameterizedTest(name = "testPutLifecycleStatus_{0}")
+  @EnumSource(TestCase.class)
+  public void testPutLifecycleStatus_Non2xx(TestCase test) throws JsonProcessingException {
+    mockResponseForUrl(
+        Mockito.doThrow(test.ex),
+        formatClaimUrl(CLAIM_LIFECYCLE_STATUS, test.claimId),
+        HttpMethod.PUT);
+    PutClaimLifecycleRequest request =
+        PutClaimLifecycleRequest.builder()
+            .claimId(test.claimId)
+            .claimLifecycleStatus("Just a test")
+            .build();
+    HttpStatusCodeException ex =
+        Assertions.assertThrows(test.ex.getClass(), () -> service.putClaimLifecycleStatus(request));
+    assertResponseHasMessageWithStatus(ex.getResponseBodyAsString(), test.status);
+  }
+
+  @Test
+  public void testPutLifecycleStatusInternalServerError_500() {
+    mockResponseForUrl(
+        Mockito.doThrow(new RuntimeException("nope")),
+        formatClaimUrl(CLAIM_LIFECYCLE_STATUS, INTERNAL_SERVER_ERROR_CLAIM_ID),
+        HttpMethod.PUT);
+
+    PutClaimLifecycleRequest request =
+        PutClaimLifecycleRequest.builder()
+            .claimId(INTERNAL_SERVER_ERROR_CLAIM_ID)
+            .claimLifecycleStatus("Just a test")
+            .build();
+    BipException ex =
+        Assertions.assertThrows(BipException.class, () -> service.putClaimLifecycleStatus(request));
+    assertSame(HttpStatus.INTERNAL_SERVER_ERROR, ex.getStatus());
   }
 
   @Test
