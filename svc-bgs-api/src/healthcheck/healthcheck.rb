@@ -1,29 +1,23 @@
 # Inspired by the README at https://github.com/ruby-amqp/bunny
 
 require 'bunny'
+require 'json'
 
-BUNNY_ARGS = {
-  host: ENV['RABBITMQ_PLACEHOLDERS_HOST'].presence || "localhost",
-  user: ENV['RABBITMQ_USERNAME'].presence || "guest",
-  password: ENV['RABBITMQ_PASSWORD'].presence || "guest"
-}
-
-REPLY_EXCHANGE = "bgs-api"
-REPLY_QUEUE = "healthcheck-reply"
+require_relative '../config/constants'
 
 conn = Bunny.new(BUNNY_ARGS)
 conn.start
 
 ch = conn.create_channel
-ch.confirm_select
+x = ch.direct(BGS_EXCHANGE_NAME, CAMEL_MQ_PROPERTIES)
 
-r = ch.queue(REPLY_EXCHANGE, REPLY_QUEUE)
+r = ch.queue(HEALTHCHECK_REPLY_QUEUE, CAMEL_MQ_PROPERTIES).bind(x, :routing_key => HEALTHCHECK_REPLY_QUEUE)
 
-q  = ch.queue("bgs-api", "healthcheck")
-q.publish("{health: check}", :reply_to => REPLY_QUEUE)
+q = ch.queue(HEALTHCHECK_QUEUE, CAMEL_MQ_PROPERTIES).bind(x, :routing_key => HEALTHCHECK_QUEUE)
+q.publish('{"health": "check"}', :reply_to => HEALTHCHECK_REPLY_QUEUE)
 
 delivery_info, properties, payload = r.pop
 
-if payload.status_code != 200 {
+if JSON.parse(payload)["statusCode"] != 200 then
     raise "svc-bgs-api healthcheck failed"
-}
+end
