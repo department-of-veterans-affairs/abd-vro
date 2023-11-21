@@ -61,7 +61,7 @@ jobs:
           retries: 30
 
       - name: 'Check for healthy BGS container'
-        run: timeout 180s sh -c 'until docker ps | grep vro-svc-bgs-api-1 | grep -q healthy; do echo "Waiting for container to be healthy..."; sleep 2; done'
+        run: timeout 180s sh -c 'until docker ps | grep ".*svc-bgs-api.*" | grep -q healthy; do echo "Waiting for container to be healthy..."; sleep 2; done'
 
       - name: 'Create add-note-response queue'
         uses: indiesdev/curl@v1.1
