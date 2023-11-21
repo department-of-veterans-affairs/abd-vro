@@ -35,7 +35,7 @@ lhAPIProvider:
   validateToken: "NO"
 
 bip:
-  claimBaseUrl: localhost
+  claimBaseUrl: ${BIP_CLAIM_URL}
   claimClientId: "${BIP_CLAIM_USERID:VRO_USER}"
   claimSecret: "${BIP_CLAIM_SECRET:7zEJ+xepTPakl7KfX58bVR+t0zQGpsElg9bDdKmoVJM=}"
   evidenceClientId: "${BIP_EVIDENCE_USERID:VRO_USER}"
@@ -43,7 +43,6 @@ bip:
   applicationId: "${BIP_APPLICATION_ID:VRO}"
   stationId: "${BIP_STATION_ID:456}"
 
-spring.config.import: >
-  client-keystore.yml,
-  server-truststore.yml
-truststore_password: keystore_pw
+truststore_password: "${BIP_PASSWORD:keystore_pw}"
+truststore: ${BIP_TRUSTSTORE}
+keystore: ${BIP_KEYSTORE}

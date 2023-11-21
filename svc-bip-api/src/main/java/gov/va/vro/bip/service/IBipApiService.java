@@ -1,12 +1,17 @@
 package gov.va.vro.bip.service;
 
-import gov.va.vro.bip.model.BipClaimResp;
 import gov.va.vro.bip.model.BipCloseClaimPayload;
 import gov.va.vro.bip.model.BipCloseClaimResp;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.ClaimStatus;
-import gov.va.vro.bip.model.UpdateContentionReq;
+import gov.va.vro.bip.model.claim.GetClaimResponse;
+import gov.va.vro.bip.model.contentions.CreateClaimContentionsRequest;
+import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
+import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
+import gov.va.vro.bip.model.contentions.UpdateClaimContentionsResponse;
+import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionRequest;
+import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionResponse;
 
 /**
  * BIP Claims API service.
@@ -22,7 +27,7 @@ public interface IBipApiService {
    * @return a BipClaim object.
    * @throws BipException error occurs.
    */
-  BipClaimResp getClaimDetails(long collectionId);
+  GetClaimResponse getClaimDetails(long collectionId);
 
   /**
    * Updates claim status to RFD.
@@ -44,23 +49,31 @@ public interface IBipApiService {
   BipUpdateClaimResp updateClaimStatus(long collectionId, ClaimStatus status) throws BipException;
 
   /**
-   * Gets a list of contentions in a claim.
+   * Gets a list of contention summaries in a claim.
    *
    * @param claimId claim ID.
-   * @return a list of contention objects.
+   * @return response
    * @throws BipException error occurs.
    */
   GetClaimContentionsResponse getClaimContentions(long claimId) throws BipException;
 
   /**
-   * Updates a claim contention record.
+   * Create one or more contentions in a claim.
    *
-   * @param claimId claim ID.
-   * @param contention model defining the details of the update being applied to the contention.
-   * @return a contention response object now containing the updated contention information.
-   * @throws BipException error occurs.
+   * @param request request
+   * @return response
+   * @throws BipException error occurs
    */
-  BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention);
+  CreateClaimContentionsResponse createClaimContentions(CreateClaimContentionsRequest request);
+
+  /**
+   * Updates one or more existing contentions in a claim.
+   *
+   * @param request request
+   * @return response
+   * @throws BipException error occurs
+   */
+  UpdateClaimContentionsResponse updateClaimContentions(UpdateClaimContentionsRequest request);
 
   /**
    * Cancels a claim record.
@@ -70,4 +83,14 @@ public interface IBipApiService {
    * @throws BipException error occurs.
    */
   BipCloseClaimResp cancelClaim(BipCloseClaimPayload request);
+
+  /**
+   * Sets the temporary station of jurisdiction for a claim.
+   *
+   * @param request request
+   * @return response
+   * @throws BipException error occurs
+   */
+  PutTempStationOfJurisdictionResponse putTempStationOfJurisdiction(
+      PutTempStationOfJurisdictionRequest request);
 }

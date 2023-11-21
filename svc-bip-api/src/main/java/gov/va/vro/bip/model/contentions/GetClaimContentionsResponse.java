@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.va.vro.bip.model.BipPayloadResponse;
-import gov.va.vro.bip.model.ClaimContention;
+import gov.va.vro.bip.model.ContentionSummary;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
@@ -18,5 +18,5 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class GetClaimContentionsResponse extends BipPayloadResponse {
   @JsonProperty("contentions")
-  private final List<ClaimContention> contentions;
+  private final List<ContentionSummary> contentions;
 }
