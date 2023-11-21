@@ -13,7 +13,7 @@ response_404 = f'{RESPONSE_DIR}/404_response.json'
 response_400 = f'{RESPONSE_DIR}/400_response.json'
 response_500 = f'{RESPONSE_DIR}/500_response.json'
 pending_contentions_200 = f'{RESPONSE_DIR}/claim_contentions_increase_tendinitis_200.json'
-ep400_contentions_200 = f'{RESPONSE_DIR}/claim_contentions_increase_tinitus_200.json'
+ep400_contentions_200 = f'{RESPONSE_DIR}/claim_contentions_increase_tinnitus_200.json'
 ep400_duplicate_contentions_200 = f'{RESPONSE_DIR}/claim_contentions_increase_tendinitis_200.json'
 
 

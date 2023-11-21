@@ -79,8 +79,6 @@ class EpMergeMachine(StateMachine):
 
     @running_set_temp_station_of_jurisdiction.enter
     def on_set_temp_station_of_jurisdiction(self, pending_contentions=None, ep400_contentions=None):
-        self.job.pending_contentions = pending_contentions.contentions
-        self.job.ep400_contentions = ep400_contentions.contentions
         request = tsoj.Request(temp_station_of_jurisdiction="398", claim_id=self.job.pending_claim_id)
         self.make_request(
             request=request,
@@ -146,9 +144,9 @@ class EpMergeMachine(StateMachine):
     def has_error(self):
         return self.job.state == JobState.COMPLETED_ERROR
 
-    def is_duplicate(self):
+    def is_duplicate(self, pending_contentions, ep400_contentions):
         try:
-            return not ContentionsUtil.new_contentions(self.job.pending_contentions, self.job.ep400_contentions)
+            return not ContentionsUtil.new_contentions(pending_contentions, ep400_contentions)
         except CompareException as e:
             self.log_error(e.message)
         return None

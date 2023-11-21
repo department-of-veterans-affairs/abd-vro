@@ -18,10 +18,7 @@ class ContentionsUtil:
     @staticmethod
     def merge_claims(pending_contentions: Response = None, ep400_contentions: Response = None):
         if pending_contentions and ep400_contentions:
-            try:
-                return [*pending_contentions.contentions, *ContentionsUtil.new_contentions(pending_contentions.contentions, ep400_contentions.contentions)]
-            except CompareException:
-                raise
+            return [*pending_contentions.contentions, *ContentionsUtil.new_contentions(pending_contentions.contentions, ep400_contentions.contentions)]
         raise MergeException("Cannot merge contentions if pending or EP400 claim contentions are missing.")
 
     @staticmethod
