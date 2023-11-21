@@ -1,6 +1,5 @@
 package gov.va.vro.tools.rabbitmq
 
-import com.rabbitmq.client.Channel
 import org.springframework.amqp.AmqpException
 import org.springframework.amqp.core.Message
 import org.springframework.amqp.rabbit.core.RabbitTemplate
