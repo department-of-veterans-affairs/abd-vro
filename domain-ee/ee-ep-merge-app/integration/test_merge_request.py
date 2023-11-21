@@ -13,8 +13,9 @@ response_404 = f'{RESPONSE_DIR}/404_response.json'
 response_400 = f'{RESPONSE_DIR}/400_response.json'
 response_500 = f'{RESPONSE_DIR}/500_response.json'
 pending_claim_200 = f'{RESPONSE_DIR}/get_pending_claim_200.json'
-pending_contentions_200 = f'{RESPONSE_DIR}/get_pending_claim_contentions_200.json'
-ep400_contentions_200 = f'{RESPONSE_DIR}/get_ep400_claim_contentions_200.json'
+pending_contentions_200 = f'{RESPONSE_DIR}/claim_contentions_increase_tendinitis_200.json'
+ep400_contentions_200 = f'{RESPONSE_DIR}/claim_contentions_increase_tinnitus_200.json'
+ep400_duplicate_contentions_200 = f'{RESPONSE_DIR}/claim_contentions_increase_tendinitis_200.json'
 
 
 @pytest.fixture(scope="session")
@@ -74,6 +75,29 @@ class TestMergeRequest:
         get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_contentions_200])
         put_tsoj_endpoint.set_responses([response_200])
         update_claim_contentions_endpoint.set_responses([response_200])
+        cancel_claim_endpoint.set_responses([response_200])
+
+        async with AsyncClient(app=app, base_url="http://test") as client:
+            job_id = await self.submit_request(client)
+
+            response = await client.get(url=f"/merge/{job_id}")
+            assert response.status_code == 200
+
+            response_json = response.json()
+            assert response_json is not None
+            assert response_json['job']['pending_claim_id'] == self.pending_claim_id
+            assert response_json['job']['ep400_claim_id'] == self.ep400_claim_id
+            assert response_json['job']['state'] == JobState.COMPLETED_SUCCESS.value
+
+    @pytest.mark.asyncio
+    async def test_completed_success_with_duplicate_contention(self,
+                                                               get_claim_endpoint: MqEndpoint,
+                                                               get_claim_contentions_endpoint: MqEndpoint,
+                                                               put_tsoj_endpoint: MqEndpoint,
+                                                               cancel_claim_endpoint: MqEndpoint):
+        get_claim_endpoint.set_responses([pending_claim_200])
+        get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_duplicate_contentions_200])
+        put_tsoj_endpoint.set_responses([response_200])
         cancel_claim_endpoint.set_responses([response_200])
 
         async with AsyncClient(app=app, base_url="http://test") as client:
