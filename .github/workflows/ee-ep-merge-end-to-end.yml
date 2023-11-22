@@ -82,6 +82,9 @@ jobs:
         run: |
           source scripts/setenv.sh
 
+          # Temporary workaround until secret is updated with correct value
+          export BIP_CLAIM_URL="mock-bip-claims-api:20300"
+
           export -p | sed 's/declare -x //'
 
           ./gradlew :app:dockerComposeUp
@@ -134,8 +137,7 @@ jobs:
         shell: bash
         run: |
           state="${{ fromJSON(steps.merge_status.outputs.response).data.job.state }}"
-          echo $state
-          if $state != "COMPLETED_SUCCESS"; then
+          if [ "$state" != "COMPLETED_SUCCESS" ]; then
             echo "Merge Request completed with error"
             echo ${{ steps.merge_status.outputs.response }}
             exit 10
@@ -148,3 +150,4 @@ jobs:
         run: |
           docker ps
           COMPOSE_PROFILES="all" ./gradlew dockerComposeDown
+          COMPOSE_PROFILES="all" ./gradlew -p mocks dockerComposeDown
