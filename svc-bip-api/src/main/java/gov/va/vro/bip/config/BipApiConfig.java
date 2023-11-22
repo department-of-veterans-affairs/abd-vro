@@ -28,7 +28,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.Base64;
-
 import javax.net.ssl.SSLContext;
 
 /**
@@ -64,7 +63,7 @@ public class BipApiConfig {
       throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
     KeyStore keyStore = KeyStore.getInstance("PKCS12");
     String noSpaceBase64 = base64.replaceAll("\\s+", "");
-    byte[] decodedBytes = new byte[] { };
+    byte[] decodedBytes = new byte[] {};
     try {
       decodedBytes = Base64.getDecoder().decode(noSpaceBase64);
     } catch (IllegalArgumentException e) {
