@@ -21,7 +21,7 @@ class ContentionSummary(BaseModel):
     notification_date: datetime | None = None
     contention_type_code: str
     classification_type: int | None = None
-    diagnostic_type_code: str | None = None
+    diagnostic_type_code: int | None = None
     claimant_text: str
     contention_status_type_code: str | None = None
     original_source_type_code: str | None = None

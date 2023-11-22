@@ -3,7 +3,7 @@ import logging
 from typing import Type
 
 from hoppy.exception import ResponseException
-from model import cancel_claim, get_claim, get_contentions, update_contentions
+from model import cancel_claim, create_contentions, get_claim, get_contentions
 from model import update_temp_station_of_jurisdiction as tsoj
 from model.merge_job import JobState, MergeJob
 from model.request import GeneralRequest
@@ -28,7 +28,7 @@ class EpMergeMachine(StateMachine):
     running_get_ep400_contentions = State(value=JobState.RUNNING_GET_EP400_CLAIM_CONTENTIONS)
     running_set_temp_station_of_jurisdiction = State(value=JobState.RUNNING_SET_TEMP_STATION_OF_JURISDICTION)
     running_merge_contentions = State(value=JobState.RUNNING_MERGE_CONTENTIONS)
-    running_update_pending_claim_contentions = State(value=JobState.RUNNING_UPDATE_PENDING_CLAIM_CONTENTIONS)
+    running_move_contentions_to_pending_claim = State(value=JobState.RUNNING_MOVE_CONTENTIONS_TO_PENDING_CLAIM)
     running_cancel_ep400_claim = State(value=JobState.RUNNING_CANCEL_EP400_CLAIM)
     completed_success = State(final=True, value=JobState.COMPLETED_SUCCESS)
     completed_error = State(final=True, value=JobState.COMPLETED_ERROR)
@@ -41,13 +41,15 @@ class EpMergeMachine(StateMachine):
             | running_get_pending_contentions.to(completed_error, cond="has_error")
             | running_get_ep400_contentions.to(running_set_temp_station_of_jurisdiction, unless="has_error")
             | running_get_ep400_contentions.to(completed_error, cond="has_error")
-            | running_set_temp_station_of_jurisdiction.to(running_merge_contentions, unless=["is_duplicate", "has_error"])
-            | running_set_temp_station_of_jurisdiction.to(running_cancel_ep400_claim, cond="is_duplicate", unless="has_error")
+            | running_set_temp_station_of_jurisdiction.to(running_merge_contentions,
+                                                          unless=["is_duplicate", "has_error"])
+            | running_set_temp_station_of_jurisdiction.to(running_cancel_ep400_claim, cond="is_duplicate",
+                                                          unless="has_error")
             | running_set_temp_station_of_jurisdiction.to(completed_error, cond="has_error")
-            | running_merge_contentions.to(running_update_pending_claim_contentions, unless="has_error")
+            | running_merge_contentions.to(running_move_contentions_to_pending_claim, unless="has_error")
             | running_merge_contentions.to(completed_error, cond="has_error")
-            | running_update_pending_claim_contentions.to(running_cancel_ep400_claim, unless="has_error")
-            | running_update_pending_claim_contentions.to(completed_error, cond="has_error")
+            | running_move_contentions_to_pending_claim.to(running_cancel_ep400_claim, unless="has_error")
+            | running_move_contentions_to_pending_claim.to(completed_error, cond="has_error")
             | running_cancel_ep400_claim.to(completed_success, unless="has_error")
             | running_cancel_ep400_claim.to(completed_error, cond="has_error")
     )
@@ -117,13 +119,14 @@ class EpMergeMachine(StateMachine):
             self.log_error(e.message)
         self.process(merged_contentions=merged_contentions)
 
-    @running_update_pending_claim_contentions.enter
-    def on_update_pending_claim_contentions(self, merged_contentions=None):
-        request = update_contentions.Request(claim_id=self.job.pending_claim_id, update_contentions=merged_contentions)
+    @running_move_contentions_to_pending_claim.enter
+    def on_move_contentions_to_pending_claim(self, merged_contentions=None):
+        request = create_contentions.Request(claim_id=self.job.pending_claim_id, create_contentions=merged_contentions)
         self.make_request(
             request=request,
-            hoppy_client=HOPPY.get_client(ClientName.UPDATE_CLAIM_CONTENTIONS),
-            response_type=update_contentions.Response)
+            hoppy_client=HOPPY.get_client(ClientName.CREATE_CLAIM_CONTENTIONS),
+            response_type=create_contentions.Response,
+            expected_status=201)
         self.process()
 
     @running_cancel_ep400_claim.enter
@@ -145,13 +148,14 @@ class EpMergeMachine(StateMachine):
     def make_request(self,
                      request: GeneralRequest,
                      hoppy_client,
-                     response_type: Type[GeneralResponse]):
+                     response_type: Type[GeneralResponse],
+                     expected_status: int = 200):
         try:
             loop = asyncio.new_event_loop()
             req = hoppy_client.make_request(self.job.job_id, request.model_dump(by_alias=True))
             response = loop.run_until_complete(req)
             model = response_type.model_validate(response)
-            if model.status_code != 200:
+            if model.status_code != expected_status:
                 self.log_error(model.messages)
             return model
         except ValidationError as e:
