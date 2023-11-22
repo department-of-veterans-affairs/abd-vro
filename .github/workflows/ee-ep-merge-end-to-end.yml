@@ -85,6 +85,7 @@ jobs:
           export -p | sed 's/declare -x //'
 
           ./gradlew :app:dockerComposeUp
+          ./gradlew -p mocks docker
           ./gradlew -p mocks :dockerComposeUp
           ./gradlew :domain-ee:dockerComposeUp
 
