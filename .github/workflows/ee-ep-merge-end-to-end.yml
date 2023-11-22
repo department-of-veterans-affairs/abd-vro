@@ -120,21 +120,27 @@ jobs:
           # Allow time to finish processing
           sleep 5s
 
-      - name: 'Test get job ID'
-        shell: bash
-        run: |
-          echo ${{steps.get_job_id.outputs.job_id}}
-
       - name: 'Get Merge Request Status'
         uses: indiesdev/curl@v1.1
+        id: merge_status
         with:
-          id: merge_status
           url: 'http://localhost:8140/merge/${{steps.get_job_id.outputs.job_id}}'
           method: 'GET'
-          body: '{"pending_claim_id":1001,"ep400_claim_id":1000}'
-          accept: 202
+          accept: 200
           retries: 3
           log-response: true
+
+      - name: 'Verify Merge Complete'
+        shell: bash
+        run: |
+          state="${{ fromJSON(steps.merge_status.outputs.response).data.job.state }}"
+          echo $state
+          if $state != "COMPLETED_SUCCESS"; then
+            echo "Merge Request completed with error"
+            echo ${{ steps.merge_status.outputs.response }}
+            exit 10
+          fi
+
 
       - name: 'Clean shutdown of all containers'
         if: always()
