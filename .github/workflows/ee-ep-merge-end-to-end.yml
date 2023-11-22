@@ -50,12 +50,6 @@ jobs:
         run: sleep 60s
         shell: bash
 
-      - name: 'Post-Build Docker Cleanup'
-        uses: ./.github/actions/docker-prune
-
-      - name: 'Check disk space (Post-Build)'
-        uses: ./.github/actions/check-disk-space
-
       - name: 'Wait for RabbitMQ to be ready'
         uses: indiesdev/curl@v1.1
         with:
@@ -97,6 +91,12 @@ jobs:
       - name: 'Wait for other containers to start'
         run: sleep 60s
         shell: bash
+
+      - name: 'Post-Build Docker Cleanup'
+        uses: ./.github/actions/docker-prune
+
+      - name: 'Check disk space (Post-Build)'
+        uses: ./.github/actions/check-disk-space
 
       - name: 'Send Merge Request'
         uses: indiesdev/curl@v1.1
