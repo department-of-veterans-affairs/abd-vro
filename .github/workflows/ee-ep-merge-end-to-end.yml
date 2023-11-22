@@ -8,7 +8,7 @@ on:
   workflow_call:
 
 env:
-  COMPOSE_PROFILES: ''
+  COMPOSE_PROFILES: 'bip'
 
 jobs:
   integration-test:
@@ -73,6 +73,57 @@ jobs:
       - name: "Run Employee Experience Integration Tests"
         run: |
           ./gradlew :domain-ee:ee-ep-merge-app:integrationTest
+
+      - name: "Start svc-bip-api and mock-bip-claims-api"
+        run: |
+          source scripts/setenv.sh
+
+          export -p | sed 's/declare -x //'
+
+          ./gradlew :app:dockerComposeUp
+          ./gradlew -p mocks :dockerComposeUp
+          ./gradlew :domain-ee:dockerComposeUp
+
+      - name: 'Wait for other containers to start'
+        run: sleep 60s
+        shell: bash
+
+      - name: 'Send Merge Request'
+        uses: indiesdev/curl@v1.1
+        id: merge_request
+        with:
+          url: 'http://localhost:8140/merge'
+          method: 'POST'
+          body: '{"pending_claim_id":1001,"ep400_claim_id":1000}'
+          accept: 202
+          retries: 3
+          log-response: true
+
+      - name: 'Get Job ID'
+        shell: bash
+        id: get_job_id
+        run: |
+          job_id="${{ fromJSON(steps.merge_request.outputs.response).data.job.job_id }}"
+          echo "job_id=$job_id" >> "$GITHUB_OUTPUT"
+
+          # Allow time to finish processing
+          sleep 5s
+
+      - name: 'Test get job ID'
+        shell: bash
+        run: |
+          echo ${{steps.get_job_id.outputs.job_id}}
+
+      - name: 'Get Merge Request Status'
+        uses: indiesdev/curl@v1.1
+        with:
+          id: merge_status
+          url: 'http://localhost:8140/merge/${{steps.get_job_id.outputs.job_id}}'
+          method: 'GET'
+          body: '{"pending_claim_id":1001,"ep400_claim_id":1000}'
+          accept: 202
+          retries: 3
+          log-response: true
 
       - name: 'Clean shutdown of all containers'
         if: always()

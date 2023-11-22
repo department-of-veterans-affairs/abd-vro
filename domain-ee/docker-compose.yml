@@ -42,6 +42,7 @@ services:
       - vro_intranet
 
   ee-ep-merge-app:
+    profiles: ["all","bip"]
     image: va/abd_vro-ee-ep-merge-app:latest
     <<: [*common-sde-security, *common-security-opt]
     environment:
