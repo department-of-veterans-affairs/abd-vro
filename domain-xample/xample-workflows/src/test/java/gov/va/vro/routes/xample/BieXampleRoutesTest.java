@@ -2,7 +2,7 @@ package gov.va.vro.routes.xample;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import gov.va.vro.model.biekafka.BieMessageBasePayload;
+import gov.va.vro.model.biekafka.BieMessagePayload;
 import gov.va.vro.model.biekafka.test.BieMessagePayloadFactory;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -55,13 +55,13 @@ class BieXampleRoutesTest extends CamelTestSupport {
     if (isUseAdviceWith()) context.start();
   }
 
-  final BieMessageBasePayload testItem = BieMessagePayloadFactory.create();
+  final BieMessagePayload testItem = BieMessagePayloadFactory.create();
 
   @Test
   @SneakyThrows
   void testSaveContentionEventRoute() {
-    final BieMessageBasePayload response =
-        template.requestBody(STARTING_URI, testItem, BieMessageBasePayload.class);
+    final BieMessagePayload response =
+        template.requestBody(STARTING_URI, testItem, BieMessagePayload.class);
     assertThat(response.getEventType()).isEqualTo(testItem.getEventType());
     assertThat(response.getStatusMessage()).isNull();
     assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
@@ -84,8 +84,8 @@ class BieXampleRoutesTest extends CamelTestSupport {
     Mockito.when(dbHelper.saveContentionEvent(Mockito.any())).thenThrow(exception);
 
     // send a message in the original route
-    final BieMessageBasePayload response =
-        template.requestBody(STARTING_URI, testItem, BieMessageBasePayload.class);
+    final BieMessagePayload response =
+        template.requestBody(STARTING_URI, testItem, BieMessagePayload.class);
     assertThat(response.getEventType()).isEqualTo(testItem.getEventType());
     assertThat(response.getStatus()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     assertThat(response.getStatusMessage()).isEqualTo(exception.toString());

@@ -1,6 +1,6 @@
 package gov.va.vro.routes.xample;
 
-import gov.va.vro.model.biekafka.BieMessageBasePayload;
+import gov.va.vro.model.biekafka.BieMessagePayload;
 import gov.va.vro.model.xample.SomeDtoModel;
 import gov.va.vro.persistence.model.ClaimEntity;
 import gov.va.vro.persistence.model.ContentionEntity;
@@ -50,29 +50,29 @@ public class DbHelper {
     return veteranRepository.save(veteranEntity);
   }
 
-  public ContentionEventEntity saveContentionEvent(final BieMessageBasePayload bieMessageBasePayload) {
+  public ContentionEventEntity saveContentionEvent(final BieMessagePayload bieMessagePayload) {
     final ContentionEventEntity contentionEventEntity = new ContentionEventEntity();
-    contentionEventEntity.setClaimId(bieMessageBasePayload.getClaimId());
-    contentionEventEntity.setContentionId(bieMessageBasePayload.getContentionId());
-    contentionEventEntity.setEventType(bieMessageBasePayload.getEventType().toString());
-    contentionEventEntity.setNotifiedAt(convertTime(bieMessageBasePayload.getNotifiedAt()));
-    contentionEventEntity.setContentionTypeCode(bieMessageBasePayload.getContentionTypeCode());
-    contentionEventEntity.setDiagnosticTypeCode(bieMessageBasePayload.getDiagnosticTypeCode());
+    contentionEventEntity.setClaimId(bieMessagePayload.getClaimId());
+    contentionEventEntity.setContentionId(bieMessagePayload.getContentionId());
+    contentionEventEntity.setEventType(bieMessagePayload.getEventType().toString());
+    contentionEventEntity.setNotifiedAt(convertTime(bieMessagePayload.getNotifiedAt()));
+    contentionEventEntity.setContentionTypeCode(bieMessagePayload.getContentionTypeCode());
+    contentionEventEntity.setDiagnosticTypeCode(bieMessagePayload.getDiagnosticTypeCode());
     contentionEventEntity.setContentionClassificationName(
-        bieMessageBasePayload.getContentionClassificationName());
-    contentionEventEntity.setOccurredAt(convertTime(bieMessageBasePayload.getOccurredAt()));
-    contentionEventEntity.setDateAdded(convertTime(bieMessageBasePayload.getDateAdded()));
-    contentionEventEntity.setDateCompleted(convertTime(bieMessageBasePayload.getDateCompleted()));
-    contentionEventEntity.setDateUpdated(convertTime(bieMessageBasePayload.getDateUpdated()));
-    contentionEventEntity.setActorStation(bieMessageBasePayload.getActorStation());
-    contentionEventEntity.setAutomationIndicator(bieMessageBasePayload.isAutomationIndicator());
-    contentionEventEntity.setBenefitClaimTypeCode(bieMessageBasePayload.getBenefitClaimTypeCode());
-    contentionEventEntity.setContentionStatusTypeCode(bieMessageBasePayload.getContentionStatusTypeCode());
-    contentionEventEntity.setCurrentLifecycleStatus(bieMessageBasePayload.getCurrentLifecycleStatus());
-    contentionEventEntity.setDetails(bieMessageBasePayload.getDetails());
-    contentionEventEntity.setEventTime(convertTime(bieMessageBasePayload.getEventTime()));
-    contentionEventEntity.setJournalStatusTypeCode(bieMessageBasePayload.getJournalStatusTypeCode());
-    contentionEventEntity.setVeteranParticipantId(bieMessageBasePayload.getVeteranParticipantId());
+        bieMessagePayload.getContentionClassificationName());
+    contentionEventEntity.setOccurredAt(convertTime(bieMessagePayload.getOccurredAt()));
+    contentionEventEntity.setDateAdded(convertTime(bieMessagePayload.getDateAdded()));
+    contentionEventEntity.setDateCompleted(convertTime(bieMessagePayload.getDateCompleted()));
+    contentionEventEntity.setDateUpdated(convertTime(bieMessagePayload.getDateUpdated()));
+    contentionEventEntity.setActorStation(bieMessagePayload.getActorStation());
+    contentionEventEntity.setAutomationIndicator(bieMessagePayload.isAutomationIndicator());
+    contentionEventEntity.setBenefitClaimTypeCode(bieMessagePayload.getBenefitClaimTypeCode());
+    contentionEventEntity.setContentionStatusTypeCode(bieMessagePayload.getContentionStatusTypeCode());
+    contentionEventEntity.setCurrentLifecycleStatus(bieMessagePayload.getCurrentLifecycleStatus());
+    contentionEventEntity.setDetails(bieMessagePayload.getDetails());
+    contentionEventEntity.setEventTime(convertTime(bieMessagePayload.getEventTime()));
+    contentionEventEntity.setJournalStatusTypeCode(bieMessagePayload.getJournalStatusTypeCode());
+    contentionEventEntity.setVeteranParticipantId(bieMessagePayload.getVeteranParticipantId());
 
     return contentionEventRepository.save(contentionEventEntity);
   }

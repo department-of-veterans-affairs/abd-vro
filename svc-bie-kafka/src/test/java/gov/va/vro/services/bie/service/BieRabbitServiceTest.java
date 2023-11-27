@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
-import gov.va.vro.model.biekafka.BieMessageBasePayload;
+import gov.va.vro.model.biekafka.BieMessagePayload;
 import gov.va.vro.model.biekafka.test.BieMessagePayloadFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -30,18 +30,18 @@ class BieRabbitServiceTest {
   @Nested
   class Send {
 
-    @Captor ArgumentCaptor<BieMessageBasePayload> messageCaptor;
+    @Captor ArgumentCaptor<BieMessagePayload> messageCaptor;
 
     @Test
     void shouldConvertAndSendBiePayload() {
       final String exchange = "testExchange";
       final String topic = "testTopic";
-      final BieMessageBasePayload payload = BieMessagePayloadFactory.create();
+      final BieMessagePayload payload = BieMessagePayloadFactory.create();
 
       bieRabbitService.send(exchange, topic, payload);
       verify(rabbitTemplate).convertAndSend(eq(exchange), eq(topic), messageCaptor.capture());
 
-      final BieMessageBasePayload value = messageCaptor.getValue();
+      final BieMessagePayload value = messageCaptor.getValue();
       assertThat(value.getEventType()).isEqualTo(payload.getEventType());
       assertThat(value.getClaimId()).isEqualTo(payload.getClaimId());
       assertThat(value.getContentionId()).isEqualTo(payload.getContentionId());

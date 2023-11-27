@@ -1,6 +1,6 @@
 package gov.va.vro.model.biekafka.test;
 
-import gov.va.vro.model.biekafka.BieMessageBasePayload;
+import gov.va.vro.model.biekafka.BieMessagePayload;
 import gov.va.vro.model.biekafka.ContentionEvent;
 import net.datafaker.Faker;
 import java.util.Random;
@@ -11,8 +11,8 @@ public class BieMessagePayloadFactory {
   private static final Random RANDOM = new Random();
   private static final Faker faker = new Faker();
 
-  private static BieMessageBasePayload createPayload(ContentionEvent eventType) {
-    return BieMessageBasePayload.builder()
+  private static BieMessagePayload createPayload(ContentionEvent eventType) {
+    return BieMessagePayload.builder()
             .eventType(eventType)
             .claimId(faker.random().nextLong())
             .contentionClassificationName(faker.lorem().word())
@@ -27,7 +27,7 @@ public class BieMessagePayloadFactory {
             .build();
   }
 
-  private static void setCommonPayloadValues(BieMessageBasePayload payload) {
+  private static void setCommonPayloadValues(BieMessagePayload payload) {
     payload.setBenefitClaimTypeCode(faker.lorem().characters(10));
     payload.setActorStation(faker.lorem().characters(200));
     payload.setDetails(faker.lorem().characters(200));
@@ -38,18 +38,18 @@ public class BieMessagePayloadFactory {
     payload.setEventTime(faker.date().past(60, TimeUnit.DAYS).getTime());
   }
 
-  private static void setDeletedPayloadValues(BieMessageBasePayload payload) {
+  private static void setDeletedPayloadValues(BieMessagePayload payload) {
     payload.setAutomationIndicator(faker.bool().bool());
     payload.setContentionStatusTypeCode(faker.lorem().characters(5));
     payload.setCurrentLifecycleStatus(faker.lorem().characters(8));
     payload.setEventTime(faker.date().past(60, TimeUnit.DAYS).getTime());
   }
 
-  public static BieMessageBasePayload create() {
+  public static BieMessagePayload create() {
     // generate a random contention classification event type
     ContentionEvent eventType = faker.options().option(ContentionEvent.values());
 
-    BieMessageBasePayload payload = createPayload(eventType);
+    BieMessagePayload payload = createPayload(eventType);
 
     switch (eventType) {
       case CONTENTION_ASSOCIATED_TO_CLAIM:

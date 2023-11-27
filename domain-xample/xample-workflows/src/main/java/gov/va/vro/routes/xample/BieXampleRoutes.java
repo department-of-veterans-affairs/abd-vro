@@ -3,7 +3,7 @@ package gov.va.vro.routes.xample;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.camel.OnExceptionHelper;
 import gov.va.vro.camel.RabbitMqCamelUtils;
-import gov.va.vro.model.biekafka.BieMessageBasePayload;
+import gov.va.vro.model.biekafka.BieMessagePayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
@@ -39,12 +39,12 @@ public class BieXampleRoutes extends EndpointRouteBuilder {
     RabbitMqCamelUtils.fromRabbitmqFanoutExchange(this, exchangeName, queueName)
         .routeId(exchangeName + "-saveToDb-route")
         .log("Received ${headers} ${body.getClass()}: ${body}")
-        .convertBodyTo(BieMessageBasePayload.class)
+        .convertBodyTo(BieMessagePayload.class)
         .log("Converted to ${body.getClass()}: ${body}")
         .log("Saving Contention Event to DB")
         .process(
             exchange -> {
-              final BieMessageBasePayload body = exchange.getMessage().getBody(BieMessageBasePayload.class);
+              final BieMessagePayload body = exchange.getMessage().getBody(BieMessagePayload.class);
               dbHelper.saveContentionEvent(body);
               body.setStatus(200);
               exchange.getMessage().setBody(body);
@@ -52,7 +52,7 @@ public class BieXampleRoutes extends EndpointRouteBuilder {
         .log("Saved Contention Event to DB  ${exchange.pattern}: body ${body.getClass()}")
         .process(
             exchange -> {
-              final BieMessageBasePayload body = exchange.getMessage().getBody(BieMessageBasePayload.class);
+              final BieMessagePayload body = exchange.getMessage().getBody(BieMessagePayload.class);
               final ObjectMapper objectMapper = new ObjectMapper();
               final String jsonBody = objectMapper.writeValueAsString(body);
               log.info("ReceivedMessageEventBody: " + jsonBody);
@@ -60,9 +60,9 @@ public class BieXampleRoutes extends EndpointRouteBuilder {
   }
 
   void configureExceptionHandling() {
-    BiFunction<Exchange, Throwable, BieMessageBasePayload> exceptionHandler =
+    BiFunction<Exchange, Throwable, BieMessagePayload> exceptionHandler =
         (exchange, cause) -> {
-          var body = exchange.getMessage().getBody(BieMessageBasePayload.class);
+          var body = exchange.getMessage().getBody(BieMessagePayload.class);
           body.setStatus(500);
           body.setStatusMessage(cause.toString());
           exchange.getMessage().setBody(body);

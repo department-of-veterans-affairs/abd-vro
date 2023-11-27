@@ -2,7 +2,7 @@ package gov.va.vro.services.bie.service.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.model.biekafka.BieMessageBasePayload;
+import gov.va.vro.model.biekafka.BieMessagePayload;
 import gov.va.vro.model.biekafka.ContentionEvent;
 import gov.va.vro.services.bie.config.BieProperties;
 import gov.va.vro.services.bie.service.AmqpMessageSender;
@@ -43,18 +43,19 @@ public class KafkaConsumer {
     }
   }
 
-  private BieMessageBasePayload handleStringRecord(ConsumerRecord<String, Object> record)
+  private BieMessagePayload handleStringRecord(ConsumerRecord<String, Object> record)
       throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
     String messageValue = (String) record.value();
-    BieMessageBasePayload payload = objectMapper.readValue(messageValue, BieMessageBasePayload.class);
+    BieMessagePayload payload =
+        objectMapper.readValue(messageValue, BieMessagePayload.class);
     payload.setEventType(
         ContentionEvent.valueOf(ContentionEvent.mapTopicToEvent(record.topic()).name()));
 
     return payload;
   }
 
-  private BieMessageBasePayload handleGenericRecord(ConsumerRecord<String, Object> record) {
+  private BieMessagePayload handleGenericRecord(ConsumerRecord<String, Object> record) {
     GenericRecord messageValue = (GenericRecord) record.value();
     String KEY_CONTENTION_CLASSIFICATION_NAME = "ContentionClassificationName";
     String KEY_DIAGNOSTIC_TYPE_CODE = "DiagnosticTypeCode";
@@ -65,7 +66,7 @@ public class KafkaConsumer {
     String ACTION_NAME = "ActionName";
     String ACTION_RESULT_NAME = "ActionResultName";
 
-    return BieMessageBasePayload.builder()
+    return BieMessagePayload.builder()
         .eventType(
             ContentionEvent.valueOf(ContentionEvent.mapTopicToEvent(record.topic()).toString()))
         .claimId((long) messageValue.get(KEY_CLAIM_ID))

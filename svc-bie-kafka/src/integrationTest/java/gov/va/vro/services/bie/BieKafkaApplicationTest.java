@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.model.biekafka.BieMessageBasePayload;
+import gov.va.vro.model.biekafka.BieMessagePayload;
 import gov.va.vro.model.biekafka.ContentionEvent;
 import gov.va.vro.model.biekafka.test.BieMessagePayloadFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -40,11 +40,11 @@ public class BieKafkaApplicationTest {
   @Autowired private FanoutExchange fanoutExchange;
   @Autowired private RabbitTemplate rabbitTemplate;
 
-  private final List<BieMessageBasePayload> receivedMessages = new ArrayList<>();
+  private final List<BieMessagePayload> receivedMessages = new ArrayList<>();
   private CountDownLatch latch;
 
   @RabbitListener(queues = "#{bieEventQueue.name}")
-  public void receiveMqMessage(BieMessageBasePayload message) {
+  public void receiveMqMessage(BieMessagePayload message) {
     log.info("Received message: {}", message);
     receivedMessages.add(message);
     latch.countDown();
@@ -61,11 +61,11 @@ public class BieKafkaApplicationTest {
     latch = new CountDownLatch(2);
 
     // Message 1 goes directly to MQ
-    BieMessageBasePayload msgBody = BieMessagePayloadFactory.create();
+    BieMessagePayload msgBody = BieMessagePayloadFactory.create();
     rabbitTemplate.convertAndSend(fanoutExchange.getName(), "anyRoutingKey", msgBody);
 
     // Message 2 comes through Kafka
-    BieMessageBasePayload kafkaEventBody = BieMessagePayloadFactory.create();
+    BieMessagePayload kafkaEventBody = BieMessagePayloadFactory.create();
     kafkaEventBody.setEventType(null);
     kafkaEventBody.setContentionId(1234567890);
 

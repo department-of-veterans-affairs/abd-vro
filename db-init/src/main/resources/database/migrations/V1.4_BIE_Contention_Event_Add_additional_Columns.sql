@@ -7,7 +7,7 @@ ADD COLUMN "automation_indicator" boolean,
 ADD COLUMN "benefit_claim_type_code" VARCHAR(255),
 ADD COLUMN "contention_status_type_code" VARCHAR(255),
 ADD COLUMN "current_lifecycle_status" VARCHAR(255),
-
+ADD COLUMN "clmnt_txt" VARCHAR(255),
 ADD COLUMN "details" VARCHAR(255),
 ADD COLUMN "event_time" TIMESTAMP,
 ADD COLUMN "journal_status_type_code" VARCHAR(255),
