@@ -156,7 +156,7 @@ class EpMergeMachine(StateMachine):
             response = loop.run_until_complete(req)
             model = response_type.model_validate(response)
             if model.status_code != expected_status:
-                self.log_error(model.messages)
+                self.log_error(model.messages if model.messages else "Unknown Downstream Error")
             return model
         except ValidationError as e:
             self.log_error(e.errors(include_url=False, include_input=False))
@@ -179,6 +179,8 @@ class EpMergeMachine(StateMachine):
     def log_error(self, error):
         logging.error(f"event=errorProcessingJob "
                       f"job_id={self.job.job_id} "
+                      f"pending_claim_id={self.job.pending_claim_id} "
+                      f"ep400_claim_id={self.job.ep400_claim_id} "
                       f"state={self.job.state} "
                       f"error=\'{error}\'")
         self.job.error(self.job.state, error)
