@@ -2,8 +2,12 @@ import logging
 import sys
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
+from sqlalchemy import select, text
+from sqlalchemy.orm import Session
 
+from . import database_models
+from .database import Base, engine, get_db
 from .pydantic_models import Claim, PredictedClassification
 from .util.brd_classification_codes import get_classification_name
 from .util.data.reduced_dropdown_list import DROPDOWN_OPTIONS
@@ -44,6 +48,22 @@ def get_health_status():
         raise HTTPException(status_code=500, detail="Lookup table is empty")
 
     return {"status": "ok"}
+
+
+# TODO: move test database connection to health check endpoint ^
+@app.get("/test_db")
+async def test_db(db: Session = Depends(get_db)):
+    db.execute(text("SELECT 1"))
+    print("select succeeded")
+
+    result = db.execute(
+        select(database_models.MasonModelNotRealModelDeleteMe).order_by(
+            database_models.MasonModelNotRealModelDeleteMe.vets_api_claim_id
+        )
+    )
+    record = result.fetchone()
+    print(f"for fake model data... repr(record): {repr(record)}")
+    return {"success": True}
 
 
 @app.post("/classifier")

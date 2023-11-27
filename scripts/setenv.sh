@@ -138,6 +138,7 @@ export POSTGRES_PASSWORD=vro_user_pw
 # Shared across containers to use the target Postgres DB and schema
 export POSTGRES_DB=vro
 export POSTGRES_SCHEMA=claims
+export POSTGRES_URL="postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@0.0.0.0:5432/$POSTGRES_DB"
 
 # Credentials used by Flyway to initialize VRO database
 export POSTGRES_FLYWAY_USER=vro_admin_user

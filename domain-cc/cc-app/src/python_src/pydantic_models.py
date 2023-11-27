@@ -27,3 +27,7 @@ class PredictedClassification(BaseModel):
 
     classification_code: int
     classification_name: str
+
+class PredictedClassificationResponse(BaseModel):
+    classification: Optional[PredictedClassification]
+    is_in_lookup_table: bool
