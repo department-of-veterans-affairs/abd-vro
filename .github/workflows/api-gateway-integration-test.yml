@@ -38,6 +38,8 @@ jobs:
 
           # Run Xample:
           ./gradlew :domain-xample:dockerComposeUp
+      - name: 'Post-Build Docker Cleanup'
+        uses: ./.github/actions/docker-prune
 
       - name: "Wait for VRO to be ready"
         uses: nev7n/wait_for_response@v1

@@ -36,6 +36,8 @@ jobs:
           ./gradlew :dockerComposeUp
           ./gradlew :domain-xample:dockerComposeUp
           COMPOSE_PROFILES="" ./gradlew :app:dockerComposeUp
+      - name: 'Post-Build Docker Cleanup'
+        uses: ./.github/actions/docker-prune
 
       - name: 'Wait for containers to start'
         run: sleep 60s
