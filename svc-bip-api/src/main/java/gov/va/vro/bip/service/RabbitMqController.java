@@ -1,9 +1,9 @@
 package gov.va.vro.bip.service;
 
-import gov.va.vro.bip.model.BipCloseClaimPayload;
-import gov.va.vro.bip.model.BipCloseClaimResp;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.RequestForUpdateClaimStatus;
+import gov.va.vro.bip.model.cancel.CancelClaimRequest;
+import gov.va.vro.bip.model.cancel.CancelClaimResponse;
 import gov.va.vro.bip.model.claim.GetClaimRequest;
 import gov.va.vro.bip.model.claim.GetClaimResponse;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsRequest;
@@ -58,7 +58,7 @@ public class RabbitMqController {
   }
 
   @RabbitListener(queues = "cancelClaimQueue", errorHandler = "bipRequestErrorHandler")
-  BipCloseClaimResp cancelClaim(BipCloseClaimPayload cancelRequest) {
+  CancelClaimResponse cancelClaim(CancelClaimRequest cancelRequest) {
     return service.cancelClaim(cancelRequest);
   }
 

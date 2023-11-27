@@ -1,12 +1,9 @@
 package gov.va.vro.bip;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import gov.va.vro.bip.model.ExistingContention;
-import gov.va.vro.bip.model.contentions.GetClaimContentionsRequest;
-import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsResponse;
 import org.junit.jupiter.api.Test;
@@ -15,16 +12,6 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 
 public class UpdateClaimContentionsTest extends BaseIntegrationTest {
-
-  private ExistingContention getExistingContention(long claimId) {
-    GetClaimContentionsRequest getRequest =
-        GetClaimContentionsRequest.builder().claimId(claimId).build();
-    GetClaimContentionsResponse getResponse = sendAndReceive(getClaimContentionsQueue, getRequest);
-    assertBaseResponseIs2xx(getResponse, HttpStatus.OK);
-    assertNotNull(getResponse.getContentions());
-    assertEquals(1, getResponse.getContentions().size());
-    return getResponse.getContentions().get(0);
-  }
 
   @Test
   void testUpdateClaimContentions_200() {

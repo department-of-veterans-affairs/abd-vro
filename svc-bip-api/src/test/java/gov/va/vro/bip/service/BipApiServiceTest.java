@@ -10,14 +10,13 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.bip.model.BipCloseClaimPayload;
-import gov.va.vro.bip.model.BipCloseClaimReason;
-import gov.va.vro.bip.model.BipCloseClaimResp;
 import gov.va.vro.bip.model.BipMessage;
 import gov.va.vro.bip.model.BipPayloadResponse;
 import gov.va.vro.bip.model.BipUpdateClaimResp;
 import gov.va.vro.bip.model.Contention;
 import gov.va.vro.bip.model.ExistingContention;
+import gov.va.vro.bip.model.cancel.CancelClaimRequest;
+import gov.va.vro.bip.model.cancel.CancelClaimResponse;
 import gov.va.vro.bip.model.claim.GetClaimResponse;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
@@ -387,7 +386,7 @@ public class BipApiServiceTest {
   }
 
   @Test
-  public void testUpdateClaimContention() throws Exception {
+  public void testUpdateClaimContentions_200() throws Exception {
     String resp200Body = getTestData(CONTENTION_RESPONSE_200);
     ResponseEntity<String> resp200 = ResponseEntity.ok(resp200Body);
     mockResponseForUrl(
@@ -456,38 +455,34 @@ public class BipApiServiceTest {
   }
 
   @Test
-  public void testCancelClaim() {
-    BipCloseClaimReason reason =
-        BipCloseClaimReason.builder()
+  public void testCancelClaim_200() {
+    ResponseEntity<String> resp200 = ResponseEntity.ok("{}");
+    mockResponseForUrl(
+        Mockito.doReturn(resp200), formatClaimUrl(CANCEL_CLAIM, GOOD_CLAIM_ID), HttpMethod.PUT);
+    CancelClaimRequest request =
+        CancelClaimRequest.builder()
+            .claimId(GOOD_CLAIM_ID)
             .closeReasonText("because we are testing")
             .lifecycleStatusReasonCode("60")
             .build();
-    ResponseEntity<String> resp200 = ResponseEntity.ok("{}");
-    ResponseEntity<String> resp500 =
-        ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
-    mockResponseForUrl(
-        Mockito.doReturn(resp200), formatClaimUrl(CANCEL_CLAIM, GOOD_CLAIM_ID), HttpMethod.PUT);
-    mockResponseForUrl(
-        Mockito.doReturn(resp500), formatClaimUrl(CANCEL_CLAIM, BAD_CLAIM_ID), HttpMethod.PUT);
+    CancelClaimResponse response = service.cancelClaim(request);
+    assertResponseIsSuccess(response, HttpStatus.OK);
+  }
 
-    try {
-      var goodRequest =
-          BipCloseClaimPayload.builder().claimId(GOOD_CLAIM_ID).reason(reason).build();
-      BipCloseClaimResp result = service.cancelClaim(goodRequest);
-      assertEquals(result.getStatus(), 200);
-    } catch (BipException e) {
-      log.error("Positive cancelClaim test failed.", e);
-      fail();
-    }
-
-    try {
-      var badRequest = BipCloseClaimPayload.builder().claimId(BAD_CLAIM_ID).reason(reason).build();
-      BipCloseClaimResp responseNotFound = service.cancelClaim(badRequest);
-      assertNull(responseNotFound);
-      fail();
-    } catch (BipException e) {
-      assertSame(HttpStatus.INTERNAL_SERVER_ERROR, e.getStatus());
-    }
+  @ParameterizedTest(name = "testCancelClaim_{0}")
+  @EnumSource(TestCase.class)
+  public void testCancelClaim_Non2xx(TestCase test) throws JsonProcessingException {
+    mockResponseForUrl(
+        Mockito.doThrow(test.ex), formatClaimUrl(CANCEL_CLAIM, test.claimId), HttpMethod.PUT);
+    CancelClaimRequest request =
+        CancelClaimRequest.builder()
+            .claimId(test.claimId)
+            .closeReasonText("because we are testing")
+            .lifecycleStatusReasonCode("60")
+            .build();
+    HttpStatusCodeException ex =
+        Assertions.assertThrows(test.ex.getClass(), () -> service.cancelClaim(request));
+    assertResponseHasMessageWithStatus(ex.getResponseBodyAsString(), test.status);
   }
 
   @Test
