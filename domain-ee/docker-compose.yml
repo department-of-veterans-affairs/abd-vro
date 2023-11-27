@@ -32,6 +32,7 @@ services:
   # Containers with the `svc-` prefix are microservices to support domain workflows.
 
   ee-max-cfi-app:
+    profiles: ["all"]
     image: va/abd_vro-ee-max-cfi-app:latest
     <<: [*common-sde-security, *common-security-opt]
     environment:
