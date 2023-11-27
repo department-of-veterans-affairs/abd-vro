@@ -74,7 +74,7 @@ public class CreateClaimContentionsTest extends BaseIntegrationTest {
         .beginDate(Instant.parse("2023-02-01T00:00:00Z"))
         .contentionTypeCode("NEW")
         .classificationType(1250)
-        .diagnosticTypeCode(6260)
+        .diagnosticTypeCode("6260")
         .claimantText("tinnitus")
         .build();
   }

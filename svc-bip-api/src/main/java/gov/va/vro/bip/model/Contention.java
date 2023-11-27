@@ -42,7 +42,7 @@ public class Contention {
   private int classificationType;
 
   @JsonProperty("diagnosticTypeCode")
-  private int diagnosticTypeCode;
+  private String diagnosticTypeCode;
 
   @JsonProperty("claimantText")
   private String claimantText;
