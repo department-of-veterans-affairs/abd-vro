@@ -2,7 +2,6 @@ package gov.va.vro.mockbipclaims;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import gov.va.vro.mockbipclaims.controller.BaseController;
@@ -29,6 +28,9 @@ public class ClaimsControllerTest {
   @InjectMocks private ClaimsController claimsController;
 
   @Mock private ClaimStore claimStore;
+
+  private static final String OPEN = "Open";
+  private static final String CANCELLED = "Cancelled";
 
   @BeforeEach
   public void setUp() {
@@ -70,6 +72,10 @@ public class ClaimsControllerTest {
   public void testCancelClaimById_Success() {
     Long claimId = 1010L;
     ClaimStoreItem item = new ClaimStoreItem();
+    ClaimDetail claimDetail = new ClaimDetail();
+    claimDetail.setClaimLifecycleStatus(OPEN);
+    item.setClaimDetail(claimDetail);
+
     when(claimStore.get(claimId)).thenReturn(item);
     CloseClaimRequest closeClaimRequest = new CloseClaimRequest();
     closeClaimRequest.setLifecycleStatusReasonCode("60");
@@ -80,10 +86,7 @@ public class ClaimsControllerTest {
         claimsController.cancelClaimById(claimId, closeClaimRequest);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals(
-        "Successfully canceled the claim with id: " + claimId,
-        response.getBody().getMessages().get(0).getText());
-    verify(claimStore).cancel(claimId);
+    assertEquals(CANCELLED, item.getClaimDetail().getClaimLifecycleStatus());
   }
 
   @Test
