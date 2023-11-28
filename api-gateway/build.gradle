@@ -25,6 +25,6 @@ dependencies {
 
   constraints {
     // To address Snyk alert on DoS vulnerability
-    implementation 'org.springframework.boot:spring-boot-autoconfigure:3.1.5'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure:3.1.6'
   }
 }
