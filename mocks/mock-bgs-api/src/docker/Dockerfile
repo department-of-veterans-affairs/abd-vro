@@ -1,4 +1,4 @@
-FROM castlemock/castlemock:v1.63
+FROM castlemock/castlemock:v1.65
 
 # 8080 is the default port that spring-actuator uses
 ARG HEALTHCHECK_PORT_ARG=8080
