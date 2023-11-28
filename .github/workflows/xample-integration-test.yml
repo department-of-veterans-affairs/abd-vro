@@ -41,6 +41,8 @@ jobs:
         run: sleep 60s
         shell: bash
 
+
+
       - name: 'Check for RabbitMQ to be ready'
         uses: indiesdev/curl@v1.1
         with:
@@ -63,9 +65,12 @@ jobs:
           # Quit after 60 seconds
           timeout: 60000
 
+      - name: 'Post-Build Docker Cleanup'
+        uses: ./.github/actions/docker-prune
+
       - name: "Run the integration test"
         run: |
-          docker ps
+          source scripts/setenv.sh
 
           # https://superuser.com/a/442395
           STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST "http://localhost:8110/v3/xample-resource" \
