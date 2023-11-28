@@ -8,7 +8,6 @@ import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.listener.api.RabbitListenerErrorHandler;
 import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
-import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.messaging.support.GenericMessage;
 
 import java.util.HashMap;
@@ -19,8 +18,6 @@ class RabbitMqApiConfigTest {
   @SuppressWarnings({"unchecked", "rawtypes"})
   public void testRabbitMqConfig() {
     RabbitMqConfig rmqConfig = new RabbitMqConfig();
-    MessageConverter messageConverter = rmqConfig.jackson2MessageConverter();
-    Assertions.assertNotNull(messageConverter);
     DirectExchange directExchange = rmqConfig.bipApiExchange();
     Assertions.assertNotNull(directExchange);
     RabbitListenerErrorHandler errorHandler = new BipRequestErrorHandler(new ObjectMapper());

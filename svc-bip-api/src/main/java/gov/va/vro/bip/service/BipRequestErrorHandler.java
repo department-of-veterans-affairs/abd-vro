@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import java.net.URI;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -67,9 +68,22 @@ public class BipRequestErrorHandler implements RabbitListenerErrorHandler {
           .build();
 
     } else {
+      String timestamp = Instant.now().toString();
+      List<BipMessage> errs =
+          List.of(
+              BipMessage.builder()
+                  .key(this.getClass().getSimpleName())
+                  .severity("FATAL")
+                  .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                  .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR.name())
+                  .text("Unexpected error in svc-bip-api: " + exception.getCause().getMessage())
+                  .timestamp(timestamp)
+                  .build());
+
       return BipPayloadResponse.builder()
           .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
           .statusMessage(HttpStatus.INTERNAL_SERVER_ERROR.name())
+          .messages(errs)
           .build();
     }
   }
