@@ -16,7 +16,8 @@
     "claimDetail": {
       "claimId": 1000,
       "phase": "Claim Received",
-      "endProductCode": "400"
+      "endProductCode": "400",
+      "claimLifecycleStatus": "Open"
     },
     "contentions": [
       {
