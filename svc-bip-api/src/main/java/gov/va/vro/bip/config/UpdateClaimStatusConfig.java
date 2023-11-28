@@ -12,20 +12,20 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class UpdateClaimStatusConfig {
 
-  @Value("${updateClaimStatusQueue}")
-  String updateClaimStatusQueue;
+  @Value("${putClaimLifecycleStatusQueue}")
+  String putClaimLifecycleStatusQueue;
 
   @Autowired DirectExchange bipApiExchange;
 
   @Bean
-  Queue updateClaimStatusQueue() {
-    return new Queue(updateClaimStatusQueue, true, false, true);
+  Queue putClaimLifecycleStatusQueue() {
+    return new Queue(putClaimLifecycleStatusQueue, true, false, true);
   }
 
   @Bean
   Binding updateClaimStatusBinding() {
-    return BindingBuilder.bind(updateClaimStatusQueue())
+    return BindingBuilder.bind(putClaimLifecycleStatusQueue())
         .to(bipApiExchange)
-        .with(updateClaimStatusQueue);
+        .with(putClaimLifecycleStatusQueue);
   }
 }
