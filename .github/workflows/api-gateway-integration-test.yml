@@ -26,6 +26,8 @@ jobs:
           export -p | sed 's/declare -x //'
 
           COMPOSE_PROFILES="gateway" ./gradlew :dockerComposeUp
+
+          sleep 180s
           ./gradlew :app:dockerComposeUp
 
           # Run CC:
@@ -36,7 +38,6 @@ jobs:
 
           # Run Xample:
           ./gradlew :domain-xample:dockerComposeUp
-
       - name: "Wait for VRO to be ready"
         uses: nev7n/wait_for_response@v1
         with:
@@ -56,6 +57,14 @@ jobs:
           interval: 2000
           # Quit after 60 seconds
           timeout: 60000
+
+      - name: 'Post-Build Docker Cleanup'
+        uses: ./.github/actions/docker-prune
+
+      - name: "Get status of containers"
+        shell: bash
+        run: |
+          docker ps
 
       - name: "Swagger UI - Request"
         id: "swaggerUI"
@@ -150,6 +159,11 @@ jobs:
           name: api-gw-itest-container-logs
           path: ./api-gw-itest-container-logs/**
           retention-days: 14
+
+      - name: "Check for errors in container logs"
+        if: always()
+        run: |
+          docker logs vro_ee-ep-merge-app_1
 
       - name: "Clean shutdown of all containers"
         if: always()

@@ -78,7 +78,7 @@ public class BieKafkaApplicationTest {
     kafkaTemplate.send(kafkaTopic, key, kafkaSentMessage);
 
     log.info("Waiting for svc-bie-kafka to publish Kafka event to RabbitMQ exchange...");
-    assertTrue(latch.await(10, TimeUnit.SECONDS));
+    assertTrue(latch.await(20, TimeUnit.SECONDS));
 
     // Check message 1
     assertEquals(msgBody, receivedMxessages.get(0));

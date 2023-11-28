@@ -29,7 +29,6 @@ target/
 helm-app/envsecrets.env
 tasks/config.temp.dev
 /bin
-**/bin/
 !**/app/bin
 opa/ingress/test.rego
 helm-app/opa-policies/ingress/test.rego

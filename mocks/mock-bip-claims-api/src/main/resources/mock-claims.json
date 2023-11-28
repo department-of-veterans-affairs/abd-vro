@@ -1,6 +1,62 @@
 [
   {
     "description": [
+      "Claim to always generate 500"
+    ],
+    "claimDetail": {
+      "claimId": 500
+    },
+    "contentions": [
+    ]
+  },
+  {
+    "description": [
+      "EP 400 w/ contention with required fields with optional fields classificationType and diagnosticTypeCode"
+    ],
+    "claimDetail": {
+      "claimId": 1000,
+      "phase": "Claim Received",
+      "endProductCode": "400",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "medicalInd": true,
+        "beginDate": "2023-01-01T00:00:00Z",
+        "contentionTypeCode": "NEW",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "6100",
+        "claimantText": "tendinitis/bilateral",
+        "contentionId": "1011",
+        "lastModified": "2023-01-01T00:00:01Z"
+      }
+    ]
+  },
+  {
+    "description": [
+      "Pending claim with tempStationOfJurisdiction. Contention with required fields with optional fields classificationType and diagnosticTypeCode"
+    ],
+    "claimDetail": {
+      "claimId": 1001,
+      "phase": "Claim Received",
+      "tempStationOfJurisdiction": "398",
+      "endProductCode": "010"
+    },
+    "contentions": [
+      {
+        "medicalInd": true,
+        "beginDate": "2023-01-01T00:00:00Z",
+        "contentionTypeCode": "NEW",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "6100",
+        "claimantText": "tendinitis/bilateral",
+        "contentionId": "1011",
+        "lastModified": "2023-01-01T00:00:01Z"
+      }
+    ]
+  },
+  {
+    "description": [
       "off ramp, to be used with only ibm provided collection id 350"
     ],
     "claimDetail": {
@@ -477,7 +533,9 @@
     ]
   },
   {
-    "description": ["missing special issue RDR1"],
+    "description": [
+      "missing special issue RDR1"
+    ],
     "claimDetail": {
       "claimId": 3030,
       "tempStationOfJurisdiction": "398",
@@ -499,7 +557,9 @@
     ]
   },
   {
-    "description": ["missing special issue RRD"],
+    "description": [
+      "missing special issue RRD"
+    ],
     "claimDetail": {
       "claimId": 3031,
       "tempStationOfJurisdiction": "398",
@@ -521,7 +581,9 @@
     ]
   },
   {
-    "description": ["missing special issues RDR1 and RRD"],
+    "description": [
+      "missing special issues RDR1 and RRD"
+    ],
     "claimDetail": {
       "claimId": 3032,
       "tempStationOfJurisdiction": "398",

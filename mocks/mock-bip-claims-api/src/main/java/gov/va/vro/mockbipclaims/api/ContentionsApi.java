@@ -1,8 +1,10 @@
 package gov.va.vro.mockbipclaims.api;
 
 import gov.va.vro.mockbipclaims.model.bip.ProviderResponse;
+import gov.va.vro.mockbipclaims.model.bip.request.CreateContentionsRequest;
 import gov.va.vro.mockbipclaims.model.bip.request.UpdateContentionsRequest;
 import gov.va.vro.mockbipclaims.model.bip.response.ContentionSummariesResponse;
+import gov.va.vro.mockbipclaims.model.bip.response.CreateContentionsResponse;
 import gov.va.vro.mockbipclaims.model.bip.response.UpdateContentionsResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -84,10 +86,10 @@ public interface ContentionsApi {
             responseCode = "500",
             description =
                 """
-                There was an error encountered processing the Request.  Response will contain
-                a "messages" element that will provide further information on the error.  Please
-                retry.  If problem persists, please contact support with a copy of the Response.
-                """,
+                      There was an error encountered processing the Request.  Response will contain
+                      a "messages" element that will provide further information on the error.  Please
+                      retry.  If problem persists, please contact support with a copy of the Response.
+                      """,
             content = {
               @Content(
                   mediaType = "application/json",
@@ -146,10 +148,10 @@ public interface ContentionsApi {
             responseCode = "400",
             description =
                 """
-                There was an error encountered processing the Request.  Response will contain
-                a "messages" element that will provide further information on the error.  This
-                request shouldn't be retried until corrected.
-                """,
+                      There was an error encountered processing the Request.  Response will contain
+                      a "messages" element that will provide further information on the error.  This
+                      request shouldn't be retried until corrected.
+                      """,
             content = {
               @Content(
                   mediaType = "application/json",
@@ -173,11 +175,11 @@ public interface ContentionsApi {
             responseCode = "500",
             description =
                 """
-                There was an error encountered processing the Request.  Response will contain
-                a  "messages" element that will provide further information on the error.
-                Please retry.  If problem persists, please contact support with a copy of the
-                Response.
-                """,
+                      There was an error encountered processing the Request.  Response will contain
+                      a  "messages" element that will provide further information on the error.
+                      Please retry.  If problem persists, please contact support with a copy of the
+                      Response.
+                      """,
             content = {
               @Content(
                   mediaType = "application/json",
@@ -216,6 +218,110 @@ public interface ContentionsApi {
           UpdateContentionsRequest updateContentionsRequest);
 
   /**
+   * POST /claims/{claimId}/contentions : Creates one or more contentions for a claim.
+   *
+   * @param claimId The CorpDB BNFT_CLAIM_ID (required)
+   * @param createContentionsRequest (required)
+   * @return Response indicates successful adds. May have messages with any warnings. (status code
+   *     201) or There was an error encountered processing the Request. Response will contain a
+   *     "messages" element that will provide further information on the error. This request
+   *     shouldn't be retried until corrected. (status code 400) or The authentication mechanism
+   *     failed and hence access is forbidden. (status code 401) or There was an error encountered
+   *     processing the Request. Response will contain a "messages"; element that will provide
+   *     further information on the error. Please retry. If problem persists, please contact support
+   *     with a copy of the Response. (status code 500) or Resource not implemented (status code
+   *     501)
+   */
+  @Operation(
+      operationId = "createContentionsForClaim",
+      summary = "Creates one or more contentions",
+      responses = {
+        @ApiResponse(
+            responseCode = "201",
+            description =
+                "Response indicates successful updates. May have messages with any warnings.",
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = CreateContentionsResponse.class)),
+              @Content(
+                  mediaType = "application/problem+json",
+                  schema = @Schema(implementation = CreateContentionsResponse.class))
+            }),
+        @ApiResponse(
+            responseCode = "400",
+            description =
+                """
+                      There was an error encountered processing the Request.  Response will contain
+                      a "messages" element that will provide further information on the error.  This
+                      request shouldn't be retried until corrected.
+                      """,
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ProviderResponse.class)),
+              @Content(
+                  mediaType = "application/problem+json",
+                  schema = @Schema(implementation = ProviderResponse.class))
+            }),
+        @ApiResponse(
+            responseCode = "401",
+            description = "The authentication mechanism failed and hence access is forbidden.",
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ProviderResponse.class)),
+              @Content(
+                  mediaType = "application/problem+json",
+                  schema = @Schema(implementation = ProviderResponse.class))
+            }),
+        @ApiResponse(
+            responseCode = "500",
+            description =
+                """
+                      There was an error encountered processing the Request.  Response will contain
+                      a  "messages" element that will provide further information on the error.
+                      Please retry.  If problem persists, please contact support with a copy of the
+                      Response.
+                      """,
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ProviderResponse.class)),
+              @Content(
+                  mediaType = "application/problem+json",
+                  schema = @Schema(implementation = ProviderResponse.class))
+            }),
+        @ApiResponse(
+            responseCode = "501",
+            description = "Resource not implemented",
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ProviderResponse.class)),
+              @Content(
+                  mediaType = "application/problem+json",
+                  schema = @Schema(implementation = ProviderResponse.class))
+            })
+      },
+      security = {@SecurityRequirement(name = "bearerAuth")})
+  @RequestMapping(
+      method = RequestMethod.POST,
+      value = "/claims/{claimId}/contentions",
+      produces = {"application/json", "application/problem+json"},
+      consumes = {"application/json"})
+  ResponseEntity<CreateContentionsResponse> createContentionsForClaim(
+      @Parameter(
+              name = "claimId",
+              description = "The CorpDB BNFT_CLAIM_ID",
+              required = true,
+              in = ParameterIn.PATH)
+          @PathVariable("claimId")
+          Long claimId,
+      @Parameter(name = "CreateContentionsRequest", required = true) @Valid @RequestBody
+          CreateContentionsRequest createContentionsRequest);
+
+  /**
    * GET /contentions/special_issue_types : Returns special issue types.
    *
    * <p>Not fully implemented in mock since only used for connectivity testing.
@@ -250,11 +356,11 @@ public interface ContentionsApi {
             responseCode = "500",
             description =
                 """
-                  There was an error encountered processing the Request.  Response will contain
-                  a  "messages" element that will provide further information on the error.
-                  Please retry.  If problem persists, please contact support with a copy of the
-                  Response.
-                  """,
+                      There was an error encountered processing the Request.  Response will contain
+                      a  "messages" element that will provide further information on the error.
+                      Please retry.  If problem persists, please contact support with a copy of the
+                      Response.
+                      """,
             content = {
               @Content(
                   mediaType = "application/json",

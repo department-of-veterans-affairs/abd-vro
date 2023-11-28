@@ -124,7 +124,7 @@ services:
       - vro_intranet
 
   mock-bip-ce-api:
-    profiles: ["all","bip"]
+    profiles: ["all"]
     image: va/vro_mocks-mock-bip-ce-api:latest
     <<: [*common-sde-security, *common-security-opt]
     ports:

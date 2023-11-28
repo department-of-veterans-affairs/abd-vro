@@ -1,0 +1,13 @@
+# This file is used when ENV=prod
+# See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
+# application.properties is loaded, then this file is loaded
+# Secrets should reference environment variables, which will be set in Kubernetes.
+
+# server.port=8091
+# server.max-http-header-size=48000
+
+# Lighthouse FHIR API
+lh:
+  tokenurl: https://api.va.gov/oauth2/health/system/v1/token
+  fhirurl: https://api.va.gov/services/fhir/v0/r4
+  assertionurl: https://va.okta.com/oauth2/aus8evxtl123l7Td3297/v1/token
