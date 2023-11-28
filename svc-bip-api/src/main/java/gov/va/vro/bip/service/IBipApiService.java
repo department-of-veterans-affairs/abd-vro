@@ -1,7 +1,5 @@
 package gov.va.vro.bip.service;
 
-import gov.va.vro.bip.model.BipUpdateClaimResp;
-import gov.va.vro.bip.model.ClaimStatus;
 import gov.va.vro.bip.model.cancel.CancelClaimRequest;
 import gov.va.vro.bip.model.cancel.CancelClaimResponse;
 import gov.va.vro.bip.model.claim.GetClaimResponse;
@@ -10,6 +8,8 @@ import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsResponse;
+import gov.va.vro.bip.model.lifecycle.PutClaimLifecycleRequest;
+import gov.va.vro.bip.model.lifecycle.PutClaimLifecycleResponse;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionRequest;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionResponse;
 
@@ -30,23 +30,13 @@ public interface IBipApiService {
   GetClaimResponse getClaimDetails(long collectionId);
 
   /**
-   * Updates claim status to RFD.
+   * Updates a claim's lifecycle status.
    *
-   * @param collectionId claim ID
-   * @return a claim info object.
-   * @throws BipException error occurs.
+   * @param request request
+   * @return response
+   * @throws BipException error occurs
    */
-  BipUpdateClaimResp setClaimToRfdStatus(long collectionId) throws BipException;
-
-  /**
-   * Updates a claim status.
-   *
-   * @param collectionId claim ID.
-   * @param status status to be updated to.
-   * @return a claim update info object.
-   * @throws BipException error occurs.
-   */
-  BipUpdateClaimResp updateClaimStatus(long collectionId, ClaimStatus status) throws BipException;
+  PutClaimLifecycleResponse putClaimLifecycleStatus(PutClaimLifecycleRequest request);
 
   /**
    * Gets a list of contention summaries in a claim.
