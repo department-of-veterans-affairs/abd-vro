@@ -1,19 +1,17 @@
 package gov.va.vro.bip.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.vro.bip.model.BipCloseClaimPayload;
-import gov.va.vro.bip.model.BipCloseClaimReason;
-import gov.va.vro.bip.model.BipCloseClaimResp;
 import gov.va.vro.bip.model.BipPayloadResponse;
-import gov.va.vro.bip.model.BipUpdateClaimResp;
-import gov.va.vro.bip.model.ClaimStatus;
+import gov.va.vro.bip.model.cancel.CancelClaimRequest;
+import gov.va.vro.bip.model.cancel.CancelClaimResponse;
 import gov.va.vro.bip.model.claim.GetClaimResponse;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsResponse;
+import gov.va.vro.bip.model.lifecycle.PutClaimLifecycleRequest;
+import gov.va.vro.bip.model.lifecycle.PutClaimLifecycleResponse;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionRequest;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionResponse;
 import io.jsonwebtoken.Claims;
@@ -31,7 +29,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
@@ -53,7 +50,7 @@ public class BipApiService implements IBipApiService {
   static final String CLAIM_DETAILS = "/claims/%s";
   static final String CANCEL_CLAIM = "/claims/%s/cancel";
   static final String TEMP_STATION_OF_JURISDICTION = "/claims/%s/temporary_station_of_jurisdiction";
-  static final String UPDATE_CLAIM_STATUS = "/claims/%s/lifecycle_status";
+  static final String CLAIM_LIFECYCLE_STATUS = "/claims/%s/lifecycle_status";
   static final String CONTENTION = "/claims/%s/contentions";
   static final String SPECIAL_ISSUE_TYPES = "/contentions/special_issue_types";
 
@@ -67,7 +64,7 @@ public class BipApiService implements IBipApiService {
 
   final BipApiProps bipApiProps;
 
-  final ObjectMapper mapper = new ObjectMapper();
+  final ObjectMapper mapper;
 
   @Override
   public GetClaimResponse getClaimDetails(long claimId) {
@@ -76,43 +73,14 @@ public class BipApiService implements IBipApiService {
     return makeRequest(url, HttpMethod.GET, GetClaimResponse.class);
   }
 
-  /**
-   * Updates claim status.
-   *
-   * @param claimId claim ID for the claim to be updated.
-   * @return an object with status and message.
-   * @throws BipException error occurs
-   */
   @Override
-  public BipUpdateClaimResp setClaimToRfdStatus(long claimId) {
-    return updateClaimStatus(claimId, ClaimStatus.RFD);
-  }
-
-  @Override
-  public BipUpdateClaimResp updateClaimStatus(long claimId, ClaimStatus status) {
-    log.info("updateClaimStatus({},{}) invoked.", claimId, status);
-    final String description = status.getDescription();
-    try {
-
-      String url =
-          HTTPS + bipApiProps.getClaimBaseUrl() + String.format(UPDATE_CLAIM_STATUS, claimId);
-      log.info("call {} to update claim status to {}.", url, description);
-
-      HttpHeaders headers = getBipHeader();
-      Map<String, String> requestBody = new HashMap<>();
-      requestBody.put("claimLifecycleStatus", description);
-      HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(requestBody, headers);
-      ResponseEntity<String> bipResponse =
-          restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
-      if (bipResponse.getStatusCode() == HttpStatus.OK) {
-        return new BipUpdateClaimResp(HttpStatus.OK, bipResponse.getBody());
-      } else {
-        throw new BipException(bipResponse.getStatusCode(), bipResponse.getBody());
-      }
-    } catch (RestClientException e) {
-      log.error("failed to update status to {} for claim {}.", description, claimId, e);
-      throw new BipException(e.getMessage(), e);
-    }
+  public PutClaimLifecycleResponse putClaimLifecycleStatus(PutClaimLifecycleRequest request) {
+    long claimId = request.getClaimId();
+    String url =
+        HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CLAIM_LIFECYCLE_STATUS, claimId);
+    Map<String, Object> requestBody =
+        Map.of("claimLifecycleStatus", request.getClaimLifecycleStatus());
+    return makeRequest(url, HttpMethod.PUT, requestBody, PutClaimLifecycleResponse.class);
   }
 
   @Override
@@ -141,28 +109,18 @@ public class BipApiService implements IBipApiService {
   }
 
   @Override
-  public BipCloseClaimResp cancelClaim(BipCloseClaimPayload request) {
+  public CancelClaimResponse cancelClaim(CancelClaimRequest request) {
     long claimId = request.getClaimId();
-    var reason = request.getReason();
-    try {
-      String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CANCEL_CLAIM, claimId);
-      HttpHeaders headers = getBipHeader();
-      HttpEntity<BipCloseClaimReason> httpEntity = new HttpEntity<>(reason, headers);
-      ResponseEntity<String> bipResponse =
-          restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
+    String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CANCEL_CLAIM, claimId);
 
-      if (bipResponse.getStatusCode() == HttpStatus.OK) {
-        BipCloseClaimResp result = mapper.readValue(bipResponse.getBody(), BipCloseClaimResp.class);
-        result.statusCode = HttpStatus.OK.value();
-        result.statusMessage = HttpStatus.OK.getReasonPhrase();
-        return result;
-      } else {
-        throw new BipException(bipResponse.getStatusCode(), bipResponse.getBody());
-      }
-    } catch (RestClientException | JsonProcessingException e) {
-      log.error("failed to cancelClaim for claim {}.", claimId, e);
-      throw new BipException(e.getMessage(), e);
-    }
+    String lifecycleStatusReasonCode = request.getLifecycleStatusReasonCode();
+    String closeReasonText = request.getCloseReasonText();
+    Map<String, String> requestBody =
+        Map.of(
+            "lifecycleStatusReasonCode", lifecycleStatusReasonCode,
+            "closeReasonText", closeReasonText);
+
+    return makeRequest(url, HttpMethod.PUT, requestBody, CancelClaimResponse.class);
   }
 
   @Override
