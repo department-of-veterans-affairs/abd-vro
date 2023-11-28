@@ -41,10 +41,8 @@ class EpMergeMachine(StateMachine):
             | running_get_pending_contentions.to(completed_error, cond="has_error")
             | running_get_ep400_contentions.to(running_set_temp_station_of_jurisdiction, unless="has_error")
             | running_get_ep400_contentions.to(completed_error, cond="has_error")
-            | running_set_temp_station_of_jurisdiction.to(running_merge_contentions,
-                                                          unless=["is_duplicate", "has_error"])
-            | running_set_temp_station_of_jurisdiction.to(running_cancel_ep400_claim, cond="is_duplicate",
-                                                          unless="has_error")
+            | running_set_temp_station_of_jurisdiction.to(running_merge_contentions, unless=["is_duplicate", "has_error"])
+            | running_set_temp_station_of_jurisdiction.to(running_cancel_ep400_claim, cond="is_duplicate", unless="has_error")
             | running_set_temp_station_of_jurisdiction.to(completed_error, cond="has_error")
             | running_merge_contentions.to(running_move_contentions_to_pending_claim, unless="has_error")
             | running_merge_contentions.to(completed_error, cond="has_error")

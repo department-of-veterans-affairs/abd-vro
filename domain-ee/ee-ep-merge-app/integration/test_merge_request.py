@@ -194,7 +194,7 @@ class TestMergeRequest:
             assert response_json['job']['error_state'] == JobState.RUNNING_SET_TEMP_STATION_OF_JURISDICTION.value
 
     @pytest.mark.asyncio
-    async def test_completed_error_at_update_claim_contentions(self,
+    async def test_completed_error_at_create_claim_contentions(self,
                                                                get_claim_endpoint: MqEndpoint,
                                                                get_claim_contentions_endpoint: MqEndpoint,
                                                                put_tsoj_endpoint: MqEndpoint,
