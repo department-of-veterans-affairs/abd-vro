@@ -10,21 +10,22 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ConfigForSetClaimToRfdStatus {
-  @Value("${setClaimToRfdStatusQueue}")
-  String setClaimToRfdStatusQueue;
+public class CreateClaimContentionsConfig {
+
+  @Value("${createClaimContentionsQueue}")
+  String createClaimContentionsQueue;
 
   @Autowired DirectExchange bipApiExchange;
 
   @Bean
-  Queue setClaimToRfdStatusQueue() {
-    return new Queue(setClaimToRfdStatusQueue, true, false, true);
+  Queue createClaimContentionsQueue() {
+    return new Queue(createClaimContentionsQueue, true, false, true);
   }
 
   @Bean
-  Binding setClaimToRfdStatusBinding() {
-    return BindingBuilder.bind(setClaimToRfdStatusQueue())
+  Binding createClaimContentionsBinding() {
+    return BindingBuilder.bind(createClaimContentionsQueue())
         .to(bipApiExchange)
-        .with(setClaimToRfdStatusQueue);
+        .with(createClaimContentionsQueue);
   }
 }

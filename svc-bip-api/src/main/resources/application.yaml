@@ -25,12 +25,11 @@ spring:
     password: ${RABBITMQ_PASSWORD:guest}
 
 getClaimDetailsQueue: getClaimDetailsQueue
-setClaimToRfdStatusQueue: setClaimToRfdStatusQueue
-updateClaimStatusQueue: updateClaimStatusQueue
-getClaimContentionsQueue: getClaimContentionsQueue
+putClaimLifecycleStatusQueue: putClaimLifecycleStatusQueue
 cancelClaimQueue: cancelClaimQueue
-updateClaimContentionQueue: updateClaimContentionQueue
-verifySpecialIssueTypeQueue: confirmCanCallSpecialIssueTypesQueue
+getClaimContentionsQueue: getClaimContentionsQueue
+createClaimContentionsQueue: createClaimContentionsQueue
+updateClaimContentionsQueue: updateClaimContentionsQueue
 putTempStationOfJurisdictionQueue: putTempStationOfJurisdictionQueue
 exchangeName: bipApiExchange
 

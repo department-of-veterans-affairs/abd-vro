@@ -1,5 +1,6 @@
 package gov.va.vro.mockbipclaims.mapper;
 
+import gov.va.vro.mockbipclaims.model.bip.Contention;
 import gov.va.vro.mockbipclaims.model.bip.ContentionSummary;
 import gov.va.vro.mockbipclaims.model.bip.ExistingContention;
 import org.mapstruct.Mapper;
@@ -10,4 +11,6 @@ public interface ContentionMapper {
   ExistingContention toExistingContention(ContentionSummary summary);
 
   ContentionSummary toContentionSummary(ExistingContention existing);
+
+  ContentionSummary toContentionSummary(Contention contention);
 }

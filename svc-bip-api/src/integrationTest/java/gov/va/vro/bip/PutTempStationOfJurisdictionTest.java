@@ -16,7 +16,7 @@ class PutTempStationOfJurisdictionTest extends BaseIntegrationTest {
             .build();
     PutTempStationOfJurisdictionResponse response =
         sendAndReceive(putTempStationOfJurisdictionQueue, request);
-    assertBaseResponseIs200(response);
+    assertBaseResponseIs2xx(response, HttpStatus.OK);
   }
 
   @Test

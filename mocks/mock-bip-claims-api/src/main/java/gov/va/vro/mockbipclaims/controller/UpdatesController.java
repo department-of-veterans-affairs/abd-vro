@@ -8,6 +8,7 @@ import gov.va.vro.mockbipclaims.model.store.ClaimStore;
 import gov.va.vro.mockbipclaims.model.store.ClaimStoreItem;
 import gov.va.vro.mockbipclaims.model.store.UpdatesStore;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class UpdatesController implements UpdatesApi {
   private final ClaimStore claimStore;
 
@@ -24,6 +26,7 @@ public class UpdatesController implements UpdatesApi {
 
   @Override
   public ResponseEntity<Void> deleteUpdates(Long claimId) {
+    log.info("Resetting claim id: {}", claimId);
     ClaimStoreItem item = claimStore.get(claimId);
     if (item == null) {
       String reason = "No claim found for id: " + claimId;

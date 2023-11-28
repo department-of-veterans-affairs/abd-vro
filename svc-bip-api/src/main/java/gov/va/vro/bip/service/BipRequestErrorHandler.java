@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import java.net.URI;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -43,20 +44,22 @@ public class BipRequestErrorHandler implements RabbitListenerErrorHandler {
               .orElse("No Headers");
       int status = e.getStatusCode().value();
       String statusMessage = ((HttpStatus) e.getStatusCode()).name();
-      log.info(
-          "event=responseReceived url={} status={} statusMessage={}", url, status, statusMessage);
 
       List<BipMessage> messages = new ArrayList<>();
-      try {
-        messages.addAll(
-            mapper.readValue(e.getResponseBodyAsString(), BipPayloadResponse.class).getMessages());
-      } catch (JsonProcessingException ex) {
-        log.info(
-            "event=failedToParseResponse url={} status={} statusMessage={} error={}",
-            url,
-            status,
-            statusMessage,
-            ex.getMessage());
+      if (!e.getResponseBodyAsString().isBlank()) {
+        try {
+          messages.addAll(
+              mapper
+                  .readValue(e.getResponseBodyAsString(), BipPayloadResponse.class)
+                  .getMessages());
+        } catch (JsonProcessingException ex) {
+          log.info(
+              "event=failedToParseResponse url={} status={} statusMessage={} error={}",
+              url,
+              status,
+              statusMessage,
+              ex.getMessage());
+        }
       }
       return BipPayloadResponse.builder()
           .statusCode(status)
@@ -65,9 +68,22 @@ public class BipRequestErrorHandler implements RabbitListenerErrorHandler {
           .build();
 
     } else {
+      String timestamp = Instant.now().toString();
+      List<BipMessage> errs =
+          List.of(
+              BipMessage.builder()
+                  .key(this.getClass().getSimpleName())
+                  .severity("FATAL")
+                  .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                  .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR.name())
+                  .text("Unexpected error in svc-bip-api: " + exception.getCause().getMessage())
+                  .timestamp(timestamp)
+                  .build());
+
       return BipPayloadResponse.builder()
           .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
           .statusMessage(HttpStatus.INTERNAL_SERVER_ERROR.name())
+          .messages(errs)
           .build();
     }
   }

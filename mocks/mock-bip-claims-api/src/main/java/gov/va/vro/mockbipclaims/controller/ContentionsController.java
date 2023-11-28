@@ -4,9 +4,10 @@ import gov.va.vro.mockbipclaims.api.ContentionsApi;
 import gov.va.vro.mockbipclaims.mapper.ContentionMapper;
 import gov.va.vro.mockbipclaims.model.bip.ContentionSummary;
 import gov.va.vro.mockbipclaims.model.bip.ExistingContention;
-import gov.va.vro.mockbipclaims.model.bip.Message;
+import gov.va.vro.mockbipclaims.model.bip.request.CreateContentionsRequest;
 import gov.va.vro.mockbipclaims.model.bip.request.UpdateContentionsRequest;
 import gov.va.vro.mockbipclaims.model.bip.response.ContentionSummariesResponse;
+import gov.va.vro.mockbipclaims.model.bip.response.CreateContentionsResponse;
 import gov.va.vro.mockbipclaims.model.bip.response.UpdateContentionsResponse;
 import gov.va.vro.mockbipclaims.model.store.ClaimStore;
 import gov.va.vro.mockbipclaims.model.store.ClaimStoreItem;
@@ -17,10 +18,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 @Controller
 @Slf4j
@@ -32,6 +34,35 @@ public class ContentionsController extends BaseController implements Contentions
 
   private final ContentionMapper mapper;
 
+  public ResponseEntity<CreateContentionsResponse> createContentionsForClaim(
+      Long claimId, CreateContentionsRequest createContentionsRequest) {
+    log.info("Creating contentions for claim (id: {})", claimId);
+    ClaimStoreItem item = claimStore.get(claimId);
+    CreateContentionsResponse response = new CreateContentionsResponse();
+
+    if (item == null) {
+      return createClaim400(response, claimId);
+    }
+    if (claimId == 500) {
+      return create500(response);
+    }
+
+    Optional.ofNullable(createContentionsRequest.getCreateContentions())
+        .orElse(List.of())
+        .forEach(
+            contention -> {
+              long contentionId = new Random().nextLong();
+              ContentionSummary summary = mapper.toContentionSummary(contention);
+              summary.setLastModified(OffsetDateTime.now());
+              summary.setContentionId(contentionId);
+
+              item.getContentions().add(summary);
+              response.addContentionId(contentionId);
+            });
+
+    return create201(response);
+  }
+
   @Override
   public ResponseEntity<ContentionSummariesResponse> getContentionsForClaim(Long claimId) {
     log.info("Getting contentions for claim (id: {})", claimId);
@@ -39,7 +70,7 @@ public class ContentionsController extends BaseController implements Contentions
     ContentionSummariesResponse response = new ContentionSummariesResponse();
 
     if (item == null) {
-      return create404(response);
+      return createClaim404(response, claimId);
     }
     if (claimId == 500) {
       return create500(response);
@@ -67,15 +98,14 @@ public class ContentionsController extends BaseController implements Contentions
       Long claimId, UpdateContentionsRequest updateContentionsRequest) {
     log.info("Updating contentions claim (id: {})", claimId);
 
-    if (claimId.longValue() == 1086L || claimId.longValue() == 1370L) {
-      String reason = "Intentional exception for testing: " + claimId;
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, reason);
-    }
-
     ClaimStoreItem item = claimStore.get(claimId);
+    UpdateContentionsResponse response = new UpdateContentionsResponse();
     if (item == null) {
-      String reason = "No claim found for id: " + claimId;
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
+      // Non-existent claim id yields 400, not 404
+      return createClaim400(response, claimId);
+    }
+    if (claimId == 500) {
+      return create500(response);
     }
 
     List<ExistingContention> contentions = updateContentionsRequest.getUpdateContentions();
@@ -84,8 +114,7 @@ public class ContentionsController extends BaseController implements Contentions
       Long id = contention.getContentionId();
       int existingIndex = findContention(currentContentions, id);
       if (existingIndex < 0) {
-        String reason = "Contention does not exist in claim for id: " + claimId;
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
+        return createContention400(response, claimId, id);
       }
 
       ContentionSummary summary = mapper.toContentionSummary(contention);
@@ -93,10 +122,6 @@ public class ContentionsController extends BaseController implements Contentions
 
       currentContentions.set(existingIndex, summary);
     }
-    UpdateContentionsResponse response = new UpdateContentionsResponse();
-    Message message = new Message();
-    message.setText("Success");
-    response.addMessagesItem(message);
     actionStore.addContentionsUpdate(claimId);
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
