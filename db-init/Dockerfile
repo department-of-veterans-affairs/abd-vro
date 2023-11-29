@@ -1,4 +1,4 @@
-FROM flyway/flyway:10.0-alpine
+FROM flyway/flyway:10.1-alpine
 
 # hadolint ignore=DL3018
 RUN apk update && apk upgrade && apk --no-cache add libcrypto3 libssl3 openssl postgresql-client && rm -rf /var/cache/apk/*
