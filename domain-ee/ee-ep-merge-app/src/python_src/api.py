@@ -31,7 +31,7 @@ async def on_start_up():
 
 
 async def on_shut_down():
-    HOPPY.stop_hoppy_clients()
+    await HOPPY.stop_hoppy_clients()
 
 
 app = FastAPI(
