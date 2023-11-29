@@ -28,7 +28,7 @@ public class BieMessagePayload {
   private String diagnosticTypeCode;
   private String actionName;
   private String actionResultName;
-  private boolean automationIndicator;
+  private Boolean automationIndicator;
   private String contentionStatusTypeCode;
   private String currentLifecycleStatus;
   private Long eventTime;

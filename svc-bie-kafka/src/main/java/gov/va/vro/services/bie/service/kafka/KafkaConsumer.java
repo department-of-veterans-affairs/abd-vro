@@ -6,6 +6,7 @@ import gov.va.vro.model.biekafka.BieMessagePayload;
 import gov.va.vro.model.biekafka.ContentionEvent;
 import gov.va.vro.services.bie.config.BieProperties;
 import gov.va.vro.services.bie.service.AmqpMessageSender;
+import gov.va.vro.services.bie.utils.BieMessageUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.generic.GenericRecord;
@@ -56,30 +57,11 @@ public class KafkaConsumer {
 
   private BieMessagePayload handleGenericRecord(ConsumerRecord<String, Object> record) {
     GenericRecord messageValue = (GenericRecord) record.value();
-    String KEY_CONTENTION_CLASSIFICATION_NAME = "ContentionClassificationName";
-    String KEY_DIAGNOSTIC_TYPE_CODE = "DiagnosticTypeCode";
-    String KEY_CLAIM_ID = "ClaimId";
-    String KEY_CONTENTION_ID = "ContentionId";
-    String KEY_CONTENTION_TYPE_CODE = "ContentionTypeCode";
-    String KEY_EVENT_TIME = "EventTime";
-    String ACTION_NAME = "ActionName";
-    String ACTION_RESULT_NAME = "ActionResultName";
-    //    MessagePayloadField value1 = MessagePayloadField.values()[0];
-    //    value1.getFieldType()
 
-    return BieMessagePayload.builder()
-        .eventType(
-            ContentionEvent.valueOf(ContentionEvent.mapTopicToEvent(record.topic()).toString()))
-        .claimId((long) messageValue.get(KEY_CLAIM_ID))
-        .contentionId((long) messageValue.get(KEY_CONTENTION_ID))
-        .contentionClassificationName((String) messageValue.get(KEY_CONTENTION_CLASSIFICATION_NAME))
-        .contentionTypeCode((String) messageValue.get(KEY_CONTENTION_TYPE_CODE))
-        .diagnosticTypeCode((String) messageValue.get(KEY_DIAGNOSTIC_TYPE_CODE))
-        //        .occurredAt((Long) messageValue.get(KEY_EVENT_TIME))
-        .notifiedAt(record.timestamp())
-        .actionName((String) messageValue.get(ACTION_NAME))
-        .actionResultName((String) messageValue.get(ACTION_RESULT_NAME))
-        .status(200)
-        .build();
+    BieMessagePayload payload = BieMessageUtils.processBieMessagePayloadFields(messageValue);
+    payload.setEventType(ContentionEvent.valueOf(ContentionEvent.mapTopicToEvent(record.topic()).toString()));
+    payload.setNotifiedAt(record.timestamp());
+
+    return payload;
   }
 }
