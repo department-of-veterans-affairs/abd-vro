@@ -53,3 +53,5 @@ REPLY_QUEUES = {
     ClientName.CANCEL_CLAIM:
         os.environ.get("CANCEL_CLAIM_RESPONSE") or "cancelClaimResponseQueue",
 }
+
+SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI") or "sqlite:///jobs.sqlite"

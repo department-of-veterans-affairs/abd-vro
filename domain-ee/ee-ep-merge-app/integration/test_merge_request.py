@@ -80,6 +80,7 @@ class TestMergeRequest:
         async with AsyncClient(app=app, base_url="http://test") as client:
             job_id = await self.submit_request(client)
 
+            await asyncio.sleep(1)
             response = await client.get(url=f"/merge/{job_id}")
             assert response.status_code == 200
 

@@ -178,3 +178,7 @@ class EpMergeMachine(StateMachine):
                       f"state={self.job.state} "
                       f"error=\'{error}\'")
         self.job.error(self.job.state, error)
+
+
+def start_job_state_machine(merge_job):
+    EpMergeMachine(merge_job).process()

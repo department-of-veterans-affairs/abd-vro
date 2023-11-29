@@ -7,5 +7,7 @@ testpaths = [
 ]
 env = [
     "REQUEST_TIMEOUT = 1",
-    "REQUEST_RETRIES = 1"
+    "REQUEST_RETRIES = 1",
+    "RABBITMQ_USERNAME=user",
+    "RABBITMQ_PASSWORD=bitnami"
 ]
