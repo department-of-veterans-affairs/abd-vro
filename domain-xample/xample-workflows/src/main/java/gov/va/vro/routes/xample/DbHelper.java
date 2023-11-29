@@ -60,14 +60,15 @@ public class DbHelper {
     contentionEventEntity.setDiagnosticTypeCode(bieMessagePayload.getDiagnosticTypeCode());
     contentionEventEntity.setContentionClassificationName(
         bieMessagePayload.getContentionClassificationName());
-    contentionEventEntity.setOccurredAt(convertTime(bieMessagePayload.getOccurredAt()));
+//    contentionEventEntity.setOccurredAt(convertTime(bieMessagePayload.getOccurredAt()));
     contentionEventEntity.setDateAdded(convertTime(bieMessagePayload.getDateAdded()));
     contentionEventEntity.setDateCompleted(convertTime(bieMessagePayload.getDateCompleted()));
     contentionEventEntity.setDateUpdated(convertTime(bieMessagePayload.getDateUpdated()));
     contentionEventEntity.setActorStation(bieMessagePayload.getActorStation());
     contentionEventEntity.setAutomationIndicator(bieMessagePayload.isAutomationIndicator());
     contentionEventEntity.setBenefitClaimTypeCode(bieMessagePayload.getBenefitClaimTypeCode());
-    contentionEventEntity.setContentionStatusTypeCode(bieMessagePayload.getContentionStatusTypeCode());
+    contentionEventEntity.setContentionStatusTypeCode(
+        bieMessagePayload.getContentionStatusTypeCode());
     contentionEventEntity.setCurrentLifecycleStatus(bieMessagePayload.getCurrentLifecycleStatus());
     contentionEventEntity.setDetails(bieMessagePayload.getDetails());
     contentionEventEntity.setEventTime(convertTime(bieMessagePayload.getEventTime()));

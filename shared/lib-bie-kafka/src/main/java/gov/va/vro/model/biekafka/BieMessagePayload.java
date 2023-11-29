@@ -10,38 +10,32 @@ import lombok.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode
 public class BieMessagePayload {
-  private String benefitClaimTypeCode;
-  private String actorStation;
-  private String details;
-  private long veteranParticipantId;
-
+  // these are vro fields
   private Integer status;
   private String statusMessage;
   private ContentionEvent eventType;
-  private long claimId;
-  private long contentionId;
+  private Long notifiedAt;
+
+  // populated from kafka topic payload
+  private String benefitClaimTypeCode;
+  private String actorStation;
+  private String details;
+  private Long veteranParticipantId;
+  private Long claimId;
+  private Long contentionId;
   private String contentionTypeCode;
   private String contentionClassificationName;
   private String diagnosticTypeCode;
   private String actionName;
   private String actionResultName;
-
   private boolean automationIndicator;
   private String contentionStatusTypeCode;
   private String currentLifecycleStatus;
-  private long eventTime;
-
+  private Long eventTime;
   private String clmntTxt;
-
   private String journalStatusTypeCode;
-
-  private long notifiedAt;
-  private long occurredAt;
-
-  private long dateAdded;
-  private long dateCompleted;
-  private long dateUpdated;
-
+  private Long dateAdded;
+  private Long dateCompleted;
+  private Long dateUpdated;
   private String eventDetails;
-
 }

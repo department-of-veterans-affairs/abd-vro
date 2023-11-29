@@ -47,8 +47,7 @@ public class KafkaConsumer {
       throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
     String messageValue = (String) record.value();
-    BieMessagePayload payload =
-        objectMapper.readValue(messageValue, BieMessagePayload.class);
+    BieMessagePayload payload = objectMapper.readValue(messageValue, BieMessagePayload.class);
     payload.setEventType(
         ContentionEvent.valueOf(ContentionEvent.mapTopicToEvent(record.topic()).name()));
 
@@ -65,6 +64,8 @@ public class KafkaConsumer {
     String KEY_EVENT_TIME = "EventTime";
     String ACTION_NAME = "ActionName";
     String ACTION_RESULT_NAME = "ActionResultName";
+    //    MessagePayloadField value1 = MessagePayloadField.values()[0];
+    //    value1.getFieldType()
 
     return BieMessagePayload.builder()
         .eventType(
@@ -74,7 +75,7 @@ public class KafkaConsumer {
         .contentionClassificationName((String) messageValue.get(KEY_CONTENTION_CLASSIFICATION_NAME))
         .contentionTypeCode((String) messageValue.get(KEY_CONTENTION_TYPE_CODE))
         .diagnosticTypeCode((String) messageValue.get(KEY_DIAGNOSTIC_TYPE_CODE))
-        .occurredAt((Long) messageValue.get(KEY_EVENT_TIME))
+        //        .occurredAt((Long) messageValue.get(KEY_EVENT_TIME))
         .notifiedAt(record.timestamp())
         .actionName((String) messageValue.get(ACTION_NAME))
         .actionResultName((String) messageValue.get(ACTION_RESULT_NAME))
