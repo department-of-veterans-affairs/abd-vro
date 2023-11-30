@@ -60,45 +60,8 @@ jobs:
           # Quit after 60 seconds
           retries: 30
 
-      # Temporary step added to avoid race condition. Currently, there is no health check in 'svc-bgs-api'; therefore,
-      # at this step, it is unknown if svc-bgs-api has yet to create the 'bgs-api' exchange.
-      - name: 'Create bgs-api exchange'
-        uses: indiesdev/curl@v1.1
-        with:
-          url: 'http://localhost:15672/api/exchanges/%2f/bgs-api'
-          method: 'PUT'
-          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
-          body: '{"type":"direct", "durable":true, "auto_delete":true}'
-          accept: 201, 204
-          retries: 3
-          log-response: true
-
-      # Temporary step added to avoid race condition. Currently, there is no health check in 'svc-bgs-api'; therefore,
-      # at this step, it is unknown if svc-bgs-api has yet to create the 'add-note' queue.
-      - name: 'Create add-note queue'
-        uses: indiesdev/curl@v1.1
-        with:
-          url: 'http://localhost:15672/api/queues/%2f/add-note'
-          method: 'PUT'
-          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
-          body: '{"durable":true, "auto_delete":true}'
-          accept: 201, 204
-          retries: 3
-          log-response: true
-
-      # Temporary step added to avoid race condition. Currently, there is no health check in 'svc-bgs-api'; therefore,
-      # at this step, it is unknown if svc-bgs-api has yet to create the binding from 'bgs-api' exchange to 'add-note'
-      # queue.
-      - name: 'Create binding for add-note queue to bgs-api exchange'
-        uses: indiesdev/curl@v1.1
-        with:
-          url: 'http://localhost:15672/api/bindings/%2f/e/bgs-api/q/add-note'
-          method: 'POST'
-          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
-          body: '{"routing_key":"add-note","arguments":{}}'
-          accept: 201, 204
-          retries: 3
-          log-response: true
+      - name: 'Check for healthy BGS container'
+        run: timeout 180s sh -c 'until docker ps | grep ".*svc-bgs-api.*" | grep -q healthy; do echo "Waiting for container to be healthy..."; sleep 2; done'
 
       - name: 'Create add-note-response queue'
         uses: indiesdev/curl@v1.1
