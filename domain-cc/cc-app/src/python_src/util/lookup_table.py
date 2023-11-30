@@ -5,7 +5,6 @@ from abc import ABC
 from .table_versions import (
     CONDITION_DROPDOWN_TABLE_VERSION,
     DIAGNOSITC_CODE_TABLE_VERSION,
-    REDESIGNED_CONDITIONS_TABLE_VERSION,
 )
 
 # https://docs.google.com/spreadsheets/d/18Mwnn9-cvJIRRupQyQ2zLYOBm3bd0pr4kKlsZtFiyc0/edit#gid=1711756762
@@ -14,14 +13,13 @@ dc_table_name = (
     f" sheet - DC Lookup {DIAGNOSITC_CODE_TABLE_VERSION}.csv"
 )
 # https://docs.google.com/spreadsheets/d/1A5JuYwn39mHE5Mk1HazN-mxCL2TENPeyUPHHhH10g_I/edit#gid=819850041
-condition_dropdown_table_name = (
-    f"Contention dropdown to classification master"
-    f" - Dropdown Lookup {CONDITION_DROPDOWN_TABLE_VERSION}.csv"
+previous_condition_dropdown_table_name = (
+    "Contention dropdown to classification master - Dropdown Lookup v0.1.csv"
 )
 
-redesigned_dropdown_table_name = (
+condition_dropdown_table_name = (
     "Contention dropdown to classification master"
-    f" - Prototype - Terms + mapping {REDESIGNED_CONDITIONS_TABLE_VERSION}.csv"
+    f" - Prototype - Terms + mapping {CONDITION_DROPDOWN_TABLE_VERSION}.csv"
 )
 
 
@@ -40,7 +38,11 @@ class LookupTable(ABC):
         if not self.CSV_FILEPATH:
             raise NotImplementedError("csv_filepath must be set in child class")
         self.mappings = get_lookup_table(
-            self.CSV_FILEPATH, input_key=self.input_key, output_key=self.output_key
+            version_num=CONDITION_DROPDOWN_TABLE_VERSION,
+            dropdown_v2_filepath=self.REDESIGNED_FILEPATH,
+            dropdown_v1_filepath=self.CSV_FILEPATH,
+            input_key=self.input_key,
+            output_key=self.output_key,
         )
 
     def __len__(self):
@@ -57,33 +59,19 @@ class ConditionDropdownLookupTable(LookupTable):
         os.path.dirname(__file__),
         "data",
         "condition_dropdown_lookup_table",
-        condition_dropdown_table_name,
+        previous_condition_dropdown_table_name,
     )
     REDESIGNED_FILEPATH = os.path.join(
         os.path.dirname(__file__),
         "data",
         "redesigned_lookup_table",
-        redesigned_dropdown_table_name,
+        condition_dropdown_table_name,
     )
     input_key = "CONTENTION_TEXT"
     output_key = "CLASSIFICATION_CODE"
 
     def __init__(self):
         super().__init__()
-
-    def merge_dictionaries(self) -> dict:
-        """
-        Function merges the self.mappings dictionary with the dictionary
-        containing the mappings for the redesigned list
-
-        Returns
-        -------
-        dict
-            keys: string representing the dropdown option
-            values: classification codes
-        """
-        redesigned_lut = get_redesigned_lookup_table(self.REDESIGNED_FILEPATH)
-        return {**self.mappings, **redesigned_lut}
 
     def get(self, input_str: str, fallback=None):
         """
@@ -101,9 +89,8 @@ class ConditionDropdownLookupTable(LookupTable):
         int | None
             Returns classification code if in LUT or None
         """
-        new_mappings = self.merge_dictionaries()
         input_str = input_str.strip().lower()
-        return new_mappings.get(input_str, fallback)
+        return self.mappings.get(input_str, fallback)
 
 
 class DiagnosticCodeLookupTable(LookupTable):
@@ -121,14 +108,15 @@ class DiagnosticCodeLookupTable(LookupTable):
         super().__init__()
 
 
-def get_lookup_table(filepath: os.path, input_key: str, output_key: str) -> dict:
+def get_v1_lookup_table(filepath: os.path, input_key: str, output_key: str) -> dict:
     """
-    Returns the lookup table for the diagnostic code and original condition dropdown list
+    Returns the lookup table for the diagnostic code and original condition
+    dropdown list
 
     Parameters
     ----------
     filepath: os.path
-        Path to the csv files containing the data for the LUT
+        Path to the csv files containing the data for the version 1 LUTs
     input_key: str
         Key for the dictionary
     output_key: str
@@ -158,31 +146,52 @@ def get_lookup_table(filepath: os.path, input_key: str, output_key: str) -> dict
     return classification_code_mappings
 
 
-def get_redesigned_lookup_table(path: os.path) -> dict:
+def get_lookup_table(
+    version_num: str,
+    dropdown_v2_filepath: os.path,
+    dropdown_v1_filepath: os.path,
+    input_key,
+    output_key,
+) -> dict:
     """
-    Reads in the redesigned list and converts to dict
+    Build the full lookup table with version LUT and condition dropdown LUT
 
-    Parameters:
-    path: os.path
+    Parameters
+    -----------
+    version_num: str
+        Version number of the condition dropdown table
+    dropdown_v2_filepath: os.path
+        Filepath to the new condition dropdown table
+    dropdown_v1_filepath: os.path
+        Filepath to original csv files for both diagnostic code and
+        condition dropdown
+    input_key: str
+        Used to build the v1 LUTs either diagnostic code of contention_text
+    output_key: str
+        Used to build the v1 LUTs equal to classification_code
 
-    Returns:
-        redesigned_lookup_table: dict
-            keys: dropdown condition
-            values: classification code
-
+    Returns
+    --------
+    dict
+        keys: either the diagnostic code of condition dropdown value
+        values: classification codes
     """
-    redesigned_lookup_table = {}
-    with open(path, "r") as fh:
-        next(fh)
-        csv_reader = csv.DictReader(fh)
-        for row in csv_reader:
-            for k in ["UI Term 1", "UI Term 2", "UI Term 3"]:
-                if row[k] and row["Classification Code"]:
-                    redesigned_lookup_table[row[k].lower()] = int(
-                        row["Classification Code"]
-                    )
-    return redesigned_lookup_table
-
-
-test = ConditionDropdownLookupTable()
-print(test.get("tinnitus (ringing in the ears)"))
+    if float(version_num.split("v")[1]) >= 0.1:
+        classification_code_mappings = get_v1_lookup_table(
+            dropdown_v1_filepath, input_key, output_key
+        )
+        # add new dropdown values to LUT
+        try:
+            with open(dropdown_v2_filepath, "r") as fh:
+                next(fh)
+                csv_reader = csv.DictReader(fh)
+                for row in csv_reader:
+                    for k in ["UI Term 1", "UI Term 2", "UI Term 3"]:
+                        if row[k] and row["Classification Code"]:
+                            classification_code_mappings[row[k].lower()] = int(
+                                row["Classification Code"]
+                            )
+            return classification_code_mappings
+        # raises exception if dropdown_v2_filepath is None (only create DC LUT)
+        except TypeError:
+            return classification_code_mappings
