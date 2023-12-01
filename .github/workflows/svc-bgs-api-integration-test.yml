@@ -42,9 +42,6 @@ jobs:
         run: sleep 60s
         shell: bash
 
-      - name: 'Post-Build Docker Cleanup'
-        uses: ./.github/actions/docker-prune
-
       - name: 'Check disk space (Post-Build)'
         uses: ./.github/actions/check-disk-space
 
