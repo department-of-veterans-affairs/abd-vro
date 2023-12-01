@@ -65,9 +65,6 @@ jobs:
           # Quit after 60 seconds
           timeout: 60000
 
-      - name: 'Post-Build Docker Cleanup'
-        uses: ./.github/actions/docker-prune
-
       - name: "Run the integration test"
         run: |
           source scripts/setenv.sh

@@ -51,8 +51,6 @@ jobs:
           ./gradlew :dockerComposeUp
           ./gradlew -p mocks docker
           ./gradlew -p mocks :dockerComposeUp
-      - name: 'Post-Build Docker Cleanup'
-        uses: ./.github/actions/docker-prune
 
       - name: 'Check disk space (Post-Build)'
         uses: ./.github/actions/check-disk-space

@@ -140,6 +140,17 @@ services:
     networks:
       - vro_intranet
 
+  mock-bgs-api:
+    profiles: ["all","bgs"]
+    image: va/vro_mocks-mock-bgs-api:latest
+    <<: [*common-sde-security, *common-security-opt]
+    ports:
+      - "20500:8080"
+    environment:
+      <<: *common-vars
+    networks:
+      - vro_intranet
+
 #  mock-mas-api:
 #    profiles: ["all","mas"]
 #    image: va/vro_mocks-mock-mas-api:latest
