@@ -1,10 +1,11 @@
 name: "1. (Internal) Continuous Delivery (to DEV daily)"
 
 on:
-  schedule:
-    # Run every day at 19:00 UTC
-    # https://pubs.opengroup.org/onlinepubs/9699919799/utilities/crontab.html#tag_20_25_07
-    - cron: '0 19 * * *'
+  # Remove automatic runs 12/1/23
+  # schedule:
+  #   # Run every day at 19:00 UTC
+  #   # https://pubs.opengroup.org/onlinepubs/9699919799/utilities/crontab.html#tag_20_25_07
+  #   - cron: '0 19 * * *'
 
   # Allow manual triggering
   workflow_dispatch:
