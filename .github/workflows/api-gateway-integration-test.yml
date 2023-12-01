@@ -58,9 +58,6 @@ jobs:
           # Quit after 60 seconds
           timeout: 60000
 
-      - name: 'Post-Build Docker Cleanup'
-        uses: ./.github/actions/docker-prune
-
       - name: "Get status of containers"
         shell: bash
         run: |

@@ -1,0 +1,760 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<soapExportContainer>
+    <mockResponses>
+        <mockResponse>
+            <body>&lt;soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://services.mapd.benefits.vba.va.gov/"&gt;
+   &lt;soapenv:Header/&gt;
+   &lt;soapenv:Body&gt;
+      &lt;web:findDevelopmentNotesByVetPtcpntIdResponse&gt;?&lt;/web:findDevelopmentNotesByVetPtcpntIdResponse&gt;
+   &lt;/soapenv:Body&gt;
+&lt;/soapenv:Envelope&gt;</body>
+            <contentEncodings/>
+            <httpHeaders/>
+            <httpStatusCode>200</httpStatusCode>
+            <id>61YbW6</id>
+            <name>Auto-generated mocked response</name>
+            <operationId>q2eDTe</operationId>
+            <status>ENABLED</status>
+            <usingExpressions>false</usingExpressions>
+            <xpathExpressions/>
+        </mockResponse>
+        <mockResponse>
+            <body>&lt;soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://services.mapd.benefits.vba.va.gov/"&gt;
+   &lt;soapenv:Header/&gt;
+   &lt;soapenv:Body&gt;
+      &lt;web:updateNoteResponse&gt;?&lt;/web:updateNoteResponse&gt;
+   &lt;/soapenv:Body&gt;
+&lt;/soapenv:Envelope&gt;</body>
+            <contentEncodings/>
+            <httpHeaders/>
+            <httpStatusCode>200</httpStatusCode>
+            <id>FfuEa1</id>
+            <name>Auto-generated mocked response</name>
+            <operationId>q2UvPG</operationId>
+            <status>ENABLED</status>
+            <usingExpressions>false</usingExpressions>
+            <xpathExpressions/>
+        </mockResponse>
+        <mockResponse>
+            <body>&lt;soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://services.mapd.benefits.vba.va.gov/"&gt;
+   &lt;soapenv:Header/&gt;
+   &lt;soapenv:Body&gt;
+      &lt;web:findDevelopmentNotesResponse&gt;?&lt;/web:findDevelopmentNotesResponse&gt;
+   &lt;/soapenv:Body&gt;
+&lt;/soapenv:Envelope&gt;</body>
+            <contentEncodings/>
+            <httpHeaders/>
+            <httpStatusCode>200</httpStatusCode>
+            <id>HygBf6</id>
+            <name>Auto-generated mocked response</name>
+            <operationId>P9fK9K</operationId>
+            <status>ENABLED</status>
+            <usingExpressions>false</usingExpressions>
+            <xpathExpressions/>
+        </mockResponse>
+        <mockResponse>
+            <body>&lt;soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://services.mapd.benefits.vba.va.gov/"&gt;
+   &lt;soapenv:Header/&gt;
+   &lt;soapenv:Body&gt;
+      &lt;web:createNotesResponse&gt;?&lt;/web:createNotesResponse&gt;
+   &lt;/soapenv:Body&gt;
+&lt;/soapenv:Envelope&gt;</body>
+            <contentEncodings/>
+            <httpHeaders/>
+            <httpStatusCode>200</httpStatusCode>
+            <id>GBp4bT</id>
+            <name>Auto-generated mocked response</name>
+            <operationId>Ob5lJW</operationId>
+            <status>ENABLED</status>
+            <usingExpressions>false</usingExpressions>
+            <xpathExpressions/>
+        </mockResponse>
+        <mockResponse>
+            <body>&lt;?xml version='1.0' encoding='UTF-8'?&gt;
+&lt;S:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:S="http://schemas.xmlsoap.org/soap/envelope/"&gt;
+    &lt;env:Header&gt;
+        &lt;work:WorkContext xmlns:work="http://oracle.com/weblogic/soap/workarea/"&gt;rO0ABXdJABF3ZWJsb2dpYy5hcHAubWFwZAAAANYAAAAjd2VibG9naWMud29ya2FyZWEuU3RyaW5nV29ya0NvbnRleHQABzEuMTcuODYAAA==&lt;/work:WorkContext&gt;
+    &lt;/env:Header&gt;
+    &lt;S:Body&gt;
+        &lt;ns0:createNoteResponse xmlns:ns0="http://services.mapd.benefits.vba.va.gov/"&gt;
+            &lt;note&gt;
+                &lt;callId&gt;17&lt;/callId&gt;
+                &lt;jrnDt&gt;2023-03-22T14:39:05-05:00&lt;/jrnDt&gt;
+                &lt;jrnLctnId&gt;281&lt;/jrnLctnId&gt;
+                &lt;jrnObjId&gt;cd_note_pkg.do_create&lt;/jrnObjId&gt;
+                &lt;jrnSttTc&gt;I&lt;/jrnSttTc&gt;
+                &lt;jrnUserId&gt;VROSYSACCT&lt;/jrnUserId&gt;
+                &lt;name&gt;Note&lt;/name&gt;
+                &lt;rowCnt&gt;1&lt;/rowCnt&gt;
+                &lt;rowId&gt;3&lt;/rowId&gt;
+                &lt;bnftClmNoteTc&gt;CLMDVLNOTE&lt;/bnftClmNoteTc&gt;
+                &lt;clmId&gt;600391838&lt;/clmId&gt;
+                &lt;createDt&gt;2023-03-22T14:39:05-05:00&lt;/createDt&gt;
+                &lt;modifdDt&gt;2023-03-22T14:39:05-05:00&lt;/modifdDt&gt;
+                &lt;noteId&gt;57846037&lt;/noteId&gt;
+                &lt;noteOutTn&gt;Claim Development Note&lt;/noteOutTn&gt;
+                &lt;ptcpntId&gt;600033542&lt;/ptcpntId&gt;
+                &lt;txt&gt;Note 3 from VRO&lt;/txt&gt;
+                &lt;userId&gt;601174530&lt;/userId&gt;
+                &lt;userNm&gt;ACCOUNT, SYSTEM&lt;/userNm&gt;
+            &lt;/note&gt;
+        &lt;/ns0:createNoteResponse&gt;
+    &lt;/S:Body&gt;
+&lt;/S:Envelope&gt;</body>
+            <contentEncodings/>
+            <httpHeaders/>
+            <httpStatusCode>200</httpStatusCode>
+            <id>STvMxT</id>
+            <name>Auto-generated mocked response</name>
+            <operationId>CiNGV4</operationId>
+            <status>ENABLED</status>
+            <usingExpressions>false</usingExpressions>
+            <xpathExpressions/>
+        </mockResponse>
+        <mockResponse>
+            <body>&lt;soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://services.mapd.benefits.vba.va.gov/"&gt;
+   &lt;soapenv:Header/&gt;
+   &lt;soapenv:Body&gt;
+      &lt;web:findDevelopmentNotesByRangeResponse&gt;?&lt;/web:findDevelopmentNotesByRangeResponse&gt;
+   &lt;/soapenv:Body&gt;
+&lt;/soapenv:Envelope&gt;</body>
+            <contentEncodings/>
+            <httpHeaders/>
+            <httpStatusCode>200</httpStatusCode>
+            <id>XIUwpJ</id>
+            <name>Auto-generated mocked response</name>
+            <operationId>e9nhz9</operationId>
+            <status>ENABLED</status>
+            <usingExpressions>false</usingExpressions>
+            <xpathExpressions/>
+        </mockResponse>
+        <mockResponse>
+            <body>&lt;soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://services.mapd.benefits.vba.va.gov/"&gt;
+   &lt;soapenv:Header/&gt;
+   &lt;soapenv:Body&gt;
+      &lt;web:deleteNoteResponse&gt;?&lt;/web:deleteNoteResponse&gt;
+   &lt;/soapenv:Body&gt;
+&lt;/soapenv:Envelope&gt;</body>
+            <contentEncodings/>
+            <httpHeaders/>
+            <httpStatusCode>200</httpStatusCode>
+            <id>BSWUJc</id>
+            <name>Auto-generated mocked response</name>
+            <operationId>ISmyPB</operationId>
+            <status>ENABLED</status>
+            <usingExpressions>false</usingExpressions>
+            <xpathExpressions/>
+        </mockResponse>
+    </mockResponses>
+    <operations>
+        <operation>
+            <currentResponseSequenceIndex>0</currentResponseSequenceIndex>
+            <defaultBody>&lt;soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://services.mapd.benefits.vba.va.gov/"&gt;
+   &lt;soapenv:Header/&gt;
+   &lt;soapenv:Body&gt;
+      &lt;web:findDevelopmentNotesByVetPtcpntIdResponse&gt;?&lt;/web:findDevelopmentNotesByVetPtcpntIdResponse&gt;
+   &lt;/soapenv:Body&gt;
+&lt;/soapenv:Envelope&gt;</defaultBody>
+            <forwardedEndpoint>http://bepdev.vba.va.gov:80/DevelopmentNotesService/DevelopmentNotesService</forwardedEndpoint>
+            <httpMethod>POST</httpMethod>
+            <id>q2eDTe</id>
+            <identifyStrategy>ELEMENT_NAMESPACE</identifyStrategy>
+            <mockOnFailure>false</mockOnFailure>
+            <mockResponses/>
+            <name>findDevelopmentNotesByVetPtcpntId</name>
+            <networkDelay>0</networkDelay>
+            <operationIdentifier>
+                <name>findDevelopmentNotesByVetPtcpntId</name>
+                <namespace>http://services.mapd.benefits.vba.va.gov/</namespace>
+            </operationIdentifier>
+            <originalEndpoint>http://bepdev.vba.va.gov:80/DevelopmentNotesService/DevelopmentNotesService</originalEndpoint>
+            <portId>8RPrCL</portId>
+            <responseStrategy>RANDOM</responseStrategy>
+            <simulateNetworkDelay>false</simulateNetworkDelay>
+            <soapVersion>SOAP11</soapVersion>
+            <status>MOCKED</status>
+        </operation>
+        <operation>
+            <currentResponseSequenceIndex>0</currentResponseSequenceIndex>
+            <defaultBody>&lt;soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://services.mapd.benefits.vba.va.gov/"&gt;
+   &lt;soapenv:Header/&gt;
+   &lt;soapenv:Body&gt;
+      &lt;web:updateNoteResponse&gt;?&lt;/web:updateNoteResponse&gt;
+   &lt;/soapenv:Body&gt;
+&lt;/soapenv:Envelope&gt;</defaultBody>
+            <forwardedEndpoint>http://bepdev.vba.va.gov:80/DevelopmentNotesService/DevelopmentNotesService</forwardedEndpoint>
+            <httpMethod>POST</httpMethod>
+            <id>q2UvPG</id>
+            <identifyStrategy>ELEMENT_NAMESPACE</identifyStrategy>
+            <mockOnFailure>false</mockOnFailure>
+            <mockResponses/>
+            <name>updateNote</name>
+            <networkDelay>0</networkDelay>
+            <operationIdentifier>
+                <name>updateNote</name>
+                <namespace>http://services.mapd.benefits.vba.va.gov/</namespace>
+            </operationIdentifier>
+            <originalEndpoint>http://bepdev.vba.va.gov:80/DevelopmentNotesService/DevelopmentNotesService</originalEndpoint>
+            <portId>8RPrCL</portId>
+            <responseStrategy>RANDOM</responseStrategy>
+            <simulateNetworkDelay>false</simulateNetworkDelay>
+            <soapVersion>SOAP11</soapVersion>
+            <status>MOCKED</status>
+        </operation>
+        <operation>
+            <currentResponseSequenceIndex>0</currentResponseSequenceIndex>
+            <defaultBody>&lt;soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://services.mapd.benefits.vba.va.gov/"&gt;
+   &lt;soapenv:Header/&gt;
+   &lt;soapenv:Body&gt;
+      &lt;web:findDevelopmentNotesResponse&gt;?&lt;/web:findDevelopmentNotesResponse&gt;
+   &lt;/soapenv:Body&gt;
+&lt;/soapenv:Envelope&gt;</defaultBody>
+            <forwardedEndpoint>http://bepdev.vba.va.gov:80/DevelopmentNotesService/DevelopmentNotesService</forwardedEndpoint>
+            <httpMethod>POST</httpMethod>
+            <id>P9fK9K</id>
+            <identifyStrategy>ELEMENT_NAMESPACE</identifyStrategy>
+            <mockOnFailure>false</mockOnFailure>
+            <mockResponses/>
+            <name>findDevelopmentNotes</name>
+            <networkDelay>0</networkDelay>
+            <operationIdentifier>
+                <name>findDevelopmentNotes</name>
+                <namespace>http://services.mapd.benefits.vba.va.gov/</namespace>
+            </operationIdentifier>
+            <originalEndpoint>http://bepdev.vba.va.gov:80/DevelopmentNotesService/DevelopmentNotesService</originalEndpoint>
+            <portId>8RPrCL</portId>
+            <responseStrategy>RANDOM</responseStrategy>
+            <simulateNetworkDelay>false</simulateNetworkDelay>
+            <soapVersion>SOAP11</soapVersion>
+            <status>MOCKED</status>
+        </operation>
+        <operation>
+            <currentResponseSequenceIndex>0</currentResponseSequenceIndex>
+            <defaultBody>&lt;soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://services.mapd.benefits.vba.va.gov/"&gt;
+   &lt;soapenv:Header/&gt;
+   &lt;soapenv:Body&gt;
+      &lt;web:createNotesResponse&gt;?&lt;/web:createNotesResponse&gt;
+   &lt;/soapenv:Body&gt;
+&lt;/soapenv:Envelope&gt;</defaultBody>
+            <forwardedEndpoint>http://bepdev.vba.va.gov:80/DevelopmentNotesService/DevelopmentNotesService</forwardedEndpoint>
+            <httpMethod>POST</httpMethod>
+            <id>Ob5lJW</id>
+            <identifyStrategy>ELEMENT_NAMESPACE</identifyStrategy>
+            <mockOnFailure>false</mockOnFailure>
+            <mockResponses/>
+            <name>createNotes</name>
+            <networkDelay>0</networkDelay>
+            <operationIdentifier>
+                <name>createNotes</name>
+                <namespace>http://services.mapd.benefits.vba.va.gov/</namespace>
+            </operationIdentifier>
+            <originalEndpoint>http://bepdev.vba.va.gov:80/DevelopmentNotesService/DevelopmentNotesService</originalEndpoint>
+            <portId>8RPrCL</portId>
+            <responseStrategy>RANDOM</responseStrategy>
+            <simulateNetworkDelay>false</simulateNetworkDelay>
+            <soapVersion>SOAP11</soapVersion>
+            <status>MOCKED</status>
+        </operation>
+        <operation>
+            <currentResponseSequenceIndex>0</currentResponseSequenceIndex>
+            <defaultBody>&lt;soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://services.mapd.benefits.vba.va.gov/"&gt;
+   &lt;soapenv:Header/&gt;
+   &lt;soapenv:Body&gt;
+      &lt;web:createNoteResponse&gt;?&lt;/web:createNoteResponse&gt;
+   &lt;/soapenv:Body&gt;
+&lt;/soapenv:Envelope&gt;</defaultBody>
+            <forwardedEndpoint>http://bepdev.vba.va.gov:80/DevelopmentNotesService/DevelopmentNotesService</forwardedEndpoint>
+            <httpMethod>POST</httpMethod>
+            <id>CiNGV4</id>
+            <identifyStrategy>ELEMENT_NAMESPACE</identifyStrategy>
+            <mockOnFailure>false</mockOnFailure>
+            <mockResponses/>
+            <name>createNote</name>
+            <networkDelay>0</networkDelay>
+            <operationIdentifier>
+                <name>createNote</name>
+                <namespace>http://services.mapd.benefits.vba.va.gov/</namespace>
+            </operationIdentifier>
+            <originalEndpoint>http://bepdev.vba.va.gov:80/DevelopmentNotesService/DevelopmentNotesService</originalEndpoint>
+            <portId>8RPrCL</portId>
+            <responseStrategy>RANDOM</responseStrategy>
+            <simulateNetworkDelay>false</simulateNetworkDelay>
+            <soapVersion>SOAP11</soapVersion>
+            <status>MOCKED</status>
+        </operation>
+        <operation>
+            <currentResponseSequenceIndex>0</currentResponseSequenceIndex>
+            <defaultBody>&lt;soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://services.mapd.benefits.vba.va.gov/"&gt;
+   &lt;soapenv:Header/&gt;
+   &lt;soapenv:Body&gt;
+      &lt;web:findDevelopmentNotesByRangeResponse&gt;?&lt;/web:findDevelopmentNotesByRangeResponse&gt;
+   &lt;/soapenv:Body&gt;
+&lt;/soapenv:Envelope&gt;</defaultBody>
+            <forwardedEndpoint>http://bepdev.vba.va.gov:80/DevelopmentNotesService/DevelopmentNotesService</forwardedEndpoint>
+            <httpMethod>POST</httpMethod>
+            <id>e9nhz9</id>
+            <identifyStrategy>ELEMENT_NAMESPACE</identifyStrategy>
+            <mockOnFailure>false</mockOnFailure>
+            <mockResponses/>
+            <name>findDevelopmentNotesByRange</name>
+            <networkDelay>0</networkDelay>
+            <operationIdentifier>
+                <name>findDevelopmentNotesByRange</name>
+                <namespace>http://services.mapd.benefits.vba.va.gov/</namespace>
+            </operationIdentifier>
+            <originalEndpoint>http://bepdev.vba.va.gov:80/DevelopmentNotesService/DevelopmentNotesService</originalEndpoint>
+            <portId>8RPrCL</portId>
+            <responseStrategy>RANDOM</responseStrategy>
+            <simulateNetworkDelay>false</simulateNetworkDelay>
+            <soapVersion>SOAP11</soapVersion>
+            <status>MOCKED</status>
+        </operation>
+        <operation>
+            <currentResponseSequenceIndex>0</currentResponseSequenceIndex>
+            <defaultBody>&lt;soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://services.mapd.benefits.vba.va.gov/"&gt;
+   &lt;soapenv:Header/&gt;
+   &lt;soapenv:Body&gt;
+      &lt;web:deleteNoteResponse&gt;?&lt;/web:deleteNoteResponse&gt;
+   &lt;/soapenv:Body&gt;
+&lt;/soapenv:Envelope&gt;</defaultBody>
+            <forwardedEndpoint>http://bepdev.vba.va.gov:80/DevelopmentNotesService/DevelopmentNotesService</forwardedEndpoint>
+            <httpMethod>POST</httpMethod>
+            <id>ISmyPB</id>
+            <identifyStrategy>ELEMENT_NAMESPACE</identifyStrategy>
+            <mockOnFailure>false</mockOnFailure>
+            <mockResponses/>
+            <name>deleteNote</name>
+            <networkDelay>0</networkDelay>
+            <operationIdentifier>
+                <name>deleteNote</name>
+                <namespace>http://services.mapd.benefits.vba.va.gov/</namespace>
+            </operationIdentifier>
+            <originalEndpoint>http://bepdev.vba.va.gov:80/DevelopmentNotesService/DevelopmentNotesService</originalEndpoint>
+            <portId>8RPrCL</portId>
+            <responseStrategy>RANDOM</responseStrategy>
+            <simulateNetworkDelay>false</simulateNetworkDelay>
+            <soapVersion>SOAP11</soapVersion>
+            <status>MOCKED</status>
+        </operation>
+    </operations>
+    <ports>
+        <port>
+            <id>8RPrCL</id>
+            <name>DevelopmentNotesServicePort</name>
+            <operations/>
+            <projectId>x5KVzK</projectId>
+            <uri>DevelopmentNotesService</uri>
+        </port>
+    </ports>
+    <project>
+        <created>2023-04-11T23:19:10.518Z</created>
+        <description></description>
+        <id>x5KVzK</id>
+        <name>BGS</name>
+        <updated>2023-04-11T23:19:10.518Z</updated>
+        <ports/>
+        <resources/>
+    </project>
+    <resources>
+        <resource>
+            <content>&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
+&lt;!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is JAX-WS RI 2.3.0-wls122140-b221116.0611 svn-revision#e80cc14f7d7c7ce39446b2db53387251ca55e7a7. --&gt;&lt;!-- Generated by JAX-WS RI (http://jax-ws.java.net). RI's version is JAX-WS RI 2.3.0-wls122140-b221116.0611 svn-revision#e80cc14f7d7c7ce39446b2db53387251ca55e7a7. --&gt;&lt;definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://services.mapd.benefits.vba.va.gov/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="DevelopmentNotesService" targetNamespace="http://services.mapd.benefits.vba.va.gov/"&gt;
+    
+    &lt;types&gt;
+        
+        &lt;xsd:schema&gt;
+            
+            &lt;xsd:import namespace="http://services.mapd.benefits.vba.va.gov/" schemaLocation="bgs-mock-schema.xsd"/&gt;
+            
+        &lt;/xsd:schema&gt;
+        
+    &lt;/types&gt;
+    
+    &lt;message name="findDevelopmentNotesByRange"&gt;
+        
+        &lt;part element="tns:findDevelopmentNotesByRange" name="parameters"/&gt;
+        
+    &lt;/message&gt;
+    
+    &lt;message name="findDevelopmentNotesByRangeResponse"&gt;
+        
+        &lt;part element="tns:findDevelopmentNotesByRangeResponse" name="parameters"/&gt;
+        
+    &lt;/message&gt;
+    
+    &lt;message name="InvalidParameterException"&gt;
+        
+        &lt;part element="tns:InvalidParameterException" name="fault"/&gt;
+        
+    &lt;/message&gt;
+    
+    &lt;message name="BenefitsException"&gt;
+        
+        &lt;part element="tns:BenefitsException" name="fault"/&gt;
+        
+    &lt;/message&gt;
+    
+    &lt;message name="updateNote"&gt;
+        
+        &lt;part element="tns:updateNote" name="parameters"/&gt;
+        
+    &lt;/message&gt;
+    
+    &lt;message name="updateNoteResponse"&gt;
+        
+        &lt;part element="tns:updateNoteResponse" name="parameters"/&gt;
+        
+    &lt;/message&gt;
+    
+    &lt;message name="findDevelopmentNotes"&gt;
+        
+        &lt;part element="tns:findDevelopmentNotes" name="parameters"/&gt;
+        
+    &lt;/message&gt;
+    
+    &lt;message name="findDevelopmentNotesResponse"&gt;
+        
+        &lt;part element="tns:findDevelopmentNotesResponse" name="parameters"/&gt;
+        
+    &lt;/message&gt;
+    
+    &lt;message name="deleteNote"&gt;
+        
+        &lt;part element="tns:deleteNote" name="parameters"/&gt;
+        
+    &lt;/message&gt;
+    
+    &lt;message name="deleteNoteResponse"&gt;
+        
+        &lt;part element="tns:deleteNoteResponse" name="parameters"/&gt;
+        
+    &lt;/message&gt;
+    
+    &lt;message name="createNote"&gt;
+        
+        &lt;part element="tns:createNote" name="parameters"/&gt;
+        
+    &lt;/message&gt;
+    
+    &lt;message name="createNoteResponse"&gt;
+        
+        &lt;part element="tns:createNoteResponse" name="parameters"/&gt;
+        
+    &lt;/message&gt;
+    
+    &lt;message name="createNotes"&gt;
+        
+        &lt;part element="tns:createNotes" name="parameters"/&gt;
+        
+    &lt;/message&gt;
+    
+    &lt;message name="createNotesResponse"&gt;
+        
+        &lt;part element="tns:createNotesResponse" name="parameters"/&gt;
+        
+    &lt;/message&gt;
+    
+    &lt;message name="findDevelopmentNotesByVetPtcpntId"&gt;
+        
+        &lt;part element="tns:findDevelopmentNotesByVetPtcpntId" name="parameters"/&gt;
+        
+    &lt;/message&gt;
+    
+    &lt;message name="findDevelopmentNotesByVetPtcpntIdResponse"&gt;
+        
+        &lt;part element="tns:findDevelopmentNotesByVetPtcpntIdResponse" name="parameters"/&gt;
+        
+    &lt;/message&gt;
+    
+    &lt;portType name="DevelopmentNotesServiceRemote"&gt;
+        
+        &lt;operation name="findDevelopmentNotesByRange"&gt;
+            
+            &lt;input message="tns:findDevelopmentNotesByRange" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/findDevelopmentNotesByRangeRequest"/&gt;
+            
+            &lt;output message="tns:findDevelopmentNotesByRangeResponse" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/findDevelopmentNotesByRangeResponse"/&gt;
+            
+            &lt;fault message="tns:InvalidParameterException" name="InvalidParameterException" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/findDevelopmentNotesByRange/Fault/InvalidParameterException"/&gt;
+            
+            &lt;fault message="tns:BenefitsException" name="BenefitsException" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/findDevelopmentNotesByRange/Fault/BenefitsException"/&gt;
+            
+        &lt;/operation&gt;
+        
+        &lt;operation name="updateNote"&gt;
+            
+            &lt;input message="tns:updateNote" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/updateNoteRequest"/&gt;
+            
+            &lt;output message="tns:updateNoteResponse" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/updateNoteResponse"/&gt;
+            
+            &lt;fault message="tns:BenefitsException" name="BenefitsException" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/updateNote/Fault/BenefitsException"/&gt;
+            
+        &lt;/operation&gt;
+        
+        &lt;operation name="findDevelopmentNotes"&gt;
+            
+            &lt;input message="tns:findDevelopmentNotes" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/findDevelopmentNotesRequest"/&gt;
+            
+            &lt;output message="tns:findDevelopmentNotesResponse" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/findDevelopmentNotesResponse"/&gt;
+            
+            &lt;fault message="tns:InvalidParameterException" name="InvalidParameterException" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/findDevelopmentNotes/Fault/InvalidParameterException"/&gt;
+            
+            &lt;fault message="tns:BenefitsException" name="BenefitsException" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/findDevelopmentNotes/Fault/BenefitsException"/&gt;
+            
+        &lt;/operation&gt;
+        
+        &lt;operation name="deleteNote"&gt;
+            
+            &lt;input message="tns:deleteNote" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/deleteNoteRequest"/&gt;
+            
+            &lt;output message="tns:deleteNoteResponse" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/deleteNoteResponse"/&gt;
+            
+            &lt;fault message="tns:BenefitsException" name="BenefitsException" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/deleteNote/Fault/BenefitsException"/&gt;
+            
+        &lt;/operation&gt;
+        
+        &lt;operation name="createNote"&gt;
+            
+            &lt;input message="tns:createNote" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/createNoteRequest"/&gt;
+            
+            &lt;output message="tns:createNoteResponse" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/createNoteResponse"/&gt;
+            
+            &lt;fault message="tns:BenefitsException" name="BenefitsException" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/createNote/Fault/BenefitsException"/&gt;
+            
+        &lt;/operation&gt;
+        
+        &lt;operation name="createNotes"&gt;
+            
+            &lt;input message="tns:createNotes" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/createNotesRequest"/&gt;
+            
+            &lt;output message="tns:createNotesResponse" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/createNotesResponse"/&gt;
+            
+            &lt;fault message="tns:BenefitsException" name="BenefitsException" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/createNotes/Fault/BenefitsException"/&gt;
+            
+        &lt;/operation&gt;
+        
+        &lt;operation name="findDevelopmentNotesByVetPtcpntId"&gt;
+            
+            &lt;input message="tns:findDevelopmentNotesByVetPtcpntId" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/findDevelopmentNotesByVetPtcpntIdRequest"/&gt;
+            
+            &lt;output message="tns:findDevelopmentNotesByVetPtcpntIdResponse" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/findDevelopmentNotesByVetPtcpntIdResponse"/&gt;
+            
+            &lt;fault message="tns:InvalidParameterException" name="InvalidParameterException" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/findDevelopmentNotesByVetPtcpntId/Fault/InvalidParameterException"/&gt;
+            
+            &lt;fault message="tns:BenefitsException" name="BenefitsException" wsam:Action="http://services.mapd.benefits.vba.va.gov/DevelopmentNotesServiceRemote/findDevelopmentNotesByVetPtcpntId/Fault/BenefitsException"/&gt;
+            
+        &lt;/operation&gt;
+        
+    &lt;/portType&gt;
+    
+    &lt;binding name="DevelopmentNotesServicePortBinding" type="tns:DevelopmentNotesServiceRemote"&gt;
+        
+        &lt;soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/&gt;
+        
+        &lt;operation name="findDevelopmentNotesByRange"&gt;
+            
+            &lt;soap:operation soapAction=""/&gt;
+            
+            &lt;input&gt;
+                
+                &lt;soap:body use="literal"/&gt;
+                
+            &lt;/input&gt;
+            
+            &lt;output&gt;
+                
+                &lt;soap:body use="literal"/&gt;
+                
+            &lt;/output&gt;
+            
+            &lt;fault name="InvalidParameterException"&gt;
+                
+                &lt;soap:fault name="InvalidParameterException" use="literal"/&gt;
+                
+            &lt;/fault&gt;
+            
+            &lt;fault name="BenefitsException"&gt;
+                
+                &lt;soap:fault name="BenefitsException" use="literal"/&gt;
+                
+            &lt;/fault&gt;
+            
+        &lt;/operation&gt;
+        
+        &lt;operation name="updateNote"&gt;
+            
+            &lt;soap:operation soapAction=""/&gt;
+            
+            &lt;input&gt;
+                
+                &lt;soap:body use="literal"/&gt;
+                
+            &lt;/input&gt;
+            
+            &lt;output&gt;
+                
+                &lt;soap:body use="literal"/&gt;
+                
+            &lt;/output&gt;
+            
+            &lt;fault name="BenefitsException"&gt;
+                
+                &lt;soap:fault name="BenefitsException" use="literal"/&gt;
+                
+            &lt;/fault&gt;
+            
+        &lt;/operation&gt;
+        
+        &lt;operation name="findDevelopmentNotes"&gt;
+            
+            &lt;soap:operation soapAction=""/&gt;
+            
+            &lt;input&gt;
+                
+                &lt;soap:body use="literal"/&gt;
+                
+            &lt;/input&gt;
+            
+            &lt;output&gt;
+                
+                &lt;soap:body use="literal"/&gt;
+                
+            &lt;/output&gt;
+            
+            &lt;fault name="InvalidParameterException"&gt;
+                
+                &lt;soap:fault name="InvalidParameterException" use="literal"/&gt;
+                
+            &lt;/fault&gt;
+            
+            &lt;fault name="BenefitsException"&gt;
+                
+                &lt;soap:fault name="BenefitsException" use="literal"/&gt;
+                
+            &lt;/fault&gt;
+            
+        &lt;/operation&gt;
+        
+        &lt;operation name="deleteNote"&gt;
+            
+            &lt;soap:operation soapAction=""/&gt;
+            
+            &lt;input&gt;
+                
+                &lt;soap:body use="literal"/&gt;
+                
+            &lt;/input&gt;
+            
+            &lt;output&gt;
+                
+                &lt;soap:body use="literal"/&gt;
+                
+            &lt;/output&gt;
+            
+            &lt;fault name="BenefitsException"&gt;
+                
+                &lt;soap:fault name="BenefitsException" use="literal"/&gt;
+                
+            &lt;/fault&gt;
+            
+        &lt;/operation&gt;
+        
+        &lt;operation name="createNote"&gt;
+            
+            &lt;soap:operation soapAction=""/&gt;
+            
+            &lt;input&gt;
+                
+                &lt;soap:body use="literal"/&gt;
+                
+            &lt;/input&gt;
+            
+            &lt;output&gt;
+                
+                &lt;soap:body use="literal"/&gt;
+                
+            &lt;/output&gt;
+            
+            &lt;fault name="BenefitsException"&gt;
+                
+                &lt;soap:fault name="BenefitsException" use="literal"/&gt;
+                
+            &lt;/fault&gt;
+            
+        &lt;/operation&gt;
+        
+        &lt;operation name="createNotes"&gt;
+            
+            &lt;soap:operation soapAction=""/&gt;
+            
+            &lt;input&gt;
+                
+                &lt;soap:body use="literal"/&gt;
+                
+            &lt;/input&gt;
+            
+            &lt;output&gt;
+                
+                &lt;soap:body use="literal"/&gt;
+                
+            &lt;/output&gt;
+            
+            &lt;fault name="BenefitsException"&gt;
+                
+                &lt;soap:fault name="BenefitsException" use="literal"/&gt;
+                
+            &lt;/fault&gt;
+            
+        &lt;/operation&gt;
+        
+        &lt;operation name="findDevelopmentNotesByVetPtcpntId"&gt;
+            
+            &lt;soap:operation soapAction=""/&gt;
+            
+            &lt;input&gt;
+                
+                &lt;soap:body use="literal"/&gt;
+                
+            &lt;/input&gt;
+            
+            &lt;output&gt;
+                
+                &lt;soap:body use="literal"/&gt;
+                
+            &lt;/output&gt;
+            
+            &lt;fault name="InvalidParameterException"&gt;
+                
+                &lt;soap:fault name="InvalidParameterException" use="literal"/&gt;
+                
+            &lt;/fault&gt;
+            
+            &lt;fault name="BenefitsException"&gt;
+                
+                &lt;soap:fault name="BenefitsException" use="literal"/&gt;
+                
+            &lt;/fault&gt;
+            
+        &lt;/operation&gt;
+        
+    &lt;/binding&gt;
+    
+    &lt;service name="DevelopmentNotesService"&gt;
+        
+        &lt;port binding="tns:DevelopmentNotesServicePortBinding" name="DevelopmentNotesServicePort"&gt;
+            
+            &lt;soap:address location="http://bepdev.vba.va.gov:80/DevelopmentNotesService/DevelopmentNotesService"/&gt;
+            
+        &lt;/port&gt;
+        
+    &lt;/service&gt;
+    
+&lt;/definitions&gt;
+</content>
+            <id>xHzloF</id>
+            <name>Upload-2023-04-11-11-19-44</name>
+            <projectId>x5KVzK</projectId>
+            <type>WSDL</type>
+        </resource>
+    </resources>
+</soapExportContainer>
