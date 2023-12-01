@@ -35,5 +35,4 @@ ENTRYPOINT ["/app/entrypoint-wrapper.sh"]
 
 ARG HEALTHCHECK_PORT_ARG=8080
 ENV HEALTHCHECK_PORT=${HEALTHCHECK_PORT_ARG}
-# TODO: add healthcheck for Ruby microservice
-# HEALTHCHECK CMD curl --fail http://localhost:${HEALTHCHECK_PORT}/actuator/health || exit 1
+HEALTHCHECK CMD bundle exec ruby healthcheck/healthcheck.rb

@@ -9,6 +9,7 @@ from src.python_src.api import app, on_shut_down, on_start_up
 
 RESPONSE_DIR = './tests/responses'
 response_200 = f'{RESPONSE_DIR}/200_response.json'
+response_201 = f'{RESPONSE_DIR}/201_response.json'
 response_404 = f'{RESPONSE_DIR}/404_response.json'
 response_400 = f'{RESPONSE_DIR}/400_response.json'
 response_500 = f'{RESPONSE_DIR}/500_response.json'
@@ -39,12 +40,12 @@ async def app_lifespan():
 def reset_responses(get_claim_endpoint: MqEndpoint,
                     get_claim_contentions_endpoint: MqEndpoint,
                     put_tsoj_endpoint: MqEndpoint,
-                    update_claim_contentions_endpoint: MqEndpoint,
+                    create_claim_contentions_endpoint: MqEndpoint,
                     cancel_claim_endpoint: MqEndpoint):
     get_claim_endpoint.set_responses()
     get_claim_contentions_endpoint.set_responses()
     put_tsoj_endpoint.set_responses()
-    update_claim_contentions_endpoint.set_responses()
+    create_claim_contentions_endpoint.set_responses()
     cancel_claim_endpoint.set_responses()
 
 
@@ -69,12 +70,12 @@ class TestMergeRequest:
                                      get_claim_endpoint: MqEndpoint,
                                      get_claim_contentions_endpoint: MqEndpoint,
                                      put_tsoj_endpoint: MqEndpoint,
-                                     update_claim_contentions_endpoint: MqEndpoint,
+                                     create_claim_contentions_endpoint: MqEndpoint,
                                      cancel_claim_endpoint: MqEndpoint):
         get_claim_endpoint.set_responses([pending_claim_200])
         get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_contentions_200])
         put_tsoj_endpoint.set_responses([response_200])
-        update_claim_contentions_endpoint.set_responses([response_200])
+        create_claim_contentions_endpoint.set_responses([response_201])
         cancel_claim_endpoint.set_responses([response_200])
 
         async with AsyncClient(app=app, base_url="http://test") as client:
@@ -193,15 +194,15 @@ class TestMergeRequest:
             assert response_json['job']['error_state'] == JobState.RUNNING_SET_TEMP_STATION_OF_JURISDICTION.value
 
     @pytest.mark.asyncio
-    async def test_completed_error_at_update_claim_contentions(self,
+    async def test_completed_error_at_create_claim_contentions(self,
                                                                get_claim_endpoint: MqEndpoint,
                                                                get_claim_contentions_endpoint: MqEndpoint,
                                                                put_tsoj_endpoint: MqEndpoint,
-                                                               update_claim_contentions_endpoint: MqEndpoint):
+                                                               create_claim_contentions_endpoint: MqEndpoint):
         get_claim_endpoint.set_responses([pending_claim_200])
         get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_contentions_200])
         put_tsoj_endpoint.set_responses([response_200])
-        update_claim_contentions_endpoint.set_responses([response_500])
+        create_claim_contentions_endpoint.set_responses([response_500])
 
         async with AsyncClient(app=app, base_url="http://test") as client:
             job_id = await self.submit_request(client)
@@ -214,19 +215,19 @@ class TestMergeRequest:
             assert response_json['job']['pending_claim_id'] == self.pending_claim_id
             assert response_json['job']['ep400_claim_id'] == self.ep400_claim_id
             assert response_json['job']['state'] == JobState.COMPLETED_ERROR.value
-            assert response_json['job']['error_state'] == JobState.RUNNING_UPDATE_PENDING_CLAIM_CONTENTIONS.value
+            assert response_json['job']['error_state'] == JobState.RUNNING_MOVE_CONTENTIONS_TO_PENDING_CLAIM.value
 
     @pytest.mark.asyncio
     async def test_completed_error_at_cancel_claim(self,
                                                    get_claim_endpoint: MqEndpoint,
                                                    get_claim_contentions_endpoint: MqEndpoint,
                                                    put_tsoj_endpoint: MqEndpoint,
-                                                   update_claim_contentions_endpoint: MqEndpoint,
+                                                   create_claim_contentions_endpoint: MqEndpoint,
                                                    cancel_claim_endpoint: MqEndpoint):
         get_claim_endpoint.set_responses([pending_claim_200])
         get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_contentions_200])
         put_tsoj_endpoint.set_responses([response_200])
-        update_claim_contentions_endpoint.set_responses([response_200])
+        create_claim_contentions_endpoint.set_responses([response_201])
         cancel_claim_endpoint.set_responses([response_500])
 
         async with AsyncClient(app=app, base_url="http://test") as client:
