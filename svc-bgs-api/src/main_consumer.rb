@@ -2,20 +2,25 @@ require 'logger'
 require 'active_support'
 
 require_relative 'config/setup'
+require_relative 'config/constants'
 
 require 'rabbit_subscriber'
 require 'bgs_client'
 
-BUNNY_ARGS = {
-  host: ENV['RABBITMQ_PLACEHOLDERS_HOST'].presence || "localhost",
-  user: ENV['RABBITMQ_USERNAME'].presence || "guest",
-  password: ENV['RABBITMQ_PASSWORD'].presence || "guest"
-}
-
 def initialize_subscriber(bgs_client)
   subscriber = RabbitSubscriber.new(BUNNY_ARGS)
-  subscriber.setup_queue(exchange_name: 'bgs-api', queue_name: 'add-note')
-  subscriber.subscribe_to('bgs-api', 'add-note') do |json|
+
+  # Setup queue/subscription for healthcheck
+  subscriber.setup_queue(exchange_name: BGS_EXCHANGE_NAME, queue_name: HEALTHCHECK_QUEUE)
+  subscriber.subscribe_to(BGS_EXCHANGE_NAME, HEALTHCHECK_QUEUE) do |json|
+   $logger.info "Subscriber received healthcheck request #{json}"
+   { statusCode: 200 }
+  end
+  subscriber
+
+  # Setup queue/subscription for BGS
+  subscriber.setup_queue(exchange_name: BGS_EXCHANGE_NAME, queue_name: ADD_NOTE_QUEUE)
+  subscriber.subscribe_to(BGS_EXCHANGE_NAME, ADD_NOTE_QUEUE) do |json|
     $logger.info "Subscriber received request #{json}"
     begin
       bgs_client.handle_request(json)
