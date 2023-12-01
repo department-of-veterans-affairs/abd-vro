@@ -90,6 +90,7 @@ services:
       RABBITMQ_USER: ${RABBITMQ_USERNAME}
       RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
       RABBITMQ_DISK_FREE_ABSOLUTE_LIMIT: "10GB"
+      RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS: true
 
   redis-service:
     image: va/abd_vro-redis
