@@ -50,6 +50,9 @@ jobs:
           ./gradlew :domain-xample:dockerComposeUp
           ./gradlew :app:dockerComposeUp
 
+      - name: 'Check disk space (Post-Build)'
+        uses: ./.github/actions/check-disk-space
+
       - name: 'Wait for RabbitMQ to be ready'
         uses: indiesdev/curl@v1.1
         with:
@@ -102,12 +105,6 @@ jobs:
           interval: 2000
           # Quit after 60 seconds
           timeout: 60000
-
-      - name: 'Post-Build Docker Cleanup'
-        uses: ./.github/actions/docker-prune
-
-      - name: 'Check disk space (Post-Build)'
-        uses: ./.github/actions/check-disk-space
 
       - name: 'Create Kafka topic and send message'
         run: |
