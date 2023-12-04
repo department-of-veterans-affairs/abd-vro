@@ -67,7 +67,7 @@ public class BieKafkaApplicationTest {
     // Message 2 comes through Kafka
     BieMessagePayload kafkaEventBody = BieMessagePayloadFactory.create();
     kafkaEventBody.setEventType(null);
-    kafkaEventBody.setContentionId(1234567890);
+    kafkaEventBody.setContentionId(1234567890L);
 
     ObjectMapper objectMapper = new ObjectMapper();
     val kafkaSentMessage = objectMapper.writeValueAsString(kafkaEventBody);
@@ -81,7 +81,7 @@ public class BieKafkaApplicationTest {
     assertTrue(latch.await(20, TimeUnit.SECONDS));
 
     // Check message 1
-    assertEquals(msgBody, receivedMxessages.get(0));
+    assertEquals(msgBody, receivedMessages.get(0));
 
     // Check message 2
     kafkaEventBody.setEventType(
