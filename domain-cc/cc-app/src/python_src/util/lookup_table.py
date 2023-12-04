@@ -17,10 +17,7 @@ previous_condition_dropdown_table_name = (
     "Contention dropdown to classification master - Dropdown Lookup v0.1.csv"
 )
 
-condition_dropdown_table_name = (
-    "Contention dropdown to classification master"
-    f" - Revised terms + mapping master {CONDITION_DROPDOWN_TABLE_VERSION}.csv"
-)
+condition_dropdown_table_name = None  # when final list is ready replace with name
 
 
 class LookupTable(ABC):
@@ -65,36 +62,23 @@ class ConditionDropdownLookupTable(LookupTable):
         "condition_dropdown_lookup_table",
         previous_condition_dropdown_table_name,
     )
-    V2_FILEPATH = os.path.join(
-        os.path.dirname(__file__),
-        "data",
-        "redesigned_lookup_table",
-        condition_dropdown_table_name,
-    )
+    V2_FILEPATH = None  # when final list is ready replace with filepath
     input_key = "CONTENTION_TEXT"
     output_key = "CLASSIFICATION_CODE"
-    v2_input_key = [f"UI Term {i}" for i in range(1, 7)]
+    v2_input_key = [
+        "UI Term 1",
+        "UI Term 2",
+        "UI Term 3",
+        "UI Term 4",
+        "UI Term 5",
+        "UI Term 6",
+    ]
     v2_output_key = "Classification Code"
 
     def __init__(self):
         super().__init__()
 
     def get(self, input_str: str, fallback=None):
-        """
-        Provides the classification code for a given dropdown option
-
-        Parameters
-        ----------
-        input_str: str
-            dropdown option selected by user
-        fallback: None
-            Default value to return if dropdown option is not in LUT
-
-        Returns
-        --------
-        int | None
-            Returns classification code if in LUT or None
-        """
         input_str = input_str.strip().lower()
         return self.mappings.get(input_str, fallback)
 
