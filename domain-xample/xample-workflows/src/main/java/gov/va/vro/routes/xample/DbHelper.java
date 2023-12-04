@@ -78,7 +78,9 @@ public class DbHelper {
     return contentionEventRepository.save(contentionEventEntity);
   }
 
-  public LocalDateTime convertTime(long time) {
+  public LocalDateTime convertTime(Long time) {
+    if(time == null) return null;
+
     return LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
   }
 }
