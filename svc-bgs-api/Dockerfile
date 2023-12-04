@@ -1,10 +1,10 @@
-FROM ruby:3.2.2-alpine3.16
+FROM ruby:3.2.2-alpine3.18
 
  # Bundler needs git, and ruby-dev curl-dev build-base to make native gems
  # https://www.cloudbees.com/blog/build-minimal-docker-container-ruby-apps
 
 # hadolint ignore=DL3018
-RUN apk update && apk upgrade && apk --no-cache add git ruby-dev=3.1.4-r0 curl-dev build-base=0.5-r3 openssl && rm -rf /var/cache/apk/*
+RUN apk update && apk upgrade && apk --no-cache add git ruby-dev=3.2.2-r0 curl-dev build-base=0.5-r3 openssl && rm -rf /var/cache/apk/*
 
 WORKDIR /app
 
@@ -35,5 +35,4 @@ ENTRYPOINT ["/app/entrypoint-wrapper.sh"]
 
 ARG HEALTHCHECK_PORT_ARG=8080
 ENV HEALTHCHECK_PORT=${HEALTHCHECK_PORT_ARG}
-# TODO: add healthcheck for Ruby microservice
-# HEALTHCHECK CMD curl --fail http://localhost:${HEALTHCHECK_PORT}/actuator/health || exit 1
+HEALTHCHECK CMD bundle exec ruby healthcheck/healthcheck.rb

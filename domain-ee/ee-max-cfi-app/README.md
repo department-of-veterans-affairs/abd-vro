@@ -130,7 +130,7 @@ Follow steps for
 then run the max-cfi-api with the following command from the `abd_vro directory`:
 
 ```
-./gradlew :domain-ee:dockerComposeUp
+COMPOSE_PROFILES="all" ./gradlew :domain-ee:dockerComposeUp
 ```
 
 ### Verify API in API Gateway

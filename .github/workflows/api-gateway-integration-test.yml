@@ -34,7 +34,7 @@ jobs:
           ./gradlew :domain-cc:dockerComposeUp
 
           # Run EE:
-          ./gradlew :domain-ee:dockerComposeUp
+          COMPOSE_PROFILES="all" ./gradlew :domain-ee:dockerComposeUp
 
           # Run Xample:
           ./gradlew :domain-xample:dockerComposeUp
@@ -57,9 +57,6 @@ jobs:
           interval: 2000
           # Quit after 60 seconds
           timeout: 60000
-
-      - name: 'Post-Build Docker Cleanup'
-        uses: ./.github/actions/docker-prune
 
       - name: "Get status of containers"
         shell: bash
