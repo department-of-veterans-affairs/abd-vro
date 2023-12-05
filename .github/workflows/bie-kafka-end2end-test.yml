@@ -111,6 +111,7 @@ jobs:
           source scripts/setenv.sh
 
           pushd svc-bie-kafka && { source ./docker-entryprep.sh; popd; }
+          sleep 60
           if ! ./gradlew :svc-bie-kafka:integrationTest; then
             echo "First run could fail due to some mock Kafka initialization"
             # Subsequent runs should pass
