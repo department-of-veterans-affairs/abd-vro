@@ -104,3 +104,17 @@ def test_null_response(client: TestClient):
     response = client.post("/classifier", json=json_post_dict)
     assert response.status_code == 200
     assert response.json() is None
+
+
+def test_new_dropdown_list(client: TestClient):
+    """Test that a null response is returned if the v2 dropdown list is not specified"""
+    json_post_dict = {
+        "diagnostic_code": 7,
+        "claim_id": 700,
+        "form526_submission_id": 777,
+        "claim_type": "new",
+        "contention_text": "migraines (headaches)",
+    }
+    response = client.post("/classifier", json=json_post_dict)
+    assert response.status_code == 200
+    assert response.json() is None
