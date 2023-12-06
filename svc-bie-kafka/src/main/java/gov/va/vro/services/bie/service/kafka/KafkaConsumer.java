@@ -32,6 +32,7 @@ public class KafkaConsumer {
       log.info("Topic name: {}", topicName);
       if (record.value() instanceof GenericRecord) {
         payload = this.handleGenericRecord(record);
+        log.info("kafka payload: {}", payload);
       } else if (record.value() instanceof String stringPayload) {
         log.info("Consumed message string value (before) json conversion: {}", stringPayload);
         payload = this.handleStringRecord(record);

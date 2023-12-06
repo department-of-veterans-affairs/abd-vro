@@ -11,7 +11,7 @@ spring:
       schema.registry.ssl.truststore.password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
       schema.registry.ssl.truststore.type: "PKCS12"
     consumer:
-      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-tst-vro-2}"
+      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-tst-vro-3}"
       key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
       value-deserializer: "io.confluent.kafka.serializers.KafkaAvroDeserializer"
       properties:
