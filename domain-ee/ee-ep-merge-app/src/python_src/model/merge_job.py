@@ -15,6 +15,7 @@ class JobState(str, Enum):
     RUNNING_MERGE_CONTENTIONS = 'RUNNING_MERGE_CONTENTIONS'
     RUNNING_MOVE_CONTENTIONS_TO_PENDING_CLAIM = 'RUNNING_MOVE_CONTENTIONS_TO_PENDING_CLAIM'
     RUNNING_CANCEL_EP400_CLAIM = 'RUNNING_CANCEL_EP400_CLAIM'
+    RUNNING_ADD_CLAIM_NOTE_TO_EP400 = 'RUNNING_ADD_CLAIM_NOTE_TO_EP400'
     COMPLETED_SUCCESS = 'COMPLETED_SUCCESS'
 
 
@@ -26,9 +27,10 @@ class MergeJob(BaseModel):
     error_state: JobState | None = None
     messages: list[Any] | None = None
 
-    def error(self, current_state, message):
-        self.error_state = current_state
+    def error(self, messages):
+        self.error_state = self.state
         self.state = JobState.COMPLETED_ERROR
         if self.messages is None:
             self.messages = []
-        self.messages.append(message)
+        for message in messages:
+            self.messages.append(message)
