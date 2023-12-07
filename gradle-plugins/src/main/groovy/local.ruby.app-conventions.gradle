@@ -1,0 +1,11 @@
+plugins {
+    id 'com.github.jruby-gradle.base'
+}
+
+import com.github.jrubygradle.JRubyExec
+
+tasks.register("integrationTest", JRubyExec) {
+    dependsOn "integrationTestSetup"
+    description "Execute integration tests"
+    script "${projectDir}/integrationTest/run-integration-tests.rb"
+}

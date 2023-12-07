@@ -3,7 +3,8 @@
  */
 
 plugins {
-    // Support convention plugins written in Groovy. Convention plugins are build scripts in 'src/main' that automatically become available as plugins in the main build.
+    // Support convention plugins written in Groovy. Convention plugins are build scripts in 'src/main' that
+    // automatically become available as plugins in the main build.
     id 'groovy-gradle-plugin'
 }
 
@@ -29,4 +30,6 @@ dependencies {
     implementation 'nebula.lint:nebula.lint.gradle.plugin:19.0.1'
 
     implementation 'ru.vyarus.use-python:ru.vyarus.use-python.gradle.plugin:3.0.0'
+
+    implementation 'com.github.jruby-gradle:jruby-gradle-plugin:2.0.2'
 }
