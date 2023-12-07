@@ -67,6 +67,8 @@ dependencies {
         implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.3'
         implementation 'io.projectreactor.netty:reactor-netty-http:1.1.13'
 
+        implementation 'ch.qos.logback:logback-core:1.4.14'
+
 
         // These are used indirectly but we need to specify versions, otherwise build error
         annotationProcessor "org.springframework.boot:spring-boot-autoconfigure-processor:${spring_boot_version}"
