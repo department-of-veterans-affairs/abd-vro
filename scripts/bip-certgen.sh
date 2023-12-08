@@ -1,15 +1,27 @@
 #!/bin/bash
 
+# Set the default environment to 'dev'
+env="dev"
+
 # Check if kubectl is installed
 if ! command -v kubectl &> /dev/null; then
     echo "Error: kubectl is not installed. Please install kubectl and try again."
     exit 1
 fi
 
+# If a parameter is provided, use it instead of the default
+if [ ! -z "$1" ]; then
+    env="$1"
+fi
+
+echo "Using environment: $env"
+
+secret_name="va-abd-rrd-${env}-va-gov-tls"
+
 rm -f ca.crt tls.crt tls.key VA-Internal-S2-RCA1-v1.cer VA-Internal-S2-ICA4.cer truststore.jks keystore.p12 truststore.p12 output.json
 
 # Get the secret in yaml format
-secret_yaml=$(kubectl get secret va-abd-rrd-dev-va-gov-tls -o yaml)
+secret_yaml=$(kubectl get secret "$secret_name" -o yaml)
 
 if [ $? -ne 0 ]; then
     echo "Failed to get secret from kubectl"
