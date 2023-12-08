@@ -1,17 +1,20 @@
 plugins {
   id 'local.ruby.container-service-conventions'
-  id 'local.ruby.app-conventions'
 }
 
 // TODO: add tasks to `bundle install`, run linters, run tests
 
-tasks.register("integrationTestSetup") {
-  description "Setup runtime environment as needed to perform integration tests"
+// This task assumes that you have bundler installed and it is on your path
+// Please visit https://bundler.io/ for more information about installing
+tasks.register("bundleInstall", Exec) {
+  workingDir './src'
 
-  // Run platform containers
-  dependsOn ':dockerComposeUp'
+  commandLine 'bundle', 'install'
+}
 
-  // Runs BGS container
-  environment "COMPOSE_PROFILE", "bgs"
-  dependsOn ':app:dockerComposeUp'
+tasks.register("integrationTest", Exec) {
+  workingDir './src'
+  description "Execute integration tests"
+//  dependsOn "bundleInstall"
+  commandLine 'bundle', 'exec', 'ruby', 'integrationTest/run_integration_tests.rb'
 }
