@@ -18,9 +18,10 @@ def test_successful_add_note(ch)
     q = ch.queue(ADD_NOTE_QUEUE, CAMEL_MQ_PROPERTIES)
     q.publish(ADD_NOTE_PAYLOAD, :reply_to => ADD_NOTE_REPLY_QUEUE, :delivery_mode => 1, :correlation_id => CORRELATION_ID, :payload_encoding => "string")
 
-    # TODO: check to make sure there is a message in the reply queue before popping
-
     delivery_info, properties, payload = r.pop
+    while properties == nil
+        delivery_info, properties, payload = r.pop
+    end
 
     # Validate response from the add-note message processing
     response_correlation_id = properties.correlation_id
