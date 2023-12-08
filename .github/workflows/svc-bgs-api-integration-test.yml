@@ -9,7 +9,6 @@ on:
 
 env:
   COMPOSE_PROFILES: 'bgs'
-  CORRELATION_ID: '1234'
 
 jobs:
   integration-test:
@@ -67,6 +66,7 @@ jobs:
 
       - name: 'Run integration tests'
         run: |
+          ./gradlew :svc-bgs-api:bundleInstall
           ./gradlew :svc-bgs-api:integrationTest
 
       - name: 'Clean shutdown of all containers'
