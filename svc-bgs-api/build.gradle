@@ -15,6 +15,6 @@ tasks.register("bundleInstall", Exec) {
 tasks.register("integrationTest", Exec) {
   workingDir './src'
   description "Execute integration tests"
-//  dependsOn "bundleInstall"
+  //  dependsOn "bundleInstall"
   commandLine 'bundle', 'exec', 'ruby', 'integrationTest/run_integration_tests.rb'
 }
