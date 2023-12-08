@@ -1,5 +1,21 @@
 #!/bin/bash
 
+# Purpose: This script is used to generate keystore, truststore base64 encoded strings and password
+# for svc-bip-api service
+#
+# output.json contains 3 key-value pairs, which should be pasted into to Vault
+#
+#   Following keys/values are generated
+#       BIP_KEYSTORE_BASE64
+#       BIP_PASSWORD
+#       BIP_TRUSTSTORE_BASE64
+#
+# Pre-requisite:
+#     - get kube_config file from GFE machine and set it as the default config
+#     - install kubectl tool on local machine
+# Input:
+# $1 Input environment name like dev, qa, sandbox, prod-test, prod. Defaulted to dev if input is not provided
+
 # Set the default environment to 'dev'
 env="dev"
 
