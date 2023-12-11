@@ -30,6 +30,4 @@ dependencies {
     implementation 'nebula.lint:nebula.lint.gradle.plugin:19.0.1'
 
     implementation 'ru.vyarus.use-python:ru.vyarus.use-python.gradle.plugin:3.0.0'
-
-    implementation 'com.github.jruby-gradle:jruby-gradle-plugin:2.0.2'
 }
