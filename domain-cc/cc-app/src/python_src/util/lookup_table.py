@@ -17,7 +17,10 @@ previous_condition_dropdown_table_name = (
     "Contention dropdown to classification master - Dropdown Lookup v0.1.csv"
 )
 
-condition_dropdown_table_name = None  # when final list is ready replace with name
+condition_dropdown_table_name = (
+    f"Contention dropdown to classification master - Dropdown Lookup "
+    f"{CONDITION_DROPDOWN_TABLE_VERSION}.csv"
+)
 
 
 class LookupTable(ABC):
@@ -62,7 +65,12 @@ class ConditionDropdownLookupTable(LookupTable):
         "condition_dropdown_lookup_table",
         previous_condition_dropdown_table_name,
     )
-    V2_FILEPATH = None  # when final list is ready replace with filepath
+    V2_FILEPATH = os.path.join(
+        os.path.dirname(__file__),
+        "data",
+        "condition_dropdown_lookup_table",
+        condition_dropdown_table_name,
+    )
     input_key = "CONTENTION_TEXT"
     output_key = "CLASSIFICATION_CODE"
     v2_input_key = [

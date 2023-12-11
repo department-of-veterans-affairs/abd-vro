@@ -43,15 +43,15 @@ class HoppyService:
 
     async def start_hoppy_clients(self, loop):
         for client in self.clients.values():
-            client.start(loop)
+            await client.start(loop)
             publisher_connection = client.async_publisher._connection
             consumer_connection = client.async_consumer._connection
             while not publisher_connection.is_open or not consumer_connection.is_open:
                 await asyncio.sleep(0)
 
-    def stop_hoppy_clients(self):
+    async def stop_hoppy_clients(self):
         for client in self.clients.values():
-            client.stop()
+            await client.stop()
 
 
 HOPPY = HoppyService()
