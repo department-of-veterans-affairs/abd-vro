@@ -25,7 +25,6 @@ class BaseChannelOpener(ABC):
         return ConnectionParameters(
             host=self.config['host'],
             port=self.config['port'],
-            virtual_host=self.config['virtual_host'],
             credentials=credentials)
 
     def _initialize_connection_session(self):
