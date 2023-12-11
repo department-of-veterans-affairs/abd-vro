@@ -79,7 +79,7 @@ public class DbHelper {
   }
 
   public LocalDateTime convertTime(Long time) {
-    if(time == null) return null;
+    if (time == null) return null;
 
     return LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
   }
