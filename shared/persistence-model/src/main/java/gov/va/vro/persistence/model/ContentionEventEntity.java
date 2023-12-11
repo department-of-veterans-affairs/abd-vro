@@ -37,4 +37,43 @@ public class ContentionEventEntity extends BaseEntity {
 
   @Column(name = "diagnostic_type_code")
   private String diagnosticTypeCode;
+
+  @Column(name = "date_added")
+  private LocalDateTime dateAdded;
+
+  @Column(name = "date_completed")
+  private LocalDateTime dateCompleted;
+
+  @Column(name = "date_updated")
+  private LocalDateTime dateUpdated;
+
+  @Column(name = "actor_station")
+  private String actorStation;
+
+  @Column(name = "automation_indicator")
+  private boolean automationIndicator;
+
+  @Column(name = "benefit_claim_type_code")
+  private String benefitClaimTypeCode;
+
+  @Column(name = "contention_status_type_code")
+  private String contentionStatusTypeCode;
+
+  @Column(name = "current_lifecycle_status")
+  private String currentLifecycleStatus;
+
+  @Column(name = "details")
+  private String details;
+
+  @Column(name = "event_time")
+  private LocalDateTime eventTime;
+
+  @Column(name = "journal_status_type_code")
+  private String journalStatusTypeCode;
+
+  @Column(name = "veteran_participant_id")
+  private long veteranParticipantId;
+
+  @Column(name = "event_details")
+  private String eventDetails;
 }
