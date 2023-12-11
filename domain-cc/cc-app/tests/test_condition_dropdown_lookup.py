@@ -117,4 +117,5 @@ def test_new_dropdown_list(client: TestClient):
     }
     response = client.post("/classifier", json=json_post_dict)
     assert response.status_code == 200
-    assert response.json() is None
+    assert response.json()["classification_code"] == 9007
+    assert response.json()["classification_name"] == "Neurological other System"
