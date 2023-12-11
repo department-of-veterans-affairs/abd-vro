@@ -57,6 +57,7 @@ public class DbHelperTest {
   @Test
   void saveContentionEvent() {
     final BieMessagePayload bieMessagePayload = BieMessagePayloadFactory.create();
+    bieMessagePayload.setVeteranParticipantId(12345L);
     final ContentionEventEntity entity = dbHelper.saveContentionEvent(bieMessagePayload);
 
     assertNotNull(entity);
