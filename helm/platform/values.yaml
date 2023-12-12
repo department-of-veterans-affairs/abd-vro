@@ -5,12 +5,6 @@ rabbitmq:
 redis:
   enabled: true
 
-rabbitmq-chart:
-  imageTag: "3"
-
-redis-chart:
-  imageTag: "7"
-
 global:
   # Persistent Volumes
   pv:

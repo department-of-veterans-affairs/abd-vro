@@ -199,6 +199,9 @@ export BIP_EVIDENCE_SECRET=daSecret
 #export BIP_APPLICATION_ID=VRO
 export BIP_STATION_ID=456
 
+export KEYSTORE_FILE="keystore.p12"
+export TRUSTSTORE_FILE="truststore.p12"
+
 ###
 ### Integration with BIE's Kafka ###
 ##
