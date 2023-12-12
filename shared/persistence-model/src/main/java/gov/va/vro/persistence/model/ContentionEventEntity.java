@@ -72,7 +72,7 @@ public class ContentionEventEntity extends BaseEntity {
   private String journalStatusTypeCode;
 
   @Column(name = "veteran_participant_id")
-  private long veteranParticipantId;
+  private Long veteranParticipantId;
 
   @Column(name = "event_details")
   private String eventDetails;
