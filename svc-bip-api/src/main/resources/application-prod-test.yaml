@@ -1,0 +1,6 @@
+
+bip:
+  claimBaseUrl: "https://claims-prodtest.prod.bip.va.gov"
+  applicationId: "${BIP_APPLICATION_ID:VRO}"
+  stationId: "${BIP_STATION_ID:456}"
+  env: prod-test
