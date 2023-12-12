@@ -5,7 +5,6 @@ import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption.Predefined;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class LayeredArchitectureTest {
@@ -16,7 +15,6 @@ public class LayeredArchitectureTest {
           .importPackages(packageName);
 
   @Test
-  @Disabled
   public void layerDependenciesAreRespected() {
     layeredArchitecture()
         .layer("API")
