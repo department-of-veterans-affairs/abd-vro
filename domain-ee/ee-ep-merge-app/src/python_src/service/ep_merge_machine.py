@@ -201,4 +201,4 @@ class EpMergeMachine(StateMachine):
                       f"ep400_claim_id={self.job.ep400_claim_id} "
                       f"state={self.job.state} "
                       f"error=\"{jsonable_encoder(error)}\"")
-        self.job.error(error if type(error) is list else [error])
+        self.job.error(error if isinstance(error, list) else [error])

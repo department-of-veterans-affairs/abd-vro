@@ -32,5 +32,4 @@ class MergeJob(BaseModel):
         self.state = JobState.COMPLETED_ERROR
         if self.messages is None:
             self.messages = []
-        for message in messages:
-            self.messages.append(message)
+        self.messages.extend(messages)
