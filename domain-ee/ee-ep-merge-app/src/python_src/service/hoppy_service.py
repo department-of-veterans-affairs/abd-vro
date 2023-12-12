@@ -1,6 +1,6 @@
 import asyncio
 
-from config import EXCHANGE, QUEUES, REPLY_QUEUES, ClientName, config
+from config import EXCHANGES, QUEUES, REPLY_QUEUES, ClientName, config
 from hoppy.async_hoppy_client import RetryableAsyncHoppyClient
 from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
 
@@ -8,19 +8,20 @@ from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
 class HoppyService:
     clients = {}
 
-    exchange_props = ExchangeProperties(name=EXCHANGE,
-                                        passive_declare=False)
-
     def __init__(self):
         self.create_client(ClientName.GET_CLAIM)
         self.create_client(ClientName.GET_CLAIM_CONTENTIONS)
         self.create_client(ClientName.PUT_TSOJ)
         self.create_client(ClientName.CREATE_CLAIM_CONTENTIONS)
         self.create_client(ClientName.CANCEL_CLAIM)
+        self.create_client(ClientName.BGS_ADD_CLAIM_NOTE)
 
     def create_client(self, name):
+        exchange = EXCHANGES[name]
         req_queue = QUEUES[name]
         reply_queue = REPLY_QUEUES[name]
+        exchange_props = ExchangeProperties(name=exchange,
+                                            passive_declare=False)
         request_queue_props = QueueProperties(name=req_queue,
                                               passive_declare=False)
         reply_queue_props = QueueProperties(name=reply_queue,
@@ -28,7 +29,7 @@ class HoppyService:
         client = RetryableAsyncHoppyClient(name=name.value,
                                            app_id=config["app_id"],
                                            config=config,
-                                           exchange_properties=self.exchange_props,
+                                           exchange_properties=exchange_props,
                                            request_queue_properties=request_queue_props,
                                            request_routing_key=req_queue,
                                            reply_queue_properties=reply_queue_props,
