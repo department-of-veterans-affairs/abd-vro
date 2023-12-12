@@ -65,10 +65,11 @@ dependencies {
 
         implementation 'com.rabbitmq:amqp-client:5.18.0'
 
-        implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.3'
+        implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.0'
         implementation 'io.projectreactor.netty:reactor-netty-http:1.1.13'
 
         implementation 'ch.qos.logback:logback-core:1.4.14'
+        implementation 'ch.qos.logback:logback-classic:1.4.14'
 
 
         // These are used indirectly but we need to specify versions, otherwise build error
