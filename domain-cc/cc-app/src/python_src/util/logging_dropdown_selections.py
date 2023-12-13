@@ -12,6 +12,10 @@ path = os.path.join(
 
 
 def build_logging_table() -> list:
+    """
+    Builds list of dropdown options to use for logging from the most current
+    dropdown conditions lookup table csv.
+    """
     dropdown_values = []
     with open(path, "r") as f:
         reader = csv.DictReader(f)
@@ -25,5 +29,5 @@ def build_logging_table() -> list:
                 "UI Term 6",
             ]:
                 if row[k]:
-                    dropdown_values.append(row[k].lower())
+                    dropdown_values.append(row[k].strip().lower())
         return dropdown_values
