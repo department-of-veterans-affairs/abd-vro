@@ -59,7 +59,6 @@ def get_classification(claim: Claim) -> Optional[PredictedClassification]:
 
     if claim.contention_text and not classification_code:
         classification_code = dropdown_lookup_table.get(claim.contention_text, None)
-        # dropdown_values = [term.strip().lower() for term in DROPDOWN_OPTIONS.values()]
         is_in_dropdown = claim.contention_text.strip().lower() in dropdown_values
         log_contention_text = (
             claim.contention_text if is_in_dropdown else "Not in dropdown"
