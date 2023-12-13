@@ -34,7 +34,7 @@ echo "Using environment: $env"
 
 secret_name="va-abd-rrd-${env}-va-gov-tls"
 
-rm -f ca.crt tls.crt tls.key VA-Internal-S2-RCA1-v1.cer VA-Internal-S2-ICA4.cer truststore.jks keystore.p12 truststore.p12 output.json
+rm -f ca.crt tls.crt tls.key all_va_internal_cas.pem truststore.jks keystore.p12 truststore.p12 output.json
 
 # Get the secret in yaml format
 secret_yaml=$(kubectl get secret "$secret_name" -o yaml)
@@ -71,8 +71,9 @@ download_cert() {
 }
 
 # Download additional certificate files
-download_cert "http://aia.pki.va.gov/PKI/AIA/VA/VA-Internal-S2-RCA1-v1.cer"
-download_cert "http://aia.pki.va.gov/PKI/AIA/VA/VA-Internal-S2-ICA4.cer"
+download_cert "http://aia.pki.va.gov/PKI/AIA/VA/AllVAInternalCAs.p7b"
+
+openssl pkcs7 -print_certs -in AllVAInternalCAs.p7b -out all_va_internal_cas.pem
 
 generate_password() {
     # Define characters for password generation
@@ -94,9 +95,7 @@ openssl pkcs12 -export -in tls.crt -inkey tls.key -out keystore.p12 -passout env
 
 keytool -importkeystore -srckeystore keystore.p12 -srcstoretype pkcs12 -destkeystore truststore.jks -deststoretype JKS -srcstorepass "$PASSWORD" -deststorepass "$PASSWORD"
 
-
-echo "yes" | keytool -import -alias rca1 -file VA-Internal-S2-RCA1-v1.cer -storetype JKS -keystore truststore.jks -storepass "$PASSWORD"
-echo "yes" | keytool -import -alias ica4 -file VA-Internal-S2-ICA4.cer -storetype JKS -keystore truststore.jks -storepass "$PASSWORD"
+echo yes | keytool -import -trustcacerts -alias root -file all_va_internal_cas.pem -keystore truststore.jks -storepass "$PASSWORD" -noprompt
 
 echo "$PASSWORD" | keytool -importkeystore -srckeystore truststore.jks -srcstoretype jks -srcstorepass "$PASSWORD" -destkeystore truststore.p12 -deststoretype pkcs12 -deststorepass "$PASSWORD"
 
@@ -107,3 +106,6 @@ bip_truststore=$(cat truststore.p12 | base64 | tr -d '\n')
 
 # Create the JSON file
 echo -e "{\n\"BIP_KEYSTORE_BASE64\": \"$keystore\", \n\"BIP_PASSWORD\": \"$PASSWORD\", \n\"BIP_TRUSTSTORE_BASE64\": \"$bip_truststore\"\n}" > output.json
+
+# clean up all generated/downloaded files except output.json file
+rm -f keystore.p12 ca.crt tls.crt tls.key truststore.jks truststore.p12 AllVAInternalCAs.p7b all_va_internal_cas.pem
