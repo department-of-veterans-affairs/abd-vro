@@ -30,21 +30,13 @@ on:
       rabbitmq:
         description: 'RabbitMQ image tag'
         required: true
-        default: 3
-        type: choice
-        options:
-        - latest
-        - 3
-        - (disable)
+        default: 'latest'
+        type: string
       redis:
         description: 'Redis image tag'
         required: true
-        default: 7
-        type: choice
-        options:
-        - latest
-        - 7
-        - (disable)
+        default: 'latest'
+        type: string
 
   # Allow other workflows to call this one
   workflow_call:

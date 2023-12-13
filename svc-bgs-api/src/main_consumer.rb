@@ -1,5 +1,6 @@
 require 'logger'
 require 'active_support'
+require 'time'
 
 require_relative 'config/setup'
 require_relative 'config/constants'
@@ -13,8 +14,8 @@ def initialize_subscriber(bgs_client)
   # Setup queue/subscription for healthcheck
   subscriber.setup_queue(exchange_name: BGS_EXCHANGE_NAME, queue_name: HEALTHCHECK_QUEUE)
   subscriber.subscribe_to(BGS_EXCHANGE_NAME, HEALTHCHECK_QUEUE) do |json|
-   $logger.info "Subscriber received healthcheck request #{json}"
-   { statusCode: 200 }
+    $logger.info "Subscriber received healthcheck request #{json}"
+    { statusCode: 200 }
   end
   subscriber
 
@@ -25,12 +26,27 @@ def initialize_subscriber(bgs_client)
     begin
       bgs_client.handle_request(json)
     rescue => e
+      status_code = e.is_a?(ArgumentError) ? 400 : 500
+      status_str = e.is_a?(ArgumentError) ? "BAD_REQUEST" : "INTERNAL_SERVER_ERROR"
       {
-        statusCode: e.is_a?(ArgumentError) ? 400 : 500,
-        statusMessage: "#{e.class}: #{e.message}"
+        statusCode: status_code,
+        statusMessage: status_str,
+        messages: [
+          {
+            key: "#{e.class}",
+            severity: "ERROR",
+            status: status_code,
+            text: "#{e.message}",
+            timestamp: Time.now.iso8601,
+            httpStatus: status_str
+          }
+        ]
       }
     else
-      { statusCode: 200 }
+      {
+        statusCode: 200,
+        statusMessage: "OK"
+      }
     end
   end
   subscriber

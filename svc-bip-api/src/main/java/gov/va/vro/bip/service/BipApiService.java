@@ -54,8 +54,6 @@ public class BipApiService implements IBipApiService {
   static final String CONTENTION = "/claims/%s/contentions";
   static final String SPECIAL_ISSUE_TYPES = "/contentions/special_issue_types";
 
-  static final String HTTPS = "https://";
-
   static final String JWT_TYPE = "JWT";
 
   @Qualifier("bipCERestTemplate")
@@ -68,7 +66,7 @@ public class BipApiService implements IBipApiService {
 
   @Override
   public GetClaimResponse getClaimDetails(long claimId) {
-    String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CLAIM_DETAILS, claimId);
+    String url = bipApiProps.getClaimRequestUrl(String.format(CLAIM_DETAILS, claimId));
 
     return makeRequest(url, HttpMethod.GET, GetClaimResponse.class);
   }
@@ -76,8 +74,7 @@ public class BipApiService implements IBipApiService {
   @Override
   public PutClaimLifecycleResponse putClaimLifecycleStatus(PutClaimLifecycleRequest request) {
     long claimId = request.getClaimId();
-    String url =
-        HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CLAIM_LIFECYCLE_STATUS, claimId);
+    String url = bipApiProps.getClaimRequestUrl(String.format(CLAIM_LIFECYCLE_STATUS, claimId));
     Map<String, Object> requestBody =
         Map.of("claimLifecycleStatus", request.getClaimLifecycleStatus());
     return makeRequest(url, HttpMethod.PUT, requestBody, PutClaimLifecycleResponse.class);
@@ -85,7 +82,7 @@ public class BipApiService implements IBipApiService {
 
   @Override
   public GetClaimContentionsResponse getClaimContentions(long claimId) {
-    String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
+    String url = bipApiProps.getClaimRequestUrl(String.format(CONTENTION, claimId));
 
     return makeRequest(url, HttpMethod.GET, GetClaimContentionsResponse.class);
   }
@@ -94,7 +91,7 @@ public class BipApiService implements IBipApiService {
   public CreateClaimContentionsResponse createClaimContentions(
       CreateClaimContentionsRequest request) {
     long claimId = request.getClaimId();
-    String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
+    String url = bipApiProps.getClaimRequestUrl(String.format(CONTENTION, claimId));
     Map<String, Object> requestBody = Map.of("createContentions", request.getCreateContentions());
     return makeRequest(url, HttpMethod.POST, requestBody, CreateClaimContentionsResponse.class);
   }
@@ -103,7 +100,7 @@ public class BipApiService implements IBipApiService {
   public UpdateClaimContentionsResponse updateClaimContentions(
       UpdateClaimContentionsRequest request) {
     long claimId = request.getClaimId();
-    String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
+    String url = bipApiProps.getClaimRequestUrl(String.format(CONTENTION, claimId));
     Map<String, Object> requestBody = Map.of("updateContentions", request.getUpdateContentions());
     return makeRequest(url, HttpMethod.PUT, requestBody, UpdateClaimContentionsResponse.class);
   }
@@ -111,7 +108,7 @@ public class BipApiService implements IBipApiService {
   @Override
   public CancelClaimResponse cancelClaim(CancelClaimRequest request) {
     long claimId = request.getClaimId();
-    String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CANCEL_CLAIM, claimId);
+    String url = bipApiProps.getClaimRequestUrl(String.format(CANCEL_CLAIM, claimId));
 
     String lifecycleStatusReasonCode = request.getLifecycleStatusReasonCode();
     String closeReasonText = request.getCloseReasonText();
@@ -128,9 +125,7 @@ public class BipApiService implements IBipApiService {
       PutTempStationOfJurisdictionRequest request) {
     long claimId = request.getClaimId();
     String url =
-        HTTPS
-            + bipApiProps.getClaimBaseUrl()
-            + String.format(TEMP_STATION_OF_JURISDICTION, claimId);
+        bipApiProps.getClaimRequestUrl(String.format(TEMP_STATION_OF_JURISDICTION, claimId));
 
     String tsoj = request.getTempStationOfJurisdiction();
     Map<String, String> requestBody = Map.of("tempStationOfJurisdiction", tsoj);
@@ -188,7 +183,7 @@ public class BipApiService implements IBipApiService {
    * @return true if the API responds with OK status and response.
    */
   public boolean isApiFunctioning() {
-    String url = HTTPS + bipApiProps.getClaimBaseUrl() + SPECIAL_ISSUE_TYPES;
+    String url = bipApiProps.getClaimRequestUrl(SPECIAL_ISSUE_TYPES);
     log.info("Call {} to get special_issue_types", url);
 
     HttpHeaders headers = getBipHeader();

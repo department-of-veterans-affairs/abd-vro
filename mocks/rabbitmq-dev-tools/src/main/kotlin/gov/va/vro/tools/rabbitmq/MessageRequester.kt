@@ -22,8 +22,7 @@ class MessageRequester(
     rabbitTemplate.sendAndReceive(exchangeName, routingKey, message)?.let { response ->
       log.info("Got response")
       helper.interpretBody(response)
-    }
-      ?: log.info { "No response" }
+    } ?: log.info { "No response" }
 
     // Destroy so it doesn't try to reconnect
     rabbitTemplate.destroy()
