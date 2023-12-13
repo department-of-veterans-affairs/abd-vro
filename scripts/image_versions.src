@@ -5,9 +5,6 @@
 # - image publishing to GHCR (see .github/actions/publish-images/action.yml)
 # - Helm chart deployments to LHDI (see .github/workflows/update-deployment.yml)
 
-# These versions are treated specially because we don't modify the base image
-: ${RABBITMQ_VER:=3}
-: ${REDIS_VER:=7}
 # Manually pin these images; they don't need to be automatically updated
 # Use the `export myimage_VER="v1.2.3"` syntax so that they will be ignored by `image-version.sh`
 # export console_VER="v3.2.5"
@@ -46,4 +43,16 @@ postgres_VER="v3.5.6"
 # Fri Nov 17 21:33:22 UTC 2023 -- v3.5.9
 # Tue Nov 28 20:49:39 UTC 2023 -- v3.5.10
 # Tue Nov 28 22:32:12 UTC 2023 -- v3.5.11
-dbinit_VER="v3.5.11"
+# Wed Dec 13 22:20:53 UTC 2023 -- v3.6.0
+redis_VER="v3.6.0"
+rabbitmq_VER="v3.6.0"
+apigateway_VER="v3.6.0"
+app_VER="v3.6.0"
+dbinit_VER="v3.6.0"
+svcbgsapi_VER="v3.6.0"
+svclighthouseapi_VER="v3.6.0"
+svcbiekafka_VER="v3.6.0"
+svcbipapi_VER="v3.6.0"
+xampleworkflows_VER="v3.6.0"
+ccapp_VER="v3.6.0"
+eemaxcfiapp_VER="v3.6.0"

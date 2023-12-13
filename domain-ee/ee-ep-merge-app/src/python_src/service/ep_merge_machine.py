@@ -2,8 +2,15 @@ import asyncio
 import logging
 from typing import Type
 
+from fastapi.encoders import jsonable_encoder
 from hoppy.exception import ResponseException
-from model import cancel_claim, create_contentions, get_claim, get_contentions
+from model import (
+    add_claim_note,
+    cancel_claim,
+    create_contentions,
+    get_claim,
+    get_contentions,
+)
 from model import update_temp_station_of_jurisdiction as tsoj
 from model.merge_job import JobState, MergeJob
 from model.request import GeneralRequest
@@ -30,6 +37,7 @@ class EpMergeMachine(StateMachine):
     running_merge_contentions = State(value=JobState.RUNNING_MERGE_CONTENTIONS)
     running_move_contentions_to_pending_claim = State(value=JobState.RUNNING_MOVE_CONTENTIONS_TO_PENDING_CLAIM)
     running_cancel_ep400_claim = State(value=JobState.RUNNING_CANCEL_EP400_CLAIM)
+    running_add_claim_note_to_ep400 = State(value=JobState.RUNNING_ADD_CLAIM_NOTE_TO_EP400)
     completed_success = State(final=True, value=JobState.COMPLETED_SUCCESS)
     completed_error = State(final=True, value=JobState.COMPLETED_ERROR)
 
@@ -48,8 +56,10 @@ class EpMergeMachine(StateMachine):
             | running_merge_contentions.to(completed_error, cond="has_error")
             | running_move_contentions_to_pending_claim.to(running_cancel_ep400_claim, unless="has_error")
             | running_move_contentions_to_pending_claim.to(completed_error, cond="has_error")
-            | running_cancel_ep400_claim.to(completed_success, unless="has_error")
+            | running_cancel_ep400_claim.to(running_add_claim_note_to_ep400, unless="has_error")
             | running_cancel_ep400_claim.to(completed_error, cond="has_error")
+            | running_add_claim_note_to_ep400.to(completed_success, unless="has_error")
+            | running_add_claim_note_to_ep400.to(completed_error, cond="has_error")
     )
 
     def __init__(self, merge_job: MergeJob):
@@ -138,6 +148,16 @@ class EpMergeMachine(StateMachine):
             response_type=cancel_claim.Response)
         self.process()
 
+    @running_add_claim_note_to_ep400.enter
+    def on_add_claim_note_to_ep400(self):
+        request = add_claim_note.Request(vbms_claim_id=self.job.ep400_claim_id,
+                                         claim_notes=[self.cancellation_reason])
+        self.make_request(
+            request=request,
+            hoppy_client=HOPPY.get_client(ClientName.BGS_ADD_CLAIM_NOTE),
+            response_type=add_claim_note.Response)
+        self.process()
+
     @completed_success.enter
     @completed_error.enter
     def on_completed(self, state):
@@ -180,5 +200,5 @@ class EpMergeMachine(StateMachine):
                       f"pending_claim_id={self.job.pending_claim_id} "
                       f"ep400_claim_id={self.job.ep400_claim_id} "
                       f"state={self.job.state} "
-                      f"error=\'{error}\'")
-        self.job.error(self.job.state, error)
+                      f"error=\"{jsonable_encoder(error)}\"")
+        self.job.error(error if isinstance(error, list) else [error])
