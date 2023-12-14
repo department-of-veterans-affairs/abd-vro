@@ -51,8 +51,4 @@ BEGIN
     IF NOT EXISTS (SELECT FROM information_schema.columns WHERE table_name = 'bie_contention_event' AND column_name = 'event_time') THEN
         ALTER TABLE "bie_contention_event" ADD COLUMN "event_time" TIMESTAMP;
     END IF;
-
-    IF NOT EXISTS (SELECT FROM information_schema.columns WHERE table_name = 'bie_contention_event' AND column_name = 'event_details') THEN
-        ALTER TABLE "bie_contention_event" ADD COLUMN "event_details" JSON;
-    END IF;
 END $$;

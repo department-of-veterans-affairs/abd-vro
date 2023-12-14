@@ -37,5 +37,4 @@ public class BieMessagePayload {
   private Long dateAdded;
   private Long dateCompleted;
   private Long dateUpdated;
-  private String eventDetails;
 }

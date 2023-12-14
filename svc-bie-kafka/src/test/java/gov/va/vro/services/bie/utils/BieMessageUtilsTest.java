@@ -39,7 +39,6 @@ class BieMessageUtilsTest {
     when(genericRecord.get("DateAdded")).thenReturn(1616161616L); // Example Long value
     when(genericRecord.get("DateCompleted")).thenReturn(1616171717L); // Example Long value
     when(genericRecord.get("DateUpdated")).thenReturn(1616181818L); // Example Long value
-    when(genericRecord.get("EventDetails")).thenReturn("Event Details Description");
   }
 
   @Test
@@ -67,6 +66,5 @@ class BieMessageUtilsTest {
     assertEquals(Long.valueOf(1616161616L), actualPayload.getDateAdded());
     assertEquals(Long.valueOf(1616171717L), actualPayload.getDateCompleted());
     assertEquals(Long.valueOf(1616181818L), actualPayload.getDateUpdated());
-    assertEquals("Event Details Description", actualPayload.getEventDetails());
   }
 }
