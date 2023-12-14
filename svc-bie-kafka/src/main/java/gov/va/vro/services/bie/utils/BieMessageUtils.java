@@ -22,7 +22,6 @@ public class BieMessageUtils {
     IGNORED_FIELDS.add("notifiedAt");
     // description field disabled for now until BIE added and deployed the new kafka schema in dev
     IGNORED_FIELDS.add("description");
-
   }
 
   public static BieMessagePayload processBieMessagePayloadFields(GenericRecord genericRecord) {
