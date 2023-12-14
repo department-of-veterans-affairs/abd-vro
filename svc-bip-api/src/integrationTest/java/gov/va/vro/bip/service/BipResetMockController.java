@@ -28,7 +28,6 @@ import javax.crypto.spec.SecretKeySpec;
 public class BipResetMockController {
 
   private static final String UPDATES = "/updates/%s";
-  private static final String HTTPS = "https://";
   private static final String JWT_TYPE = "JWT";
 
   @Qualifier("bipCERestTemplate")
@@ -37,7 +36,7 @@ public class BipResetMockController {
   final BipApiProps bipApiProps;
 
   public void resetClaim(long claimId) {
-    String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(UPDATES, claimId);
+    String url = bipApiProps.getClaimRequestUrl(String.format(UPDATES, claimId));
 
     try {
       HttpEntity<Object> httpEntity = new HttpEntity<>(null, getBipHeader());

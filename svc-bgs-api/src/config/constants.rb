@@ -10,6 +10,5 @@ CAMEL_MQ_PROPERTIES = { durable: true, auto_delete: true }
 
 BGS_EXCHANGE_NAME = "bgs-api"
 
-HEALTHCHECK_REPLY_QUEUE = "healthcheck-reply"
 HEALTHCHECK_QUEUE = "healthcheck"
 ADD_NOTE_QUEUE = "add-note"

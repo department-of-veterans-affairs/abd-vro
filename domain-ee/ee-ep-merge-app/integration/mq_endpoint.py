@@ -4,19 +4,17 @@ import json
 from hoppy import async_consumer, async_publisher
 from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
 from pika import BasicProperties
-from src.python_src.config import EXCHANGE
-
-exchange_props = ExchangeProperties(name=EXCHANGE)
 
 
 class MqEndpoint:
 
-    def __init__(self, name, req_queue, response_queue):
+    def __init__(self, name, exchange, req_queue, response_queue):
         self.name = name
         self.index = 0
         self.auto_response_files = []
 
-        queue_props = QueueProperties(name=req_queue, passive_declare=False)
+        exchange_props = ExchangeProperties(name=exchange, auto_delete=True, passive_declare=False)
+        queue_props = QueueProperties(name=req_queue, auto_delete=True, passive_declare=False)
         self.consumer = async_consumer.AsyncConsumer(exchange_properties=exchange_props,
                                                      queue_properties=queue_props,
                                                      routing_key=req_queue,

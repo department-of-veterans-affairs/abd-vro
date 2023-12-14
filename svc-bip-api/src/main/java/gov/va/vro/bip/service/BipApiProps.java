@@ -20,6 +20,8 @@ import java.util.Date;
 @ConfigurationProperties(prefix = "bip")
 public class BipApiProps {
 
+  static final String HTTPS = "https://";
+
   private String claimBaseUrl;
 
   private String claimSecret;
@@ -40,6 +42,13 @@ public class BipApiProps {
 
   private String applicationId;
 
+  public String getClaimRequestUrl(String path) {
+    String baseUrl = this.claimBaseUrl;
+    if (!baseUrl.startsWith("http")) {
+      baseUrl = HTTPS + baseUrl;
+    }
+    return baseUrl + path;
+  }
   /**
    * Creates common Jwt claims.
    *
