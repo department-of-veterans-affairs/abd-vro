@@ -32,6 +32,7 @@ public class BieMessagePayload {
   private String contentionStatusTypeCode;
   private String currentLifecycleStatus;
   private Long eventTime;
+  private String description;
   private String journalStatusTypeCode;
   private Long dateAdded;
   private Long dateCompleted;
