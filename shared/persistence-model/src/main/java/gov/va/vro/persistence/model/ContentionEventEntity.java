@@ -74,6 +74,12 @@ public class ContentionEventEntity extends BaseEntity {
   @Column(name = "veteran_participant_id")
   private Long veteranParticipantId;
 
+  @Column(name = "action_name")
+  private String actionName;
+
+  @Column(name = "action_result_name")
+  private String actionResultName;
+
   @Column(name = "event_details")
   private String eventDetails;
 }
