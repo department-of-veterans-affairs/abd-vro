@@ -12,16 +12,16 @@
 #       BIE_KAFKA_TRUSTSTORE_PASSWORD
 # Pre-requisite:
 #     - Download certificates locally from the links provided at wiki https://github.com/department-of-veterans-affairs/abd-vro-internal/wiki/VRO-Secrets
-#       VA-Internal-S2-ICA4.cer 
+#       VA-Internal-S2-ICA4.cer
 #       VA-Internal-S2-ICA19.cer
-#       VA-Internal-S2-ICA11.cer 
+#       VA-Internal-S2-ICA11.cer
 #       VA-Internal-S2-RCA2.cer
-# Input: 
+# Input:
 # $1 Input environment name like dev, qa, prod
 # $2 Input BIE provided certificate file
 # $3 Input BIE provided key
 # $4 Input BIE Kafka environment prefix like dev, ivv, pr, pp
-# 
+#
 # - ----
 
 # Function:  generates a random password for keystore and truststore
