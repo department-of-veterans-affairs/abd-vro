@@ -70,5 +70,7 @@ public class DbHelperTest {
     assertEquals(bieMessagePayload.getDiagnosticTypeCode(), entity.getDiagnosticTypeCode());
     assertEquals(dbHelper.convertTime(bieMessagePayload.getEventTime()), entity.getOccurredAt());
     assertEquals(dbHelper.convertTime(bieMessagePayload.getNotifiedAt()), entity.getNotifiedAt());
+    assertEquals(bieMessagePayload.getActionName(), entity.getActionName());
+    assertEquals(bieMessagePayload.getActionResultName(), entity.getActionResultName());
   }
 }

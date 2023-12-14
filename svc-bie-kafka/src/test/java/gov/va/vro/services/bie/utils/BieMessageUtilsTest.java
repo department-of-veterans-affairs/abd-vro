@@ -35,12 +35,10 @@ class BieMessageUtilsTest {
     when(genericRecord.get("ContentionStatusTypeCode")).thenReturn("StatusTypeCode");
     when(genericRecord.get("CurrentLifecycleStatus")).thenReturn("LifecycleStatus");
     when(genericRecord.get("EventTime")).thenReturn(1616151616L); // Example Long value
-    when(genericRecord.get("ClmntTxt")).thenReturn("Claimant Text");
     when(genericRecord.get("JournalStatusTypeCode")).thenReturn("JournalStatusCode");
     when(genericRecord.get("DateAdded")).thenReturn(1616161616L); // Example Long value
     when(genericRecord.get("DateCompleted")).thenReturn(1616171717L); // Example Long value
     when(genericRecord.get("DateUpdated")).thenReturn(1616181818L); // Example Long value
-    when(genericRecord.get("EventDetails")).thenReturn("Event Details Description");
   }
 
   @Test
@@ -64,11 +62,9 @@ class BieMessageUtilsTest {
     assertEquals("StatusTypeCode", actualPayload.getContentionStatusTypeCode());
     assertEquals("LifecycleStatus", actualPayload.getCurrentLifecycleStatus());
     assertEquals(Long.valueOf(1616151616L), actualPayload.getEventTime());
-    assertEquals("Claimant Text", actualPayload.getClmntTxt());
     assertEquals("JournalStatusCode", actualPayload.getJournalStatusTypeCode());
     assertEquals(Long.valueOf(1616161616L), actualPayload.getDateAdded());
     assertEquals(Long.valueOf(1616171717L), actualPayload.getDateCompleted());
     assertEquals(Long.valueOf(1616181818L), actualPayload.getDateUpdated());
-    assertEquals("Event Details Description", actualPayload.getEventDetails());
   }
 }
