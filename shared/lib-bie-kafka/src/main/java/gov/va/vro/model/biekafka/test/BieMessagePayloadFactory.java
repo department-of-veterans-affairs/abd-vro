@@ -62,7 +62,6 @@ public class BieMessagePayloadFactory {
         setDeletedPayloadValues(payload);
         break;
       case CONTENTION_COMPLETED:
-        // No special handling for CONTENTION_COMPLETED
         break;
     }
 

@@ -74,6 +74,8 @@ public class DbHelper {
     contentionEventEntity.setEventTime(convertTime(bieMessagePayload.getEventTime()));
     contentionEventEntity.setJournalStatusTypeCode(bieMessagePayload.getJournalStatusTypeCode());
     contentionEventEntity.setVeteranParticipantId(bieMessagePayload.getVeteranParticipantId());
+    contentionEventEntity.setActionName(bieMessagePayload.getActionName());
+    contentionEventEntity.setActionResultName(bieMessagePayload.getActionResultName());
 
     return contentionEventRepository.save(contentionEventEntity);
   }
