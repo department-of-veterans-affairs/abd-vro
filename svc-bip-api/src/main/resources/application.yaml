@@ -18,6 +18,9 @@ bip:
   claimBaseUrl: ${BIP_CLAIM_URL:localhost:20300}
 
 spring:
+  profiles:
+    # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
+    active: ${ENV:default}
   rabbitmq:
     host: ${RABBITMQ_PLACEHOLDERS_HOST:localhost}
     port: 5672

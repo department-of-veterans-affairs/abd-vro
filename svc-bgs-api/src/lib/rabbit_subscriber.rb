@@ -64,11 +64,37 @@ class RabbitSubscriber
 
         json = JSON.parse(body)
         response = yield(json)
+      rescue JSON::ParserError => e
+        $logger.error e.backtrace
+        response = {
+          statusCode: 400,
+          statusMessage: "BAD_REQUEST",
+          messages: [
+            {
+              key: "#{e.class}",
+              severity: "ERROR",
+              status: 400,
+              text: "#{e.message}",
+              timestamp: Time.now.iso8601,
+              httpStatus: "BAD_REQUEST"
+            }
+          ]
+        }
       rescue => e
         $logger.error e.backtrace
         response = {
-          error_message: e.message,
-          backtrace: e.backtrace.join("\n ")
+          statusCode: 500,
+          statusMessage: "INTERNAL_SERVER_ERROR",
+          messages: [
+            {
+              key: "#{e.class}",
+              severity: "ERROR",
+              status: 500,
+              text: "Unknown Error: #{e.message}",
+              timestamp: Time.now.iso8601,
+              httpStatus: "INTERNAL_SERVER_ERROR"
+            }
+          ]
         }
       ensure
         $logger.info "Response: #{response}"

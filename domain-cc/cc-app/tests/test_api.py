@@ -98,3 +98,22 @@ def test_v3_table_diagnostic_code(client: TestClient):
         response.json()["classification_name"]
         == DRUG_INDUCED_PULMONARY_PNEMONIA_CLASSIFICATION["classification_name"]
     )
+
+
+def test_v4_table_diagnostic_code(client: TestClient):
+    json_post_dict = {
+        "diagnostic_code": 7301,
+        "claim_id": 123,
+        "form526_submission_id": 456,
+    }
+
+    response = client.post("/classifier", json=json_post_dict)
+    assert response.status_code == 200
+    assert (
+        response.json()["classification_code"]
+        == 8920
+    )
+    assert (
+        response.json()["classification_name"]
+        == 'Adhesions - Digestive'
+    )

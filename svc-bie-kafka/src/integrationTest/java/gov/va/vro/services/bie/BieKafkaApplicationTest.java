@@ -67,7 +67,7 @@ public class BieKafkaApplicationTest {
     // Message 2 comes through Kafka
     BieMessagePayload kafkaEventBody = BieMessagePayloadFactory.create();
     kafkaEventBody.setEventType(null);
-    kafkaEventBody.setContentionId(1234567890);
+    kafkaEventBody.setContentionId(1234567890L);
 
     ObjectMapper objectMapper = new ObjectMapper();
     val kafkaSentMessage = objectMapper.writeValueAsString(kafkaEventBody);

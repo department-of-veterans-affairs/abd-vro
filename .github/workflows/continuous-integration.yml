@@ -63,10 +63,10 @@ jobs:
     uses: ./.github/workflows/svc-bip-api-integration-test.yml
     secrets: inherit
 
-#  svc-bie-kafka-end-to-end:
-#    needs: nondraft-pr
-#    uses: ./.github/workflows/bie-kafka-end2end-test.yml
-#    secrets: inherit
+  svc-bie-kafka-end-to-end:
+    needs: nondraft-pr
+    uses: ./.github/workflows/bie-kafka-end2end-test.yml
+    secrets: inherit
 
   ee-ep-merge-end-to-end:
     needs: nondraft-pr
