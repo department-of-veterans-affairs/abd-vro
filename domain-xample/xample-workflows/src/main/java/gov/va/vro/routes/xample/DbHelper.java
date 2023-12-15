@@ -66,7 +66,8 @@ public class DbHelper {
     contentionEventEntity.setDateCompleted(convertTime(bieMessagePayload.getDateCompleted()));
     contentionEventEntity.setDateUpdated(convertTime(bieMessagePayload.getDateUpdated()));
     contentionEventEntity.setActorStation(bieMessagePayload.getActorStation());
-    contentionEventEntity.setAutomationIndicator(Optional.ofNullable(bieMessagePayload.getAutomationIndicator()).orElse(false));
+    contentionEventEntity.setAutomationIndicator(
+        Optional.ofNullable(bieMessagePayload.getAutomationIndicator()).orElse(false));
     contentionEventEntity.setBenefitClaimTypeCode(bieMessagePayload.getBenefitClaimTypeCode());
     contentionEventEntity.setContentionStatusTypeCode(
         bieMessagePayload.getContentionStatusTypeCode());
