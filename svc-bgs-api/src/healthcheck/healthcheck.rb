@@ -5,6 +5,8 @@ require 'json'
 
 require_relative '../config/constants'
 
+HEALTHCHECK_REPLY_QUEUE = "healthcheck-reply"
+
 conn = Bunny.new(BUNNY_ARGS)
 conn.start
 
