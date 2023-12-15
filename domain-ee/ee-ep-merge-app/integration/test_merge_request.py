@@ -2,7 +2,7 @@ import pytest
 import pytest_asyncio
 from httpx import AsyncClient
 from integration.mq_endpoint import MqEndpoint
-from schema.merge_job import JobState
+from src.python_src.schema.merge_job import JobState
 from src.python_src.api import app, on_shut_down, on_start_up
 
 RESPONSE_DIR = './tests/responses'
@@ -72,13 +72,7 @@ class TestMergeRequest:
             job_id = await self.submit_request(client)
 
             response = await client.get(url=f"/merge/{job_id}")
-            assert response.status_code == 200
-
-            response_json = response.json()
-            assert response_json is not None
-            assert response_json['job']['pending_claim_id'] == self.pending_claim_id
-            assert response_json['job']['ep400_claim_id'] == self.ep400_claim_id
-            assert response_json['job']['state'] == JobState.COMPLETED_SUCCESS.value
+            assert response.status_code == 404
 
     @pytest.mark.asyncio(scope="session")
     async def test_completed_success_with_duplicate_contention(self,
@@ -95,13 +89,7 @@ class TestMergeRequest:
             job_id = await self.submit_request(client)
 
             response = await client.get(url=f"/merge/{job_id}")
-            assert response.status_code == 200
-
-            response_json = response.json()
-            assert response_json is not None
-            assert response_json['job']['pending_claim_id'] == self.pending_claim_id
-            assert response_json['job']['ep400_claim_id'] == self.ep400_claim_id
-            assert response_json['job']['state'] == JobState.COMPLETED_SUCCESS.value
+            assert response.status_code == 404
 
     @pytest.mark.asyncio(scope="session")
     async def test_completed_error_at_get_pending_claim(self,

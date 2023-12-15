@@ -1,7 +1,7 @@
 import asyncio
 import logging
 import sys
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, contextmanager
 from uuid import UUID, uuid4
 
 import uvicorn
@@ -11,8 +11,9 @@ from fastapi.responses import JSONResponse
 from schema.merge_job import MergeJob
 from pydantic_models import (MergeEndProductsErrorResponse,
                              MergeEndProductsRequest, MergeEndProductsResponse)
-from service.ep_merge_machine import EpMergeMachine, job_store
 from service.hoppy_service import HOPPY
+from service.ep_merge_machine import EpMergeMachine
+from service.job_store import job_store
 from sqlalchemy.orm import Session
 from util.sanitizer import sanitize
 from db.session import get_db
@@ -26,9 +27,13 @@ async def lifespan(api: FastAPI):
 
 
 async def on_start_up():
-    await HOPPY.start_hoppy_clients(asyncio.get_event_loop())
-    #with get_db() as db:
-    #    job_store.init(db)
+    loop = asyncio.get_event_loop()
+    await HOPPY.start_hoppy_clients(loop)
+    with contextmanager(get_db)() as db:
+        jobs_to_restart = job_store.init(db)
+        for job in jobs_to_restart:
+            logging.info(f"event=jobRestarted {job}")
+            loop.run_until_complete(start_job_state_machine(job))
 
 
 async def on_shut_down():

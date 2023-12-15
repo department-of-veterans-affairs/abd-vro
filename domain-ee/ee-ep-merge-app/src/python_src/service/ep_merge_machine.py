@@ -18,15 +18,13 @@ from schema.request import GeneralRequest
 from schema.response import GeneralResponse
 from pydantic import ValidationError
 from service.hoppy_service import HOPPY, ClientName
-from service.job_store import JobStore
+from service.job_store import job_store
 from statemachine import State, StateMachine
 from util.contentions_util import CompareException, ContentionsUtil, MergeException
 from db.session import get_db
 
 CANCEL_TRACKING_EP = "60"
 CANCELLATION_REASON_FORMAT = "Issues moved into or confirmed in pending EP{ep_code} - claim #{claim_id}"
-
-job_store = JobStore()
 
 
 class EpMergeMachine(StateMachine):
@@ -75,7 +73,7 @@ class EpMergeMachine(StateMachine):
         logging.info(f"event=jobTransition job_id={self.job.job_id} old={source.value} new={target.value}")
         self.job.state = target.value
         with contextmanager(get_db)() as db:
-            job_store.update_merge_job(self.job, db)
+            job_store.update_merge_job(MergeJob.model_validate(self.job), db)
 
     @pending.exit
     def on_start_process(self):
