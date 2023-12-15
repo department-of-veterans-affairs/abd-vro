@@ -5,18 +5,17 @@ from contextlib import asynccontextmanager
 from uuid import UUID, uuid4
 
 import uvicorn
-from fastapi import BackgroundTasks, FastAPI, HTTPException, status
+from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-from model.merge_job import MergeJob
+from schema.merge_job import MergeJob
 from pydantic_models import (MergeEndProductsErrorResponse,
                              MergeEndProductsRequest, MergeEndProductsResponse)
-from service.ep_merge_machine import EpMergeMachine
+from service.ep_merge_machine import EpMergeMachine, job_store
 from service.hoppy_service import HOPPY
-from service.job_store import JobStore
+from sqlalchemy.orm import Session
 from util.sanitizer import sanitize
-
-job_store = JobStore()
+from db.session import get_db
 
 
 @asynccontextmanager
@@ -28,6 +27,8 @@ async def lifespan(api: FastAPI):
 
 async def on_start_up():
     await HOPPY.start_hoppy_clients(asyncio.get_event_loop())
+    #with get_db() as db:
+    #    job_store.init(db)
 
 
 async def on_shut_down():
@@ -69,7 +70,7 @@ def get_health_status():
           status_code=status.HTTP_202_ACCEPTED,
           response_model=MergeEndProductsResponse,
           response_model_exclude_none=True)
-async def merge_claims(merge_request: MergeEndProductsRequest, background_tasks: BackgroundTasks):
+async def merge_claims(merge_request: MergeEndProductsRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     validate_merge_request(merge_request)
 
     job_id = uuid4()
@@ -81,7 +82,7 @@ async def merge_claims(merge_request: MergeEndProductsRequest, background_tasks:
     merge_job = MergeJob(job_id=job_id,
                          pending_claim_id=merge_request.pending_claim_id,
                          ep400_claim_id=merge_request.ep400_claim_id)
-    job_store.submit_merge_job(merge_job)
+    job_store.submit_merge_job(merge_job, db)
 
     background_tasks.add_task(start_job_state_machine, merge_job)
 
@@ -105,8 +106,8 @@ def start_job_state_machine(merge_job):
                                          "description": "Could not find job by job_id"}
          },
          response_model_exclude_none=True)
-async def get_merge_claims_status(job_id: UUID):
-    job = job_store.get_merge_job(job_id)
+async def get_merge_claims_status(job_id: UUID, db: Session = Depends(get_db)):
+    job = job_store.get_merge_job(job_id, db)
     if job:
         logging.info(f"event=getMergeStatus {job}")
         return jsonable_encoder({"job": job})
@@ -118,8 +119,8 @@ async def get_merge_claims_status(job_id: UUID):
 
 
 @app.get("/merge")
-async def get_all_merge_jobs():
-    return jsonable_encoder({"jobs": list(job_store.get_merge_jobs())})
+async def get_all_merge_jobs(db: Session = Depends(get_db)):
+    return jsonable_encoder({"jobs": list(job_store.get_merge_jobs(db))})
 
 
 if __name__ == "__main__":

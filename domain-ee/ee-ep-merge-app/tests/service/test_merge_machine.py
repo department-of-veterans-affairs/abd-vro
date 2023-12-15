@@ -5,16 +5,16 @@ from unittest.mock import AsyncMock, Mock, call
 
 import pytest
 from hoppy.exception import ResponseException
-from model import (
+from schema import (
     add_claim_note,
     cancel_claim,
     create_contentions,
     get_claim,
     get_contentions,
 )
-from model import update_temp_station_of_jurisdiction as tsoj
-from model.claim import ClaimDetail
-from model.merge_job import JobState, MergeJob
+from schema import update_temp_station_of_jurisdiction as tsoj
+from schema.claim import ClaimDetail
+from schema.merge_job import JobState, MergeJob
 from service.ep_merge_machine import (
     CANCEL_TRACKING_EP,
     CANCELLATION_REASON_FORMAT,

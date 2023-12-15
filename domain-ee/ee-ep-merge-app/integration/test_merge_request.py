@@ -2,7 +2,7 @@ import pytest
 import pytest_asyncio
 from httpx import AsyncClient
 from integration.mq_endpoint import MqEndpoint
-from model.merge_job import JobState
+from schema.merge_job import JobState
 from src.python_src.api import app, on_shut_down, on_start_up
 
 RESPONSE_DIR = './tests/responses'
@@ -53,7 +53,7 @@ class TestMergeRequest:
         assert response_json['job']['state'] == JobState.PENDING.value
         return response_json['job']['job_id']
 
-    @pytest.mark.asyncio(scope="session")(scope="session")
+    @pytest.mark.asyncio(scope="session")
     async def test_completed_success(self,
                                      get_claim_endpoint: MqEndpoint,
                                      get_claim_contentions_endpoint: MqEndpoint,

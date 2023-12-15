@@ -68,3 +68,5 @@ REPLY_QUEUES = {
     ClientName.BGS_ADD_CLAIM_NOTE:
         os.environ.get("ADD_CLAIM_NOTE_RESPONSE") or "add-note-response",
 }
+
+SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI") or "postgresql://vro_user:vro_user_pw@localhost:5432/vro"

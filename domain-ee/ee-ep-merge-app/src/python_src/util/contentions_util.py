@@ -1,5 +1,5 @@
-from model.get_contentions import Response
-from model.contention import ContentionSummary
+from schema.get_contentions import Response
+from schema.contention import ContentionSummary
 
 
 class MergeException(BaseException):

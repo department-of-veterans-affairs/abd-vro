@@ -3,7 +3,8 @@ from unittest.mock import Mock
 
 import pytest
 from fastapi.testclient import TestClient
-from model.merge_job import JobState
+from schema.merge_job import JobState
+from sqlalchemy.orm import Session
 from src.python_src.api import job_store
 
 MERGE = "/merge"
@@ -18,8 +19,8 @@ def mock_background_tasks(mocker):
 
 
 @pytest.fixture(autouse=True)
-def _job_store():
-    job_store.clear()
+def _job_store(db: Session):
+    job_store.clear(db)
 
 
 def test_health(client: TestClient):
