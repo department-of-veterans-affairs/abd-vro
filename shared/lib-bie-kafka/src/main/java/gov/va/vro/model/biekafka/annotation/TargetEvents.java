@@ -6,9 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * TODO: this annotation can be used for the new description field that only exists in
- * ContentionUpdated and ContentionDeleted kafka events This annotation is used to define field that
- * is exclusive to certain contention classification events,
+ * This annotation is used to define field tha is exclusive to certain contention
+ * classification events. Valid values are from ContentionEvent enum topic names
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD) // This ensures the annotation is only used on fields

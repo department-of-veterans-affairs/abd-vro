@@ -1,6 +1,8 @@
 package gov.va.vro.model.biekafka;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import gov.va.vro.model.biekafka.annotation.Ignore;
+import gov.va.vro.model.biekafka.annotation.TargetEvents;
 import lombok.*;
 
 @Setter
@@ -11,10 +13,16 @@ import lombok.*;
 @EqualsAndHashCode
 public class BieMessagePayload {
   // these are vro fields
+  @Ignore
   private Integer status;
+  @Ignore
   private String statusMessage;
+  @Ignore
   private ContentionEvent eventType;
+  @Ignore
   private Long notifiedAt;
+  @Ignore
+  private String description;
 
   // populated from kafka topic payload
   private String benefitClaimTypeCode;
@@ -32,7 +40,8 @@ public class BieMessagePayload {
   private String contentionStatusTypeCode;
   private String currentLifecycleStatus;
   private Long eventTime;
-  private String description;
+
+  @TargetEvents({"CONTENTION_BIE_CONTENTION_UPDATED_V02"})
   private String journalStatusTypeCode;
   private Long dateAdded;
   private Long dateCompleted;

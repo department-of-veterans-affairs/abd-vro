@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import gov.va.vro.model.biekafka.BieMessagePayload;
+import gov.va.vro.model.biekafka.ContentionEvent;
 import org.apache.avro.generic.GenericRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +45,7 @@ class BieMessageUtilsTest {
   @Test
   void testProcessBieMessagePayloadFields() {
     // Process the mocked GenericRecord to create a BieMessagePayload
-    BieMessagePayload actualPayload = BieMessageUtils.processBieMessagePayloadFields(genericRecord);
+    BieMessagePayload actualPayload = BieMessageUtils.processBieMessagePayloadFields(ContentionEvent.CONTENTION_ASSOCIATED_TO_CLAIM, genericRecord);
 
     // Assert that the fields in the actualPayload match the mocked values
     assertEquals("TypeCode123", actualPayload.getBenefitClaimTypeCode());
