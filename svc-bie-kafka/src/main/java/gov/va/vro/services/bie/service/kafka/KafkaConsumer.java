@@ -59,8 +59,10 @@ public class KafkaConsumer {
   private BieMessagePayload handleGenericRecord(ConsumerRecord<String, Object> record) {
     GenericRecord messageValue = (GenericRecord) record.value();
 
-    ContentionEvent contentionEvent = ContentionEvent.valueOf(ContentionEvent.mapTopicToEvent(record.topic()).toString());
-    BieMessagePayload payload = BieMessageUtils.processBieMessagePayloadFields(contentionEvent, messageValue);
+    ContentionEvent contentionEvent =
+        ContentionEvent.valueOf(ContentionEvent.mapTopicToEvent(record.topic()).toString());
+    BieMessagePayload payload =
+        BieMessageUtils.processBieMessagePayloadFields(contentionEvent, messageValue);
 
     payload.setNotifiedAt(record.timestamp());
 

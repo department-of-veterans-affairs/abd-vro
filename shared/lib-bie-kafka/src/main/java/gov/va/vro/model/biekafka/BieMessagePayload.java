@@ -13,16 +13,11 @@ import lombok.*;
 @EqualsAndHashCode
 public class BieMessagePayload {
   // these are vro fields
-  @Ignore
-  private Integer status;
-  @Ignore
-  private String statusMessage;
-  @Ignore
-  private ContentionEvent eventType;
-  @Ignore
-  private Long notifiedAt;
-  @Ignore
-  private String description;
+  @Ignore private Integer status;
+  @Ignore private String statusMessage;
+  @Ignore private ContentionEvent eventType;
+  @Ignore private Long notifiedAt;
+  @Ignore private String description;
 
   // populated from kafka topic payload
   private String benefitClaimTypeCode;
@@ -43,6 +38,7 @@ public class BieMessagePayload {
 
   @TargetEvents({"CONTENTION_BIE_CONTENTION_UPDATED_V02"})
   private String journalStatusTypeCode;
+
   private Long dateAdded;
   private Long dateCompleted;
   private Long dateUpdated;
