@@ -65,42 +65,81 @@ class BieMessageUtilsTest {
   }
 
   @Test
-  void testProcessPayload() {
-    // Process the mocked GenericRecord to create a BieMessagePayload
+  void testContentionAssociatedToClaimEvent() {
     BieMessagePayload actualPayload =
-        BieMessageUtils.processBieMessagePayloadFields(
-            ContentionEvent.CONTENTION_ASSOCIATED_TO_CLAIM, genericRecord);
-
-    // Assert that the fields in the actualPayload match the mocked values
+            BieMessageUtils.processBieMessagePayloadFields(
+                    ContentionEvent.CONTENTION_ASSOCIATED_TO_CLAIM, genericRecord);
+    testCommonFields(actualPayload);
     assertEquals("TypeCode123", actualPayload.getBenefitClaimTypeCode());
     assertEquals("Station456", actualPayload.getActorStation());
     assertEquals("Some details", actualPayload.getDetails());
     assertEquals(Long.valueOf(12345L), actualPayload.getVeteranParticipantId());
-    assertEquals(Long.valueOf(67890L), actualPayload.getClaimId());
-    assertEquals(Long.valueOf(11223L), actualPayload.getContentionId());
-    assertEquals("TypeCode456", actualPayload.getContentionTypeCode());
     assertEquals("ClassificationName", actualPayload.getContentionClassificationName());
     assertEquals("DiagnosticCode", actualPayload.getDiagnosticTypeCode());
-    assertEquals("SomeAction", actualPayload.getActionName());
-    assertEquals("ActionResult", actualPayload.getActionResultName());
-    assertTrue(actualPayload.getAutomationIndicator());
-    assertEquals("StatusTypeCode", actualPayload.getContentionStatusTypeCode());
-    assertEquals("LifecycleStatus", actualPayload.getCurrentLifecycleStatus());
-    assertEquals(Long.valueOf(1616151616L), actualPayload.getEventTime());
-    assertNull(actualPayload.getJournalStatusTypeCode());
     assertEquals(Long.valueOf(1616161616L), actualPayload.getDateAdded());
-    assertEquals(Long.valueOf(1616171717L), actualPayload.getDateCompleted());
-    assertEquals(Long.valueOf(1616181818L), actualPayload.getDateUpdated());
   }
 
   @Test
-  void testProcessPayloadForContentionUpdatedEvent() {
+  void testContentionClassifiedEvent() {
+    BieMessagePayload actualPayload =
+            BieMessageUtils.processBieMessagePayloadFields(
+                    ContentionEvent.CONTENTION_CLASSIFIED, genericRecord);
+    testCommonFields(actualPayload);
+    assertEquals("TypeCode123", actualPayload.getBenefitClaimTypeCode());
+    assertEquals("Station456", actualPayload.getActorStation());
+    assertEquals("Some details", actualPayload.getDetails());
+    assertEquals(Long.valueOf(12345L), actualPayload.getVeteranParticipantId());
+    assertEquals("ClassificationName", actualPayload.getContentionClassificationName());
+    assertEquals("DiagnosticCode", actualPayload.getDiagnosticTypeCode());
+    assertEquals(Long.valueOf(1616161616L), actualPayload.getDateAdded());
+  }
+
+  @Test
+  void testContentionCompletedEvent() {
+    BieMessagePayload actualPayload =
+            BieMessageUtils.processBieMessagePayloadFields(
+                    ContentionEvent.CONTENTION_COMPLETED, genericRecord);
+    testCommonFields(actualPayload);
+  }
+
+  @Test
+  void testContentionDeletedEvent() {
+    BieMessagePayload actualPayload =
+            BieMessageUtils.processBieMessagePayloadFields(
+                    ContentionEvent.CONTENTION_DELETED, genericRecord);
+    testCommonFields(actualPayload);
+  }
+
+  @Test
+  void testContentionUpdatedEvent() {
     // Process the mocked GenericRecord to create a BieMessagePayload
     BieMessagePayload actualPayload =
         BieMessageUtils.processBieMessagePayloadFields(
             ContentionEvent.CONTENTION_UPDATED, genericRecord);
 
-    // Assert that the fields in the actualPayload match the mocked values
+    testCommonFields(actualPayload);
+
+    assertEquals("TypeCode123", actualPayload.getBenefitClaimTypeCode());
     assertEquals("JournalStatusCode", actualPayload.getJournalStatusTypeCode());
+    assertEquals("Station456", actualPayload.getActorStation());
+    assertEquals("Some details", actualPayload.getDetails());
+    assertEquals(Long.valueOf(12345L), actualPayload.getVeteranParticipantId());
+    assertEquals("ClassificationName", actualPayload.getContentionClassificationName());
+    assertEquals("DiagnosticCode", actualPayload.getDiagnosticTypeCode());
+    assertEquals(Long.valueOf(1616161616L), actualPayload.getDateAdded());
+    assertEquals(Long.valueOf(1616171717L), actualPayload.getDateCompleted());
+    assertEquals(Long.valueOf(1616181818L), actualPayload.getDateUpdated());
+  }
+
+  private void testCommonFields(BieMessagePayload actualPayload) {
+    assertEquals(Long.valueOf(67890L), actualPayload.getClaimId());
+    assertEquals(Long.valueOf(11223L), actualPayload.getContentionId());
+    assertEquals("SomeAction", actualPayload.getActionName());
+    assertEquals("ActionResult", actualPayload.getActionResultName());
+    assertTrue(actualPayload.getAutomationIndicator());
+    assertEquals("TypeCode456", actualPayload.getContentionTypeCode());
+    assertEquals("StatusTypeCode", actualPayload.getContentionStatusTypeCode());
+    assertEquals("LifecycleStatus", actualPayload.getCurrentLifecycleStatus());
+    assertEquals(Long.valueOf(1616151616L), actualPayload.getEventTime());
   }
 }
