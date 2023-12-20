@@ -11,6 +11,7 @@ from model import (
     create_contentions,
     get_claim,
     get_contentions,
+    update_contentions,
 )
 from model import update_temp_station_of_jurisdiction as tsoj
 from model.merge_job import JobState, MergeJob
@@ -19,10 +20,11 @@ from model.response import GeneralResponse
 from pydantic import ValidationError
 from service.hoppy_service import HOPPY, ClientName
 from statemachine import State, StateMachine
-from util.contentions_util import CompareException, ContentionsUtil, MergeException
+from util.contentions_util import ContentionsUtil
 
 CANCEL_TRACKING_EP = "60"
 CANCELLATION_REASON_FORMAT = "Issues moved into or confirmed in pending EP{ep_code} - claim #{claim_id}"
+SPECIAL_ISSUE_CODE = "EMP"
 
 
 class EpMergeMachine(StateMachine):
@@ -33,11 +35,15 @@ class EpMergeMachine(StateMachine):
     # States:
     pending = State(initial=True, value=JobState.PENDING)
     running_get_pending_claim = State(value=JobState.RUNNING_GET_PENDING_CLAIM)
+    running_get_pending_claim_failed_remove_special_issue = State(value=JobState.RUNNING_GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE)
     running_get_pending_contentions = State(value=JobState.RUNNING_GET_PENDING_CLAIM_CONTENTIONS)
+    running_get_pending_contentions_failed_remove_special_issue = State(value=JobState.RUNNING_GET_PENDING_CLAIM_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE)
     running_get_ep400_contentions = State(value=JobState.RUNNING_GET_EP400_CLAIM_CONTENTIONS)
     running_set_temp_station_of_jurisdiction = State(value=JobState.RUNNING_SET_TEMP_STATION_OF_JURISDICTION)
+    running_set_temp_station_of_jurisdiction_failed_remove_special_issue = State(value=JobState.RUNNING_SET_TEMP_STATION_OF_JURISDICTION_FAILED_REMOVE_SPECIAL_ISSUE)
     running_merge_contentions = State(value=JobState.RUNNING_MERGE_CONTENTIONS)
     running_move_contentions_to_pending_claim = State(value=JobState.RUNNING_MOVE_CONTENTIONS_TO_PENDING_CLAIM)
+    running_move_contentions_failed_remove_special_issue = State(value=JobState.RUNNING_MOVE_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE)
     running_move_contentions_failed_revert_temp_station_of_jurisdiction = State(value=JobState.RUNNING_MOVE_CONTENTIONS_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION)
     running_cancel_ep400_claim = State(value=JobState.RUNNING_CANCEL_EP400_CLAIM)
     running_cancel_claim_failed_revert_temp_station_of_jurisdiction = State(value=JobState.RUNNING_CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION)
@@ -48,22 +54,33 @@ class EpMergeMachine(StateMachine):
     process = (
             pending.to(running_get_pending_claim)
             | running_get_pending_claim.to(running_get_pending_contentions, unless="has_error")
-            | running_get_pending_claim.to(completed_error, cond="has_error")
+            | running_get_pending_claim.to(running_get_pending_claim_failed_remove_special_issue, cond="has_error")
+            | running_get_pending_claim_failed_remove_special_issue.to(completed_error)
+
             | running_get_pending_contentions.to(running_get_ep400_contentions, unless="has_error")
-            | running_get_pending_contentions.to(completed_error, cond="has_error")
+            | running_get_pending_contentions.to(running_get_pending_contentions_failed_remove_special_issue, cond="has_error")
+            | running_get_pending_contentions_failed_remove_special_issue.to(completed_error)
+
             | running_get_ep400_contentions.to(running_set_temp_station_of_jurisdiction, unless="has_error")
             | running_get_ep400_contentions.to(completed_error, cond="has_error")
-            | running_set_temp_station_of_jurisdiction.to(running_merge_contentions, unless=["is_duplicate", "has_error"])
-            | running_set_temp_station_of_jurisdiction.to(running_cancel_ep400_claim, cond="is_duplicate", unless="has_error")
-            | running_set_temp_station_of_jurisdiction.to(completed_error, cond="has_error")
+
+            | running_set_temp_station_of_jurisdiction.to(running_merge_contentions, cond="has_new_contentions", unless="has_error")
+            | running_set_temp_station_of_jurisdiction.to(running_cancel_ep400_claim, unless=["has_new_contentions", "has_error"])
+            | running_set_temp_station_of_jurisdiction.to(running_set_temp_station_of_jurisdiction_failed_remove_special_issue, cond="has_error")
+            | running_set_temp_station_of_jurisdiction_failed_remove_special_issue.to(completed_error)
+
             | running_merge_contentions.to(running_move_contentions_to_pending_claim, unless="has_error")
             | running_merge_contentions.to(completed_error, cond="has_error")
+
             | running_move_contentions_to_pending_claim.to(running_cancel_ep400_claim, unless="has_error")
-            | running_move_contentions_to_pending_claim.to(running_move_contentions_failed_revert_temp_station_of_jurisdiction, cond="has_error")
+            | running_move_contentions_to_pending_claim.to(running_move_contentions_failed_remove_special_issue, cond="has_error")
+            | running_move_contentions_failed_remove_special_issue.to(running_move_contentions_failed_revert_temp_station_of_jurisdiction)
             | running_move_contentions_failed_revert_temp_station_of_jurisdiction.to(completed_error)
+
             | running_cancel_ep400_claim.to(running_add_claim_note_to_ep400, unless="has_error")
             | running_cancel_ep400_claim.to(running_cancel_claim_failed_revert_temp_station_of_jurisdiction, cond="has_error")
             | running_cancel_claim_failed_revert_temp_station_of_jurisdiction.to(completed_error)
+
             | running_add_claim_note_to_ep400.to(completed_success, unless="has_error")
             | running_add_claim_note_to_ep400.to(completed_error, cond="has_error")
     )
@@ -106,54 +123,44 @@ class EpMergeMachine(StateMachine):
             request=request,
             hoppy_client=HOPPY.get_client(ClientName.GET_CLAIM_CONTENTIONS),
             response_type=get_contentions.Response)
-        self.process(pending_contentions=response)
+        self.process(pending_contentions_response=response)
 
     @running_get_ep400_contentions.enter
-    def on_get_ep400_contentions(self, pending_contentions=None):
+    def on_get_ep400_contentions(self, pending_contentions_response=None):
         request = get_contentions.Request(claim_id=self.job.ep400_claim_id)
         response = self.make_request(
             request=request,
             hoppy_client=HOPPY.get_client(ClientName.GET_CLAIM_CONTENTIONS),
             response_type=get_contentions.Response)
-        self.process(pending_contentions=pending_contentions, ep400_contentions=response)
+        self.process(pending_contentions_response=pending_contentions_response, ep400_contentions_response=response)
 
     @running_set_temp_station_of_jurisdiction.enter
-    def on_set_temp_station_of_jurisdiction(self, pending_contentions=None, ep400_contentions=None):
+    def on_set_temp_station_of_jurisdiction(self, pending_contentions_response=None, ep400_contentions_response=None):
         request = tsoj.Request(temp_station_of_jurisdiction="398", claim_id=self.job.ep400_claim_id)
         self.make_request(
             request=request,
             hoppy_client=HOPPY.get_client(ClientName.PUT_TSOJ),
             response_type=tsoj.Response)
-        self.process(pending_contentions=pending_contentions, ep400_contentions=ep400_contentions)
+        self.process(pending_contentions_response=pending_contentions_response, ep400_contentions_response=ep400_contentions_response)
 
     @running_merge_contentions.enter
-    def on_merge_contentions(self, pending_contentions=None, ep400_contentions=None):
-        merged_contentions = None
+    def on_merge_contentions(self, pending_contentions_response=None, ep400_contentions_response=None):
+        new_contentions = None
         try:
-            merged_contentions = ContentionsUtil.merge_claims(pending_contentions, ep400_contentions)
-        except (MergeException, CompareException) as e:
+            new_contentions = ContentionsUtil.new_contentions(pending_contentions_response.contentions, ep400_contentions_response.contentions)
+        except Exception as e:
             self.add_error(e.message)
-        self.process(merged_contentions=merged_contentions)
+        self.process(new_contentions=new_contentions, ep400_contentions_response=ep400_contentions_response)
 
     @running_move_contentions_to_pending_claim.enter
-    def on_move_contentions_to_pending_claim(self, merged_contentions=None):
-        request = create_contentions.Request(claim_id=self.job.pending_claim_id, create_contentions=merged_contentions)
+    def on_move_contentions_to_pending_claim(self, new_contentions=None, ep400_contentions_response=None):
+        request = create_contentions.Request(claim_id=self.job.pending_claim_id, create_contentions=new_contentions)
         self.make_request(
             request=request,
             hoppy_client=HOPPY.get_client(ClientName.CREATE_CLAIM_CONTENTIONS),
             response_type=create_contentions.Response,
             expected_status=201)
-        self.process()
-
-    @running_move_contentions_failed_revert_temp_station_of_jurisdiction.enter
-    @running_cancel_claim_failed_revert_temp_station_of_jurisdiction.enter
-    def on_move_contentions_or_cancel_claim_failed_revert_temp_station_of_jurisdiction(self):
-        request = tsoj.Request(temp_station_of_jurisdiction=self.original_tsoj, claim_id=self.job.ep400_claim_id)
-        self.make_request(
-            request=request,
-            hoppy_client=HOPPY.get_client(ClientName.PUT_TSOJ),
-            response_type=tsoj.Response)
-        self.process()
+        self.process(ep400_contentions_response=ep400_contentions_response)
 
     @running_cancel_ep400_claim.enter
     def on_cancel_ep400_claim(self):
@@ -174,6 +181,39 @@ class EpMergeMachine(StateMachine):
             request=request,
             hoppy_client=HOPPY.get_client(ClientName.BGS_ADD_CLAIM_NOTE),
             response_type=add_claim_note.Response)
+        self.process()
+
+    @running_get_pending_claim_failed_remove_special_issue.enter
+    @running_get_pending_contentions_failed_remove_special_issue.enter
+    @running_set_temp_station_of_jurisdiction_failed_remove_special_issue.enter
+    @running_move_contentions_failed_remove_special_issue.enter
+    def on_pre_cancel_step_failed_remove_special_issue_code(self, ep400_contentions_response=None):
+        if ep400_contentions_response is None:
+            request = get_contentions.Request(claim_id=self.job.ep400_claim_id)
+            ep400_contentions_response = self.make_request(
+                request=request,
+                hoppy_client=HOPPY.get_client(ClientName.GET_CLAIM_CONTENTIONS),
+                response_type=get_contentions.Response)
+
+        contentions = ep400_contentions_response.contentions.copy() if ep400_contentions_response is not None and ep400_contentions_response.status_code == 200 and ep400_contentions_response.contentions else []
+
+        if contentions:
+            request = update_contentions.Request(claim_id=self.job.ep400_claim_id, update_contentions=ContentionsUtil.to_existing_contentions(contentions))
+            self.make_request(
+                request=request,
+                hoppy_client=HOPPY.get_client(ClientName.UPDATE_CLAIM_CONTENTIONS),
+                response_type=update_contentions.Response)
+
+        self.process()
+
+    @running_move_contentions_failed_revert_temp_station_of_jurisdiction.enter
+    @running_cancel_claim_failed_revert_temp_station_of_jurisdiction.enter
+    def on_move_contentions_or_cancel_claim_failed_revert_temp_station_of_jurisdiction(self):
+        request = tsoj.Request(temp_station_of_jurisdiction=self.original_tsoj, claim_id=self.job.ep400_claim_id)
+        self.make_request(
+            request=request,
+            hoppy_client=HOPPY.get_client(ClientName.PUT_TSOJ),
+            response_type=tsoj.Response)
         self.process()
 
     @completed_success.enter
@@ -218,12 +258,11 @@ class EpMergeMachine(StateMachine):
     def has_error(self):
         return self.job.state == JobState.COMPLETED_ERROR
 
-    def is_duplicate(self, pending_contentions: get_contentions.Response, ep400_contentions: get_contentions.Response):
-        try:
-            return not ContentionsUtil.new_contentions(pending_contentions.contentions, ep400_contentions.contentions)
-        except CompareException as e:
-            self.add_error(e.message)
-        return None
+    def has_new_contentions(self, pending_contentions_response: get_contentions.Response, ep400_contentions_response: get_contentions.Response):
+        return ContentionsUtil.new_contentions(pending_contentions_response.contentions, ep400_contentions_response.contentions)
 
     def add_error(self, error):
         self.job.error(error if isinstance(error, list) else [error])
+
+    def add_message(self, message):
+        self.job.add_message(message if isinstance(message, list) else [message])

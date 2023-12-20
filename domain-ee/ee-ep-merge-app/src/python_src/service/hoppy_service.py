@@ -13,6 +13,7 @@ class HoppyService:
         self.create_client(ClientName.GET_CLAIM_CONTENTIONS)
         self.create_client(ClientName.PUT_TSOJ)
         self.create_client(ClientName.CREATE_CLAIM_CONTENTIONS)
+        self.create_client(ClientName.UPDATE_CLAIM_CONTENTIONS)
         self.create_client(ClientName.CANCEL_CLAIM)
         self.create_client(ClientName.BGS_ADD_CLAIM_NOTE)
 
