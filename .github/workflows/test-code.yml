@@ -166,4 +166,6 @@ jobs:
       - name: "Run Employee Experience tests"
         if: inputs.run_all_tests || steps.ee-changed-files-specific.outputs.any_changed  == 'true'
         run: |
+          source scripts/setenv.sh
+          ./gradlew :dockerComposeUp
           ./gradlew :domain-ee:test
