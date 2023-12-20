@@ -1,17 +1,82 @@
 package gov.va.vro.bip.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
+import gov.va.vro.bip.service.InvalidPayloadRejectingFatalExceptionStrategy;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
+import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.listener.ConditionalRejectingErrorHandler;
+import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
+import org.springframework.validation.Validator;
+import org.springframework.validation.beanvalidation.OptionalValidatorFactoryBean;
 
 @Configuration
+@EnableRabbit
 @Slf4j
-public class RabbitMqConfig {
+@RequiredArgsConstructor
+public class RabbitMqConfig implements RabbitListenerConfigurer {
+  private final RabbitMqConfigProperties props;
 
   @Value("${exchangeName}")
   String exchangeName;
+
+  public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory() {
+    SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+    factory.setConnectionFactory(connectionFactory());
+    factory.setMessageConverter(messageConverter());
+    factory.setErrorHandler(
+        new ConditionalRejectingErrorHandler(new InvalidPayloadRejectingFatalExceptionStrategy()));
+    return factory;
+  }
+
+  @Bean
+  public ConnectionFactory connectionFactory() {
+    CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
+    connectionFactory.setHost(props.getHost());
+    connectionFactory.setUsername(props.getUsername());
+    connectionFactory.setPassword(props.getPassword());
+    connectionFactory.setPort(props.getPort());
+    return connectionFactory;
+  }
+
+  @Bean
+  public DefaultMessageHandlerMethodFactory defaultHandlerMethodFactory() {
+    DefaultMessageHandlerMethodFactory factory = new DefaultMessageHandlerMethodFactory();
+    factory.setValidator(amqpValidator());
+    return factory;
+  }
+
+  @Bean
+  public Validator amqpValidator() {
+    return new OptionalValidatorFactoryBean();
+  }
+
+  @Bean
+  public MessageConverter messageConverter() {
+    ObjectMapper mapper = JsonMapper.builder().addModule(new JodaModule()).build();
+    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    return new Jackson2JsonMessageConverter(mapper);
+  }
+
+  @Override
+  public void configureRabbitListeners(RabbitListenerEndpointRegistrar registrar) {
+    registrar.setContainerFactory(rabbitListenerContainerFactory());
+    registrar.setMessageHandlerMethodFactory(defaultHandlerMethodFactory());
+  }
 
   @Bean
   DirectExchange bipApiExchange() {

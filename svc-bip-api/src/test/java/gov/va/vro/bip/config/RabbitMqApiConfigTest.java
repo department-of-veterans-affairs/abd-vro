@@ -17,7 +17,7 @@ class RabbitMqApiConfigTest {
   @Test
   @SuppressWarnings({"unchecked", "rawtypes"})
   public void testRabbitMqConfig() {
-    RabbitMqConfig rmqConfig = new RabbitMqConfig();
+    RabbitMqConfig rmqConfig = new RabbitMqConfig(new RabbitMqConfigProperties());
     DirectExchange directExchange = rmqConfig.bipApiExchange();
     Assertions.assertNotNull(directExchange);
     RabbitListenerErrorHandler errorHandler = new BipRequestErrorHandler(new ObjectMapper());
