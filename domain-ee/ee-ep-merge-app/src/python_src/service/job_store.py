@@ -30,7 +30,7 @@ class JobStore:
         db.commit()
 
     def get_merge_jobs(self, db: Session) -> list[MergeJob]:
-        return db.query(MergeJob).all()
+        return db.query(MergeJob).filter(MergeJob.state != schema.JobState.COMPLETED_SUCCESS).all()
 
     def get_merge_job(self, job_id, db: Session) -> MergeJob:
         return db.query(MergeJob).filter(MergeJob.job_id == job_id).first()
@@ -41,10 +41,6 @@ class JobStore:
         db.commit()
 
     def update_merge_job(self, merge_job: schema.MergeJob, db: Session):
-        if merge_job.state == schema.JobState.COMPLETED_SUCCESS:
-            db.query(MergeJob).filter(MergeJob.job_id == merge_job.job_id).delete()
-            db.commit()
-            return
         as_json = jsonable_encoder(dict(merge_job))
         db.query(MergeJob).filter(MergeJob.job_id == merge_job.job_id).update(as_json)
         db.commit()
