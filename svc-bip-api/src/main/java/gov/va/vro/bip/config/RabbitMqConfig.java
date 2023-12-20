@@ -1,9 +1,5 @@
 package gov.va.vro.bip.config;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
 import gov.va.vro.bip.service.InvalidPayloadRejectingFatalExceptionStrategy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,8 +11,6 @@ import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.ConditionalRejectingErrorHandler;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +23,10 @@ import org.springframework.validation.beanvalidation.OptionalValidatorFactoryBea
 @Slf4j
 @RequiredArgsConstructor
 public class RabbitMqConfig implements RabbitListenerConfigurer {
+
   private final RabbitMqConfigProperties props;
+
+  JacksonConfig jacksonConfig;
 
   @Value("${exchangeName}")
   String exchangeName;
@@ -37,7 +34,8 @@ public class RabbitMqConfig implements RabbitListenerConfigurer {
   public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory() {
     SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
     factory.setConnectionFactory(connectionFactory());
-    factory.setMessageConverter(messageConverter());
+    factory.setMessageConverter(
+        (jacksonConfig.jackson2MessageConverter(jacksonConfig.objectMapper())));
     factory.setErrorHandler(
         new ConditionalRejectingErrorHandler(new InvalidPayloadRejectingFatalExceptionStrategy()));
     return factory;
@@ -63,13 +61,6 @@ public class RabbitMqConfig implements RabbitListenerConfigurer {
   @Bean
   public Validator amqpValidator() {
     return new OptionalValidatorFactoryBean();
-  }
-
-  @Bean
-  public MessageConverter messageConverter() {
-    ObjectMapper mapper = JsonMapper.builder().addModule(new JodaModule()).build();
-    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    return new Jackson2JsonMessageConverter(mapper);
   }
 
   @Override
