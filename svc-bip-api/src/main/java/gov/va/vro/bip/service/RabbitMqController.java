@@ -14,45 +14,49 @@ import gov.va.vro.bip.model.lifecycle.PutClaimLifecycleRequest;
 import gov.va.vro.bip.model.lifecycle.PutClaimLifecycleResponse;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionRequest;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
 @Slf4j
 @Component
+@Validated
 @RequiredArgsConstructor
 public class RabbitMqController {
 
   final BipApiService service;
 
   @RabbitListener(queues = "getClaimDetailsQueue", errorHandler = "bipRequestErrorHandler")
-  GetClaimResponse getClaimDetails(GetClaimRequest request) {
+  GetClaimResponse getClaimDetails(@Valid @Payload GetClaimRequest request) {
     return service.getClaimDetails(request.getClaimId());
   }
 
   @RabbitListener(queues = "putClaimLifecycleStatusQueue", errorHandler = "bipRequestErrorHandler")
-  PutClaimLifecycleResponse updateClaimStatus(PutClaimLifecycleRequest request) {
+  PutClaimLifecycleResponse updateClaimStatus(@Valid @Payload PutClaimLifecycleRequest request) {
     return service.putClaimLifecycleStatus(request);
   }
 
   @RabbitListener(queues = "getClaimContentionsQueue", errorHandler = "bipRequestErrorHandler")
-  GetClaimContentionsResponse getClaimContentions(GetClaimContentionsRequest request) {
+  GetClaimContentionsResponse getClaimContentions(@Valid @Payload GetClaimContentionsRequest request) {
     return service.getClaimContentions(request.getClaimId());
   }
 
   @RabbitListener(queues = "createClaimContentionsQueue", errorHandler = "bipRequestErrorHandler")
-  CreateClaimContentionsResponse createClaimContentions(CreateClaimContentionsRequest request) {
+  CreateClaimContentionsResponse createClaimContentions(@Valid @Payload CreateClaimContentionsRequest request) {
     return service.createClaimContentions(request);
   }
 
   @RabbitListener(queues = "updateClaimContentionsQueue", errorHandler = "bipRequestErrorHandler")
-  UpdateClaimContentionsResponse updateClaimContentions(UpdateClaimContentionsRequest request) {
+  UpdateClaimContentionsResponse updateClaimContentions(@Valid @Payload UpdateClaimContentionsRequest request) {
     return service.updateClaimContentions(request);
   }
 
   @RabbitListener(queues = "cancelClaimQueue", errorHandler = "bipRequestErrorHandler")
-  CancelClaimResponse cancelClaim(CancelClaimRequest cancelRequest) {
+  CancelClaimResponse cancelClaim(@Valid @Payload CancelClaimRequest cancelRequest) {
     return service.cancelClaim(cancelRequest);
   }
 
@@ -60,7 +64,7 @@ public class RabbitMqController {
       queues = "putTempStationOfJurisdictionQueue",
       errorHandler = "bipRequestErrorHandler")
   PutTempStationOfJurisdictionResponse putTempStationOfJurisdictionEndpoint(
-      PutTempStationOfJurisdictionRequest request) {
+          @Valid @Payload PutTempStationOfJurisdictionRequest request) {
     return service.putTempStationOfJurisdiction(request);
   }
 }

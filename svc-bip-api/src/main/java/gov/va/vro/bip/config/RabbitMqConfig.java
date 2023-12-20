@@ -19,14 +19,12 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.OptionalValidatorFactoryBean;
 
 @Configuration
-@EnableRabbit
 @Slf4j
 @RequiredArgsConstructor
 public class RabbitMqConfig implements RabbitListenerConfigurer {
 
   private final RabbitMqConfigProperties props;
-
-  JacksonConfig jacksonConfig;
+  private final JacksonConfig jacksonConfig;
 
   @Value("${exchangeName}")
   String exchangeName;
