@@ -134,8 +134,8 @@ jobs:
           # Need to fetch more than 1 deep to see changes
           fetch-depth: 2
 
-      - name: "Set up VRO build env"
-        uses: ./.github/actions/setup-vro
+      - name: 'Build the images'
+        uses: ./.github/actions/build-images
 
       - name: "Get changed files"
         if: '! inputs.run_all_tests'
