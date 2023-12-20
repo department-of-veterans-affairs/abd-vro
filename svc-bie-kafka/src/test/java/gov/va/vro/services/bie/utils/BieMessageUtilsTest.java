@@ -67,8 +67,8 @@ class BieMessageUtilsTest {
   @Test
   void testContentionAssociatedToClaimEvent() {
     BieMessagePayload actualPayload =
-            BieMessageUtils.processBieMessagePayloadFields(
-                    ContentionEvent.CONTENTION_ASSOCIATED_TO_CLAIM, genericRecord);
+        BieMessageUtils.processBieMessagePayloadFields(
+            ContentionEvent.CONTENTION_ASSOCIATED_TO_CLAIM, genericRecord);
     testCommonFields(actualPayload);
     assertEquals("TypeCode123", actualPayload.getBenefitClaimTypeCode());
     assertEquals("Station456", actualPayload.getActorStation());
@@ -82,8 +82,8 @@ class BieMessageUtilsTest {
   @Test
   void testContentionClassifiedEvent() {
     BieMessagePayload actualPayload =
-            BieMessageUtils.processBieMessagePayloadFields(
-                    ContentionEvent.CONTENTION_CLASSIFIED, genericRecord);
+        BieMessageUtils.processBieMessagePayloadFields(
+            ContentionEvent.CONTENTION_CLASSIFIED, genericRecord);
     testCommonFields(actualPayload);
     assertEquals("TypeCode123", actualPayload.getBenefitClaimTypeCode());
     assertEquals("Station456", actualPayload.getActorStation());
@@ -97,16 +97,16 @@ class BieMessageUtilsTest {
   @Test
   void testContentionCompletedEvent() {
     BieMessagePayload actualPayload =
-            BieMessageUtils.processBieMessagePayloadFields(
-                    ContentionEvent.CONTENTION_COMPLETED, genericRecord);
+        BieMessageUtils.processBieMessagePayloadFields(
+            ContentionEvent.CONTENTION_COMPLETED, genericRecord);
     testCommonFields(actualPayload);
   }
 
   @Test
   void testContentionDeletedEvent() {
     BieMessagePayload actualPayload =
-            BieMessageUtils.processBieMessagePayloadFields(
-                    ContentionEvent.CONTENTION_DELETED, genericRecord);
+        BieMessageUtils.processBieMessagePayloadFields(
+            ContentionEvent.CONTENTION_DELETED, genericRecord);
     testCommonFields(actualPayload);
   }
 
