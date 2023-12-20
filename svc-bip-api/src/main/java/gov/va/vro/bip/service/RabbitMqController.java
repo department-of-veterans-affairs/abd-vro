@@ -41,17 +41,20 @@ public class RabbitMqController {
   }
 
   @RabbitListener(queues = "getClaimContentionsQueue", errorHandler = "bipRequestErrorHandler")
-  GetClaimContentionsResponse getClaimContentions(@Valid @Payload GetClaimContentionsRequest request) {
+  GetClaimContentionsResponse getClaimContentions(
+      @Valid @Payload GetClaimContentionsRequest request) {
     return service.getClaimContentions(request.getClaimId());
   }
 
   @RabbitListener(queues = "createClaimContentionsQueue", errorHandler = "bipRequestErrorHandler")
-  CreateClaimContentionsResponse createClaimContentions(@Valid @Payload CreateClaimContentionsRequest request) {
+  CreateClaimContentionsResponse createClaimContentions(
+      @Valid @Payload CreateClaimContentionsRequest request) {
     return service.createClaimContentions(request);
   }
 
   @RabbitListener(queues = "updateClaimContentionsQueue", errorHandler = "bipRequestErrorHandler")
-  UpdateClaimContentionsResponse updateClaimContentions(@Valid @Payload UpdateClaimContentionsRequest request) {
+  UpdateClaimContentionsResponse updateClaimContentions(
+      @Valid @Payload UpdateClaimContentionsRequest request) {
     return service.updateClaimContentions(request);
   }
 
@@ -64,7 +67,7 @@ public class RabbitMqController {
       queues = "putTempStationOfJurisdictionQueue",
       errorHandler = "bipRequestErrorHandler")
   PutTempStationOfJurisdictionResponse putTempStationOfJurisdictionEndpoint(
-          @Valid @Payload PutTempStationOfJurisdictionRequest request) {
+      @Valid @Payload PutTempStationOfJurisdictionRequest request) {
     return service.putTempStationOfJurisdiction(request);
   }
 }
