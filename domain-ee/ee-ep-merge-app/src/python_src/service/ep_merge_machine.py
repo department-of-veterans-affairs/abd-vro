@@ -195,10 +195,15 @@ class EpMergeMachine(StateMachine):
                 hoppy_client=HOPPY.get_client(ClientName.GET_CLAIM_CONTENTIONS),
                 response_type=get_contentions.Response)
 
-        contentions = ep400_contentions_response.contentions.copy() if ep400_contentions_response is not None and ep400_contentions_response.status_code == 200 and ep400_contentions_response.contentions else []
+        contentions = ep400_contentions_response.contentions if ep400_contentions_response is not None and ep400_contentions_response.status_code == 200 and ep400_contentions_response.contentions else []
 
         if contentions:
-            request = update_contentions.Request(claim_id=self.job.ep400_claim_id, update_contentions=ContentionsUtil.to_existing_contentions(contentions))
+            updates = []
+            for contention in ContentionsUtil.to_existing_contentions(contentions):
+                contention.special_issue_codes = [code for code in contention.special_issue_codes if code != SPECIAL_ISSUE_CODE] if contention.special_issue_codes else None
+                updates.append(contention)
+
+            request = update_contentions.Request(claim_id=self.job.ep400_claim_id, update_contentions=updates)
             self.make_request(
                 request=request,
                 hoppy_client=HOPPY.get_client(ClientName.UPDATE_CLAIM_CONTENTIONS),

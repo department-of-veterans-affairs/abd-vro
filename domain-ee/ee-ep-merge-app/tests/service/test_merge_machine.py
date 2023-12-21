@@ -38,6 +38,7 @@ response_500 = f'{RESPONSE_DIR}/500_response.json'
 pending_claim_200 = f'{RESPONSE_DIR}/get_pending_claim_200.json'
 pending_contentions_increase_tendinitis_200 = f'{RESPONSE_DIR}/claim_contentions_increase_tendinitis_200.json'
 ep400_contentions_increase_tinnitus_200 = f'{RESPONSE_DIR}/claim_contentions_increase_tinnitus_200.json'
+ep400_contentions_increase_tinnitus_without_special_issues_200 = f'{RESPONSE_DIR}/claim_contentions_increase_tinnitus_without_special_issues_200.json'
 pending_contentions_increase_tinnitus_200 = f'{RESPONSE_DIR}/claim_contentions_increase_tinnitus_200.json'
 ep400_contentions_new_tinnitus_200 = f'{RESPONSE_DIR}/claim_contentions_new_tinnitus_200.json'
 ep400_contentions_increase_multicontention_200 = f'{RESPONSE_DIR}/claim_contentions_increase_multicontention_200.json'
@@ -59,6 +60,7 @@ get_pending_contentions_increase_tinnitus_200 = load_response(pending_contention
                                                               get_contentions.Response)
 get_ep400_contentions_req = get_contentions.Request(claim_id=EP400_CLAIM_ID).model_dump(by_alias=True)
 get_ep400_contentions_200 = load_response(ep400_contentions_increase_tinnitus_200, get_contentions.Response)
+get_ep400_contentions_without_special_issues_200 = load_response(ep400_contentions_increase_tinnitus_without_special_issues_200, get_contentions.Response)
 update_temporary_station_of_duty_req = tsoj.Request(claim_id=EP400_CLAIM_ID,
                                                     temp_station_of_jurisdiction="398").model_dump(by_alias=True)
 revert_temporary_station_of_duty_req = tsoj.Request(claim_id=EP400_CLAIM_ID,
@@ -72,7 +74,7 @@ create_contentions_on_pending_claim_req = create_contentions.Request(claim_id=PE
                                                                      ).model_dump(by_alias=True)
 create_contentions_on_pending_claim_201 = load_response(response_201, create_contentions.Response)
 update_contentions_on_ep400_req = update_contentions.Request(claim_id=EP400_CLAIM_ID,
-                                                             update_contentions=get_ep400_contentions_200.contentions
+                                                             update_contentions=get_ep400_contentions_without_special_issues_200.contentions
                                                              ).model_dump(by_alias=True)
 update_contentions_on_ep400_200 = load_response(response_200, update_contentions.Response)
 
