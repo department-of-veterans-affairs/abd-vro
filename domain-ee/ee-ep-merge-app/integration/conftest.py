@@ -3,6 +3,7 @@ import asyncio
 import pytest
 import pytest_asyncio
 from integration.mq_endpoint import MqEndpoint
+from src.python_src.api import on_shut_down, on_start_up
 from src.python_src.config import EXCHANGES, QUEUES, REPLY_QUEUES, ClientName
 
 
@@ -61,7 +62,7 @@ async def endpoint_lifecycle(get_claim_endpoint: MqEndpoint,
     await update_claim_contentions_endpoint.start(event_loop)
     await cancel_claim_endpoint.start(event_loop)
     await add_claim_note_endpoint.start(event_loop)
-
+    await on_start_up()
     yield
 
     get_claim_endpoint.stop()
@@ -71,3 +72,17 @@ async def endpoint_lifecycle(get_claim_endpoint: MqEndpoint,
     update_claim_contentions_endpoint.stop()
     cancel_claim_endpoint.stop()
     add_claim_note_endpoint.stop()
+    await on_shut_down()
+
+
+@pytest.fixture(autouse=True)
+def reset_responses(get_claim_endpoint: MqEndpoint,
+                    get_claim_contentions_endpoint: MqEndpoint,
+                    put_tsoj_endpoint: MqEndpoint,
+                    create_claim_contentions_endpoint: MqEndpoint,
+                    cancel_claim_endpoint: MqEndpoint):
+    get_claim_endpoint.set_responses()
+    get_claim_contentions_endpoint.set_responses()
+    put_tsoj_endpoint.set_responses()
+    create_claim_contentions_endpoint.set_responses()
+    cancel_claim_endpoint.set_responses()
