@@ -5,6 +5,8 @@ CREATE TABLE IF NOT EXISTS "merge_jobs" (
     state text NOT NULL,
     error_state text,
     messages jsonb[],
+    created_at timestamp NOT NULL,
+    updated_at timestamp NOT NULL,
     PRIMARY KEY(job_id)
 );
 CREATE INDEX IF NOT EXISTS merge_jobs_pending_claim_id_idx ON merge_jobs (pending_claim_id);
