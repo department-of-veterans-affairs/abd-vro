@@ -6,13 +6,6 @@ from integration.mq_endpoint import MqEndpoint
 from src.python_src.config import EXCHANGES, QUEUES, REPLY_QUEUES, ClientName
 
 
-@pytest.fixture(scope="session")
-def event_loop():
-    loop = asyncio.get_event_loop()
-    yield loop
-    loop.close()
-
-
 @pytest.fixture(autouse=True, scope="session")
 def get_claim_endpoint():
     return create_mq_endpoint(ClientName.GET_CLAIM)

@@ -33,7 +33,7 @@ async def on_start_up():
         jobs_to_restart = job_store.init(db)
         for job in jobs_to_restart:
             logging.info(f"event=jobRestarted {job}")
-            loop.run_until_complete(start_job_state_machine(job))
+            start_job_state_machine(job)
 
 
 async def on_shut_down():

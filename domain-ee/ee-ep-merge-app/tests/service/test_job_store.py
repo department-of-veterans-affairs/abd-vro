@@ -36,7 +36,7 @@ def test_get_merge_jobs(db):
     job_store = JobStore()
     result = job_store.get_merge_jobs(db)
     db.query.assert_called_once_with(MergeJob)
-    assert result == db.query().all()
+    assert result == db.query().filter().all()
 
 
 def test_get_merge_job(db):
