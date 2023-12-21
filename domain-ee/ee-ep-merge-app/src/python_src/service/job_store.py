@@ -11,7 +11,7 @@ Base.metadata.create_all(engine)
 
 class JobStore:
     def init(self, db: Session) -> list[MergeJob]:
-        jobs_in_progress = [schema.MergeJob.model_validate(job) for job in self.get_merge_jobs(db)]
+        jobs_in_progress = [schema.MergeJob.model_validate(job) for job in self.get_merge_jobs_in_progress(db)]
         jobs_to_restart = []
         for job in jobs_in_progress:
             if job.state == schema.JobState.RUNNING_MOVE_CONTENTIONS_TO_PENDING_CLAIM:
@@ -29,7 +29,7 @@ class JobStore:
         db.query(MergeJob).delete()
         db.commit()
 
-    def get_merge_jobs(self, db: Session) -> list[MergeJob]:
+    def get_merge_jobs_in_progress(self, db: Session) -> list[MergeJob]:
         return db.query(MergeJob).filter(MergeJob.state != schema.JobState.COMPLETED_SUCCESS).all()
 
     def get_merge_job(self, job_id, db: Session) -> MergeJob:

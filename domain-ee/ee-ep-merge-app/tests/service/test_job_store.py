@@ -32,9 +32,9 @@ def test_clear(db):
     db.query().delete.assert_called_once()
 
 
-def test_get_merge_jobs(db):
+def test_get_merge_jobs_in_progress(db):
     job_store = JobStore()
-    result = job_store.get_merge_jobs(db)
+    result = job_store.get_merge_jobs_in_progress(db)
     db.query.assert_called_once_with(MergeJob)
     assert result == db.query().filter().all()
 

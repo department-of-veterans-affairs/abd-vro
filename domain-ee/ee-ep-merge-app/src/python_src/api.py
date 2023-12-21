@@ -125,7 +125,7 @@ async def get_merge_claims_status(job_id: UUID, db: Session = Depends(get_db)):
 
 @app.get("/merge")
 async def get_all_merge_jobs(db: Session = Depends(get_db)):
-    return jsonable_encoder({"jobs": list(job_store.get_merge_jobs(db))})
+    return jsonable_encoder({"jobs": list(job_store.get_merge_jobs_in_progress(db))})
 
 
 if __name__ == "__main__":
