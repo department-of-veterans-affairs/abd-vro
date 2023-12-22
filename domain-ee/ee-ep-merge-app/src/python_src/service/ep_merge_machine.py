@@ -1,6 +1,5 @@
 import asyncio
 import logging
-from contextlib import contextmanager
 from typing import Type
 
 from fastapi.encoders import jsonable_encoder
@@ -21,7 +20,6 @@ from service.hoppy_service import HOPPY, ClientName
 from service.job_store import job_store
 from statemachine import State, StateMachine
 from util.contentions_util import CompareException, ContentionsUtil, MergeException
-from db.session import get_db
 
 CANCEL_TRACKING_EP = "60"
 CANCELLATION_REASON_FORMAT = "Issues moved into or confirmed in pending EP{ep_code} - claim #{claim_id}"
@@ -72,8 +70,7 @@ class EpMergeMachine(StateMachine):
     def on_transition(self, source, target):
         logging.info(f"event=jobTransition job_id={self.job.job_id} old={source.value} new={target.value}")
         self.job.state = target.value
-        with contextmanager(get_db)() as db:
-            job_store.update_merge_job(MergeJob.model_validate(self.job), db)
+        job_store.update_merge_job(MergeJob.model_validate(self.job))
 
     @pending.exit
     def on_start_process(self):
