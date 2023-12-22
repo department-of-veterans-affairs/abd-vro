@@ -17,6 +17,29 @@ resources:
 
 replicaCount: 1
 
+ports:
+  - name: liveness
+    containerPort: 10301
+    protocol: TCP
+
+livenessProbe:
+  httpGet:
+    path: /actuator/health/liveness
+    port: 10301
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  timeoutSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /actuator/health/readiness
+    port: 10301
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  timeoutSeconds: 10
+  failureThreshold: 3
+
 # autoscaling:
 #   enabled: false
 #   minReplicas: 1

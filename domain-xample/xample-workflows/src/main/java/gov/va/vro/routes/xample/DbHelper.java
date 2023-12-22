@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -65,7 +66,8 @@ public class DbHelper {
     contentionEventEntity.setDateCompleted(convertTime(bieMessagePayload.getDateCompleted()));
     contentionEventEntity.setDateUpdated(convertTime(bieMessagePayload.getDateUpdated()));
     contentionEventEntity.setActorStation(bieMessagePayload.getActorStation());
-    contentionEventEntity.setAutomationIndicator(bieMessagePayload.getAutomationIndicator());
+    contentionEventEntity.setAutomationIndicator(
+        Optional.ofNullable(bieMessagePayload.getAutomationIndicator()).orElse(false));
     contentionEventEntity.setBenefitClaimTypeCode(bieMessagePayload.getBenefitClaimTypeCode());
     contentionEventEntity.setContentionStatusTypeCode(
         bieMessagePayload.getContentionStatusTypeCode());
