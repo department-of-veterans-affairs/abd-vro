@@ -3,6 +3,7 @@ import logging
 from typing import Type
 
 from fastapi.encoders import jsonable_encoder
+from hoppy.async_hoppy_client import AsyncHoppyClient
 from hoppy.exception import ResponseException
 from model import (
     add_claim_note,
@@ -27,6 +28,7 @@ CANCELLATION_REASON_FORMAT = "Issues moved into or confirmed in pending EP{ep_co
 class EpMergeMachine(StateMachine):
     job: MergeJob | None = None
     cancellation_reason: str | None = None
+    original_tsoj: str | None = None
 
     # States:
     pending = State(initial=True, value=JobState.PENDING)
@@ -36,7 +38,9 @@ class EpMergeMachine(StateMachine):
     running_set_temp_station_of_jurisdiction = State(value=JobState.RUNNING_SET_TEMP_STATION_OF_JURISDICTION)
     running_merge_contentions = State(value=JobState.RUNNING_MERGE_CONTENTIONS)
     running_move_contentions_to_pending_claim = State(value=JobState.RUNNING_MOVE_CONTENTIONS_TO_PENDING_CLAIM)
+    running_move_contentions_failed_revert_temp_station_of_jurisdiction = State(value=JobState.RUNNING_MOVE_CONTENTIONS_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION)
     running_cancel_ep400_claim = State(value=JobState.RUNNING_CANCEL_EP400_CLAIM)
+    running_cancel_claim_failed_revert_temp_station_of_jurisdiction = State(value=JobState.RUNNING_CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION)
     running_add_claim_note_to_ep400 = State(value=JobState.RUNNING_ADD_CLAIM_NOTE_TO_EP400)
     completed_success = State(final=True, value=JobState.COMPLETED_SUCCESS)
     completed_error = State(final=True, value=JobState.COMPLETED_ERROR)
@@ -55,9 +59,11 @@ class EpMergeMachine(StateMachine):
             | running_merge_contentions.to(running_move_contentions_to_pending_claim, unless="has_error")
             | running_merge_contentions.to(completed_error, cond="has_error")
             | running_move_contentions_to_pending_claim.to(running_cancel_ep400_claim, unless="has_error")
-            | running_move_contentions_to_pending_claim.to(completed_error, cond="has_error")
+            | running_move_contentions_to_pending_claim.to(running_move_contentions_failed_revert_temp_station_of_jurisdiction, cond="has_error")
+            | running_move_contentions_failed_revert_temp_station_of_jurisdiction.to(completed_error)
             | running_cancel_ep400_claim.to(running_add_claim_note_to_ep400, unless="has_error")
-            | running_cancel_ep400_claim.to(completed_error, cond="has_error")
+            | running_cancel_ep400_claim.to(running_cancel_claim_failed_revert_temp_station_of_jurisdiction, cond="has_error")
+            | running_cancel_claim_failed_revert_temp_station_of_jurisdiction.to(completed_error)
             | running_add_claim_note_to_ep400.to(completed_success, unless="has_error")
             | running_add_claim_note_to_ep400.to(completed_error, cond="has_error")
     )
@@ -85,10 +91,12 @@ class EpMergeMachine(StateMachine):
         if response is not None and response.status_code == 200:
             if response.claim is None or response.claim.end_product_code is None:
                 logging.info(self.job.state)
-                self.log_error(f"Pending claim #{self.job.pending_claim_id} does not have an end product code")
+                self.add_error(f"Pending claim #{self.job.pending_claim_id} does not have an end product code")
             else:
                 self.cancellation_reason = CANCELLATION_REASON_FORMAT.format(ep_code=response.claim.end_product_code,
                                                                              claim_id=self.job.pending_claim_id)
+            self.original_tsoj = response.claim.temp_station_of_jurisdiction
+
         self.process()
 
     @running_get_pending_contentions.enter
@@ -114,7 +122,7 @@ class EpMergeMachine(StateMachine):
         request = tsoj.Request(temp_station_of_jurisdiction="398", claim_id=self.job.ep400_claim_id)
         self.make_request(
             request=request,
-            hoppy_client=(HOPPY.get_client(ClientName.PUT_TSOJ)),
+            hoppy_client=HOPPY.get_client(ClientName.PUT_TSOJ),
             response_type=tsoj.Response)
         self.process(pending_contentions=pending_contentions, ep400_contentions=ep400_contentions)
 
@@ -124,7 +132,7 @@ class EpMergeMachine(StateMachine):
         try:
             merged_contentions = ContentionsUtil.merge_claims(pending_contentions, ep400_contentions)
         except (MergeException, CompareException) as e:
-            self.log_error(e.message)
+            self.add_error(e.message)
         self.process(merged_contentions=merged_contentions)
 
     @running_move_contentions_to_pending_claim.enter
@@ -135,6 +143,16 @@ class EpMergeMachine(StateMachine):
             hoppy_client=HOPPY.get_client(ClientName.CREATE_CLAIM_CONTENTIONS),
             response_type=create_contentions.Response,
             expected_status=201)
+        self.process()
+
+    @running_move_contentions_failed_revert_temp_station_of_jurisdiction.enter
+    @running_cancel_claim_failed_revert_temp_station_of_jurisdiction.enter
+    def on_move_contentions_or_cancel_claim_failed_revert_temp_station_of_jurisdiction(self):
+        request = tsoj.Request(temp_station_of_jurisdiction=self.original_tsoj, claim_id=self.job.ep400_claim_id)
+        self.make_request(
+            request=request,
+            hoppy_client=HOPPY.get_client(ClientName.PUT_TSOJ),
+            response_type=tsoj.Response)
         self.process()
 
     @running_cancel_ep400_claim.enter
@@ -160,12 +178,25 @@ class EpMergeMachine(StateMachine):
 
     @completed_success.enter
     @completed_error.enter
-    def on_completed(self, state):
-        logging.info(f"event=jobCompleted job_id={self.job.job_id} state={state.value}")
+    def on_completed(self):
+        if self.job.state == JobState.COMPLETED_ERROR:
+            logging.error(f"event=jobCompletedWithError "
+                          f"job_id={self.job.job_id} "
+                          f"pending_claim_id={self.job.pending_claim_id} "
+                          f"ep400_claim_id={self.job.ep400_claim_id} "
+                          f"state={self.job.state} "
+                          f"errorState={self.job.error_state} "
+                          f"error=\"{jsonable_encoder(self.job.messages)}\"")
+        else:
+            logging.info(f"event=jobCompleted "
+                         f"job_id={self.job.job_id} "
+                         f"pending_claim_id={self.job.pending_claim_id} "
+                         f"ep400_claim_id={self.job.ep400_claim_id} "
+                         f"state={self.job.state}")
 
     def make_request(self,
                      request: GeneralRequest,
-                     hoppy_client,
+                     hoppy_client: AsyncHoppyClient,
                      response_type: Type[GeneralResponse],
                      expected_status: int = 200):
         try:
@@ -174,14 +205,14 @@ class EpMergeMachine(StateMachine):
             response = loop.run_until_complete(req)
             model = response_type.model_validate(response)
             if model.status_code != expected_status:
-                self.log_error(model.messages if model.messages else "Unknown Downstream Error")
+                self.add_error(model.messages if model.messages else f"client={hoppy_client.name} error='Unknown Downstream Error' status={model.status_code} status_message={model.status_message}")
             return model
         except ValidationError as e:
-            self.log_error(e.errors(include_url=False, include_input=False))
+            self.add_error(f"client={hoppy_client.name} error={e.errors(include_url=False, include_input=False)}")
         except ResponseException as e:
-            self.log_error(e.message)
+            self.add_error(f"client={hoppy_client.name} error={e.message}")
         except Exception as e:
-            self.log_error(f"Unknown Exception Caught {e}")
+            self.add_error(f"client={hoppy_client.name} error='Unknown Exception Caught {e}'")
         return None
 
     def has_error(self):
@@ -191,14 +222,8 @@ class EpMergeMachine(StateMachine):
         try:
             return not ContentionsUtil.new_contentions(pending_contentions.contentions, ep400_contentions.contentions)
         except CompareException as e:
-            self.log_error(e.message)
+            self.add_error(e.message)
         return None
 
-    def log_error(self, error):
-        logging.error(f"event=errorProcessingJob "
-                      f"job_id={self.job.job_id} "
-                      f"pending_claim_id={self.job.pending_claim_id} "
-                      f"ep400_claim_id={self.job.ep400_claim_id} "
-                      f"state={self.job.state} "
-                      f"error=\"{jsonable_encoder(error)}\"")
+    def add_error(self, error):
         self.job.error(error if isinstance(error, list) else [error])

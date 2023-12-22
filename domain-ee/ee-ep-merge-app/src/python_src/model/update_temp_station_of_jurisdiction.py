@@ -9,7 +9,7 @@ class Request(GeneralRequest):
     model_config = ConfigDict(populate_by_name=True, alias_generator=to_camel)
 
     claim_id: int
-    temp_station_of_jurisdiction: str
+    temp_station_of_jurisdiction: str | None
 
 
 class Response(GeneralResponse):
