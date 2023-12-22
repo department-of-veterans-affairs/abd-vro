@@ -22,8 +22,3 @@ def db():
 @pytest.fixture
 def merge_job():
     return schema.MergeJob(job_id=uuid.uuid4(), pending_claim_id=1, ep400_claim_id=2, state="PENDING")
-
-
-# @pytest.fixture(autouse=True)
-# def mock_job_store(mocker, db):
-#     return mocker.patch('src.python_src.service.job_store.JobStore', return_value=MagicMock())

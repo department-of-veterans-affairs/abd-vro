@@ -134,8 +134,8 @@ jobs:
           # Need to fetch more than 1 deep to see changes
           fetch-depth: 2
 
-      - name: 'Build the images'
-        uses: ./.github/actions/build-images
+      - name: "Set up VRO build env"
+        uses: ./.github/actions/setup-vro
 
       - name: "Get changed files"
         if: '! inputs.run_all_tests'
@@ -166,6 +166,4 @@ jobs:
       - name: "Run Employee Experience tests"
         if: inputs.run_all_tests || steps.ee-changed-files-specific.outputs.any_changed  == 'true'
         run: |
-          source scripts/setenv.sh
-          ./gradlew :dockerComposeUp
           ./gradlew :domain-ee:test
