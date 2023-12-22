@@ -3,8 +3,8 @@ from unittest.mock import Mock
 
 import pytest
 from fastapi.testclient import TestClient
+from model.merge_job import MergeJob
 from schema.merge_job import JobState
-from src.python_src.api import job_store
 
 MERGE = "/merge"
 
@@ -18,8 +18,13 @@ def mock_background_tasks(mocker):
 
 
 @pytest.fixture(autouse=True)
-def _job_store():
-    job_store.clear()
+def mock_job_store(mocker):
+    return mocker.patch('src.python_src.api.job_store', return_value=Mock())
+
+
+@pytest.fixture(autouse=True)
+def mock_job_submit(mock_job_store):
+    mock_job_store.submit_merge_job = Mock()
 
 
 def test_health(client: TestClient):
@@ -66,13 +71,16 @@ def test_merge_claims_ok(client: TestClient):
     assert job['state'] == JobState.PENDING.value
 
 
-def test_get_job_by_job_id_job_not_found(client: TestClient):
+def test_get_job_by_job_id_job_not_found(client: TestClient, mock_job_store):
+    mock_job_store.get_merge_job = Mock(return_value=None)
     response = client.get(MERGE + f'/{uuid.uuid4()}')
     assert response.status_code == 404
 
 
-def test_get_job_by_job_id_job_found(client: TestClient):
+def test_get_job_by_job_id_job_found(client: TestClient, mock_job_store):
     job_id = make_merge_request(client)
+    job = make_merge_job(job_id)
+    mock_job_store.get_merge_job = Mock(return_value=job)
 
     response = client.get(MERGE + f'/{job_id}')
     assert response.status_code == 200
@@ -93,8 +101,14 @@ def make_merge_request(client: TestClient):
     return job_id
 
 
-def test_get_all_jobs(client: TestClient):
+def make_merge_job(job_id):
+    return MergeJob(job_id=job_id, pending_claim_id=1, ep400_claim_id=2, state=JobState.PENDING.value)
+
+
+def test_get_all_jobs(client: TestClient, mock_job_store):
     expected_job_ids = [make_merge_request(client), make_merge_request(client)]
+    expected_jobs = [make_merge_job(job_id) for job_id in expected_job_ids]
+    mock_job_store.get_merge_jobs_in_progress = Mock(return_value=expected_jobs)
 
     response = client.get(MERGE)
     assert response.status_code == 200

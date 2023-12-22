@@ -90,6 +90,11 @@ def mock_hoppy_service_get_client(mocker, mock_hoppy_async_client):
     mocker.patch('src.python_src.service.ep_merge_machine.HOPPY.get_client').return_value = mock_hoppy_async_client
 
 
+@pytest.fixture(autouse=True)
+def mock_job_store(mocker):
+    return mocker.patch('src.python_src.service.ep_merge_machine.job_store.update_merge_job', return_value=Mock())
+
+
 def test_constructor():
     merge_job = Mock()
     machine = EpMergeMachine(merge_job)

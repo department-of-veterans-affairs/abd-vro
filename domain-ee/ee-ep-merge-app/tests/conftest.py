@@ -1,17 +1,29 @@
 """ Pytest configuration. This file is automatically loaded by pytest before any tests. """
+import uuid
+from unittest.mock import MagicMock
 
 import pytest
 from fastapi.testclient import TestClient
 from src.python_src.api import app
-from src.python_src.db.session import SessionLocal
-from typing import Generator
-
-
-@pytest.fixture(scope="session")
-def db() -> Generator:
-    yield SessionLocal()
+from src.python_src.db.database import DataBase
+from src.python_src.schema import merge_job as schema
 
 
 @pytest.fixture
 def client() -> TestClient:
     return TestClient(app)
+
+
+@pytest.fixture
+def db():
+    return MagicMock(spec=DataBase)
+
+
+@pytest.fixture
+def merge_job():
+    return schema.MergeJob(job_id=uuid.uuid4(), pending_claim_id=1, ep400_claim_id=2, state="PENDING")
+
+
+# @pytest.fixture(autouse=True)
+# def mock_job_store(mocker, db):
+#     return mocker.patch('src.python_src.service.job_store.JobStore', return_value=MagicMock())

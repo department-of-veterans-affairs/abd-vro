@@ -1,29 +1,13 @@
+from db.database import DataBase, data_base
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy.orm import Session
-
-from contextlib import contextmanager
-from db.base_class import Base
-from db.session import engine, SessionLocal
 from model.merge_job import MergeJob
 from schema import merge_job as schema
 
-Base.metadata.create_all(engine)
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 
 class JobStore:
-    def with_connection(func):
-        def wrapper(self, *args, **kwargs):
-            with contextmanager(get_db)() as db:
-                return func(self, *args, **kwargs, db=db)
-        return wrapper
+
+    def __init__(self, db: DataBase):
+        self.db = db
 
     def init(self) -> list[MergeJob]:
         jobs_in_progress = [schema.MergeJob.model_validate(job) for job in self.get_merge_jobs_in_progress()]
@@ -40,30 +24,21 @@ class JobStore:
                 jobs_to_restart.append(job)
         return jobs_to_restart
 
-    @with_connection
-    def clear(self, db: Session):
-        db.query(MergeJob).delete()
-        db.commit()
+    def clear(self):
+        self.db.clear(MergeJob)
 
-    @with_connection
-    def get_merge_jobs_in_progress(self, db: Session) -> list[MergeJob]:
-        return db.query(MergeJob).filter(MergeJob.state != schema.JobState.COMPLETED_SUCCESS).all()
+    def get_merge_jobs_in_progress(self) -> list[MergeJob]:
+        return self.db.query_all(MergeJob, MergeJob.state != schema.JobState.COMPLETED_SUCCESS)
 
-    @with_connection
-    def get_merge_job(self, job_id, db: Session) -> MergeJob:
-        return db.query(MergeJob).filter(MergeJob.job_id == job_id).first()
+    def get_merge_job(self, job_id) -> MergeJob:
+        return self.db.query_first(MergeJob, MergeJob.job_id == job_id)
 
-    @with_connection
-    def submit_merge_job(self, merge_job: schema.MergeJob, db: Session):
+    def submit_merge_job(self, merge_job: schema.MergeJob):
         job = MergeJob(**jsonable_encoder(dict(merge_job)))
-        db.add(job)
-        db.commit()
+        self.db.add(job)
 
-    @with_connection
-    def update_merge_job(self, merge_job: schema.MergeJob, db: Session):
-        as_json = jsonable_encoder(dict(merge_job))
-        db.query(MergeJob).filter(MergeJob.job_id == merge_job.job_id).update(as_json)
-        db.commit()
+    def update_merge_job(self, merge_job: schema.MergeJob):
+        self.db.update(MergeJob, MergeJob.job_id == merge_job.job_id, merge_job)
 
 
-job_store = JobStore()
+job_store = JobStore(data_base)
