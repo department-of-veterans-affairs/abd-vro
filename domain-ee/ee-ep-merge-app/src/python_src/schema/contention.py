@@ -10,7 +10,7 @@ class TrackedItemAssociation(BaseModel):
     tracked_item_id: int
 
 
-class ContentionSummary(BaseModel):
+class Contention(BaseModel):
     model_config = ConfigDict(populate_by_name=True, alias_generator=to_camel)
 
     medical_ind: bool
@@ -27,11 +27,29 @@ class ContentionSummary(BaseModel):
     original_source_type_code: str | None = None
     special_issue_codes: list[str] | None = None
     associated_tracked_items: list[TrackedItemAssociation] | None = None
+
+    @field_serializer('begin_date', 'create_date', 'completed_date', 'notification_date')
+    def serialize_datetime(self, dt: datetime, _info):
+        return None if dt is None else dt.isoformat()
+
+
+class ExistingContention(Contention):
+    model_config = ConfigDict(populate_by_name=True, alias_generator=to_camel)
+
     contention_id: int
     last_modified: datetime
     lifecycle_status: str | None = None
     action: str | None = None
     automation_indicator: bool | None = None
+
+    @field_serializer('begin_date', 'create_date', 'completed_date', 'notification_date', 'last_modified')
+    def serialize_datetime(self, dt: datetime, _info):
+        return None if dt is None else dt.isoformat()
+
+
+class ContentionSummary(ExistingContention):
+    model_config = ConfigDict(populate_by_name=True, alias_generator=to_camel)
+
     summary_date_time: datetime | None = None
 
     @field_serializer('begin_date', 'create_date', 'completed_date', 'notification_date', 'last_modified')

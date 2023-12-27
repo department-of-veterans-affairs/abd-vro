@@ -1,9 +1,8 @@
+from db.base_class import Base
 from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.dialects.postgresql import ARRAY, JSONB, UUID
 from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy.sql import func
-
-from db.base_class import Base
 
 
 class MergeJob(Base):
