@@ -14,14 +14,14 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "spring.rabbitmq")
 public class RabbitMqConfigProperties {
   @Value("${spring.rabbitmq.host}")
-  private String host = "localhost";
+  private String host;
 
   @Value("${spring.rabbitmq.port}")
-  private int port = 5672;
+  private int port;
 
   @Value("${spring.rabbitmq.username}")
-  private String username = "user";
+  private String username;
 
   @Value("${spring.rabbitmq.password}")
-  private String password = "bitnami";
+  private String password;
 }
