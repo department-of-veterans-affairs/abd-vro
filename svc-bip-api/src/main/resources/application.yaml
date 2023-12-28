@@ -24,8 +24,8 @@ spring:
   rabbitmq:
     host: ${RABBITMQ_PLACEHOLDERS_HOST:localhost}
     port: 5672
-    username: ${RABBITMQ_USERNAME:guest}
-    password: ${RABBITMQ_PASSWORD:guest}
+    username: ${RABBITMQ_USERNAME:user}
+    password: ${RABBITMQ_PASSWORD:bitnami}
 
 getClaimDetailsQueue: getClaimDetailsQueue
 putClaimLifecycleStatusQueue: putClaimLifecycleStatusQueue
