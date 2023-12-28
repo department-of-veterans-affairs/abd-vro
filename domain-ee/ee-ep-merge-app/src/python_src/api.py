@@ -8,11 +8,14 @@ import uvicorn
 from fastapi import BackgroundTasks, FastAPI, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
+from pydantic_models import (
+    MergeEndProductsErrorResponse,
+    MergeEndProductsRequest,
+    MergeEndProductsResponse,
+)
 from schema.merge_job import MergeJob
-from pydantic_models import (MergeEndProductsErrorResponse,
-                             MergeEndProductsRequest, MergeEndProductsResponse)
-from service.hoppy_service import HOPPY
 from service.ep_merge_machine import EpMergeMachine
+from service.hoppy_service import HOPPY
 from service.job_store import job_store
 from util.sanitizer import sanitize
 
@@ -30,7 +33,7 @@ async def on_start_up():
     jobs_to_restart = job_store.init()
     for job in jobs_to_restart:
         logging.info(f"event=jobRestarted {job}")
-        start_job_state_machine(job)
+        await asyncio.get_event_loop().run_in_executor(None, start_job_state_machine, job)
 
 
 async def on_shut_down():

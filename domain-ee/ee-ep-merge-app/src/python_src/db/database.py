@@ -1,13 +1,13 @@
 from config import SQLALCHEMY_DATABASE_URI
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect
 from sqlalchemy.orm import sessionmaker
 
-engine = create_engine(SQLALCHEMY_DATABASE_URI, pool_pre_ping=True, echo=True)
+engine = create_engine(SQLALCHEMY_DATABASE_URI, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-class DataBase:
+class Database:
 
     def with_connection(func):
         def wrapper(self, *args, **kwargs):
@@ -35,10 +35,11 @@ class DataBase:
         db.commit()
 
     @with_connection
-    def update(self, model, filter, obj, db):
+    def update(self, obj, db):
         as_json = jsonable_encoder(dict(obj))
-        db.query(model).filter(filter).update(as_json)
+        primary_key = inspect(obj.Meta.orm_model).primary_key[0]
+        db.query(obj.Meta.orm_model).filter(primary_key == getattr(obj, primary_key.name)).update(as_json)
         db.commit()
 
 
-data_base = DataBase()
+database = Database()

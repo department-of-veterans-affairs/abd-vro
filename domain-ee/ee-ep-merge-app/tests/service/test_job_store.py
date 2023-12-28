@@ -42,7 +42,7 @@ def test_submit_merge_job(db, merge_job):
 def test_update_merge_job(db, merge_job):
     job_store = JobStore(db)
     job_store.update_merge_job(merge_job)
-    updated_merge_job = db.update.call_args[0][2]
+    updated_merge_job = db.update.call_args[0][0]
     assert str(updated_merge_job.job_id) == str(merge_job.job_id)
     assert updated_merge_job.pending_claim_id == merge_job.pending_claim_id
     assert updated_merge_job.ep400_claim_id == merge_job.ep400_claim_id

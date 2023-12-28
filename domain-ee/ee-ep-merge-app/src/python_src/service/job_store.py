@@ -1,4 +1,4 @@
-from db.database import DataBase, data_base
+from db.database import Database, database
 from fastapi.encoders import jsonable_encoder
 from model.merge_job import MergeJob
 from schema import merge_job as schema
@@ -6,7 +6,7 @@ from schema import merge_job as schema
 
 class JobStore:
 
-    def __init__(self, db: DataBase):
+    def __init__(self, db: Database):
         self.db = db
 
     def init(self) -> list[MergeJob]:
@@ -38,7 +38,7 @@ class JobStore:
         self.db.add(job)
 
     def update_merge_job(self, merge_job: schema.MergeJob):
-        self.db.update(MergeJob, MergeJob.job_id == merge_job.job_id, merge_job)
+        self.db.update(merge_job)
 
 
-job_store = JobStore(data_base)
+job_store = JobStore(database)

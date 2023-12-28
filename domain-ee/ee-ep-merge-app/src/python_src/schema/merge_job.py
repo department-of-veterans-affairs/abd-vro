@@ -2,6 +2,7 @@ from enum import Enum
 from typing import Any
 from uuid import UUID
 
+import model.merge_job
 from pydantic import BaseModel, conint
 
 
@@ -35,6 +36,9 @@ class MergeJob(BaseModel):
     messages: list[Any] | None = None
 
     model_config = {'from_attributes': True}
+
+    class Meta:
+        orm_model = model.merge_job.MergeJob
 
     def error(self, messages):
         self.error_state = self.state
