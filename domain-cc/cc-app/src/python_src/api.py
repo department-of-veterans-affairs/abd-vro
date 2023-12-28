@@ -1,10 +1,10 @@
 import logging
 import sys
-from typing import Optional
+from typing import List, Optional
 
 from fastapi import FastAPI, HTTPException
 
-from .pydantic_models import Claim, PredictedClassification
+from .pydantic_models import Claim, FlattenedSingleIssueClaim, PredictedClassification
 from .util.brd_classification_codes import get_classification_name
 from .util.logging_dropdown_selections import build_logging_table
 from .util.lookup_table import ConditionDropdownLookupTable, DiagnosticCodeLookupTable
@@ -47,8 +47,9 @@ def get_health_status():
     return {"status": "ok"}
 
 
-@app.post("/classifier")
-def get_classification(claim: Claim) -> Optional[PredictedClassification]:
+def do_get_classification(
+    claim: FlattenedSingleIssueClaim,
+) -> Optional[PredictedClassification]:
     logging.info(
         f"claim_id: {claim.claim_id}, form526_submission_id: {claim.form526_submission_id}"
     )
@@ -88,3 +89,16 @@ def get_classification(claim: Claim) -> Optional[PredictedClassification]:
 
     logging.info(f"classification: {classification}")
     return classification
+
+
+@app.post("/classifier")
+def get_classification(
+    claim: FlattenedSingleIssueClaim,
+) -> Optional[PredictedClassification]:
+    return do_get_classification(claim)
+
+
+def classify_claim(
+    multi_contention_claim: Claim,
+) -> Optional[List[PredictedClassification]]:
+    pass

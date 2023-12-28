@@ -1,9 +1,9 @@
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, root_validator
 
 
-class Claim(BaseModel):
+class FlattenedSingleIssueClaim(BaseModel):
     claim_id: int
     form526_submission_id: int
     diagnostic_code: Optional[int]  # only required for claim_type: "claim_for_increase"
@@ -20,6 +20,21 @@ class Claim(BaseModel):
                 "diagnostic_code is required for claim_type claim_for_increase"
             )
         return values
+
+
+class Contention(BaseModel):
+    vbms_contention_id: int
+    contention_text: str
+
+
+class Claim(BaseModel):
+    va_gov_claim_id: int
+    va_gov_form526_submission_id: int
+    vbms_claim_id: int
+    diagnostic_code: Optional[int]  # only required for claim_type: "claim_for_increase"
+    claim_type: str = "claim_for_increase"
+
+    contentions: List[Contention]
 
 
 class PredictedClassification(BaseModel):
