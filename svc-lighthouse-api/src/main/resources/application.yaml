@@ -46,19 +46,23 @@ lh:
   clientId: ${LH_ACCESS_CLIENT_ID}
   pemkey: ${LH_PRIVATE_KEY}
 
-## Health
 
+#Actuator for health check, liveness, and readiness
 management:
+  server:
+    port: 10101
   endpoint:
     health:
       show-details: always
       enabled: true
-      probes.enabled: true
-      group.liveness.include: livenessState
-      group.readiness.include: readinessState
+      probes:
+        enabled: true
+      group:
+        liveness.include: livenessState
+        readiness.include: readinessState
 
   endpoints:
     enabled-by-default: false
     web.exposure.include: health
 
-  server.port: 10101
+  
