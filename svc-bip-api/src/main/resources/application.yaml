@@ -36,13 +36,19 @@ updateClaimContentionsQueue: updateClaimContentionsQueue
 putTempStationOfJurisdictionQueue: putTempStationOfJurisdictionQueue
 exchangeName: bipApiExchange
 
+# Actuator for health check, liveness, and readiness
 management:
-  server.port: 10401
+  server:
+    port: 10401
   endpoint:
     health:
       show-details: always
       enabled: true
-      probes.enabled: true
+      probes:
+        enabled: true
+      group:
+        liveness.include: livenessState
+        readiness.include: readinessState
 
 truststore: ${BIP_TRUSTSTORE}
 keystore: ${BIP_KEYSTORE}
