@@ -42,3 +42,7 @@ class PredictedClassification(BaseModel):
 
     classification_code: int
     classification_name: str
+
+
+class ClassifierResponse(BaseModel):
+    classifications: conlist(PredictedClassification, min_items=1)

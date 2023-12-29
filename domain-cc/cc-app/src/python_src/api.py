@@ -5,6 +5,7 @@ from typing import Optional
 from fastapi import FastAPI, HTTPException
 
 from .pydantic_models import (
+    ClassifierResponse,
     FlattenedSingleIssueClaim,
     PredictedClassification,
     VaGovClaim,
@@ -113,9 +114,7 @@ def classifier_v1(
 
 
 @app.post("/classifier/v2")
-def classifier_v2(
-    multi_contention_claim: VaGovClaim,
-) -> dict:  # TODO include response type for this
+def classifier_v2(multi_contention_claim: VaGovClaim,) -> ClassifierResponse:
     contention_log_info = []
     classifications = []
     for contention in multi_contention_claim.contentions:
@@ -145,7 +144,5 @@ def classifier_v2(
         f"claim_id: {multi_contention_claim.claim_id}, form526_submission_id: {multi_contention_claim.form526_submission_id}"
     )
     logging.info(f"contention_log_info: {contention_log_info}")
-    response = {
-        "classifications": classifications,
-    }
-    return response
+
+    return ClassifierResponse(classifications=classifications)
