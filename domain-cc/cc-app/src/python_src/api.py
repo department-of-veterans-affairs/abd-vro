@@ -5,6 +5,7 @@ from typing import Optional
 from fastapi import FastAPI, HTTPException
 
 from .pydantic_models import (
+    ClaimLinkInfo,
     ClassifierResponse,
     FlattenedSingleIssueClaim,
     PredictedClassification,
@@ -114,7 +115,9 @@ def classifier_v1(
 
 
 @app.post("/classifier/v2")
-def classifier_v2(multi_contention_claim: VaGovClaim,) -> ClassifierResponse:
+def classifier_v2(
+    multi_contention_claim: VaGovClaim,
+) -> ClassifierResponse:
     contention_log_info = []
     classifications = []
     for contention in multi_contention_claim.contentions:
@@ -146,3 +149,17 @@ def classifier_v2(multi_contention_claim: VaGovClaim,) -> ClassifierResponse:
     logging.info(f"contention_log_info: {contention_log_info}")
 
     return ClassifierResponse(classifications=classifications)
+
+
+@app.post("/claim-linker")
+def link_vbms_claim_id(claim_link_info: ClaimLinkInfo):
+    logging.info(
+        {
+            "message": "linking claims",
+            "va_gov_claim_id": claim_link_info.va_gov_claim_id,
+            "vbms_claim_id": claim_link_info.vbms_claim_id,
+        }
+    )
+    return {
+        "success": True,
+    }

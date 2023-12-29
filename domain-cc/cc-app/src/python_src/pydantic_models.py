@@ -46,3 +46,10 @@ class PredictedClassification(BaseModel):
 
 class ClassifierResponse(BaseModel):
     classifications: conlist(PredictedClassification, min_items=1)
+
+
+class ClaimLinkInfo(BaseModel):
+    """used for connecting claims to each other in order to track contention changes downstream"""
+
+    va_gov_claim_id: int
+    vbms_claim_id: int
