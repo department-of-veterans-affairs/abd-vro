@@ -1,6 +1,6 @@
 import logging
 import sys
-from typing import List, Optional
+from typing import Optional
 
 from fastapi import FastAPI, HTTPException
 
@@ -114,7 +114,7 @@ def classifier_v1(
 @app.post("/classifier/v2")
 def classifier_v2(
     multi_contention_claim: VaGovClaim,
-) -> List[Optional[PredictedClassification]]:
+) -> dict:  # TODO include response type for this
     contention_log_info = []
     classifications = []
     for contention in multi_contention_claim.contentions:
@@ -144,4 +144,7 @@ def classifier_v2(
         f"claim_id: {multi_contention_claim.claim_id}, form526_submission_id: {multi_contention_claim.form526_submission_id}"
     )
     logging.info(f"contention_log_info: {contention_log_info}")
-    return classifications
+    response = {
+        "classifications": classifications,
+    }
+    return response
