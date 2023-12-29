@@ -1,6 +1,7 @@
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, root_validator
+from pydantic.types import conlist
 
 
 class FlattenedSingleIssueClaim(BaseModel):
@@ -25,16 +26,16 @@ class FlattenedSingleIssueClaim(BaseModel):
 class Contention(BaseModel):
     vbms_contention_id: int
     contention_text: str
-
-
-class Claim(BaseModel):
-    va_gov_claim_id: int
-    va_gov_form526_submission_id: int
-    vbms_claim_id: int
     diagnostic_code: Optional[int]  # only required for claim_type: "claim_for_increase"
+
+
+class VaGovClaim(BaseModel):
+    claim_id: int
+    form526_submission_id: int
+    # vbms_claim_id: int
     claim_type: str = "claim_for_increase"
 
-    contentions: List[Contention]
+    contentions: conlist(Contention, min_items=1)
 
 
 class PredictedClassification(BaseModel):
