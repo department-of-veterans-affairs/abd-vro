@@ -1,9 +1,11 @@
+from datetime import datetime
 from enum import Enum
 from typing import Any
 from uuid import UUID
 
 import model.merge_job
-from pydantic import BaseModel, conint
+from pydantic import BaseModel, ConfigDict, conint
+from typing_extensions import ClassVar
 
 
 class JobState(str, Enum):
@@ -28,14 +30,18 @@ class JobState(str, Enum):
 
 
 class MergeJob(BaseModel):
+    _init_time: ClassVar[datetime] = datetime.now()
+
     job_id: UUID
     pending_claim_id: conint(strict=True)
     ep400_claim_id: conint(strict=True)
     state: JobState = JobState.PENDING
     error_state: JobState | None = None
     messages: list[Any] | None = None
+    created_at: datetime = _init_time
+    updated_at: datetime = _init_time
 
-    model_config = {'from_attributes': True}
+    model_config = ConfigDict(from_attributes=True)
 
     class Meta:
         orm_model = model.merge_job.MergeJob
@@ -49,3 +55,7 @@ class MergeJob(BaseModel):
         if self.messages is None:
             self.messages = []
         self.messages.extend(messages)
+
+    def update(self, new_state: JobState):
+        self.state = new_state
+        self.updated_at = datetime.now()

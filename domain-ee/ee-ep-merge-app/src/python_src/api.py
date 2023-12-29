@@ -11,7 +11,8 @@ from fastapi.responses import JSONResponse
 from pydantic_models import (
     MergeEndProductsErrorResponse,
     MergeEndProductsRequest,
-    MergeEndProductsResponse,
+    MergeJobResponse,
+    MergeJobsResponse,
 )
 from schema.merge_job import MergeJob
 from service.ep_merge_machine import EpMergeMachine
@@ -73,7 +74,7 @@ def get_health_status():
 
 @app.post("/merge",
           status_code=status.HTTP_202_ACCEPTED,
-          response_model=MergeEndProductsResponse,
+          response_model=MergeJobResponse,
           response_model_exclude_none=True)
 async def merge_claims(merge_request: MergeEndProductsRequest, background_tasks: BackgroundTasks):
     validate_merge_request(merge_request)
@@ -91,7 +92,7 @@ async def merge_claims(merge_request: MergeEndProductsRequest, background_tasks:
 
     background_tasks.add_task(start_job_state_machine, merge_job)
 
-    return jsonable_encoder({"job": merge_job})
+    return {"job": merge_job}
 
 
 def validate_merge_request(merge_request: MergeEndProductsRequest):
@@ -104,18 +105,18 @@ def start_job_state_machine(merge_job):
 
 
 @app.get("/merge/{job_id}",
-         response_model=MergeEndProductsResponse,
+         response_model=MergeJobResponse,
          responses={
              status.HTTP_200_OK: {"description": "Found job by job_id"},
              status.HTTP_404_NOT_FOUND: {"model": MergeEndProductsErrorResponse,
                                          "description": "Could not find job by job_id"}
          },
          response_model_exclude_none=True)
-async def get_merge_claims_status(job_id: UUID):
+async def get_merge_request_by_job_id(job_id: UUID):
     job = job_store.get_merge_job(job_id)
     if job:
-        logging.info(f"event=getMergeStatus {job}")
-        return jsonable_encoder({"job": job})
+        logging.info(f"event=getMergeJobByJobId job={jsonable_encoder(job)}")
+        return {"job": job}
     else:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
                             content=jsonable_encoder(
@@ -123,9 +124,20 @@ async def get_merge_claims_status(job_id: UUID):
                                  "message": "Could not find job"}))
 
 
-@app.get("/merge")
-async def get_all_merge_jobs():
-    return jsonable_encoder({"jobs": list(job_store.get_merge_jobs_in_progress())})
+@app.get("/merge",
+         response_model=MergeJobsResponse,
+         responses={
+             status.HTTP_200_OK: {"description": "Find all jobs"}
+         },
+         response_model_exclude_none=True)
+async def get_all_merge_jobs(show_successful: bool = False):
+    if show_successful:
+        jobs = list(job_store.get_all_merge_jobs())
+    else:
+        jobs = list(job_store.get_merge_jobs_in_progress())
+    logging.info(f"event=getAllMergeJobs show_successful={show_successful} size={len(jobs)}")
+
+    return {"jobs": jobs}
 
 
 if __name__ == "__main__":

@@ -92,8 +92,8 @@ class EpMergeMachine(StateMachine):
 
     def on_transition(self, source, target):
         logging.info(f"event=jobTransition job_id={self.job.job_id} old={source.value} new={target.value}")
-        self.job.state = target.value
-        job_store.update_merge_job(MergeJob.model_validate(self.job))
+        self.job.update(target.value)
+        job_store.update_merge_job(self.job)
 
     @pending.exit
     def on_start_process(self):

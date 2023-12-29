@@ -27,8 +27,14 @@ class JobStore:
     def clear(self):
         self.db.clear(MergeJob)
 
+    def get_merge_jobs(self, filter) -> list[MergeJob]:
+        return self.db.query_all(MergeJob, filter)
+
+    def get_all_merge_jobs(self) -> list[MergeJob]:
+        return self.get_merge_jobs(True)
+
     def get_merge_jobs_in_progress(self) -> list[MergeJob]:
-        return self.db.query_all(MergeJob, MergeJob.state != schema.JobState.COMPLETED_SUCCESS)
+        return self.get_merge_jobs(MergeJob.state != schema.JobState.COMPLETED_SUCCESS)
 
     def get_merge_job(self, job_id) -> MergeJob:
         return self.db.query_first(MergeJob, MergeJob.job_id == job_id)
