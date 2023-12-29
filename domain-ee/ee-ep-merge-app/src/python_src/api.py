@@ -33,7 +33,7 @@ async def on_start_up():
     jobs_to_restart = job_store.init()
     for job in jobs_to_restart:
         logging.info(f"event=jobRestarted {job}")
-        await asyncio.get_event_loop().run_in_executor(None, start_job_state_machine, job)
+        asyncio.get_event_loop().run_in_executor(None, start_job_state_machine, job)
 
 
 async def on_shut_down():
