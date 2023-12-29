@@ -24,7 +24,6 @@ class FlattenedSingleIssueClaim(BaseModel):
 
 
 class Contention(BaseModel):
-    vbms_contention_id: int
     contention_text: str
     diagnostic_code: Optional[int]  # only required for claim_type: "claim_for_increase"
 

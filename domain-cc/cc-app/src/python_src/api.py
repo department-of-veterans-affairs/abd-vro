@@ -53,9 +53,6 @@ def get_health_status():
 def do_get_classification(
     claim: FlattenedSingleIssueClaim,
 ) -> Optional[PredictedClassification]:
-    logging.info(
-        f"claim_id: {claim.claim_id}, form526_submission_id: {claim.form526_submission_id}"
-    )
     classification_code = None
     if claim.claim_type == "claim_for_increase":
         logging.info(f"diagnostic code: {claim.diagnostic_code}")
@@ -96,49 +93,55 @@ def do_get_classification(
 
 def generate_flattened_claim(contention_text, diagnostic_code, multi_contention_claim):
     return FlattenedSingleIssueClaim(
-        claim_id=multi_contention_claim.get("va_gov_claim_id"),
-        form526_submission_id=multi_contention_claim.get(
-            "va_gov_form526_submission_id"
-        ),
+        claim_id=multi_contention_claim.claim_id,
+        form526_submission_id=multi_contention_claim.form526_submission_id,
         diagnostic_code=diagnostic_code,
-        claim_type=multi_contention_claim.get("claim_type"),
+        claim_type=multi_contention_claim.claim_type,
         contention_text=contention_text,
     )
 
 
 @app.post("/classifier", deprecated=True)
-def get_classification(
+def classifier_v1(
     claim: FlattenedSingleIssueClaim,
 ) -> Optional[PredictedClassification]:
+    logging.info(
+        f"claim_id: {claim.claim_id}, form526_submission_id: {claim.form526_submission_id}"
+    )
     return do_get_classification(claim)
 
 
 @app.post("/classifier/v2")
-def classify_claim(
+def classifier_v2(
     multi_contention_claim: VaGovClaim,
-) -> Optional[List[PredictedClassification]]:
+) -> List[Optional[PredictedClassification]]:
     contention_log_info = []
     classifications = []
-    for contention in multi_contention_claim.get("contentions", []):
-        contention_id = contention.get("contention_id")
-        contention_text = contention.get("contention_text")
-        diagnostic_code = contention.get("diagnostic_code")
+    for contention in multi_contention_claim.contentions:
+        contention_text = contention.contention_text
+        diagnostic_code = contention.diagnostic_code
 
         flattened_single_issue_claim = generate_flattened_claim(
             contention_text, diagnostic_code, multi_contention_claim
         )
         classification = do_get_classification(flattened_single_issue_claim)
 
+        is_in_dropdown = contention_text.strip().lower() in dropdown_values
+        contention_text_no_pii = (
+            contention_text if is_in_dropdown else "Not in dropdown"
+        )
         contention_log_info.append(
             {
-                "contention_id": contention_id,
-                **classification,
+                "contention_text": contention_text_no_pii,
+                "is_in_dropdown": is_in_dropdown,
+                "is_mapped": classification is not None,
+                **(classification or {}),
             }
         )
         classifications.append(classification)
 
     logging.info(
-        f"claim_id: {multi_contention_claim.get('va_gov_claim_id')}, form526_submission_id: {multi_contention_claim.get('va_gov_form526_submission_id')}"
+        f"claim_id: {multi_contention_claim.claim_id}, form526_submission_id: {multi_contention_claim.form526_submission_id}"
     )
     logging.info(f"contention_log_info: {contention_log_info}")
     return classifications
