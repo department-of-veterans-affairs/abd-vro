@@ -92,6 +92,7 @@ def do_get_classification(
 
 
 def generate_flattened_claim(contention_text, diagnostic_code, multi_contention_claim):
+    print(f"got dc: {diagnostic_code}")
     return FlattenedSingleIssueClaim(
         claim_id=multi_contention_claim.claim_id,
         form526_submission_id=multi_contention_claim.form526_submission_id,

@@ -1,5 +1,6 @@
 from typing import Optional
 
+from fastapi import HTTPException
 from pydantic import BaseModel, root_validator
 from pydantic.types import conlist
 
@@ -17,8 +18,8 @@ class FlattenedSingleIssueClaim(BaseModel):
         diagnostic_code = values.get("diagnostic_code")
 
         if claim_type == "claim_for_increase" and diagnostic_code is None:
-            raise ValueError(
-                "diagnostic_code is required for claim_type claim_for_increase"
+            raise HTTPException(
+                422, "diagnostic_code is required for claim_type claim_for_increase"
             )
         return values
 
@@ -31,8 +32,7 @@ class Contention(BaseModel):
 class VaGovClaim(BaseModel):
     claim_id: int
     form526_submission_id: int
-    # vbms_claim_id: int
-    claim_type: str = "claim_for_increase"
+    claim_type: str  # "claim_for_increase" or "new"
 
     contentions: conlist(Contention, min_items=1)
 
