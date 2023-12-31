@@ -22,13 +22,10 @@ import org.springframework.web.client.RestTemplate;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 import java.security.cert.CertificateException;
 import java.util.Base64;
-import javax.net.ssl.SSLContext;
+import javax.net.ssl.KeyManagerFactory;import javax.net.ssl.SSLContext;import javax.net.ssl.TrustManagerFactory;
 
 /**
  * Configures BIP API access.
@@ -43,7 +40,7 @@ public class BipApiConfig {
   @Value("${truststore}")
   private String trustStore;
 
-  @Value("${truststore_password}")
+  @Value("${store_password}")
   private String password;
 
   @Value("${keystore}")
@@ -60,7 +57,7 @@ public class BipApiConfig {
   }
 
   private KeyStore getKeyStore(String base64, String password)
-      throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
+          throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
     KeyStore keyStore = KeyStore.getInstance("PKCS12");
     String noSpaceBase64 = base64.replaceAll("\\s+", "");
     byte[] decodedBytes = new byte[] {};
@@ -96,22 +93,25 @@ public class BipApiConfig {
       KeyStore trustStoreObj = getKeyStore(trustStore, password);
 
       log.info("-------build SSLContext");
-      SSLContext sslContext =
-          new SSLContextBuilder()
-              .loadTrustMaterial(trustStoreObj, null)
-              .loadKeyMaterial(keyStoreObj, password.toCharArray())
-              .build();
+      KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+      keyManagerFactory.init(keyStoreObj, password.toCharArray());
+
+      TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+      trustManagerFactory.init(trustStoreObj);
+
+      SSLContext sslContext = SSLContext.getInstance("TLS");
+      sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
 
       SSLConnectionSocketFactory sslConFactory = new SSLConnectionSocketFactory(sslContext);
 
       HttpClientConnectionManager connectionManager =
-          PoolingHttpClientConnectionManagerBuilder.create()
-              .setSSLSocketFactory(sslConFactory)
-              .build();
+              PoolingHttpClientConnectionManagerBuilder.create()
+                      .setSSLSocketFactory(sslConFactory)
+                      .build();
       CloseableHttpClient httpClient =
-          HttpClients.custom().setConnectionManager(connectionManager).build();
+              HttpClients.custom().setConnectionManager(connectionManager).build();
       ClientHttpRequestFactory requestFactory =
-          new HttpComponentsClientHttpRequestFactory(httpClient);
+              new HttpComponentsClientHttpRequestFactory(httpClient);
       return new RestTemplate(requestFactory);
     } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
       log.error("Failed to create SSL context for VA certificate. {}", e.getMessage(), e);
