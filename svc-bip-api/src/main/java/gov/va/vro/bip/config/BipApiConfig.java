@@ -21,7 +21,11 @@ import org.springframework.web.client.RestTemplate;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.*;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.util.Base64;
 import javax.net.ssl.KeyManagerFactory;
@@ -83,7 +87,7 @@ public class BipApiConfig {
   @Bean(name = "bipCERestTemplate")
   public RestTemplate getHttpsRestTemplate(RestTemplateBuilder builder) throws BipException {
     try {
-      if (trustStore.isEmpty() && password.isEmpty()) { // skip if it is test.
+      if (trustStore.isEmpty() && password.isEmpty()) {
         log.info("No valid BIP mTLS setup. Skip related setup.");
         return new RestTemplate();
       }
