@@ -27,10 +27,11 @@ class JobStore:
     def clear(self):
         self.db.clear(MergeJob)
 
-    def query(self, states: list[schema.JobState], offset, limit) -> list[MergeJob]:
+    def query(self, states: list[schema.JobState] = schema.JobState.incomplete(), offset: int = 1, limit: int = 10) -> \
+            list[MergeJob]:
         return self.db.query(MergeJob,
-                             MergeJob.state.in_(states),
                              MergeJob.updated_at,
+                             MergeJob.state.in_(states) if states else True,
                              offset,
                              limit)
 

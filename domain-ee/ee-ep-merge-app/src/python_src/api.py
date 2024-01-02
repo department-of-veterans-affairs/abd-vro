@@ -134,7 +134,7 @@ async def get_merge_request_by_job_id(job_id: UUID):
 async def get_merge_jobs(state: Annotated[list[JobState], Query()] = JobState.incomplete(),
                          page: int = 1,
                          size: int = 10):
-    jobs, total = job_store.query(state, page, size)
+    jobs, total = job_store.query(states=state, offset=page, limit=size)
     logging.info(f"event=getMergeJobs "
                  f"total={total} "
                  f"page={sanitize(page)} "
