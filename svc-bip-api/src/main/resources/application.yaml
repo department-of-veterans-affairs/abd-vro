@@ -9,6 +9,7 @@ logging:
 
 bip:
   claimClientId: ${BIP_CLAIM_USERID:VRO_USER}
+  claimBaseUrl: localhost:20300
   claimIssuer: ${BIP_CLAIM_ISSUER:virtual_regional_office}
   claimSecret: ${BIP_CLAIM_SECRET:7zEJ+xepTPakl7KfX58bVR+t0zQGpsElg9bDdKmoVJM=}
   evidenceClientId: ${BIP_EVIDENCE_USERID:VRO_USER}
