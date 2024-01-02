@@ -15,7 +15,6 @@ import gov.va.vro.bip.model.lifecycle.PutClaimLifecycleResponse;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionRequest;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionResponse;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ClaimsBuilder;
 import io.jsonwebtoken.Jwts;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -33,12 +32,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.util.Calendar;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.Map;
 import javax.crypto.spec.SecretKeySpec;
-import io.jsonwebtoken.SignatureAlgorithm;
-import java.util.Date;
 
 /**
  * BIP claim API service.
@@ -78,7 +74,7 @@ public class BipApiService implements IBipApiService {
     long claimId = request.getClaimId();
     String url = bipApiProps.getClaimRequestUrl(String.format(CLAIM_LIFECYCLE_STATUS, claimId));
     Map<String, Object> requestBody =
-            Map.of("claimLifecycleStatus", request.getClaimLifecycleStatus());
+        Map.of("claimLifecycleStatus", request.getClaimLifecycleStatus());
     return makeRequest(url, HttpMethod.PUT, requestBody, PutClaimLifecycleResponse.class);
   }
 
@@ -91,7 +87,7 @@ public class BipApiService implements IBipApiService {
 
   @Override
   public CreateClaimContentionsResponse createClaimContentions(
-          CreateClaimContentionsRequest request) {
+      CreateClaimContentionsRequest request) {
     long claimId = request.getClaimId();
     String url = bipApiProps.getClaimRequestUrl(String.format(CONTENTION, claimId));
     Map<String, Object> requestBody = Map.of("createContentions", request.getCreateContentions());
@@ -100,7 +96,7 @@ public class BipApiService implements IBipApiService {
 
   @Override
   public UpdateClaimContentionsResponse updateClaimContentions(
-          UpdateClaimContentionsRequest request) {
+      UpdateClaimContentionsRequest request) {
     long claimId = request.getClaimId();
     String url = bipApiProps.getClaimRequestUrl(String.format(CONTENTION, claimId));
     Map<String, Object> requestBody = Map.of("updateContentions", request.getUpdateContentions());
@@ -115,66 +111,66 @@ public class BipApiService implements IBipApiService {
     String lifecycleStatusReasonCode = request.getLifecycleStatusReasonCode();
     String closeReasonText = request.getCloseReasonText();
     Map<String, String> requestBody =
-            Map.of(
-                    "lifecycleStatusReasonCode", lifecycleStatusReasonCode,
-                    "closeReasonText", closeReasonText);
+        Map.of(
+            "lifecycleStatusReasonCode", lifecycleStatusReasonCode,
+            "closeReasonText", closeReasonText);
 
     return makeRequest(url, HttpMethod.PUT, requestBody, CancelClaimResponse.class);
   }
 
   @Override
   public PutTempStationOfJurisdictionResponse putTempStationOfJurisdiction(
-          PutTempStationOfJurisdictionRequest request) {
+      PutTempStationOfJurisdictionRequest request) {
     long claimId = request.getClaimId();
     String url =
-            bipApiProps.getClaimRequestUrl(String.format(TEMP_STATION_OF_JURISDICTION, claimId));
+        bipApiProps.getClaimRequestUrl(String.format(TEMP_STATION_OF_JURISDICTION, claimId));
 
     String tsoj = request.getTempStationOfJurisdiction();
     Map<String, String> requestBody = Map.of("tempStationOfJurisdiction", tsoj);
 
     return makeRequest(
-            url, HttpMethod.PUT, requestBody, PutTempStationOfJurisdictionResponse.class);
+        url, HttpMethod.PUT, requestBody, PutTempStationOfJurisdictionResponse.class);
   }
 
   @SuppressWarnings("unchecked")
   private <T extends BipPayloadResponse> T makeRequest(
-          String url, HttpMethod method, Object requestBody, Class<T> expectedResponse) {
+      String url, HttpMethod method, Object requestBody, Class<T> expectedResponse) {
     try {
       log.info("event=requestMade url={} method={}", url, method);
       HttpEntity<Object> httpEntity = new HttpEntity<>(requestBody, getBipHeader());
       log.info("event=requestSent url={} method={}", url, method);
       ResponseEntity<String> bipResponse =
-              restTemplate.exchange(url, method, httpEntity, String.class);
+          restTemplate.exchange(url, method, httpEntity, String.class);
       log.info(
-              "event=responseReceived url={} method={} status={}",
-              url,
-              method,
-              bipResponse.getStatusCode().value());
+          "event=responseReceived url={} method={} status={}",
+          url,
+          method,
+          bipResponse.getStatusCode().value());
       return (T)
-              mapper.readValue(bipResponse.getBody(), expectedResponse).toBuilder()
-                      .statusCode(bipResponse.getStatusCode().value())
-                      .statusMessage(HttpStatus.valueOf(bipResponse.getStatusCode().value()).name())
-                      .build();
+          mapper.readValue(bipResponse.getBody(), expectedResponse).toBuilder()
+              .statusCode(bipResponse.getStatusCode().value())
+              .statusMessage(HttpStatus.valueOf(bipResponse.getStatusCode().value()).name())
+              .build();
     } catch (HttpStatusCodeException e) {
       log.info(
-              "event=responseReceived url={} status={} statusMessage={}",
-              url,
-              e.getStatusCode(),
-              ((HttpStatus) e.getStatusCode()).name());
+          "event=responseReceived url={} status={} statusMessage={}",
+          url,
+          e.getStatusCode(),
+          ((HttpStatus) e.getStatusCode()).name());
       throw e;
     } catch (Exception e) {
       log.error(
-              "event=requestFailed url={} method={} status={} error={}",
-              url,
-              method,
-              HttpStatus.INTERNAL_SERVER_ERROR.value(),
-              e.getMessage());
+          "event=requestFailed url={} method={} status={} error={}",
+          url,
+          method,
+          HttpStatus.INTERNAL_SERVER_ERROR.value(),
+          e.getMessage());
       throw new BipException(e.getMessage(), e);
     }
   }
 
   private <T extends BipPayloadResponse> T makeRequest(
-          String url, HttpMethod method, Class<T> expectedResponse) {
+      String url, HttpMethod method, Class<T> expectedResponse) {
     return makeRequest(url, method, null, expectedResponse);
   }
 
@@ -193,7 +189,7 @@ public class BipApiService implements IBipApiService {
 
     try {
       ResponseEntity<String> response =
-              restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+          restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
       boolean statusIsOK = response.getStatusCode() == HttpStatus.OK;
       boolean responseIsNotEmpty = (response.getBody() != null && !response.getBody().isEmpty());
       return statusIsOK && responseIsNotEmpty;
@@ -221,20 +217,23 @@ public class BipApiService implements IBipApiService {
 
     // Define the signing key
     byte[] signSecretBytes = secret.getBytes(StandardCharsets.UTF_8);
-    Key signingKey = new SecretKeySpec(signSecretBytes, SignatureAlgorithm.HS256.getJcaName());
+    Key signingKey = new SecretKeySpec(signSecretBytes, "HmacSHA256");
 
     // Set the expiration as an example (e.g., 1 hour from now)
     long currentTimeMillis = System.currentTimeMillis();
     Date expiryDate = new Date(currentTimeMillis + 3600000);
 
     // Build the JWT
-    return Jwts.builder().claims(claims)
-            .setIssuer(issuer)
-            .setSubject("Claim")
-            .setIssuedAt(new Date(currentTimeMillis))
-            .setExpiration(expiryDate)
-            .signWith(signingKey, SignatureAlgorithm.HS256)
-            .setHeaderParam("typ", "JWT")
-            .compact();
+    return Jwts.builder()
+        .claims(claims)
+        .issuer(issuer)
+        .subject("Claim")
+        .issuedAt(new Date(currentTimeMillis))
+        .expiration(expiryDate)
+        .signWith(signingKey)
+        .header()
+        .add("alg", "HS256")
+        .and()
+        .compact();
   }
 }
