@@ -18,7 +18,7 @@ class JobStore:
                 self.update_merge_job(job)
             elif job.state == schema.JobState.RUNNING_CANCEL_EP400_CLAIM or job.state == schema.JobState.RUNNING_ADD_CLAIM_NOTE_TO_EP400:
                 jobs_to_restart.append(job)
-            elif job.state != schema.JobState.COMPLETED_ERROR:
+            else:
                 job.state = schema.JobState.PENDING
                 self.update_merge_job(job)
                 jobs_to_restart.append(job)
@@ -27,14 +27,15 @@ class JobStore:
     def clear(self):
         self.db.clear(MergeJob)
 
-    def get_merge_jobs(self, filter) -> list[MergeJob]:
-        return self.db.query_all(MergeJob, filter)
-
-    def get_all_merge_jobs(self) -> list[MergeJob]:
-        return self.get_merge_jobs(True)
+    def query(self, states: list[schema.JobState], offset, limit) -> list[MergeJob]:
+        return self.db.query(MergeJob,
+                             MergeJob.state.in_(states),
+                             MergeJob.updated_at,
+                             offset,
+                             limit)
 
     def get_merge_jobs_in_progress(self) -> list[MergeJob]:
-        return self.get_merge_jobs(MergeJob.state != schema.JobState.COMPLETED_SUCCESS)
+        return self.db.query_all(MergeJob, MergeJob.state.in_((schema.JobState.incomplete())))
 
     def get_merge_job(self, job_id) -> MergeJob:
         return self.db.query_first(MergeJob, MergeJob.job_id == job_id)

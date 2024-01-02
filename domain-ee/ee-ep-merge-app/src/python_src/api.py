@@ -2,10 +2,11 @@ import asyncio
 import logging
 import sys
 from contextlib import asynccontextmanager
+from typing import Annotated
 from uuid import UUID, uuid4
 
 import uvicorn
-from fastapi import BackgroundTasks, FastAPI, HTTPException, status
+from fastapi import BackgroundTasks, FastAPI, HTTPException, Query, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from pydantic_models import (
@@ -14,7 +15,7 @@ from pydantic_models import (
     MergeJobResponse,
     MergeJobsResponse,
 )
-from schema.merge_job import MergeJob
+from schema.merge_job import JobState, MergeJob
 from service.ep_merge_machine import EpMergeMachine
 from service.hoppy_service import HOPPY
 from service.job_store import job_store
@@ -130,14 +131,17 @@ async def get_merge_request_by_job_id(job_id: UUID):
              status.HTTP_200_OK: {"description": "Find all jobs"}
          },
          response_model_exclude_none=True)
-async def get_all_merge_jobs(show_successful: bool = False):
-    if show_successful:
-        jobs = list(job_store.get_all_merge_jobs())
-    else:
-        jobs = list(job_store.get_merge_jobs_in_progress())
-    logging.info(f"event=getAllMergeJobs show_successful={sanitize(show_successful)} size={len(jobs)}")
+async def get_merge_jobs(state: Annotated[list[JobState], Query()] = JobState.incomplete(),
+                         page: int = 1,
+                         size: int = 10):
+    jobs, total = job_store.query(state, page, size)
+    logging.info(f"event=getMergeJobs "
+                 f"total={total} "
+                 f"page={sanitize(page)} "
+                 f"size={sanitize(size)} "
+                 f"states={sanitize(state)}")
 
-    return {"jobs": jobs}
+    return MergeJobsResponse(states=state, total=total, page=page, size=size, jobs=jobs)
 
 
 if __name__ == "__main__":

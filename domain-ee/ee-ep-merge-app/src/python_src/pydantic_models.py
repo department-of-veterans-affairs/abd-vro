@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from pydantic import BaseModel, Field
-from schema.merge_job import MergeJob
+from schema.merge_job import JobState, MergeJob
 from typing_extensions import Annotated
 
 
@@ -15,6 +15,10 @@ class MergeJobResponse(BaseModel):
 
 
 class MergeJobsResponse(BaseModel):
+    states: list[JobState]
+    total: int
+    page: int
+    size: int
     jobs: list[MergeJob] = []
 
 
