@@ -135,7 +135,7 @@ async def get_all_merge_jobs(show_successful: bool = False):
         jobs = list(job_store.get_all_merge_jobs())
     else:
         jobs = list(job_store.get_merge_jobs_in_progress())
-    logging.info(f"event=getAllMergeJobs show_successful={show_successful} size={len(jobs)}")
+    logging.info(f"event=getAllMergeJobs show_successful={sanitize(show_successful)} size={len(jobs)}")
 
     return {"jobs": jobs}
 

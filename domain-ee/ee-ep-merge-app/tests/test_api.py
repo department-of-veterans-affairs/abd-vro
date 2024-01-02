@@ -38,8 +38,7 @@ def submitted_job():
         ep400_claim_id=2,
         state=JobState.PENDING.value,
         created_at=TIME,
-        updated_at=TIME
-    )
+        updated_at=TIME)
 
 
 @pytest.fixture(autouse=True)
@@ -101,8 +100,6 @@ def test_get_job_by_job_id_job_not_found(client: TestClient, mock_job_store):
 
 def test_get_job_by_job_id_job_found(client: TestClient, mock_job_store, submitted_job):
     job_id = make_merge_request(client)
-    job = make_merge_job(job_id)
-
     mock_job_store.get_merge_job.return_value = submitted_job
 
     response = client.get(MERGE + f'/{job_id}')
@@ -126,18 +123,9 @@ def make_merge_request(client: TestClient):
     return job_id
 
 
-def make_merge_job(job_id):
-    return MergeJob(job_id=job_id,
-                    pending_claim_id=1,
-                    ep400_claim_id=2,
-                    state=JobState.PENDING.value,
-                    created_at=TIME,
-                    updated_at=TIME)
-
-
-def test_get_all_jobs_in_progress(client: TestClient, mock_job_store):
+def test_get_all_jobs_in_progress(client: TestClient, mock_job_store, submitted_job):
     expected_job_ids = [make_merge_request(client), make_merge_request(client)]
-    expected_jobs = [make_merge_job(job_id) for job_id in expected_job_ids]
+    expected_jobs = [submitted_job, submitted_job]
     mock_job_store.get_merge_jobs_in_progress = Mock(return_value=expected_jobs)
 
     response = client.get(MERGE)
