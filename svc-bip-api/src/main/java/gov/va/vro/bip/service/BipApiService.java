@@ -213,7 +213,6 @@ public class BipApiService implements IBipApiService {
     Claims claims = bipApiProps.toCommonJwtClaims();
     String issuer = bipApiProps.getClaimIssuer();
     String secret = bipApiProps.getClaimSecret();
-    log.debug("claims: {}, issuer: {} secret: {}", claims, issuer, secret);
 
     // Define the signing key
     byte[] signSecretBytes = secret.getBytes(StandardCharsets.UTF_8);
