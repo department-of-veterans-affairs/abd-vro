@@ -1,6 +1,6 @@
 from config import SQLALCHEMY_DATABASE_URI
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy import create_engine, inspect
+from sqlalchemy import create_engine, desc, inspect
 from sqlalchemy.orm import sessionmaker
 
 engine = create_engine(SQLALCHEMY_DATABASE_URI, pool_pre_ping=True)
@@ -24,6 +24,12 @@ class Database:
     @with_connection
     def query_all(self, model, filter, db):
         return db.query(model).filter(filter).all()
+
+    @with_connection
+    def query(self, model, filter, order_by, offset, limit, db):
+        total = db.query(model).filter(filter).count()
+        results = db.query(model).filter(filter).order_by(desc(order_by)).offset((offset - 1) * limit).limit(limit).all()
+        return results, total
 
     @with_connection
     def query_first(self, model, filter, db):

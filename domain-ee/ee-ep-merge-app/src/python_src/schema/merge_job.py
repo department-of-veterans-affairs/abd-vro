@@ -28,6 +28,13 @@ class JobState(str, Enum):
     RUNNING_CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION = 'RUNNING_CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION'
     COMPLETED_ERROR = 'COMPLETED_ERROR'
 
+    @classmethod
+    def incomplete(cls):
+        return [state for state in cls if state != JobState.COMPLETED_SUCCESS and state != JobState.COMPLETED_ERROR]
+
+    def __str__(self):
+        return self.value
+
 
 class MergeJob(BaseModel):
     _init_time: ClassVar[datetime] = datetime.now()
