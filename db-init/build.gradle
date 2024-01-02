@@ -1,5 +1,5 @@
 plugins {
-  id 'org.flywaydb.flyway' version '10.3.0'
+  id 'org.flywaydb.flyway' version '10.4.1'
   id 'shared.docker.container-conventions'
   id 'shared.java.vro-dep-constraints'
 }
