@@ -13,12 +13,12 @@ public class XampleJavaMicroservice {
   public SomeDtoModel receiveMessage(SomeDtoModel model) {
     log.info("Received: " + model);
     try {
-      Thread.sleep(1000);
       // To test an error response, throw exception if resourceId is not an integer
+      log.info("model.getResourceId(): {}", model.getResourceId());
       Integer.parseInt(model.getResourceId());
       model.status(StatusValue.DONE);
       model.getHeader().setStatusCode(200);
-    } catch (Throwable t) {
+    } catch (NumberFormatException t) {
       log.error("Simulated error: " + t);
       model.header(417, t.toString());
     }
