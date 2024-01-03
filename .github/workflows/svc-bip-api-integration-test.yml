@@ -48,7 +48,9 @@ jobs:
           } >> "$GITHUB_ENV"
 
           export -p | sed 's/declare -x //'
+          ./gradlew docker
           ./gradlew :dockerComposeUp
+          ./gradlew :app:dockerComposeup
           ./gradlew -p mocks docker
           ./gradlew -p mocks :dockerComposeUp
 
@@ -66,7 +68,17 @@ jobs:
           timeout: 2000
           # Quit after 60 seconds
           retries: 30
-          
+      
+      - name: "Wait for VRO to be ready"
+        uses: nev7n/wait_for_response@v1
+        with:
+          url: 'http://localhost:8111/actuator/health'
+          responseCode: 200
+          # Retry every 2 seconds
+          interval: 2000
+          # Quit after 100 seconds
+          timeout: 100000
+      
       - name: 'Wait for svc-bip-api to be ready'
         uses: nev7n/wait_for_response@v1
         with:
@@ -74,18 +86,8 @@ jobs:
           responseCode: 200
           # Retry every 2 seconds
           interval: 2000
-          # Quit after 60 seconds
-          timeout: 60000
-
-      - name: 'Wait for svc-bip-api to be ready'
-        uses: nev7n/wait_for_response@v1
-        with:
-          url: 'http://localhost:10401/actuator/health/readiness'
-          responseCode: 200
-          # Retry every 2 seconds
-          interval: 2000
-          # Quit after 60 seconds
-          timeout: 60000
+          # Quit after 100 seconds
+          timeout: 100000
 
       - name: 'Wait for containers to start'
         run: sleep 60s

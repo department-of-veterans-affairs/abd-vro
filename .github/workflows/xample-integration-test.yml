@@ -33,6 +33,7 @@ jobs:
             echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}"
           } >> "$GITHUB_ENV"
 
+          ./gradlew docker
           ./gradlew :dockerComposeUp
           ./gradlew :domain-xample:dockerComposeUp
           COMPOSE_PROFILES="" ./gradlew :app:dockerComposeUp
@@ -62,10 +63,10 @@ jobs:
           responseCode: 200
           # Retry every 2 seconds
           interval: 2000
-          # Quit after 60 seconds
-          timeout: 60000
+          # Quit after 100 seconds
+          timeout: 100000
 
-      - name: "Readiness check"
+      - name: "Wait for Readiness check endpoint"
         uses: nev7n/wait_for_response@v1
         with:
           url: 'http://localhost:10021/actuator/health/readiness'
