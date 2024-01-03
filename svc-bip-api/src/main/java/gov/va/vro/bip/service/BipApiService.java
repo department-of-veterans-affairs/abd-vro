@@ -15,7 +15,6 @@ import gov.va.vro.bip.model.lifecycle.PutClaimLifecycleResponse;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionRequest;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionResponse;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ClaimsBuilder;
 import io.jsonwebtoken.Jwts;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +32,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.util.Calendar;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.Map;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -211,23 +209,29 @@ public class BipApiService implements IBipApiService {
   }
 
   public String createJwt() {
+    // Assuming these methods and variables are correctly defined in your class
     Claims claims = bipApiProps.toCommonJwtClaims();
-    Map<String, Object> headerType = new HashMap<>();
-    headerType.put("typ", JWT_TYPE);
+    String issuer = bipApiProps.getClaimIssuer();
+    String secret = bipApiProps.getClaimSecret();
 
-    ClaimsBuilder claimsBuilder =
-        Jwts.claims().add(claims).add("iss", bipApiProps.getClaimIssuer());
-    claims = claimsBuilder.build();
-    byte[] signSecretBytes = bipApiProps.getClaimSecret().getBytes(StandardCharsets.UTF_8);
+    // Define the signing key
+    byte[] signSecretBytes = secret.getBytes(StandardCharsets.UTF_8);
     Key signingKey = new SecretKeySpec(signSecretBytes, "HmacSHA256");
+
+    // Set the expiration as an example (e.g., 1 hour from now)
+    long currentTimeMillis = System.currentTimeMillis();
+    Date expiryDate = new Date(currentTimeMillis + 3600000);
+
+    // Build the JWT
     return Jwts.builder()
-        .subject("Claim")
-        .issuedAt(Calendar.getInstance().getTime())
-        .expiration(claims.getExpiration())
         .claims(claims)
+        .issuer(issuer)
+        .subject("Claim")
+        .issuedAt(new Date(currentTimeMillis))
+        .expiration(expiryDate)
         .signWith(signingKey)
         .header()
-        .add(headerType)
+        .add("alg", "HS256")
         .and()
         .compact();
   }
