@@ -51,7 +51,6 @@ jobs:
           ./gradlew :dockerComposeUp
           ./gradlew -p mocks docker
           ./gradlew -p mocks :dockerComposeUp
-          ./gradlew app:dockerComposeUp
 
       - name: 'Check disk space (Post-Build)'
         uses: ./.github/actions/check-disk-space
@@ -67,16 +66,6 @@ jobs:
           timeout: 2000
           # Quit after 60 seconds
           retries: 30
-
-      - name: 'Wait for svc-bip-api to be ready'
-        uses: nev7n/wait_for_response@v1
-        with:
-          url: 'http://localhost:10401/actuator/health/readiness'
-          responseCode: 200
-          # Retry every 2 seconds
-          interval: 2000
-          # Quit after 60 seconds
-          timeout: 60000
 
       - name: 'Wait for containers to start'
         run: sleep 60s
