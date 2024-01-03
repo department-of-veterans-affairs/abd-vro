@@ -52,9 +52,11 @@ class MergeJob(BaseModel):
         self.add_message(messages)
 
     def add_message(self, messages):
-        if self.messages is None:
-            self.messages = []
-        self.messages.extend(messages)
+        if messages:
+            if self.messages is None:
+                self.messages = []
+            msgs = [str(m) for m in messages] if isinstance(messages, list) else [str(messages)]
+            self.messages.extend(msgs)
 
     def update(self, new_state: JobState):
         self.state = new_state

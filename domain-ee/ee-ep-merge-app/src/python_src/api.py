@@ -31,7 +31,7 @@ async def lifespan(api: FastAPI):
 async def on_start_up():
     loop = asyncio.get_event_loop()
     await HOPPY.start_hoppy_clients(loop)
-    jobs_to_restart = job_store.init()
+    jobs_to_restart = job_store.reinitialize_in_progress_jobs()
     for job in jobs_to_restart:
         logging.info(f"event=jobRestarted {job}")
         asyncio.get_event_loop().run_in_executor(None, start_job_state_machine, job)
