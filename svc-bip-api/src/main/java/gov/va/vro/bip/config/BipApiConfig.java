@@ -10,7 +10,6 @@ import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.apache.hc.client5.http.io.HttpClientConnectionManager;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
-import org.apache.http.ssl.SSLContextBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -26,9 +25,12 @@ import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.util.Base64;
+import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 
 /**
  * Configures BIP API access.
@@ -85,7 +87,7 @@ public class BipApiConfig {
   @Bean(name = "bipCERestTemplate")
   public RestTemplate getHttpsRestTemplate(RestTemplateBuilder builder) throws BipException {
     try {
-      if (trustStore.isEmpty() && password.isEmpty()) { // skip if it is test.
+      if (trustStore.isEmpty() && password.isEmpty()) {
         log.info("No valid BIP mTLS setup. Skip related setup.");
         return new RestTemplate();
       }
@@ -96,11 +98,19 @@ public class BipApiConfig {
       KeyStore trustStoreObj = getKeyStore(trustStore, password);
 
       log.info("-------build SSLContext");
-      SSLContext sslContext =
-          new SSLContextBuilder()
-              .loadTrustMaterial(trustStoreObj, null)
-              .loadKeyMaterial(keyStoreObj, password.toCharArray())
-              .build();
+      KeyManagerFactory keyManagerFactory =
+          KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+      keyManagerFactory.init(keyStoreObj, password.toCharArray());
+
+      TrustManagerFactory trustManagerFactory =
+          TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+      trustManagerFactory.init(trustStoreObj);
+
+      SSLContext sslContext = SSLContext.getInstance("TLS");
+      sslContext.init(
+          keyManagerFactory.getKeyManagers(),
+          trustManagerFactory.getTrustManagers(),
+          new SecureRandom());
 
       SSLConnectionSocketFactory sslConFactory = new SSLConnectionSocketFactory(sslContext);
 
