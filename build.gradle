@@ -115,6 +115,7 @@ scmVersion {
     // Once stable, set a version and move to previous section
     'domain-cc'  : null,
     'domain-ee-max-cfi-app'  : null,
+    'domain-ee-ep-merge-app'  : null,
   ]
 
   def setHelmChartAppVersions = { currentVersion ->

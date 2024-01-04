@@ -65,3 +65,11 @@ jobs:
       target_env: ${{ inputs.target_env || 'dev' }}
       helm_chart: domain-ee-max-cfi-app
       image_tag: ${{ inputs.image_tag || 'latest' }}
+
+  deploy-domain-ee-ep-merge-app:
+    uses: ./.github/workflows/update-deployment.yml
+    secrets: inherit
+    with:
+      target_env: ${{ inputs.target_env || 'dev' }}
+      helm_chart: domain-ee-ep-merge-app
+      image_tag: ${{ inputs.image_tag || 'latest' }}
