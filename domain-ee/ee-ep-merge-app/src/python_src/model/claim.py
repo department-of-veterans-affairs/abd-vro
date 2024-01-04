@@ -8,3 +8,4 @@ class ClaimDetail(BaseModel):
 
     claim_id: int
     end_product_code: str | None = None
+    temp_station_of_jurisdiction: str | None = None

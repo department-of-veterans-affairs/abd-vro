@@ -35,7 +35,7 @@ spring:
 bie:
   kakfa-topic-prefix: "TST_"
 
-## Actuator for health check
+## Actuator for health check, liveness, and readiness
 management:
   server:
     port: 10301
@@ -45,3 +45,6 @@ management:
       enabled: true
       probes:
         enabled: true
+      group:
+        liveness.include: livenessState
+        readiness.include: readinessState

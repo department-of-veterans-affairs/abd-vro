@@ -8,11 +8,12 @@ from fastapi import FastAPI, HTTPException
 
 from .pydantic_models import Claim, PredictedClassification
 from .util.brd_classification_codes import get_classification_name
-from .util.data.reduced_dropdown_list import DROPDOWN_OPTIONS
+from .util.logging_dropdown_selections import build_logging_table
 from .util.lookup_table import ConditionDropdownLookupTable, DiagnosticCodeLookupTable
 
 dc_lookup_table = DiagnosticCodeLookupTable()
 dropdown_lookup_table = ConditionDropdownLookupTable()
+dropdown_values = build_logging_table()
 
 
 app = FastAPI(
@@ -84,7 +85,6 @@ def get_classification(claim: Claim) -> Optional[PredictedClassification]:
 
     if claim.contention_text and not classification_code:
         classification_code = dropdown_lookup_table.get(claim.contention_text, None)
-        dropdown_values = [term.strip().lower() for term in DROPDOWN_OPTIONS.values()]
         is_in_dropdown = claim.contention_text.strip().lower() in dropdown_values
         log_as_json({"In Dropdown": is_in_dropdown})
         log_lookup_table_match(

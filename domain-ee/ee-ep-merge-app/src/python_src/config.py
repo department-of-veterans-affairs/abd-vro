@@ -23,10 +23,23 @@ class ClientName(str, Enum):
     GET_CLAIM_CONTENTIONS = "getClaimContentionsClient"
     PUT_TSOJ = "putTemporaryStationOfJurisdictionClient"
     CREATE_CLAIM_CONTENTIONS = "createClaimContentionsClient"
+    UPDATE_CLAIM_CONTENTIONS = "updateClaimContentionsClient"
     CANCEL_CLAIM = "cancelClaimClient"
+    BGS_ADD_CLAIM_NOTE = "addClaimNoteClient"
 
 
-EXCHANGE = "bipApiExchange"
+BIP_EXCHANGE = "bipApiExchange"
+BGS_EXCHANGE = "bgs-api"
+
+EXCHANGES = {
+    ClientName.GET_CLAIM: os.environ.get("BIP_API_EXCHANGE") or BIP_EXCHANGE,
+    ClientName.GET_CLAIM_CONTENTIONS: os.environ.get("BIP_API_EXCHANGE") or BIP_EXCHANGE,
+    ClientName.PUT_TSOJ: os.environ.get("BIP_API_EXCHANGE") or BIP_EXCHANGE,
+    ClientName.CREATE_CLAIM_CONTENTIONS: os.environ.get("BIP_API_EXCHANGE") or BIP_EXCHANGE,
+    ClientName.UPDATE_CLAIM_CONTENTIONS: os.environ.get("BIP_API_EXCHANGE") or BIP_EXCHANGE,
+    ClientName.CANCEL_CLAIM: os.environ.get("BIP_API_EXCHANGE") or BIP_EXCHANGE,
+    ClientName.BGS_ADD_CLAIM_NOTE: os.environ.get("BGS_API_EXCHANGE") or BGS_EXCHANGE,
+}
 
 QUEUES = {
     ClientName.GET_CLAIM:
@@ -37,8 +50,12 @@ QUEUES = {
         os.environ.get("PUT_TSOJ_REQUEST") or "putTempStationOfJurisdictionQueue",
     ClientName.CREATE_CLAIM_CONTENTIONS:
         os.environ.get("CREATE_CLAIM_CONTENTIONS_REQUEST") or "createClaimContentionsQueue",
+    ClientName.UPDATE_CLAIM_CONTENTIONS:
+        os.environ.get("UPDATE_CLAIM_CONTENTIONS_REQUEST") or "updateClaimContentionsQueue",
     ClientName.CANCEL_CLAIM:
         os.environ.get("CANCEL_CLAIM_REQUEST") or "cancelClaimQueue",
+    ClientName.BGS_ADD_CLAIM_NOTE:
+        os.environ.get("ADD_CLAIM_NOTE_REQUEST") or "add-note",
 }
 
 REPLY_QUEUES = {
@@ -50,6 +67,10 @@ REPLY_QUEUES = {
         os.environ.get("PUT_TSOJ_RESPONSE") or "putTempStationOfJurisdictionResponseQueue",
     ClientName.CREATE_CLAIM_CONTENTIONS:
         os.environ.get("CREATE_CLAIM_CONTENTIONS_RESPONSE") or "createClaimContentionsResponseQueue",
+    ClientName.UPDATE_CLAIM_CONTENTIONS:
+        os.environ.get("UPDATE_CLAIM_CONTENTIONS_RESPONSE") or "updateClaimContentionsResponseQueue",
     ClientName.CANCEL_CLAIM:
         os.environ.get("CANCEL_CLAIM_RESPONSE") or "cancelClaimResponseQueue",
+    ClientName.BGS_ADD_CLAIM_NOTE:
+        os.environ.get("ADD_CLAIM_NOTE_RESPONSE") or "add-note-response",
 }

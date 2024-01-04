@@ -1,0 +1,6 @@
+
+bip:
+  claimBaseUrl: "https://claims-test.dev.bip.va.gov/api/v1"
+  applicationId: "${BIP_APPLICATION_ID:VRO}"
+  stationId: "${BIP_STATION_ID:456}"
+  env: dev
