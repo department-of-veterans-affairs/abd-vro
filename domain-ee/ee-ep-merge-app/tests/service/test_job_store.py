@@ -3,14 +3,14 @@ from model.merge_job import MergeJob
 from schema.merge_job import JobState
 from src.python_src.service.job_store import JobStore
 
-DEFAULT_STATES = JobState.incomplete()
+DEFAULT_STATES = JobState.incomplete_states()
 DEFAULT_OFFSET = 1
 DEFAULT_LIMIT = 10
 
 
-def test_init(db):
+def test_reinitialize_in_progress_jobs(db):
     job_store = JobStore(db)
-    result = job_store.init()
+    result = job_store.reinitialize_in_progress_jobs()
     assert result == []
 
 

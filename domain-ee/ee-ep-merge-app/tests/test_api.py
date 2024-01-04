@@ -149,7 +149,7 @@ def test_get_merge_jobs_pagination(client: TestClient, mock_job_store, page, siz
 
     response_json = response.json()
     assert response_json['total'] == 11
-    assert response_json['states'] == JobState.incomplete()
+    assert response_json['states'] == JobState.incomplete_states()
     assert response_json['page'] == expected_page
     assert response_json['size'] == expected_size
     results = response_json['jobs']

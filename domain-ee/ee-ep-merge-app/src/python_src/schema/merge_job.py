@@ -29,7 +29,7 @@ class JobState(str, Enum):
     COMPLETED_ERROR = 'COMPLETED_ERROR'
 
     @classmethod
-    def incomplete(cls):
+    def incomplete_states(cls):
         return [state for state in cls if state != JobState.COMPLETED_SUCCESS and state != JobState.COMPLETED_ERROR]
 
     def __str__(self):
@@ -59,9 +59,11 @@ class MergeJob(BaseModel):
         self.add_message(messages)
 
     def add_message(self, messages):
-        if self.messages is None:
-            self.messages = []
-        self.messages.extend(messages)
+        if messages:
+            if self.messages is None:
+                self.messages = []
+            msgs = [str(m) for m in messages] if isinstance(messages, list) else [str(messages)]
+            self.messages.extend(msgs)
 
     def update(self, new_state: JobState):
         self.state = new_state

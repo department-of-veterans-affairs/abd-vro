@@ -269,7 +269,7 @@ class EpMergeMachine(StateMachine):
         return ContentionsUtil.new_contentions(pending_contentions_response.contentions, ep400_contentions_response.contentions)
 
     def add_error(self, error):
-        self.job.error(error if isinstance(error, list) else [error])
+        self.job.error(error)
 
     def add_message(self, message):
-        self.job.add_message(message if isinstance(message, list) else [message])
+        self.job.add_message(message)
