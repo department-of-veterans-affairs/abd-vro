@@ -1,5 +1,7 @@
+import json
 import logging
 import sys
+import time
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException
@@ -31,11 +33,12 @@ app = FastAPI(
 )
 
 logging.basicConfig(
-    format="[%(asctime)s] %(levelname)-8s %(message)s",
+    format="%(message)s",
     level=logging.INFO,
     datefmt="%Y-%m-%d %H:%M:%S",
     stream=sys.stdout,
 )
+# [%(asctime)s] %(levelname)-8s
 
 
 @app.get("/health")
@@ -53,32 +56,37 @@ def log_lookup_table_match(classification_code, is_in_dropdown, contention_text)
         already_mapped_text = (  # being explicit, do not leak PII
             contention_text.strip().lower()
         )
-        log_as_json(f" Lookup table match: {already_mapped_text}")
+        log_as_json({"Lookup table match": already_mapped_text})
     elif is_in_dropdown:
-        log_as_json(f"No lookup table match for dropdown entry: {log_contention_text}")
+        log_as_json({"No lookup table match for dropdown entry": log_contention_text})
     else:
         log_as_json("No Lookup table match for free text")
 
 
 def log_as_json(obj):
-    logging.info(obj)  # TODO fix this, json.dumps() is probably not the way?
+    obj["date"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    obj["level"] = logging.getLevelName(logging.root.level)
+    logging.info(json.dumps(obj))
 
 
 @app.post("/classifier")
 def get_classification(claim: Claim) -> Optional[PredictedClassification]:
     log_as_json(
-        f"claim_id: {claim.claim_id}, form526_submission_id: {claim.form526_submission_id}"
+        {
+            "claim_id": claim.claim_id,
+            "form526_submission_id": claim.form526_submission_id,
+        }
     )
     classification_code = None
     if claim.claim_type == "claim_for_increase":
-        log_as_json(f"diagnostic code: {claim.diagnostic_code}")
+        log_as_json({"diagnostic code": claim.diagnostic_code})
         classification_code = dc_lookup_table.get(claim.diagnostic_code, None)
 
     if claim.contention_text and not classification_code:
         classification_code = dropdown_lookup_table.get(claim.contention_text, None)
         dropdown_values = [term.strip().lower() for term in DROPDOWN_OPTIONS.values()]
         is_in_dropdown = claim.contention_text.strip().lower() in dropdown_values
-        log_as_json(f"In Dropdown: {is_in_dropdown}")
+        log_as_json({"In Dropdown": is_in_dropdown})
         log_lookup_table_match(
             classification_code, is_in_dropdown, claim.contention_text
         )
@@ -92,5 +100,5 @@ def get_classification(claim: Claim) -> Optional[PredictedClassification]:
     else:
         classification = None
 
-    log_as_json(f"classification: {classification}")
+    log_as_json({"classification": classification})
     return classification
