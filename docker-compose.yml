@@ -29,10 +29,12 @@ x-api-vars: &api-vars
   LH_VRO_API_KEY: ${LH_VRO_API_KEY}
 
 x-postgres-vars: &postgres-vars
+  POSTGRES_HOST: postgres-service
   POSTGRES_URL: postgresql://postgres-service:5432/vro
   POSTGRES_DB: ${POSTGRES_DB}
   POSTGRES_USER: ${POSTGRES_USER}
   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  POSTGRES_PORT: 5432
   POSTGRES_SCHEMA: claims
 
 x-redis-placeholder-vars: &redis-placeholder-vars

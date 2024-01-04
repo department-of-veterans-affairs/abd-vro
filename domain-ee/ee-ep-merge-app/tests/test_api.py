@@ -1,12 +1,20 @@
 import uuid
+from datetime import datetime
 from unittest.mock import Mock
 
 import pytest
 from fastapi.testclient import TestClient
-from model.merge_job import JobState
-from src.python_src.api import job_store
+from model.merge_job import MergeJob
+from schema.merge_job import JobState
 
 MERGE = "/merge"
+JOB_ID = uuid.uuid4()
+TIME = datetime.now()
+
+
+@pytest.fixture(autouse=True)
+def mock_uuid(mocker):
+    mocker.patch('src.python_src.api.uuid4', return_value=JOB_ID)
 
 
 @pytest.fixture(autouse=True)
@@ -18,8 +26,24 @@ def mock_background_tasks(mocker):
 
 
 @pytest.fixture(autouse=True)
-def _job_store():
-    job_store.clear()
+def mock_job_store(mocker):
+    return mocker.patch('src.python_src.api.job_store', return_value=Mock())
+
+
+@pytest.fixture(autouse=True)
+def submitted_job():
+    return MergeJob(
+        job_id=JOB_ID,
+        pending_claim_id=1,
+        ep400_claim_id=2,
+        state=JobState.PENDING.value,
+        created_at=TIME,
+        updated_at=TIME)
+
+
+@pytest.fixture(autouse=True)
+def mock_job_submit(mock_job_store, submitted_job):
+    mock_job_store.submit_merge_job.return_value = submitted_job
 
 
 def test_health(client: TestClient):
@@ -48,7 +72,7 @@ def test_merge_claims_with_request_has_matching_claim_ids(client: TestClient):
     assert response.status_code == 400
 
 
-def test_merge_claims_ok(client: TestClient):
+def test_merge_claims_ok(client: TestClient, mock_job_store):
     request = {
         "pending_claim_id": 1,
         "ep400_claim_id": 2
@@ -60,27 +84,33 @@ def test_merge_claims_ok(client: TestClient):
 
     job = response_json['job']
     assert job is not None
-    assert job['job_id'] is not None
+    assert job['job_id'] == str(JOB_ID)
     assert job['pending_claim_id'] == 1
     assert job['ep400_claim_id'] == 2
     assert job['state'] == JobState.PENDING.value
+    assert job['created_at'] is not None
+    assert job['updated_at'] is not None
 
 
-def test_get_job_by_job_id_job_not_found(client: TestClient):
+def test_get_job_by_job_id_job_not_found(client: TestClient, mock_job_store):
+    mock_job_store.get_merge_job.return_value = None
     response = client.get(MERGE + f'/{uuid.uuid4()}')
     assert response.status_code == 404
 
 
-def test_get_job_by_job_id_job_found(client: TestClient):
+def test_get_job_by_job_id_job_found(client: TestClient, mock_job_store, submitted_job):
     job_id = make_merge_request(client)
+    mock_job_store.get_merge_job.return_value = submitted_job
 
     response = client.get(MERGE + f'/{job_id}')
     assert response.status_code == 200
     job = response.json()['job']
-    assert job['job_id'] == job_id
+    assert job['job_id'] == str(JOB_ID)
     assert job['pending_claim_id'] == 1
     assert job['ep400_claim_id'] == 2
     assert job['state'] == JobState.PENDING.value
+    assert job['created_at'] == TIME.isoformat()
+    assert job['updated_at'] == TIME.isoformat()
 
 
 def make_merge_request(client: TestClient):
@@ -93,8 +123,10 @@ def make_merge_request(client: TestClient):
     return job_id
 
 
-def test_get_all_jobs(client: TestClient):
+def test_get_all_jobs_in_progress(client: TestClient, mock_job_store, submitted_job):
     expected_job_ids = [make_merge_request(client), make_merge_request(client)]
+    expected_jobs = [submitted_job, submitted_job]
+    mock_job_store.get_merge_jobs_in_progress = Mock(return_value=expected_jobs)
 
     response = client.get(MERGE)
     assert response.status_code == 200
@@ -108,3 +140,5 @@ def test_get_all_jobs(client: TestClient):
         assert job['pending_claim_id'] == 1
         assert job['ep400_claim_id'] == 2
         assert job['state'] == JobState.PENDING.value
+        assert job['created_at'] == TIME.isoformat()
+        assert job['updated_at'] == TIME.isoformat()

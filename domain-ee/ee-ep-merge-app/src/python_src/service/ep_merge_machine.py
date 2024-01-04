@@ -5,7 +5,8 @@ from typing import Type
 from fastapi.encoders import jsonable_encoder
 from hoppy.async_hoppy_client import AsyncHoppyClient
 from hoppy.exception import ResponseException
-from model import (
+from pydantic import ValidationError
+from schema import (
     add_claim_note,
     cancel_claim,
     create_contentions,
@@ -13,12 +14,12 @@ from model import (
     get_contentions,
     update_contentions,
 )
-from model import update_temp_station_of_jurisdiction as tsoj
-from model.merge_job import JobState, MergeJob
-from model.request import GeneralRequest
-from model.response import GeneralResponse
-from pydantic import ValidationError
+from schema import update_temp_station_of_jurisdiction as tsoj
+from schema.merge_job import JobState, MergeJob
+from schema.request import GeneralRequest
+from schema.response import GeneralResponse
 from service.hoppy_service import HOPPY, ClientName
+from service.job_store import job_store
 from statemachine import State, StateMachine
 from util.contentions_util import ContentionsUtil
 
@@ -91,7 +92,8 @@ class EpMergeMachine(StateMachine):
 
     def on_transition(self, source, target):
         logging.info(f"event=jobTransition job_id={self.job.job_id} old={source.value} new={target.value}")
-        self.job.state = target.value
+        self.job.update(target.value)
+        job_store.update_merge_job(self.job)
 
     @pending.exit
     def on_start_process(self):
@@ -267,7 +269,7 @@ class EpMergeMachine(StateMachine):
         return ContentionsUtil.new_contentions(pending_contentions_response.contentions, ep400_contentions_response.contentions)
 
     def add_error(self, error):
-        self.job.error(error if isinstance(error, list) else [error])
+        self.job.error(error)
 
     def add_message(self, message):
-        self.job.add_message(message if isinstance(message, list) else [message])
+        self.job.add_message(message)

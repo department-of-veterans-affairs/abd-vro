@@ -1,7 +1,7 @@
 from uuid import UUID
 
-from model.merge_job import MergeJob
 from pydantic import BaseModel, Field
+from schema.merge_job import MergeJob
 from typing_extensions import Annotated
 
 
@@ -10,8 +10,12 @@ class MergeEndProductsRequest(BaseModel):
     ep400_claim_id: Annotated[int, Field(strict=True)]
 
 
-class MergeEndProductsResponse(BaseModel):
+class MergeJobResponse(BaseModel):
     job: MergeJob
+
+
+class MergeJobsResponse(BaseModel):
+    jobs: list[MergeJob] = []
 
 
 class MergeEndProductsErrorResponse(BaseModel):
