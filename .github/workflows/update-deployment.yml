@@ -28,7 +28,7 @@ on:
         - svc-bip-api
         - svc-lighthouse-api
         - api-gateway
-        - domain-ee
+        - domain-ee-max-cfi-app
 
       image_tag:
         description: 'Image tag: first 7 of commit hash, "latest", "v1.2.3", or "release-1.2.3"'

@@ -58,10 +58,10 @@ jobs:
       helm_chart: domain-cc
       image_tag: ${{ inputs.image_tag || 'latest' }}
 
-  deploy-domain-ee:
+  deploy-domain-ee-max-cfi-app:
     uses: ./.github/workflows/update-deployment.yml
     secrets: inherit
     with:
       target_env: ${{ inputs.target_env || 'dev' }}
-      helm_chart: domain-ee
+      helm_chart: domain-ee-max-cfi-app
       image_tag: ${{ inputs.image_tag || 'latest' }}

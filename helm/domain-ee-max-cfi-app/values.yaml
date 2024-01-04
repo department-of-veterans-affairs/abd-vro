@@ -1,5 +1,5 @@
 labels:
-  app: domain-ee-app
+  app: domain-ee-max-cfi-app
 
 serviceUriPrefix: employee-experience
 
@@ -12,6 +12,6 @@ replicaCount: 1
 #   targetCPUUtilizationPercentage: 80
 
 service:
-  eeApp:
+  eeMaxCfiApp:
     sourcePort: 8130
     targetPort: 8130

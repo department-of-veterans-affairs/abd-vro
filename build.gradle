@@ -114,7 +114,7 @@ scmVersion {
     'rabbitmq'   : null,
     // Once stable, set a version and move to previous section
     'domain-cc'  : null,
-    'domain-ee'  : null,
+    'domain-ee-max-cfi-app'  : null,
   ]
 
   def setHelmChartAppVersions = { currentVersion ->
