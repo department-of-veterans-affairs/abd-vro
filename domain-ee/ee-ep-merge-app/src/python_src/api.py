@@ -32,10 +32,9 @@ async def lifespan(api: FastAPI):
 async def on_start_up():
     loop = asyncio.get_event_loop()
     await HOPPY.start_hoppy_clients(loop)
-    jobs_to_restart = job_store.reinitialize_in_progress_jobs()
+    jobs_to_restart = job_store.get_all_incomplete_jobs()
     for job in jobs_to_restart:
-        logging.info(f"event=jobRestarted {job}")
-        asyncio.get_event_loop().run_in_executor(None, start_job_state_machine, job)
+        asyncio.get_event_loop().run_in_executor(None, resume_job_state_machine, job)
 
 
 async def on_shut_down():
@@ -102,7 +101,19 @@ def validate_merge_request(merge_request: MergeEndProductsRequest):
 
 
 def start_job_state_machine(merge_job):
-    EpMergeMachine(merge_job).process()
+    EpMergeMachine(merge_job).start()
+
+
+def resume_job_state_machine(in_progress_job):
+    if in_progress_job.state == JobState.RUNNING_MOVE_CONTENTIONS_TO_PENDING_CLAIM:
+        in_progress_job.error("Job abandoned: Unable to verify if the contentions were successfully moved to pending EP")
+        EpMergeMachine(in_progress_job, 'resume_processing_from_running_move_contentions_to_pending_claim').start()
+    elif in_progress_job.state == JobState.RUNNING_CANCEL_EP400_CLAIM:
+        EpMergeMachine(in_progress_job, 'resume_processing_from_running_cancel_ep400_claim').start()
+    elif in_progress_job.state == JobState.RUNNING_ADD_CLAIM_NOTE_TO_EP400:
+        EpMergeMachine(in_progress_job, 'resume_processing_from_running_add_note_to_ep400_claim').start()
+    else:
+        EpMergeMachine(in_progress_job, 'resume_restart').start()
 
 
 @app.get("/merge/{job_id}",

@@ -8,9 +8,9 @@ DEFAULT_OFFSET = 1
 DEFAULT_LIMIT = 10
 
 
-def test_reinitialize_in_progress_jobs(db):
+def test_get_all_incomplete_jobs(db):
     job_store = JobStore(db)
-    result = job_store.reinitialize_in_progress_jobs()
+    result = job_store.get_all_incomplete_jobs()
     assert result == []
 
 
