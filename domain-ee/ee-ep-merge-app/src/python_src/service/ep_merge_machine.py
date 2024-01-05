@@ -95,9 +95,6 @@ class EpMergeMachine(StateMachine):
             | running_add_claim_note_to_ep400.to(completed_error, cond="has_error")
     )
     resume_restart = process
-    resume_processing_from_running_move_contentions_to_pending_claim = (
-            pending.to(completed_error)
-    )
     resume_processing_from_running_cancel_ep400_claim = (
             pending.to(running_get_pending_claim)
             | running_get_pending_claim.to(running_cancel_ep400_claim, unless="has_error")

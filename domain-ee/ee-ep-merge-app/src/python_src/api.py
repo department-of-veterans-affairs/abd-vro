@@ -105,10 +105,7 @@ def start_job_state_machine(merge_job):
 
 
 def resume_job_state_machine(in_progress_job):
-    if in_progress_job.state == JobState.RUNNING_MOVE_CONTENTIONS_TO_PENDING_CLAIM:
-        in_progress_job.error("Job abandoned: Unable to verify if the contentions were successfully moved to pending EP")
-        EpMergeMachine(in_progress_job, Workflow.RESUME_MOVE_CONTENTIONS).start()
-    elif in_progress_job.state == JobState.RUNNING_CANCEL_EP400_CLAIM:
+    if in_progress_job.state == JobState.RUNNING_CANCEL_EP400_CLAIM:
         EpMergeMachine(in_progress_job, Workflow.RESUME_CANCEL_EP400).start()
     elif in_progress_job.state == JobState.RUNNING_ADD_CLAIM_NOTE_TO_EP400:
         EpMergeMachine(in_progress_job, Workflow.RESUME_ADD_NOTE).start()

@@ -96,7 +96,7 @@ class DotGraphMachine:
         for state in self.machine.states:
             node = self._state_as_node(state)
             if node:
-                if 'Completed success' == state.name and self.machine.main_event != 'resume_processing_from_running_move_contentions_to_pending_claim':
+                if 'Completed success' == state.name:
                     graph.add_node(node)
                 elif 'Completed error' == state.name:
                     graph.add_node(node)
@@ -132,7 +132,6 @@ def generate_graph(main_event):
 if __name__ == "__main__":
     events = [
         'process',
-        'resume_processing_from_running_move_contentions_to_pending_claim',
         'resume_processing_from_running_cancel_ep400_claim',
         'resume_processing_from_running_add_note_to_ep400_claim',
     ]
