@@ -1,4 +1,4 @@
-from model.contention import ContentionSummary, ExistingContention
+from schema.contention import ContentionSummary, ExistingContention
 
 
 class ContentionsUtil:
