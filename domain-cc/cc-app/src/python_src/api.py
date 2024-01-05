@@ -2,7 +2,7 @@ import json
 import logging
 import sys
 import time
-from typing import Optional
+from typing import Optional, Union
 
 from fastapi import FastAPI, HTTPException
 
@@ -50,7 +50,9 @@ def get_health_status():
     return {"status": "ok"}
 
 
-def log_lookup_table_match(classification_code, is_in_dropdown, contention_text):
+def log_lookup_table_match(
+    classification_code: int, is_in_dropdown: bool, contention_text: str
+):
     log_contention_text = contention_text if is_in_dropdown else "Not in dropdown"
 
     if classification_code:
@@ -64,10 +66,13 @@ def log_lookup_table_match(classification_code, is_in_dropdown, contention_text)
         log_as_json("No Lookup table match for free text")
 
 
-def log_as_json(obj):
-    obj["date"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-    obj["level"] = logging.getLevelName(logging.root.level)
-    logging.info(json.dumps(obj))
+def log_as_json(obj: Union[dict, str]):
+    try:
+        obj["date"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        obj["level"] = logging.getLevelName(logging.root.level)
+        logging.info(json.dumps(obj))
+    except TypeError:
+        logging.info(obj)
 
 
 @app.post("/classifier")
