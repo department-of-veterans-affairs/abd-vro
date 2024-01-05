@@ -2,6 +2,8 @@ from unittest.mock import Mock, call
 
 import pytest
 from conftest import (
+    EP400_CLAIM_ID,
+    JOB_ID,
     PENDING_CLAIM_ID,
     add_claim_note_200,
     add_claim_note_req,
@@ -45,9 +47,16 @@ from schema import (
 )
 from schema import update_temp_station_of_jurisdiction as tsoj
 from schema.claim import ClaimDetail
-from schema.merge_job import JobState
+from schema.merge_job import JobState, MergeJob
 from service.ep_merge_machine import EpMergeMachine
 from util.contentions_util import ContentionsUtil
+
+
+@pytest.fixture
+def machine():
+    return EpMergeMachine(MergeJob(job_id=JOB_ID,
+                                   pending_claim_id=PENDING_CLAIM_ID,
+                                   ep400_claim_id=EP400_CLAIM_ID))
 
 
 def test_constructor():

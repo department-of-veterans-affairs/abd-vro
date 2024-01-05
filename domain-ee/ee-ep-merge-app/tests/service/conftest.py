@@ -1,7 +1,7 @@
 import json
 import os
 import uuid
-from unittest.mock import AsyncMock, Mock
+from unittest.mock import AsyncMock
 
 import pytest
 from schema import (
@@ -13,12 +13,8 @@ from schema import (
     update_contentions,
 )
 from schema import update_temp_station_of_jurisdiction as tsoj
-from schema.merge_job import JobState, MergeJob
-from service.ep_merge_machine import (
-    CANCEL_TRACKING_EP,
-    CANCELLATION_REASON_FORMAT,
-    EpMergeMachine,
-)
+from schema.merge_job import JobState
+from service.ep_merge_machine import CANCEL_TRACKING_EP, CANCELLATION_REASON_FORMAT
 from util.contentions_util import ContentionsUtil
 
 JOB_ID = uuid.uuid4()
@@ -101,14 +97,7 @@ def mock_hoppy_service_get_client(mocker, mock_hoppy_async_client):
 
 @pytest.fixture(autouse=True)
 def mock_job_store(mocker):
-    return mocker.patch('src.python_src.service.ep_merge_machine.job_store.update_merge_job', return_value=Mock())
-
-
-@pytest.fixture
-def machine():
-    return EpMergeMachine(MergeJob(job_id=JOB_ID,
-                                   pending_claim_id=PENDING_CLAIM_ID,
-                                   ep400_claim_id=EP400_CLAIM_ID))
+    return mocker.patch('src.python_src.service.ep_merge_machine.job_store.update_merge_job')
 
 
 def get_mocked_async_response(side_effects):
@@ -124,7 +113,7 @@ def mock_async_responses(mock_hoppy_async_client, responses):
 
 
 def process_and_assert(machine, expected_state: JobState, expected_error_state: JobState = None, num_errors: int = 0):
-    machine.process()
+    machine.start()
     assert machine.current_state_value == expected_state
     assert machine.job.state == expected_state
     assert machine.job.error_state == expected_error_state

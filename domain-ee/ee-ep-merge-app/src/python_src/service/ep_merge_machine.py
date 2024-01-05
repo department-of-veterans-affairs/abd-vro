@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from enum import Enum
 from typing import Type
 
 from fastapi.encoders import jsonable_encoder
@@ -26,6 +27,14 @@ from util.contentions_util import ContentionsUtil
 CANCEL_TRACKING_EP = "60"
 CANCELLATION_REASON_FORMAT = "Issues moved into or confirmed in pending EP{ep_code} - claim #{claim_id}"
 SPECIAL_ISSUE_CODE = "EMP"
+
+
+class Workflow(str, Enum):
+    PROCESS = 'process'
+    RESTART = 'resume_restart',
+    RESUME_MOVE_CONTENTIONS = 'resume_processing_from_running_move_contentions_to_pending_claim',
+    RESUME_CANCEL_EP400 = 'resume_processing_from_running_cancel_ep400_claim',
+    RESUME_ADD_NOTE = 'resume_processing_from_running_add_note_to_ep400_claim'
 
 
 class EpMergeMachine(StateMachine):
@@ -87,7 +96,7 @@ class EpMergeMachine(StateMachine):
     )
     resume_restart = process
     resume_processing_from_running_move_contentions_to_pending_claim = (
-            pending.to(completed_error, cond="has_error")
+            pending.to(completed_error)
     )
     resume_processing_from_running_cancel_ep400_claim = (
             pending.to(running_get_pending_claim)
@@ -110,13 +119,13 @@ class EpMergeMachine(StateMachine):
             | running_add_claim_note_to_ep400.to(completed_error, cond="has_error")
     )
 
-    def __init__(self, merge_job: MergeJob, main_event: str = "process"):
+    def __init__(self, merge_job: MergeJob, main_event: Workflow = Workflow.PROCESS):
         self.job = merge_job
         self.main_event = main_event
         super().__init__()
 
     def start(self):
-        self.send(self.main_event)
+        self.send(self.main_event.value)
 
     def on_transition(self, event, source, target):
         logging.info(f"event=jobTransition trigger={event} job_id={self.job.job_id} old={source.value} new={target.value}")

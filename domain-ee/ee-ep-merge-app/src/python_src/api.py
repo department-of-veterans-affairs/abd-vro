@@ -16,7 +16,7 @@ from pydantic_models import (
     MergeJobsResponse,
 )
 from schema.merge_job import JobState, MergeJob
-from service.ep_merge_machine import EpMergeMachine
+from service.ep_merge_machine import EpMergeMachine, Workflow
 from service.hoppy_service import HOPPY
 from service.job_store import job_store
 from util.sanitizer import sanitize
@@ -107,13 +107,13 @@ def start_job_state_machine(merge_job):
 def resume_job_state_machine(in_progress_job):
     if in_progress_job.state == JobState.RUNNING_MOVE_CONTENTIONS_TO_PENDING_CLAIM:
         in_progress_job.error("Job abandoned: Unable to verify if the contentions were successfully moved to pending EP")
-        EpMergeMachine(in_progress_job, 'resume_processing_from_running_move_contentions_to_pending_claim').start()
+        EpMergeMachine(in_progress_job, Workflow.RESUME_MOVE_CONTENTIONS).start()
     elif in_progress_job.state == JobState.RUNNING_CANCEL_EP400_CLAIM:
-        EpMergeMachine(in_progress_job, 'resume_processing_from_running_cancel_ep400_claim').start()
+        EpMergeMachine(in_progress_job, Workflow.RESUME_CANCEL_EP400).start()
     elif in_progress_job.state == JobState.RUNNING_ADD_CLAIM_NOTE_TO_EP400:
-        EpMergeMachine(in_progress_job, 'resume_processing_from_running_add_note_to_ep400_claim').start()
+        EpMergeMachine(in_progress_job, Workflow.RESUME_ADD_NOTE).start()
     else:
-        EpMergeMachine(in_progress_job, 'resume_restart').start()
+        EpMergeMachine(in_progress_job, Workflow.RESTART).start()
 
 
 @app.get("/merge/{job_id}",
