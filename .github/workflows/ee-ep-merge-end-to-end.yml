@@ -128,6 +128,10 @@ jobs:
             exit 10
           fi
 
+      - name: 'Run End 2 End Tests'
+        shell: bash
+        run: |
+          ./gradlew :domain-ee:ee-ep-merge-app:endToEndTest
 
       - name: 'Clean shutdown of all containers'
         if: always()

@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import java.time.OffsetDateTime;
 
 public class BaseController {
-  protected static final int CLAIM_YIELDS_500 = 500;
 
   protected <T extends ProviderResponse> ResponseEntity<T> create200(T response) {
     return new ResponseEntity<>(response, HttpStatus.OK);

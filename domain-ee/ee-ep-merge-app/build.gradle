@@ -14,3 +14,15 @@ tasks.register('integrationTest', Test) {
   dependsOn 'integrationPytest'
   group = 'verification'
 }
+
+// Runs pytest end-to-end tests when './gradlew integration-test' is run
+tasks.register('endToEndPytest', PythonTask) {
+  dependsOn 'pyflake8'
+  module = 'pytest'
+  command = './end_to_end'
+}
+
+tasks.register('endToEndTest', Test) {
+  dependsOn 'endToEndPytest'
+  group = 'verification'
+}
