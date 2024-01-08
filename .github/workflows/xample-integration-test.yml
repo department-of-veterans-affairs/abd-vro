@@ -65,6 +65,16 @@ jobs:
           # Quit after 60 seconds
           timeout: 60000
 
+      - name: 'Wait for Liveness and Readiness'
+        run: |
+          echo "Checking liveness..."
+          curl --fail http://localhost:10021/actuator/health/liveness
+          echo "Liveness check passed."
+
+          echo "Checking readiness..."
+          curl --fail http://localhost:10021/actuator/health/readiness
+          echo "Readiness check passed."
+
       - name: "Run the integration test"
         run: |
           source scripts/setenv.sh
@@ -82,6 +92,7 @@ jobs:
           fi
 
           ./gradlew -p domain-xample integrationTest
+
       - name: "Collect docker logs"
         if: always()
         uses: jwalton/gh-docker-logs@v2
