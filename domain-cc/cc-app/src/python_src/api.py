@@ -2,7 +2,7 @@ import json
 import logging
 import sys
 import time
-from typing import Optional, Union
+from typing import Optional
 
 from fastapi import FastAPI, HTTPException
 
@@ -10,6 +10,7 @@ from .pydantic_models import Claim, PredictedClassification
 from .util.brd_classification_codes import get_classification_name
 from .util.logging_dropdown_selections import build_logging_table
 from .util.lookup_table import ConditionDropdownLookupTable, DiagnosticCodeLookupTable
+from .util.sanitizer import sanitize
 
 dc_lookup_table = DiagnosticCodeLookupTable()
 dropdown_lookup_table = ConditionDropdownLookupTable()
@@ -39,7 +40,6 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
     stream=sys.stdout,
 )
-# [%(asctime)s] %(levelname)-8s
 
 
 @app.get("/health")
@@ -53,34 +53,40 @@ def get_health_status():
 def log_lookup_table_match(
     classification_code: int, is_in_dropdown: bool, contention_text: str
 ):
+    log_as_json({"is_in_dropdown": sanitize(is_in_dropdown)})
     log_contention_text = contention_text if is_in_dropdown else "Not in dropdown"
 
     if classification_code:
-        already_mapped_text = (  # being explicit, do not leak PII
-            contention_text.strip().lower()
-        )
-        log_as_json({"Lookup table match": already_mapped_text})
+        already_mapped_text = contention_text.strip().lower()  # do not leak PII
+        log_as_json({"lookup_table_match": sanitize(already_mapped_text)})
     elif is_in_dropdown:
-        log_as_json({"No lookup table match for dropdown entry": log_contention_text})
+        log_as_json(
+            {
+                "lookup_table_match": sanitize(
+                    f"No table match for {log_contention_text}"
+                )
+            }
+        )
     else:
-        log_as_json("No Lookup table match for free text")
+        log_as_json(
+            {"lookup_table_match": sanitize("No table match for free text entry")}
+        )
 
 
-def log_as_json(obj: Union[dict, str]):
-    try:
-        obj["date"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        obj["level"] = logging.getLevelName(logging.root.level)
-        logging.info(json.dumps(obj))
-    except TypeError:
-        logging.info(obj)
+def log_as_json(log: dict):
+    if "date" not in log.keys():
+        log.update({"date": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())})
+    if "level" not in log.keys():
+        log.update({"level": "info"})
+    logging.info(json.dumps(log))
 
 
 @app.post("/classifier")
 def get_classification(claim: Claim) -> Optional[PredictedClassification]:
     log_as_json(
         {
-            "claim_id": claim.claim_id,
-            "form526_submission_id": claim.form526_submission_id,
+            "claim_id": sanitize(claim.claim_id),
+            "form526_submission_id": sanitize(claim.form526_submission_id),
         }
     )
     classification_code = None
@@ -91,7 +97,6 @@ def get_classification(claim: Claim) -> Optional[PredictedClassification]:
     if claim.contention_text and not classification_code:
         classification_code = dropdown_lookup_table.get(claim.contention_text, None)
         is_in_dropdown = claim.contention_text.strip().lower() in dropdown_values
-        log_as_json({"In Dropdown": is_in_dropdown})
         log_lookup_table_match(
             classification_code, is_in_dropdown, claim.contention_text
         )
