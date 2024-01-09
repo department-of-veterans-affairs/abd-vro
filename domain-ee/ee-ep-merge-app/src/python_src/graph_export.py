@@ -73,7 +73,7 @@ class DotGraphMachine:
 
     def _transition_as_edge(self, transition):
         if self.machine.main_event not in transition.events:
-            return
+            return None
 
         if 'failed' in transition.source.name or 'failed' in transition.target.name or 'error' in transition.target.name:
             color = ERROR
