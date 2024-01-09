@@ -14,6 +14,7 @@ from .pydantic_models import (
 from .util.brd_classification_codes import get_classification_name
 from .util.logging_dropdown_selections import build_logging_table
 from .util.lookup_table import ConditionDropdownLookupTable, DiagnosticCodeLookupTable
+from .util.sanitize import sanitize
 
 dc_lookup_table = DiagnosticCodeLookupTable()
 dropdown_lookup_table = ConditionDropdownLookupTable()
@@ -94,7 +95,6 @@ def do_get_classification(
 
 
 def generate_flattened_claim(contention_text, diagnostic_code, multi_contention_claim):
-    print(f"got dc: {diagnostic_code}")
     return FlattenedSingleIssueClaim(
         claim_id=multi_contention_claim.va_gov_claim_id,
         form526_submission_id=multi_contention_claim.va_gov_form526_submission_id,
@@ -109,7 +109,9 @@ def classifier_v1(
     claim: FlattenedSingleIssueClaim,
 ) -> Optional[PredictedClassification]:
     logging.info(
-        f"claim_id: {claim.va_gov_claim_id}, form526_submission_id: {claim.va_gov_form526_submission_id}"
+        sanitize(
+            f"claim_id: {claim.va_gov_claim_id}, form526_submission_id: {claim.va_gov_form526_submission_id}"
+        )
     )
     return do_get_classification(claim)
 
@@ -144,7 +146,9 @@ def classifier_v2(
         classifications.append(classification)
 
     logging.info(
-        f"claim_id: {multi_contention_claim.claim_id}, form526_submission_id: {multi_contention_claim.form526_submission_id}"
+        sanitize(
+            f"claim_id: {multi_contention_claim.claim_id}, form526_submission_id: {multi_contention_claim.form526_submission_id}"
+        )
     )
     logging.info(f"contention_log_info: {contention_log_info}")
 
