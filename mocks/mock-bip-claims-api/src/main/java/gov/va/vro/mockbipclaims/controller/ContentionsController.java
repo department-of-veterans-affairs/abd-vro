@@ -48,7 +48,8 @@ public class ContentionsController extends BaseController implements Contentions
     if (item == null) {
       return createClaim400(response, claimId);
     }
-    if (claimId == CLAIM_ID_ALL_ENDPOINTS_YIELDS_500 || claimId == CLAIM_ID_CREATE_CONTENTIONS_YIELDS_500) {
+    if (claimId == CLAIM_ID_ALL_ENDPOINTS_YIELDS_500
+        || claimId == CLAIM_ID_CREATE_CONTENTIONS_YIELDS_500) {
       return create500(response);
     }
 
@@ -77,7 +78,8 @@ public class ContentionsController extends BaseController implements Contentions
     if (item == null) {
       return createClaim404(response, claimId);
     }
-    if (claimId == CLAIM_ID_ALL_ENDPOINTS_YIELDS_500 || claimId == CLAIM_ID_GET_CONTENTIONS_YIELDS_500) {
+    if (claimId == CLAIM_ID_ALL_ENDPOINTS_YIELDS_500
+        || claimId == CLAIM_ID_GET_CONTENTIONS_YIELDS_500) {
       return create500(response);
     }
 
@@ -109,7 +111,8 @@ public class ContentionsController extends BaseController implements Contentions
       // Non-existent claim id yields 400, not 404
       return createClaim400(response, claimId);
     }
-    if (claimId == CLAIM_ID_ALL_ENDPOINTS_YIELDS_500 || claimId == CLAIM_ID_UPDATE_CONTENTIONS_YIELDS_500) {
+    if (claimId == CLAIM_ID_ALL_ENDPOINTS_YIELDS_500
+        || claimId == CLAIM_ID_UPDATE_CONTENTIONS_YIELDS_500) {
       return create500(response);
     }
 

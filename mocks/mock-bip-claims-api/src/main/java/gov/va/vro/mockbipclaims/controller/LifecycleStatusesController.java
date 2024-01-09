@@ -33,7 +33,8 @@ public class LifecycleStatusesController extends BaseController implements Lifec
     if (item == null) {
       return createClaim404(response, claimId);
     }
-    if (claimId == CLAIM_ID_ALL_ENDPOINTS_YIELDS_500 || claimId == CLAIM_ID_UPDATE_LIFECYCLE_STATUS_YIELDS_500) {
+    if (claimId == CLAIM_ID_ALL_ENDPOINTS_YIELDS_500
+        || claimId == CLAIM_ID_UPDATE_LIFECYCLE_STATUS_YIELDS_500) {
       return create500(response);
     }
 
