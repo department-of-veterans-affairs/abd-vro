@@ -1,5 +1,8 @@
 package gov.va.vro.mockbipclaims.controller;
 
+import static gov.va.vro.mockbipclaims.config.ClaimIdConstants.CLAIM_ID_ALL_ENDPOINTS_YIELDS_500;
+import static gov.va.vro.mockbipclaims.config.ClaimIdConstants.CLAIM_ID_UPDATE_LIFECYCLE_STATUS_YIELDS_500;
+
 import gov.va.vro.mockbipclaims.api.LifecycleStatusesApi;
 import gov.va.vro.mockbipclaims.model.bip.request.UpdateClaimLifecycleStatusRequest;
 import gov.va.vro.mockbipclaims.model.bip.response.UpdateClaimLifecycleStatusResponse;
@@ -30,7 +33,8 @@ public class LifecycleStatusesController extends BaseController implements Lifec
     if (item == null) {
       return createClaim404(response, claimId);
     }
-    if (claimId == CLAIM_YIELDS_500) {
+    if (claimId == CLAIM_ID_ALL_ENDPOINTS_YIELDS_500
+        || claimId == CLAIM_ID_UPDATE_LIFECYCLE_STATUS_YIELDS_500) {
       return create500(response);
     }
 
