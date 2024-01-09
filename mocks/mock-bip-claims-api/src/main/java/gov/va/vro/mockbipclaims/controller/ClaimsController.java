@@ -1,5 +1,10 @@
 package gov.va.vro.mockbipclaims.controller;
 
+import static gov.va.vro.mockbipclaims.config.ClaimIdConstants.CLAIM_ID_ALL_ENDPOINTS_YIELDS_500;
+import static gov.va.vro.mockbipclaims.config.ClaimIdConstants.CLAIM_ID_CANCEL_CLAIM_YIELDS_500;
+import static gov.va.vro.mockbipclaims.config.ClaimIdConstants.CLAIM_ID_GET_CLAIM_DETAILS_YIELDS_500;
+import static gov.va.vro.mockbipclaims.config.ClaimIdConstants.CLAIM_ID_SET_TSOJ_YIELDS_500;
+
 import gov.va.vro.mockbipclaims.api.ClaimsApi;
 import gov.va.vro.mockbipclaims.model.bip.request.CloseClaimRequest;
 import gov.va.vro.mockbipclaims.model.bip.request.PutTemporaryStationOfJurisdictionRequest;
@@ -29,7 +34,8 @@ public class ClaimsController extends BaseController implements ClaimsApi {
     if (item == null) {
       return createClaim404(response, claimId);
     }
-    if (claimId == CLAIM_YIELDS_500) {
+    if (claimId == CLAIM_ID_ALL_ENDPOINTS_YIELDS_500
+        || claimId == CLAIM_ID_GET_CLAIM_DETAILS_YIELDS_500) {
       return create500(response);
     }
 
@@ -50,7 +56,8 @@ public class ClaimsController extends BaseController implements ClaimsApi {
       return createClaim404(response, claimId);
     }
 
-    if (claimId == CLAIM_YIELDS_500) {
+    if (claimId == CLAIM_ID_ALL_ENDPOINTS_YIELDS_500
+        || claimId == CLAIM_ID_CANCEL_CLAIM_YIELDS_500) {
       return create500(response);
     }
 
@@ -80,7 +87,7 @@ public class ClaimsController extends BaseController implements ClaimsApi {
       return createClaim404(response, claimId);
     }
 
-    if (claimId == CLAIM_YIELDS_500) {
+    if (claimId == CLAIM_ID_ALL_ENDPOINTS_YIELDS_500 || claimId == CLAIM_ID_SET_TSOJ_YIELDS_500) {
       return create500(response);
     }
 
