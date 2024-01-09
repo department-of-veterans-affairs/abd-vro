@@ -16,7 +16,7 @@ from pydantic_models import (
     MergeJobsResponse,
 )
 from schema.merge_job import JobState, MergeJob
-from service.ep_merge_machine import EpMergeMachine
+from service.ep_merge_machine import EpMergeMachine, Workflow
 from service.hoppy_service import HOPPY
 from service.job_store import job_store
 from util.sanitizer import sanitize
@@ -32,10 +32,9 @@ async def lifespan(api: FastAPI):
 async def on_start_up():
     loop = asyncio.get_event_loop()
     await HOPPY.start_hoppy_clients(loop)
-    jobs_to_restart = job_store.reinitialize_in_progress_jobs()
+    jobs_to_restart = job_store.get_all_incomplete_jobs()
     for job in jobs_to_restart:
-        logging.info(f"event=jobRestarted {job}")
-        asyncio.get_event_loop().run_in_executor(None, start_job_state_machine, job)
+        asyncio.get_event_loop().run_in_executor(None, resume_job_state_machine, job)
 
 
 async def on_shut_down():
@@ -102,7 +101,16 @@ def validate_merge_request(merge_request: MergeEndProductsRequest):
 
 
 def start_job_state_machine(merge_job):
-    EpMergeMachine(merge_job).process()
+    EpMergeMachine(merge_job).start()
+
+
+def resume_job_state_machine(in_progress_job):
+    if in_progress_job.state == JobState.RUNNING_CANCEL_EP400_CLAIM:
+        EpMergeMachine(in_progress_job, Workflow.RESUME_CANCEL_EP400).start()
+    elif in_progress_job.state == JobState.RUNNING_ADD_CLAIM_NOTE_TO_EP400:
+        EpMergeMachine(in_progress_job, Workflow.RESUME_ADD_NOTE).start()
+    else:
+        EpMergeMachine(in_progress_job, Workflow.RESTART).start()
 
 
 @app.get("/merge/{job_id}",
