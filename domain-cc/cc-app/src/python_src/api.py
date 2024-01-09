@@ -96,8 +96,8 @@ def do_get_classification(
 def generate_flattened_claim(contention_text, diagnostic_code, multi_contention_claim):
     print(f"got dc: {diagnostic_code}")
     return FlattenedSingleIssueClaim(
-        claim_id=multi_contention_claim.claim_id,
-        form526_submission_id=multi_contention_claim.form526_submission_id,
+        claim_id=multi_contention_claim.va_gov_claim_id,
+        form526_submission_id=multi_contention_claim.va_gov_form526_submission_id,
         diagnostic_code=diagnostic_code,
         claim_type=multi_contention_claim.claim_type,
         contention_text=contention_text,
@@ -109,7 +109,7 @@ def classifier_v1(
     claim: FlattenedSingleIssueClaim,
 ) -> Optional[PredictedClassification]:
     logging.info(
-        f"claim_id: {claim.claim_id}, form526_submission_id: {claim.form526_submission_id}"
+        f"claim_id: {claim.va_gov_claim_id}, form526_submission_id: {claim.va_gov_form526_submission_id}"
     )
     return do_get_classification(claim)
 
