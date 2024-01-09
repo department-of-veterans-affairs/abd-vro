@@ -6,7 +6,7 @@ from typing import Optional
 
 from fastapi import FastAPI, HTTPException
 
-from .pydantic_models import Claim, PredictedClassification
+from .pydantic_models import Claim, ClaimLinkInfo, PredictedClassification
 from .util.brd_classification_codes import get_classification_name
 from .util.logging_dropdown_selections import build_logging_table
 from .util.lookup_table import ConditionDropdownLookupTable, DiagnosticCodeLookupTable
@@ -15,7 +15,6 @@ from .util.sanitizer import sanitize
 dc_lookup_table = DiagnosticCodeLookupTable()
 dropdown_lookup_table = ConditionDropdownLookupTable()
 dropdown_values = build_logging_table()
-
 
 app = FastAPI(
     title="Contention Classification",
@@ -112,3 +111,17 @@ def get_classification(claim: Claim) -> Optional[PredictedClassification]:
 
     log_as_json({"classification": classification})
     return classification
+
+
+@app.post("/claim-linker")
+def link_vbms_claim_id(claim_link_info: ClaimLinkInfo):
+    log_as_json(
+        {
+            "message": "linking claims",
+            "va_gov_claim_id": claim_link_info.va_gov_claim_id,
+            "vbms_claim_id": claim_link_info.vbms_claim_id,
+        }
+    )
+    return {
+        "success": True,
+    }
