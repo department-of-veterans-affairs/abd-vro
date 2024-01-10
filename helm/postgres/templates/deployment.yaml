@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vro-postgres
+  labels: {{- toYaml .Values.labels | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels: {{- toYaml .Values.labels | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- toYaml .Values.labels | nindent 8 }}
+        sidecar.istio.io/inject: "false"
+      annotations:
+        {{- include "vro.annotations.pod" . | nindent 8 }}
+    spec:
+      {{- include "vro.imagePullSecrets" . | nindent 6 }}
+      containers:
+        - name: rabbitmq{{ include "vro.containerSuffix" . }}
+          image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/vro-postgres:{{ .Values.imageTag }}
+          resources:
+            requests:
+              cpu: 150m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
