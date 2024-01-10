@@ -1,8 +1,8 @@
 import pytest
 from httpx import AsyncClient
 from integration.mq_endpoint import MqEndpoint
-from model.merge_job import JobState
 from src.python_src.api import app
+from src.python_src.schema.merge_job import JobState
 
 RESPONSE_DIR = './tests/responses'
 response_200 = f'{RESPONSE_DIR}/200_response.json'

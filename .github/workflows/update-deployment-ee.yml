@@ -55,12 +55,21 @@ on:
         default: false
 
 jobs:
-  update-ee-deployment:
+  update-ee-max-cfi-app-deployment:
     uses: ./.github/workflows/update-deployment.yml
     secrets: inherit
     with:
       target_env: ${{ inputs.target_env }}
-      helm_chart: domain-ee
+      helm_chart: domain-ee-max-cfi-app
+      image_tag: ${{ inputs.image_tag }}
+      rollback: ${{ inputs.rollback }}
+      shutdown: ${{ inputs.shutdown }}
+  update-ee-ep-merge-app-deployment:
+    uses: ./.github/workflows/update-deployment.yml
+    secrets: inherit
+    with:
+      target_env: ${{ inputs.target_env }}
+      helm_chart: domain-ee-ep-merge-app
       image_tag: ${{ inputs.image_tag }}
       rollback: ${{ inputs.rollback }}
       shutdown: ${{ inputs.shutdown }}
