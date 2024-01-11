@@ -10,6 +10,7 @@ from .pydantic_models import (
     Claim,
     ClaimLinkInfo,
     ClassifierResponse,
+    Contention,
     PredictedClassification,
     VaGovClaim,
 )
@@ -120,16 +121,16 @@ def get_classification(claim: Claim) -> Optional[PredictedClassification]:
     return classification
 
 
-def classify_contention(contention: dict) -> Optional[PredictedClassification]:
+def classify_contention(contention: Contention) -> Optional[PredictedClassification]:
     classification_code = None
-    if contention["diagnostic_code"]:
-        classification_code = dc_lookup_table.get(contention["diagnostic_code"], None)
+    if contention.diagnostic_code:
+        classification_code = dc_lookup_table.get(contention.diagnostic_code, None)
 
-    if contention["contention_text"] and not classification_code:
+    if contention.contention_text and not classification_code:
         classification_code = dropdown_lookup_table.get(
-            contention["contention_text"], None
+            contention.contention_text, None
         )
-        log_lookup_table_match(classification_code, contention["contention_text"])
+        log_lookup_table_match(classification_code, contention.contention_text)
 
     if classification_code:
         classification = {

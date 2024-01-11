@@ -53,7 +53,7 @@ class VaGovClaim(BaseModel):
         claim_type = values.get("claim_type")
 
         if claim_type == ClaimType.claim_for_increase:
-            have_diagnostic_codes = all([contention.get("diagnostic_code", None) is not None for contention in values.get("contentions")])
+            have_diagnostic_codes = all([contention.diagnostic_code is not None for contention in values.get("contentions")])
             if not have_diagnostic_codes:
                 raise HTTPException(
                     422, "diagnostic_code is required for claim_type claim_for_increase"
