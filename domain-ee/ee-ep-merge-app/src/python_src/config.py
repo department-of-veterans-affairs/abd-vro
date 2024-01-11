@@ -74,3 +74,11 @@ REPLY_QUEUES = {
     ClientName.BGS_ADD_CLAIM_NOTE:
         os.environ.get("ADD_CLAIM_NOTE_RESPONSE") or "add-note-response",
 }
+
+POSTGRES_USER = os.environ.get("POSTGRES_USER") or "vro_user"
+POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD") or "vro_user_pw"
+POSTGRES_HOST = os.environ.get("POSTGRES_HOST") or "localhost"
+POSTGRES_PORT = os.environ.get("POSTGRES_PORT") or "5432"
+POSTGRES_DB = os.environ.get("POSTGRES_DB") or "vro"
+POSTGRES_SCHEMA = os.environ.get("POSTGRES_SCHEMA") or "claims"
+SQLALCHEMY_DATABASE_URI = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"

@@ -1,7 +1,7 @@
 labels:
-  app: domain-ee-app
+  app: domain-ee-ep-merge-app
 
-serviceUriPrefix: employee-experience
+serviceUriPrefix: employee-experience-ep-merge-app
 
 replicaCount: 1
 
@@ -12,6 +12,6 @@ replicaCount: 1
 #   targetCPUUtilizationPercentage: 80
 
 service:
-  eeApp:
-    sourcePort: 8130
-    targetPort: 8130
+  eeEpMergeApp:
+    sourcePort: 8140
+    targetPort: 8140

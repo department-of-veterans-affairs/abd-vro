@@ -1,8 +1,8 @@
 from datetime import datetime
 
 import pytest
-from model.contention import ContentionSummary
-from model.get_contentions import Response
+from schema.contention import ContentionSummary
+from schema.get_contentions import Response
 from util.contentions_util import ContentionsUtil
 
 new_tendinitis = ContentionSummary(
