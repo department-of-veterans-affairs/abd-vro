@@ -1,4 +1,4 @@
-from enum import StrEnum
+from enum import Enum
 from typing import Optional
 
 from fastapi import HTTPException
@@ -37,7 +37,7 @@ class Contention(BaseModel):
     diagnostic_code: Optional[int]  # only required for claim_type: "claim_for_increase"
 
 
-class ClaimType(StrEnum):
+class ClaimType(str, Enum):
     claim_for_increase = "claim_for_increase"
     new = "new"
 
