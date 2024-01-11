@@ -143,6 +143,6 @@ runs:
           fi
           echo "::endgroup::"
         done
-        echo -n "]" >> $GITHUB_OUTPUT
+        echo "]" >> $GITHUB_OUTPUT
         echo "EOF" >> "$GITHUB_OUTPUT"
         docker image list
