@@ -94,7 +94,7 @@ runs:
 
         echo "## Published images" >> "$GITHUB_STEP_SUMMARY"
         echo "images<<EOF" >> "$GITHUB_OUTPUT"
-        echo "[" >> "$GITHUB_OUTPUT"
+        echo -n "[" >> "$GITHUB_OUTPUT"
         source scripts/image_vars.src
         for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
           # Set IMG_TAG, which will determine if a new image will get published
@@ -139,10 +139,10 @@ runs:
             docker push "${GHCR_PATH}:latest"
 
             echo "* $IMG_NAME:$IMG_TAG" >> "$GITHUB_STEP_SUMMARY"
-            echo "\"${GHCR_PATH}:$IMG_TAG\"," >> "$GITHUB_OUTPUT"
+            echo -n "\"${GHCR_PATH}:$IMG_TAG\"," >> "$GITHUB_OUTPUT"
           fi
           echo "::endgroup::"
         done
-        echo "]" >> $GITHUB_OUTPUT
+        echo -n "]" >> $GITHUB_OUTPUT
         echo "EOF" >> "$GITHUB_OUTPUT"
         docker image list
