@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: {{ .Values.global.hostnamePrefix }}-domainee-virtservice
+  name: {{ .Values.global.hostnamePrefix }}-domaineeepmergeapp-virtservice
   labels: {{- toYaml .Values.labels | nindent 4 }}
 spec:
   # Refer to https://animated-carnival-57b3e7f5.pages.github.io/container-platform/routing-traffic/
@@ -18,10 +18,10 @@ spec:
       uri: /
     route:
     - destination:
-        # Should match metadata.name in helm/charts/domain-cc/templates/service.yaml
-        host: {{ .Values.global.hostnamePrefix }}-ee-app
+        # Should match metadata.name in helm/charts/domain-ee-ep-merge-app/templates/service.yaml
+        host: {{ .Values.global.hostnamePrefix }}-ee-ep-merge-app
         port:
-          number: 8130
+          number: {{ .Values.service.eeEpMergeApp.targetPort }}
     headers:
       response:
           remove:
