@@ -93,7 +93,8 @@ runs:
         export GHCR_TOKEN=$(echo ${{ inputs.ghcr_password }} | base64)
 
         echo "## Published images" >> "$GITHUB_STEP_SUMMARY"
-        echo "images<<EOF[" >> "$GITHUB_OUTPUT"
+        echo "images<<EOF" >> "$GITHUB_OUTPUT"
+        echo "[" >> "$GITHUB_OUTPUT"
         source scripts/image_vars.src
         for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
           # Set IMG_TAG, which will determine if a new image will get published
@@ -142,5 +143,6 @@ runs:
           fi
           echo "::endgroup::"
         done
-        echo "] EOF" >> "$GITHUB_OUTPUT"
+        echo "]" >> $GITHUB_OUTPUT
+        echo "EOF" >> "$GITHUB_OUTPUT"
         docker image list
