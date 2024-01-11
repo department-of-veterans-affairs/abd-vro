@@ -145,7 +145,7 @@ runs:
         done
 
         # Remove the final trailing comma
-        echo -n ${GITHUB_OUTPUT::-1} >> "$GITHUB_OUTPUT"
+        GITHUB_OUTPUT=${GITHUB_OUTPUT::-1}
 
         echo "]" >> "$GITHUB_OUTPUT"
         echo "EOF" >> "$GITHUB_OUTPUT"
