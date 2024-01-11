@@ -8,8 +8,11 @@ def test_claim_ids_logged(client: TestClient, caplog):
     }
     client.post("/claim-linker", json=json_post_dict)
     expected_claim_link_json = {
+        'level': 'info',
         "message": "linking claims",
         "va_gov_claim_id": 100,
         "vbms_claim_id": 200,
     }
-    assert eval(caplog.records[0].message) == expected_claim_link_json
+    log_as_dict = eval(caplog.records[0].message)
+    del log_as_dict["date"]
+    assert log_as_dict == expected_claim_link_json
