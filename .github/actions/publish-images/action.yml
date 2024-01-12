@@ -149,4 +149,5 @@ runs:
 
         echo "]" >> "$GITHUB_OUTPUT"
         echo "EOF" >> "$GITHUB_OUTPUT"
+        echo $GITHUB_OUTPUT
         docker image list
