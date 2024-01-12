@@ -144,9 +144,6 @@ runs:
           echo "::endgroup::"
         done
 
-        # Remove the final trailing comma
-        GITHUB_OUTPUT=${GITHUB_OUTPUT::-1}
-
         echo "]" >> "$GITHUB_OUTPUT"
         echo "EOF" >> "$GITHUB_OUTPUT"
         echo "$GITHUB_OUTPUT"
