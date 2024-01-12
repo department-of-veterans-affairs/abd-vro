@@ -4,6 +4,10 @@ import pytest
 from fastapi.testclient import TestClient
 from src.python_src.api import app
 
+ASTRAGALECTOMY_CLASSIFICATION = {
+    "classification_code": 8991,
+    "classification_name": "Musculoskeletal - Ankle",
+}
 TUBERCULOSIS_CLASSIFICATION = {
     "diagnostic_code": 7710,
     "classification_code": 6890,

@@ -109,11 +109,5 @@ def test_v4_table_diagnostic_code(client: TestClient):
 
     response = client.post("/classifier", json=json_post_dict)
     assert response.status_code == 200
-    assert (
-        response.json()["classification_code"]
-        == 8920
-    )
-    assert (
-        response.json()["classification_name"]
-        == 'Adhesions - Digestive'
-    )
+    assert response.json()["classification_code"] == 8920
+    assert response.json()["classification_name"] == "Adhesions - Digestive"
