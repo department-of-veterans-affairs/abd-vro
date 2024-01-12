@@ -139,7 +139,12 @@ runs:
             docker push "${GHCR_PATH}:latest"
 
             echo "* $IMG_NAME:$IMG_TAG" >> "$GITHUB_STEP_SUMMARY"
-            echo -n "\"${GHCR_PATH}:$IMG_TAG\"," >> "$GITHUB_OUTPUT"
+            echo -n "\"${GHCR_PATH}:$IMG_TAG\"" >> "$GITHUB_OUTPUT"
+
+            # For all but the last image include a comma
+            if PREFIX != ${VAR_PREFIXES_ARR[-1]}
+              echo -n "," >> "$GITHUB_OUTPUT"
+            fi
           fi
           echo "::endgroup::"
         done
