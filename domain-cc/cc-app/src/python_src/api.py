@@ -118,8 +118,8 @@ def link_vbms_claim_id(claim_link_info: ClaimLinkInfo):
     log_as_json(
         {
             "message": "linking claims",
-            "va_gov_claim_id": claim_link_info.va_gov_claim_id,
-            "vbms_claim_id": claim_link_info.vbms_claim_id,
+            "va_gov_claim_id": sanitize_log(claim_link_info.va_gov_claim_id),
+            "vbms_claim_id": sanitize_log(claim_link_info.vbms_claim_id),
         }
     )
     return {
