@@ -142,7 +142,7 @@ runs:
             echo -n "\"${GHCR_PATH}:$IMG_TAG\"" >> "$GITHUB_OUTPUT"
 
             # For all but the last image include a comma
-            if PREFIX != ${VAR_PREFIXES_ARR[-1]}
+            if [ PREFIX != ${VAR_PREFIXES_ARR[-1]} ]; then
               echo -n "," >> "$GITHUB_OUTPUT"
             fi
           fi
