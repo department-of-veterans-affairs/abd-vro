@@ -6,7 +6,8 @@ RUN apk update && \
     apk --no-cache add curl redis sudo && \
     apk --no-cache add postgresql15-client && \
     apk upgrade openssl libssl3 libcrypto3 && \
-    rm -rf /var/cache/apk/*
+    rm -rf /var/cache/apk/* ** && \
+    adduser -D dev
 
 # SecRel requires that containers not run as root
 USER dev
