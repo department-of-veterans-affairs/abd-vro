@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vro-postgres
+  name: vro-dev-tools
   labels: {{- toYaml .Values.labels | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
@@ -16,8 +16,8 @@ spec:
     spec:
       {{- include "vro.imagePullSecrets" . | nindent 6 }}
       containers:
-        - name: rabbitmq{{ include "vro.containerSuffix" . }}
-          image: ghcr.io/department-of-veterans-affairs/abd-vro-internal/vro-postgres:{{ .Values.imageTag }}
+        - name: dev-tools{{ include "vro.containerSuffix" . }}
+          image: {{ include "vro.imageRegistryPath" . }}vro-dev-tools:{{ .Values.imageTag }}
           resources:
             requests:
               cpu: 150m
