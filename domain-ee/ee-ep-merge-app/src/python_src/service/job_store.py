@@ -18,8 +18,8 @@ class JobStore:
     def query(self, states: list[schema.JobState] = schema.JobState.incomplete_states(), offset: int = 1, limit: int = 10) -> \
             list[MergeJob]:
         return self.db.query(MergeJob,
-                             MergeJob.updated_at,
                              MergeJob.state.in_(states) if states else True,
+                             MergeJob.updated_at,
                              offset,
                              limit)
 
