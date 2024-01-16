@@ -1,6 +1,6 @@
 FROM bitnami/minideb:bookworm
 
-# hadolint ignore=DL3018
+# hadolint ignore=DL3018,DL3009
 RUN apt-get update && \
     install_packages curl redis sudo && \
     install_packages postgresql-client
