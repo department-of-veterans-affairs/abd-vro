@@ -6,7 +6,6 @@ RUN apt-get update && \
     install_packages postgresql-client
 
 RUN adduser --no-create-home --disabled-password tron
-RUN chmod +x ./*.sh &&
 
 USER tron
 
