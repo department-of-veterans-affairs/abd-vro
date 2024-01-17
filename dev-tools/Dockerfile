@@ -7,4 +7,4 @@ RUN apt-get update && \
 
 # This will cause the container to sleep for 10 hours before automatically terminating.
 # This will prevent the container from lingering in our LHDI environments
-ENTRYPOINT ["/bin/sleep", "3600"]
+ENTRYPOINT ["/bin/sleep", "36000"]
