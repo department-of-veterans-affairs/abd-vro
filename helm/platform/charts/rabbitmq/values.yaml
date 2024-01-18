@@ -11,6 +11,3 @@ service:
   mq:
     sourcePort: 5672
     targetPort: 5672
-
-auth:
-  enableLoopbackUser: false
