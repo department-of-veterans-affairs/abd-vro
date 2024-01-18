@@ -2,8 +2,8 @@
 
 rabbitmq:
   enabled: true
-  extraConfiguration: |
-    loopback_users = none
+  configuration: |-
+    loopback_users.user = false
 redis:
   enabled: true
 
