@@ -102,14 +102,14 @@ def test_query(db, merge_job, states: list, offset: int, limit: int):
 
     query_args = db.query.call_args[0]
     actual_model = query_args[0]
-    actual_order_by = query_args[1]
-    actual_filter = query_args[2]
+    actual_filter = query_args[1]
+    actual_order_by = query_args[2]
     actual_offset = query_args[3]
     actual_limit = query_args[4]
 
     assert actual_model == model.merge_job.MergeJob
-    assert actual_order_by == model.merge_job.MergeJob.updated_at
     assert actual_filter.compare(model.merge_job.MergeJob.state.in_(states if states else DEFAULT_STATES))
+    assert actual_order_by == model.merge_job.MergeJob.updated_at
     assert actual_offset == offset if offset else DEFAULT_OFFSET
     assert actual_limit == limit if limit else DEFAULT_LIMIT
 
