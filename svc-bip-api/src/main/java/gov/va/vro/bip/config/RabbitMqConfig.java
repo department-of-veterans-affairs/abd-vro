@@ -1,49 +1,73 @@
 package gov.va.vro.bip.config;
 
-import gov.va.vro.bip.model.HasStatusCodeAndMessage;
+import gov.va.vro.bip.service.InvalidPayloadRejectingFatalExceptionStrategy;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.rabbit.listener.api.RabbitListenerErrorHandler;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.listener.ConditionalRejectingErrorHandler;
+import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
+import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
+import org.springframework.validation.Validator;
+import org.springframework.validation.beanvalidation.OptionalValidatorFactoryBean;
 
 @Configuration
 @Slf4j
-public class RabbitMqConfig {
+@RequiredArgsConstructor
+public class RabbitMqConfig implements RabbitListenerConfigurer {
+
+  private final RabbitMqConfigProperties props;
+  private final JacksonConfig jacksonConfig;
 
   @Value("${exchangeName}")
   String exchangeName;
 
+  public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory() {
+    SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+    factory.setConnectionFactory(connectionFactory());
+    factory.setMessageConverter(
+        (jacksonConfig.jackson2MessageConverter(jacksonConfig.objectMapper())));
+    factory.setErrorHandler(
+        new ConditionalRejectingErrorHandler(new InvalidPayloadRejectingFatalExceptionStrategy()));
+    return factory;
+  }
+
   @Bean
-  public MessageConverter jackson2MessageConverter() {
-    return new Jackson2JsonMessageConverter();
+  public ConnectionFactory connectionFactory() {
+    CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
+    connectionFactory.setHost(props.getHost());
+    connectionFactory.setUsername(props.getUsername());
+    connectionFactory.setPassword(props.getPassword());
+    connectionFactory.setPort(props.getPort());
+    return connectionFactory;
+  }
+
+  @Bean
+  public DefaultMessageHandlerMethodFactory defaultHandlerMethodFactory() {
+    DefaultMessageHandlerMethodFactory factory = new DefaultMessageHandlerMethodFactory();
+    factory.setValidator(amqpValidator());
+    return factory;
+  }
+
+  @Bean
+  public Validator amqpValidator() {
+    return new OptionalValidatorFactoryBean();
+  }
+
+  @Override
+  public void configureRabbitListeners(RabbitListenerEndpointRegistrar registrar) {
+    registrar.setContainerFactory(rabbitListenerContainerFactory());
+    registrar.setMessageHandlerMethodFactory(defaultHandlerMethodFactory());
   }
 
   @Bean
   DirectExchange bipApiExchange() {
     return new DirectExchange(exchangeName, true, true);
-  }
-
-  @Bean
-  RabbitListenerErrorHandler svcBipApiErrorHandler() {
-    RabbitListenerErrorHandler handler =
-        (amqpMessage, message, exception) -> {
-          log.info("Oh no!", exception);
-
-          if (message != null && message.getHeaders().getReplyChannel() != null) {
-            var errorModel =
-                HasStatusCodeAndMessage.builder()
-                    .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                    .statusMessage(exception.toString());
-            return errorModel;
-          }
-
-          return null;
-        };
-    return handler;
   }
 }

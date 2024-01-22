@@ -13,5 +13,24 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: "Install Java"
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: '17'
+          # "When using gradle-build-action we recommend that you
+          # not use actions/cache or actions/setup-java@v3 to explicitly
+          # cache the Gradle User Home"
+          # cache: 'gradle'
+      - name: "Setup Gradle"
+        uses: gradle/gradle-build-action@v2
+        with:
+          # Only write to the cache for builds on the 'main' and 'develop' branches. (Default is 'main' only.)
+          # Builds on other branches will only read existing entries from the cache.
+          cache-read-only: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/qa' && github.ref != 'refs/heads/develop' }}
+          # To avoid a growing cache over time, attempt to delete any files in the Gradle User Home
+          # that were not used by Gradle during the workflow, prior to saving the cache.
+          # https://github.com/gradle/gradle-build-action#removing-unused-files-from-gradle-user-home-before-saving-to-cache
+          gradle-home-cache-cleanup: true
       - name: "Lint Gradle files"
         run: ./gradlew lintGradle

@@ -37,13 +37,6 @@ updates:
     open-pull-requests-limit: 10
 
   - package-ecosystem: "docker"
-    directory: "/postgres"
-    target-branch: "develop"
-    schedule:
-      interval: "daily"
-    open-pull-requests-limit: 10
-
-  - package-ecosystem: "docker"
     directory: "/db-init"
     target-branch: "develop"
     schedule:
@@ -52,6 +45,20 @@ updates:
 
   - package-ecosystem: "docker"
     directory: "/svc-bgs-api/src/docker"
+    target-branch: "develop"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 10
+
+  - package-ecosystem: "docker"
+    directory: "/mock/mock-bie-kafka"
+    target-branch: "develop"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 10
+
+  - package-ecosystem: "docker"
+    directory: "/mock/mock-bie-schema-registry"
     target-branch: "develop"
     schedule:
       interval: "daily"

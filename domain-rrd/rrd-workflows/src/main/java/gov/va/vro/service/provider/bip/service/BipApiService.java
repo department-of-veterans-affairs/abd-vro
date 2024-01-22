@@ -35,8 +35,6 @@ public class BipApiService implements IBipApiService {
   private static final String CONTENTION = "/claims/%s/contentions";
   private static final String SPECIAL_ISSUE_TYPES = "/contentions/special_issue_types";
 
-  private static final String HTTPS = "https://";
-
   @Qualifier("bipCERestTemplate")
   @NonNull
   private final RestTemplate restTemplate;
@@ -48,7 +46,7 @@ public class BipApiService implements IBipApiService {
   @Override
   public BipClaim getClaimDetails(long claimId) throws BipException {
     try {
-      String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CLAIM_DETAILS, claimId);
+      String url = bipApiProps.getClaimRequestUrl(String.format(CLAIM_DETAILS, claimId));
       log.info("call {} to get claim info.", url);
       HttpHeaders headers = getBipHeader();
       HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(headers);
@@ -99,8 +97,7 @@ public class BipApiService implements IBipApiService {
       throws BipException {
     final String description = status.getDescription();
     try {
-      String url =
-          HTTPS + bipApiProps.getClaimBaseUrl() + String.format(UPDATE_CLAIM_STATUS, claimId);
+      String url = bipApiProps.getClaimRequestUrl(String.format(UPDATE_CLAIM_STATUS, claimId));
       log.info("call {} to update claim status to {}.", url, description);
 
       HttpHeaders headers = getBipHeader();
@@ -123,7 +120,7 @@ public class BipApiService implements IBipApiService {
   @Override
   public List<ClaimContention> getClaimContentions(long claimId) throws BipException {
     try {
-      String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
+      String url = bipApiProps.getClaimRequestUrl(String.format(CONTENTION, claimId));
       log.info("Call {} to get claim contention for {}.", url, claimId);
       HttpHeaders headers = getBipHeader();
       HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(headers);
@@ -152,7 +149,7 @@ public class BipApiService implements IBipApiService {
   public BipUpdateClaimResp updateClaimContention(long claimId, UpdateContentionReq contention)
       throws BipException {
     try {
-      String url = HTTPS + bipApiProps.getClaimBaseUrl() + String.format(CONTENTION, claimId);
+      String url = bipApiProps.getClaimRequestUrl(String.format(CONTENTION, claimId));
       log.info("Call {} to update contention for {}.", url, claimId);
       HttpHeaders headers = getBipHeader();
       String updtContention = mapper.writeValueAsString(contention);
@@ -172,7 +169,7 @@ public class BipApiService implements IBipApiService {
 
   @Override
   public boolean verifySpecialIssueTypes() {
-    String url = HTTPS + bipApiProps.getClaimBaseUrl() + SPECIAL_ISSUE_TYPES;
+    String url = bipApiProps.getClaimRequestUrl(SPECIAL_ISSUE_TYPES);
     log.info("Call {} to get special_issue_types", url);
 
     HttpHeaders headers = getBipHeader();

@@ -1,10 +1,11 @@
 name: "1. (Internal) Continuous Delivery (to DEV daily)"
 
 on:
-  schedule:
-    # Run every day at 19:00 UTC
-    # https://pubs.opengroup.org/onlinepubs/9699919799/utilities/crontab.html#tag_20_25_07
-    - cron: '0 19 * * *'
+  # Remove automatic runs 12/1/23
+  # schedule:
+  #   # Run every day at 19:00 UTC
+  #   # https://pubs.opengroup.org/onlinepubs/9699919799/utilities/crontab.html#tag_20_25_07
+  #   - cron: '0 19 * * *'
 
   # Allow manual triggering
   workflow_dispatch:
@@ -57,10 +58,18 @@ jobs:
       helm_chart: domain-cc
       image_tag: ${{ inputs.image_tag || 'latest' }}
 
-  deploy-domain-ee:
+  deploy-domain-ee-max-cfi-app:
     uses: ./.github/workflows/update-deployment.yml
     secrets: inherit
     with:
       target_env: ${{ inputs.target_env || 'dev' }}
-      helm_chart: domain-ee
+      helm_chart: domain-ee-max-cfi-app
+      image_tag: ${{ inputs.image_tag || 'latest' }}
+
+  deploy-domain-ee-ep-merge-app:
+    uses: ./.github/workflows/update-deployment.yml
+    secrets: inherit
+    with:
+      target_env: ${{ inputs.target_env || 'dev' }}
+      helm_chart: domain-ee-ep-merge-app
       image_tag: ${{ inputs.image_tag || 'latest' }}

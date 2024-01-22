@@ -56,7 +56,7 @@ x-svc-depends-on: &svc-depends-on
 
 x-redis-placeholder-vars: &redis-placeholder-vars
   REDIS_PLACEHOLDERS_HOST: redis-service
-  REDIS_PLACEHOLDERS_PASSWORD: ${REDIS_PLACEHOLDERS_PASSWORD}
+  REDIS_PASSWORD: ${REDIS_PLACEHOLDERS_PASSWORD}
 
 services:
   svc-assessor-dc7101:

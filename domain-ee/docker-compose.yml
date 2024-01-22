@@ -25,13 +25,22 @@ x-common-sde-security: &common-sde-security
 
 x-rabbitmq-placeholder-vars: &rabbitmq-placeholder-vars
   RABBITMQ_PLACEHOLDERS_HOST: rabbitmq-service
-  RABBITMQ_PLACEHOLDERS_USERNAME: ${RABBITMQ_PLACEHOLDERS_USERNAME}
-  RABBITMQ_PLACEHOLDERS_USERPASSWORD: ${RABBITMQ_PLACEHOLDERS_USERPASSWORD}
+  RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+  RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+
+x-postgres-vars: &postgres-vars
+  POSTGRES_HOST: postgres-service
+  POSTGRES_PORT: 5432
+  POSTGRES_DB: ${POSTGRES_DB}
+  POSTGRES_USER: ${POSTGRES_USER}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  POSTGRES_SCHEMA: ${POSTGRES_SCHEMA}
 
 services:
   # Containers with the `svc-` prefix are microservices to support domain workflows.
 
   ee-max-cfi-app:
+    profiles: ["all"]
     image: va/abd_vro-ee-max-cfi-app:latest
     <<: [*common-sde-security, *common-security-opt]
     environment:
@@ -42,10 +51,11 @@ services:
       - vro_intranet
 
   ee-ep-merge-app:
+    profiles: ["all","bip"]
     image: va/abd_vro-ee-ep-merge-app:latest
     <<: [*common-sde-security, *common-security-opt]
     environment:
-      <<: [ *rabbitmq-placeholder-vars, *common-vars ]
+      <<: [ *rabbitmq-placeholder-vars, *postgres-vars, *common-vars ]
     ports:
       - "8140:8140"
     networks:

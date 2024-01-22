@@ -32,14 +32,4 @@ public class ClaimStore {
     String key = String.valueOf(id);
     store.put(key, item);
   }
-
-  /**
-   * Removes an item from Claim Store.
-   *
-   * @param claimId
-   */
-  public void cancel(Long claimId) {
-    String key = String.valueOf(claimId);
-    store.remove(key);
-  }
 }

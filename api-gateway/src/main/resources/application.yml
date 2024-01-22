@@ -11,7 +11,7 @@ management:
         enabled: true
       group:
         liveness.include: livenessState
-        readiness.include: readinessState, db
+        readiness.include: readinessState
   metrics:
     enabled: true
     distribution:

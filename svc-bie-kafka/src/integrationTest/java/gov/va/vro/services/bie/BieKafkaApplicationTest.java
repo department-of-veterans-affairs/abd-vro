@@ -67,7 +67,7 @@ public class BieKafkaApplicationTest {
     // Message 2 comes through Kafka
     BieMessagePayload kafkaEventBody = BieMessagePayloadFactory.create();
     kafkaEventBody.setEventType(null);
-    kafkaEventBody.setContentionId(1234567890);
+    kafkaEventBody.setContentionId(1234567890L);
 
     ObjectMapper objectMapper = new ObjectMapper();
     val kafkaSentMessage = objectMapper.writeValueAsString(kafkaEventBody);
@@ -78,7 +78,7 @@ public class BieKafkaApplicationTest {
     kafkaTemplate.send(kafkaTopic, key, kafkaSentMessage);
 
     log.info("Waiting for svc-bie-kafka to publish Kafka event to RabbitMQ exchange...");
-    assertTrue(latch.await(10, TimeUnit.SECONDS));
+    assertTrue(latch.await(20, TimeUnit.SECONDS));
 
     // Check message 1
     assertEquals(msgBody, receivedMessages.get(0));

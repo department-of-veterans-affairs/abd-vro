@@ -25,31 +25,33 @@ jobs:
           repository: 'department-of-veterans-affairs/abd-vro-dev-secrets'
           path: "${{ env.VRO_DEV_SECRETS_FOLDER }}"
 
-      - name: 'Set RABBITMQ_BASIC_AUTH'
-        run: |
-          source scripts/setenv.sh
-
-          # create basic auth token for RabbitMQ and export to github environment
-          BASIC_AUTH=$(echo "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" | base64)
-          echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}" >> "$GITHUB_ENV"
-
-          export -p | sed 's/declare -x //'
-
       - name: 'Build the images'
         uses: ./.github/actions/build-images
 
       - name: 'Start the containers'
         run: |
           source scripts/setenv.sh
+
+          # create basic auth token for RabbitMQ and export to github environment
+          BASIC_AUTH=$(echo "${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}" | base64)
+          {
+            echo "RABBITMQ_USERNAME=${RABBITMQ_USERNAME}"
+            echo "RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}"
+            echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}"
+          } >> "$GITHUB_ENV"
+
           export -p | sed 's/declare -x //'
 
           ./gradlew :dockerComposeUp
 
-          ./gradlew -p mocks :mock-bie-kafka:docker
+          ./gradlew -p mocks docker
           ./gradlew -p mocks :dockerComposeUp
 
           ./gradlew :domain-xample:dockerComposeUp
           ./gradlew :app:dockerComposeUp
+
+      - name: 'Check disk space (Post-Build)'
+        uses: ./.github/actions/check-disk-space
 
       - name: 'Wait for RabbitMQ to be ready'
         uses: indiesdev/curl@v1.1
@@ -87,7 +89,7 @@ jobs:
       - name: 'Wait for xample-workflow to be ready'
         uses: nev7n/wait_for_response@v1
         with:
-          url: 'http://localhost:10021/actuator/health'
+          url: 'http://localhost:10021/actuator/health/readiness'
           responseCode: 200
           # Retry every 2 seconds
           interval: 2000
@@ -97,7 +99,7 @@ jobs:
       - name: 'Wait for svc-bie-kafka to be ready'
         uses: nev7n/wait_for_response@v1
         with:
-          url: 'http://localhost:10301/actuator/health'
+          url: 'http://localhost:10301/actuator/health/readiness'
           responseCode: 200
           # Retry every 2 seconds
           interval: 2000
@@ -109,6 +111,7 @@ jobs:
           source scripts/setenv.sh
 
           pushd svc-bie-kafka && { source ./docker-entryprep.sh; popd; }
+          sleep 60
           if ! ./gradlew :svc-bie-kafka:integrationTest; then
             echo "First run could fail due to some mock Kafka initialization"
             # Subsequent runs should pass
@@ -156,7 +159,6 @@ jobs:
           name: bie-kafka-end2end-test-with-mock-container-logs
           path: ./bie-kafka-end2end-test-with-mock-container-logs/**
           retention-days: 14
-
 
       - name: 'Clean shutdown of all containers'
         if: always()

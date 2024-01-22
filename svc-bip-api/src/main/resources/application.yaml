@@ -1,0 +1,56 @@
+logging:
+  level:
+    org.springframework.jdbc.core: INFO
+    org.springframework.jdbc.core.JdbcTemplate: INFO
+    org.springframework.jdbc.core.StatementCreatorUtils: INFO
+    org.hibernate.SQL: INFO
+    org.type.descriptor.sql.BasicBinder: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: INFO
+
+bip:
+  claimClientId: ${BIP_CLAIM_USERID:VRO_USER}
+  claimBaseUrl: ${BIP_CLAIM_URL:localhost:20300}
+  claimIssuer: ${BIP_CLAIM_ISSUER:virtual_regional_office}
+  claimSecret: ${BIP_CLAIM_SECRET:7zEJ+xepTPakl7KfX58bVR+t0zQGpsElg9bDdKmoVJM=}
+  evidenceClientId: ${BIP_EVIDENCE_USERID:VRO_USER}
+  evidenceSecret: ${BIP_EVIDENCE_SECRET:daSecret}
+  applicationId: ${BIP_APPLICATION_ID:VRO}
+  stationId: ${BIP_STATION_ID:456}
+  env: local
+
+spring:
+  profiles:
+    # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/Configuration-settings#vros-use-of-spring-profiles
+    active: ${ENV:default}
+  rabbitmq:
+    host: ${RABBITMQ_PLACEHOLDERS_HOST:localhost}
+    port: 5672
+    username: ${RABBITMQ_USERNAME:user}
+    password: ${RABBITMQ_PASSWORD:bitnami}
+
+getClaimDetailsQueue: getClaimDetailsQueue
+putClaimLifecycleStatusQueue: putClaimLifecycleStatusQueue
+cancelClaimQueue: cancelClaimQueue
+getClaimContentionsQueue: getClaimContentionsQueue
+createClaimContentionsQueue: createClaimContentionsQueue
+updateClaimContentionsQueue: updateClaimContentionsQueue
+putTempStationOfJurisdictionQueue: putTempStationOfJurisdictionQueue
+exchangeName: bipApiExchange
+
+# Actuator for health check, liveness, and readiness
+management:
+  server:
+    port: 10401
+  endpoint:
+    health:
+      show-details: always
+      enabled: true
+      probes:
+        enabled: true
+      group:
+        liveness.include: livenessState
+        readiness.include: readinessState
+
+truststore: ${BIP_TRUSTSTORE}
+keystore: ${BIP_KEYSTORE}
+truststore_password: ${BIP_PASSWORD}

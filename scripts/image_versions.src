@@ -5,9 +5,6 @@
 # - image publishing to GHCR (see .github/actions/publish-images/action.yml)
 # - Helm chart deployments to LHDI (see .github/workflows/update-deployment.yml)
 
-# These versions are treated specially because we don't modify the base image
-: ${RABBITMQ_VER:=3}
-: ${REDIS_VER:=7}
 # Manually pin these images; they don't need to be automatically updated
 # Use the `export myimage_VER="v1.2.3"` syntax so that they will be ignored by `image-version.sh`
 # export console_VER="v3.2.5"
@@ -38,14 +35,27 @@
 # Wed Oct 11 19:06:17 UTC 2023 -- v3.5.1
 # Thu Oct 12 16:21:59 UTC 2023 -- v3.5.2
 # Tue Oct 24 11:02:54 PDT 2023 -- v3.5.3
-postgres_VER="v3.5.3"
-dbinit_VER="v3.5.3"
-ccapp_VER="v3.5.3"
-eemaxcfiapp_VER="v3.5.3"
 # Thu Oct 26 12:23:43 PDT 2023 -- v3.5.4
-apigateway_VER="v3.5.4"
-app_VER="v3.5.4"
-svclighthouseapi_VER="v3.5.4"
-svcbiekafka_VER="v3.5.4"
-svcbipapi_VER="v3.5.4"
-xampleworkflows_VER="v3.5.4"
+# Thu Oct 26 13:03:08 PDT 2023 -- v3.5.6
+postgres_VER="v3.5.6"
+# Thu Nov  2 18:18:12 UTC 2023 -- v3.5.7
+# Thu Nov  9 00:56:04 UTC 2023 -- v3.5.8
+# Fri Nov 17 21:33:22 UTC 2023 -- v3.5.9
+# Tue Nov 28 20:49:39 UTC 2023 -- v3.5.10
+# Tue Nov 28 22:32:12 UTC 2023 -- v3.5.11
+# Wed Dec 13 22:20:53 UTC 2023 -- v3.6.0
+# Thu Dec 14 02:59:08 UTC 2023 -- v3.6.1
+# Mon Jan 22 18:32:01 UTC 2024 -- v3.6.2
+redis_VER="v3.6.2"
+rabbitmq_VER="v3.6.2"
+apigateway_VER="v3.6.2"
+app_VER="v3.6.2"
+dbinit_VER="v3.6.2"
+svcbgsapi_VER="v3.6.2"
+svclighthouseapi_VER="v3.6.2"
+svcbiekafka_VER="v3.6.2"
+svcbipapi_VER="v3.6.2"
+xampleworkflows_VER="v3.6.2"
+ccapp_VER="v3.6.2"
+eemaxcfiapp_VER="v3.6.2"
+eeepmergeapp_VER="v3.6.2"

@@ -17,10 +17,10 @@ spring:
   rabbitmq:
     host: "${RABBITMQ_PLACEHOLDERS_HOST:localhost}"
     port: 5672
-    username: "${RABBITMQ_PLACEHOLDERS_USERNAME:guest}"
-    password: "${RABBITMQ_PLACEHOLDERS_USERPASSWORD:guest}"
+    username: "${RABBITMQ_USERNAME:guest}"
+    password: "${RABBITMQ_PASSWORD:guest}"
 
-## Actuator for health check
+## Actuator for health check, liveness, and readiness
 management:
   server:
     port: 10021
@@ -30,6 +30,9 @@ management:
       enabled: true
       probes:
         enabled: true
+      group:
+        liveness.include: livenessState
+        readiness.include: readinessState
 
 # https://stackoverflow.com/questions/36583185/spring-data-jpa-could-not-initialize-proxy-no-session-with-methods-marke
 # Degrades performance but only for this Docker image, which is acceptable

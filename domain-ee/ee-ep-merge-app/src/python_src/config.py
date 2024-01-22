@@ -19,32 +19,66 @@ config = {
 
 
 class ClientName(str, Enum):
-    PUT_TSOJ = "putTemporaryStationOfJurisdictionClient"
+    GET_CLAIM = "getClaimClient"
     GET_CLAIM_CONTENTIONS = "getClaimContentionsClient"
+    PUT_TSOJ = "putTemporaryStationOfJurisdictionClient"
+    CREATE_CLAIM_CONTENTIONS = "createClaimContentionsClient"
     UPDATE_CLAIM_CONTENTIONS = "updateClaimContentionsClient"
     CANCEL_CLAIM = "cancelClaimClient"
+    BGS_ADD_CLAIM_NOTE = "addClaimNoteClient"
 
 
-EXCHANGE = "bipApiExchange"
+BIP_EXCHANGE = "bipApiExchange"
+BGS_EXCHANGE = "bgs-api"
+
+EXCHANGES = {
+    ClientName.GET_CLAIM: os.environ.get("BIP_API_EXCHANGE") or BIP_EXCHANGE,
+    ClientName.GET_CLAIM_CONTENTIONS: os.environ.get("BIP_API_EXCHANGE") or BIP_EXCHANGE,
+    ClientName.PUT_TSOJ: os.environ.get("BIP_API_EXCHANGE") or BIP_EXCHANGE,
+    ClientName.CREATE_CLAIM_CONTENTIONS: os.environ.get("BIP_API_EXCHANGE") or BIP_EXCHANGE,
+    ClientName.UPDATE_CLAIM_CONTENTIONS: os.environ.get("BIP_API_EXCHANGE") or BIP_EXCHANGE,
+    ClientName.CANCEL_CLAIM: os.environ.get("BIP_API_EXCHANGE") or BIP_EXCHANGE,
+    ClientName.BGS_ADD_CLAIM_NOTE: os.environ.get("BGS_API_EXCHANGE") or BGS_EXCHANGE,
+}
 
 QUEUES = {
-    ClientName.PUT_TSOJ:
-        os.environ.get("PUT_TSOJ_REQUEST") or "putTemporaryStationOfJurisdictionQueue",
+    ClientName.GET_CLAIM:
+        os.environ.get("GET_CLAIM_DETAILS_REQUEST") or "getClaimDetailsQueue",
     ClientName.GET_CLAIM_CONTENTIONS:
         os.environ.get("GET_CLAIM_CONTENTIONS_REQUEST") or "getClaimContentionsQueue",
+    ClientName.PUT_TSOJ:
+        os.environ.get("PUT_TSOJ_REQUEST") or "putTempStationOfJurisdictionQueue",
+    ClientName.CREATE_CLAIM_CONTENTIONS:
+        os.environ.get("CREATE_CLAIM_CONTENTIONS_REQUEST") or "createClaimContentionsQueue",
     ClientName.UPDATE_CLAIM_CONTENTIONS:
-        os.environ.get("UPDATE_CLAIM_CONTENTIONS_REQUEST") or "updateClaimContentionQueue",
+        os.environ.get("UPDATE_CLAIM_CONTENTIONS_REQUEST") or "updateClaimContentionsQueue",
     ClientName.CANCEL_CLAIM:
         os.environ.get("CANCEL_CLAIM_REQUEST") or "cancelClaimQueue",
+    ClientName.BGS_ADD_CLAIM_NOTE:
+        os.environ.get("ADD_CLAIM_NOTE_REQUEST") or "add-note",
 }
 
 REPLY_QUEUES = {
-    ClientName.PUT_TSOJ:
-        os.environ.get("PUT_TSOJ_RESPONSE") or "putTemporaryStationOfJurisdictionResponseQueue",
+    ClientName.GET_CLAIM:
+        os.environ.get("GET_CLAIM_DETAILS_RESPONSE") or "getClaimDetailsResponseQueue",
     ClientName.GET_CLAIM_CONTENTIONS:
         os.environ.get("GET_CLAIM_CONTENTIONS_RESPONSE") or "getClaimContentionsResponseQueue",
+    ClientName.PUT_TSOJ:
+        os.environ.get("PUT_TSOJ_RESPONSE") or "putTempStationOfJurisdictionResponseQueue",
+    ClientName.CREATE_CLAIM_CONTENTIONS:
+        os.environ.get("CREATE_CLAIM_CONTENTIONS_RESPONSE") or "createClaimContentionsResponseQueue",
     ClientName.UPDATE_CLAIM_CONTENTIONS:
-        os.environ.get("UPDATE_CLAIM_CONTENTIONS_RESPONSE") or "updateClaimContentionResponseQueue",
+        os.environ.get("UPDATE_CLAIM_CONTENTIONS_RESPONSE") or "updateClaimContentionsResponseQueue",
     ClientName.CANCEL_CLAIM:
         os.environ.get("CANCEL_CLAIM_RESPONSE") or "cancelClaimResponseQueue",
+    ClientName.BGS_ADD_CLAIM_NOTE:
+        os.environ.get("ADD_CLAIM_NOTE_RESPONSE") or "add-note-response",
 }
+
+POSTGRES_USER = os.environ.get("POSTGRES_USER") or "vro_user"
+POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD") or "vro_user_pw"
+POSTGRES_HOST = os.environ.get("POSTGRES_HOST") or "localhost"
+POSTGRES_PORT = os.environ.get("POSTGRES_PORT") or "5432"
+POSTGRES_DB = os.environ.get("POSTGRES_DB") or "vro"
+POSTGRES_SCHEMA = os.environ.get("POSTGRES_SCHEMA") or "claims"
+SQLALCHEMY_DATABASE_URI = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"

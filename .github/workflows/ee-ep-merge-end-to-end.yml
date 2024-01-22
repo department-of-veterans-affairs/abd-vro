@@ -8,14 +8,24 @@ on:
   workflow_call:
 
 env:
-  COMPOSE_PROFILES: ''
+  COMPOSE_PROFILES: 'bip,bgs'
+  VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"
 
 jobs:
   integration-test:
     runs-on: ubuntu-latest
     steps:
+
       - name: 'Checkout source code'
         uses: actions/checkout@v3
+
+      - name: "Checkout abd-vro-dev-secrets repo"
+        uses: actions/checkout@v3
+        with:
+          # Checkout using a PAT so that we can access the internal repo
+          token: ${{ secrets.ACCESS_TOKEN_CHECKOUT_INTERNAL_REPO }}
+          repository: 'department-of-veterans-affairs/abd-vro-dev-secrets'
+          path: "${{ env.VRO_DEV_SECRETS_FOLDER }}"
 
       - name: 'Build the images'
         uses: ./.github/actions/build-images
@@ -25,16 +35,20 @@ jobs:
           source scripts/setenv.sh
 
           # create basic auth token for RabbitMQ and export to github environment
-          BASIC_AUTH=$(echo "${RABBITMQ_PLACEHOLDERS_USERNAME}:${RABBITMQ_PLACEHOLDERS_USERPASSWORD}" | base64)
+          BASIC_AUTH=$(echo "${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}" | base64)
           {
-            echo "RABBITMQ_PLACEHOLDERS_USERNAME=${RABBITMQ_PLACEHOLDERS_USERNAME}"
-            echo "RABBITMQ_PLACEHOLDERS_USERPASSWORD=${RABBITMQ_PLACEHOLDERS_USERPASSWORD}"
+            echo "RABBITMQ_USERNAME=${RABBITMQ_USERNAME}"
+            echo "RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}"
             echo "RABBITMQ_BASIC_AUTH=${BASIC_AUTH}"
           } >> "$GITHUB_ENV"
 
           export -p | sed 's/declare -x //'
 
           ./gradlew :dockerComposeUp
+
+      - name: 'Wait for containers to start'
+        run: sleep 60s
+        shell: bash
 
       - name: 'Wait for RabbitMQ to be ready'
         uses: indiesdev/curl@v1.1
@@ -48,21 +62,76 @@ jobs:
           # Quit after 60 seconds
           retries: 30
 
-      # Temporary step added to avoid condition where bipApiExchange is not yet created.
-      - name: 'Create bipApiExchange exchange'
-        uses: indiesdev/curl@v1.1
-        with:
-          url: 'http://localhost:15672/api/exchanges/%2f/bipApiExchange'
-          method: 'PUT'
-          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
-          body: '{"type":"direct", "durable":true, "auto_delete":true}'
-          accept: 201, 204
-          retries: 3
-          log-response: true
-
       - name: "Run Employee Experience Integration Tests"
         run: |
           ./gradlew :domain-ee:ee-ep-merge-app:integrationTest
+
+      - name: "Start svc-bip-api and mock-bip-claims-api"
+        run: |
+          source scripts/setenv.sh
+
+          # Temporary workaround until secret is updated with correct value
+          export BIP_CLAIM_URL="mock-bip-claims-api:20300"
+
+          export -p | sed 's/declare -x //'
+
+          ./gradlew :app:dockerComposeUp
+          ./gradlew -p mocks docker
+          ./gradlew -p mocks :dockerComposeUp
+          ./gradlew :domain-ee:dockerComposeUp
+
+      - name: 'Wait for other containers to start'
+        run: sleep 60s
+        shell: bash
+
+      - name: 'Check disk space (Post-Build)'
+        uses: ./.github/actions/check-disk-space
+
+      - name: 'Send Merge Request'
+        uses: indiesdev/curl@v1.1
+        id: merge_request
+        with:
+          url: 'http://localhost:8140/merge'
+          method: 'POST'
+          body: '{"pending_claim_id":1001,"ep400_claim_id":1000}'
+          accept: 202
+          retries: 3
+          log-response: true
+
+      - name: 'Get Job ID'
+        shell: bash
+        id: get_job_id
+        run: |
+          job_id="${{ fromJSON(steps.merge_request.outputs.response).data.job.job_id }}"
+          echo "job_id=$job_id" >> "$GITHUB_OUTPUT"
+
+          # Allow time to finish processing
+          sleep 5s
+
+      - name: 'Get Merge Request Status'
+        uses: indiesdev/curl@v1.1
+        id: merge_status
+        with:
+          url: 'http://localhost:8140/merge/${{steps.get_job_id.outputs.job_id}}'
+          method: 'GET'
+          accept: 200
+          retries: 3
+          log-response: true
+
+      - name: 'Verify Merge Complete'
+        shell: bash
+        run: |
+          state="${{ fromJSON(steps.merge_status.outputs.response).data.job.state }}"
+          if [ "$state" != "COMPLETED_SUCCESS" ]; then
+            echo "Merge Request completed with error"
+            echo ${{ steps.merge_status.outputs.response }}
+            exit 10
+          fi
+
+      - name: 'Run End 2 End Tests'
+        shell: bash
+        run: |
+          ./gradlew :domain-ee:ee-ep-merge-app:endToEndTest
 
       - name: 'Clean shutdown of all containers'
         if: always()
@@ -70,3 +139,4 @@ jobs:
         run: |
           docker ps
           COMPOSE_PROFILES="all" ./gradlew dockerComposeDown
+          COMPOSE_PROFILES="all" ./gradlew -p mocks dockerComposeDown

@@ -10,7 +10,8 @@ plugins {
 ext {
     mapstruct_version="1.4.2.Final"
     spring_framework_version="6.0.13"
-    snakeyaml_version="2.0"
+    snakeyaml_version="2.2"
+    jackson_databind_version="2.16"
 }
 
 afterEvaluate {
@@ -30,7 +31,6 @@ dependencies {
         implementation "org.springframework:spring-webmvc:${spring_framework_version}"
         implementation "org.springframework:spring-beans:${spring_framework_version}"
         implementation "io.github.classgraph:classgraph:4.8.149"
-        implementation "com.fasterxml.jackson.core:jackson-databind:2.13.4.2"
         implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 
         implementation "org.yaml:snakeyaml:${snakeyaml_version}"
@@ -62,6 +62,15 @@ dependencies {
 
         implementation 'org.springframework.amqp:spring-amqp:3.0.10'
         implementation 'org.springframework.security:spring-security-config:6.1.5'
+
+        implementation 'com.rabbitmq:amqp-client:5.18.0'
+
+        implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.0'
+        implementation 'io.projectreactor.netty:reactor-netty-http:1.1.13'
+
+        implementation 'ch.qos.logback:logback-core:1.4.14'
+        implementation 'ch.qos.logback:logback-classic:1.4.14'
+
 
         // These are used indirectly but we need to specify versions, otherwise build error
         annotationProcessor "org.springframework.boot:spring-boot-autoconfigure-processor:${spring_boot_version}"

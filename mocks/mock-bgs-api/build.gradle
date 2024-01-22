@@ -1,0 +1,8 @@
+plugins {
+  id 'shared.docker.container-conventions'
+}
+
+docker {
+  copySpec.from("src/docker").into(".")
+  copySpec.from("src/main/resources").into(".")
+}

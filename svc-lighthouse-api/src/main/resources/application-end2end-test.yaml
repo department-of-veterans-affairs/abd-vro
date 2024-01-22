@@ -1,0 +1,8 @@
+# Contains properties for end-to-end tests
+# application.properties is loaded, then this file is loaded
+
+# Lighthouse FHIR API
+lh:
+  tokenurl: http://mock-lighthouse-api:20200/token
+  fhirurl: http://mock-lighthouse-api:20200
+  assertionurl: https://deptva-eval.okta.com/oauth2/aus8nm1q0f7VQ0a482p7/v1/token

@@ -1,6 +1,62 @@
 [
   {
     "description": [
+      "Claim to always generate 500"
+    ],
+    "claimDetail": {
+      "claimId": 500
+    },
+    "contentions": [
+    ]
+  },
+  {
+    "description": [
+      "EP 400 w/ contention with required fields with optional fields classificationType and diagnosticTypeCode"
+    ],
+    "claimDetail": {
+      "claimId": 1000,
+      "phase": "Claim Received",
+      "endProductCode": "400",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "medicalInd": true,
+        "beginDate": "2023-01-01T00:00:00Z",
+        "contentionTypeCode": "NEW",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "6100",
+        "claimantText": "tendinitis/bilateral",
+        "contentionId": "1011",
+        "lastModified": "2023-01-01T00:00:01Z"
+      }
+    ]
+  },
+  {
+    "description": [
+      "Pending claim with tempStationOfJurisdiction. Contention with required fields with optional fields classificationType and diagnosticTypeCode"
+    ],
+    "claimDetail": {
+      "claimId": 1001,
+      "phase": "Claim Received",
+      "tempStationOfJurisdiction": "398",
+      "endProductCode": "010"
+    },
+    "contentions": [
+      {
+        "medicalInd": true,
+        "beginDate": "2023-01-01T00:00:00Z",
+        "contentionTypeCode": "NEW",
+        "classificationType": 6850,
+        "diagnosticTypeCode": "6260",
+        "claimantText": "tinnitus",
+        "contentionId": "1012",
+        "lastModified": "2023-01-01T00:00:01Z"
+      }
+    ]
+  },
+  {
+    "description": [
       "off ramp, to be used with only ibm provided collection id 350"
     ],
     "claimDetail": {
@@ -477,7 +533,9 @@
     ]
   },
   {
-    "description": ["missing special issue RDR1"],
+    "description": [
+      "missing special issue RDR1"
+    ],
     "claimDetail": {
       "claimId": 3030,
       "tempStationOfJurisdiction": "398",
@@ -499,7 +557,9 @@
     ]
   },
   {
-    "description": ["missing special issue RRD"],
+    "description": [
+      "missing special issue RRD"
+    ],
     "claimDetail": {
       "claimId": 3031,
       "tempStationOfJurisdiction": "398",
@@ -521,7 +581,9 @@
     ]
   },
   {
-    "description": ["missing special issues RDR1 and RRD"],
+    "description": [
+      "missing special issues RDR1 and RRD"
+    ],
     "claimDetail": {
       "claimId": 3032,
       "tempStationOfJurisdiction": "398",
@@ -718,6 +780,323 @@
           "RDR1",
           "RRD"
         ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "Employee Experience EP Merge End 2 End Testing - Pending 010 w/ tempStationOfJurisdiction set to 398"
+    ],
+    "claimDetail": {
+      "claimId": 10000,
+      "phase": "Claim Received",
+      "tempStationOfJurisdiction": "398",
+      "endProductCode": "010"
+    },
+    "contentions": [
+      {
+        "medicalInd": true,
+        "beginDate": "2023-01-01T00:00:00Z",
+        "contentionTypeCode": "NEW",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "6100",
+        "claimantText": "tendinitis/bilateral",
+        "contentionId": "1",
+        "lastModified": "2023-01-01T00:00:01Z"
+      }
+    ]
+  },
+  {
+    "description": [
+      "Employee Experience EP Merge End 2 End Testing - EP 400 w/ contention with duplicate contention from claim 10000"
+    ],
+    "claimDetail": {
+      "claimId": 10001,
+      "phase": "Claim Received",
+      "endProductCode": "400",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "medicalInd": true,
+        "beginDate": "2023-01-01T00:00:00Z",
+        "contentionTypeCode": "NEW",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "6100",
+        "claimantText": "tendinitis/bilateral",
+        "contentionId": "2",
+        "lastModified": "2023-01-01T00:00:01Z",
+        "specialIssueCodes": [
+          "EMP"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "Employee Experience EP Merge End 2 End Testing - EP 400 w/ contention with different contention type code as claim 10000"
+    ],
+    "claimDetail": {
+      "claimId": 10002,
+      "phase": "Claim Received",
+      "endProductCode": "400",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "medicalInd": true,
+        "beginDate": "2023-01-01T00:00:00Z",
+        "contentionTypeCode": "INCREASE",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "6100",
+        "claimantText": "tendinitis/bilateral",
+        "contentionId": "3",
+        "lastModified": "2023-01-01T00:00:01Z",
+        "specialIssueCodes": [
+          "EMP"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "Employee Experience EP Merge End 2 End Testing - EP 400 w/ contention with different contention as claim 10000"
+    ],
+    "claimDetail": {
+      "claimId": 10003,
+      "phase": "Claim Received",
+      "endProductCode": "400",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "medicalInd": true,
+        "beginDate": "2023-01-01T00:00:00Z",
+        "contentionTypeCode": "NEW",
+        "classificationType": 6850,
+        "diagnosticTypeCode": "6260",
+        "claimantText": "tinnitus",
+        "contentionId": "4",
+        "lastModified": "2023-01-01T00:00:01Z",
+        "specialIssueCodes": [
+          "EMP"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "Employee Experience EP Merge End 2 End Testing - EP 400 w/ multiple contentions w/ one duplicate from claim 10000"
+    ],
+    "claimDetail": {
+      "claimId": 10004,
+      "phase": "Claim Received",
+      "endProductCode": "400",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "medicalInd": true,
+        "beginDate": "2023-01-01T00:00:00Z",
+        "contentionTypeCode": "NEW",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "6100",
+        "claimantText": "tendinitis/bilateral",
+        "contentionId": "5",
+        "lastModified": "2023-01-01T00:00:01Z",
+        "specialIssueCodes": [
+          "EMP"
+        ]
+      },
+      {
+        "medicalInd": true,
+        "beginDate": "2023-01-01T00:00:00Z",
+        "contentionTypeCode": "NEW",
+        "classificationType": 6850,
+        "diagnosticTypeCode": "6260",
+        "claimantText": "tinnitus",
+        "contentionId": "6",
+        "lastModified": "2023-01-01T00:00:01Z",
+        "specialIssueCodes": [
+          "EMP"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "Employee Experience EP Merge End 2 End Testing - EP 400 w/ multiple contentions w/ no duplicates in claim 10000"
+    ],
+    "claimDetail": {
+      "claimId": 10005,
+      "phase": "Claim Received",
+      "endProductCode": "400",
+      "claimLifecycleStatus": "Open"
+    },
+    "contentions": [
+      {
+        "medicalInd": true,
+        "beginDate": "2023-01-01T00:00:00Z",
+        "contentionTypeCode": "INCREASE",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "6100",
+        "claimantText": "tendinitis/bilateral",
+        "contentionId": "7",
+        "lastModified": "2023-01-01T00:00:01Z",
+        "specialIssueCodes": [
+          "EMP"
+        ]
+      },
+      {
+        "medicalInd": true,
+        "beginDate": "2023-01-01T00:00:00Z",
+        "contentionTypeCode": "NEW",
+        "classificationType": 6850,
+        "diagnosticTypeCode": "6260",
+        "claimantText": "tinnitus",
+        "contentionId": "8",
+        "lastModified": "2023-01-01T00:00:01Z",
+        "specialIssueCodes": [
+          "EMP"
+        ]
+      }
+    ]
+  },
+  {
+    "description": [
+      "Employee Experience EP Merge End 2 End Testing - Fails at get claim details"
+    ],
+    "claimDetail": {
+      "claimId": 5001,
+      "phase": "Claim Received",
+      "tempStationOfJurisdiction": "398",
+      "endProductCode": "010"
+    },
+    "contentions": [
+      {
+        "medicalInd": true,
+        "beginDate": "2023-01-01T00:00:00Z",
+        "contentionTypeCode": "NEW",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "6100",
+        "claimantText": "tendinitis/bilateral",
+        "contentionId": "1",
+        "lastModified": "2023-01-01T00:00:01Z"
+      }
+    ]
+  },
+  {
+    "description": [
+      "Employee Experience EP Merge End 2 End Testing - Fails at cancel claim"
+    ],
+    "claimDetail": {
+      "claimId": 5002,
+      "phase": "Claim Received",
+      "tempStationOfJurisdiction": "398",
+      "endProductCode": "400"
+    },
+    "contentions": [
+      {
+        "medicalInd": true,
+        "beginDate": "2023-01-01T00:00:00Z",
+        "contentionTypeCode": "NEW",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "6100",
+        "claimantText": "tendinitis/bilateral",
+        "contentionId": "1",
+        "lastModified": "2023-01-01T00:00:01Z"
+      }
+    ]
+  },
+  {
+    "description": [
+      "Employee Experience EP Merge End 2 End Testing - Fails at set temporary station of jurisdiction"
+    ],
+    "claimDetail": {
+      "claimId": 5003,
+      "phase": "Claim Received",
+      "tempStationOfJurisdiction": "398",
+      "endProductCode": "400"
+    },
+    "contentions": [
+      {
+        "medicalInd": true,
+        "beginDate": "2023-01-01T00:00:00Z",
+        "contentionTypeCode": "NEW",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "6100",
+        "claimantText": "tendinitis/bilateral",
+        "contentionId": "1",
+        "lastModified": "2023-01-01T00:00:01Z"
+      }
+    ]
+  },
+  {
+    "description": [
+      "Employee Experience EP Merge End 2 End Testing - Fails at get claim contentions"
+    ],
+    "claimDetail": {
+      "claimId": 5004,
+      "phase": "Claim Received",
+      "tempStationOfJurisdiction": "398",
+      "endProductCode": "010"
+    },
+    "contentions": [
+      {
+        "medicalInd": true,
+        "beginDate": "2023-01-01T00:00:00Z",
+        "contentionTypeCode": "NEW",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "6100",
+        "claimantText": "tendinitis/bilateral",
+        "contentionId": "1",
+        "lastModified": "2023-01-01T00:00:01Z"
+      }
+    ]
+  },
+  {
+    "description": [
+      "Employee Experience EP Merge End 2 End Testing - Fails at update claim contentions"
+    ],
+    "claimDetail": {
+      "claimId": 5005,
+      "phase": "Claim Received",
+      "tempStationOfJurisdiction": "398",
+      "endProductCode": "400"
+    },
+    "contentions": [
+      {
+        "medicalInd": true,
+        "beginDate": "2023-01-01T00:00:00Z",
+        "contentionTypeCode": "NEW",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "6100",
+        "claimantText": "tendinitis/bilateral",
+        "contentionId": "1",
+        "lastModified": "2023-01-01T00:00:01Z"
+      }
+    ]
+  },
+  {
+    "description": [
+      "Employee Experience EP Merge End 2 End Testing - Fails at create claim contentions"
+    ],
+    "claimDetail": {
+      "claimId": 5006,
+      "phase": "Claim Received",
+      "tempStationOfJurisdiction": "398",
+      "endProductCode": "010"
+    },
+    "contentions": [
+      {
+        "medicalInd": true,
+        "beginDate": "2023-01-01T00:00:00Z",
+        "contentionTypeCode": "NEW",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "6100",
+        "claimantText": "tendinitis/bilateral",
+        "contentionId": "1",
+        "lastModified": "2023-01-01T00:00:01Z"
       }
     ]
   }

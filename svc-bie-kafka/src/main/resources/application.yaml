@@ -7,8 +7,8 @@ spring:
   rabbitmq:
     host: "${RABBITMQ_PLACEHOLDERS_HOST:localhost}"
     port: 5672
-    username: "${RABBITMQ_PLACEHOLDERS_USERNAME:guest}"
-    password: "${RABBITMQ_PLACEHOLDERS_USERPASSWORD:guest}"
+    username: "${RABBITMQ_USERNAME:guest}"
+    password: "${RABBITMQ_PASSWORD:guest}"
 
   # Specify how Spring connects to Kafka
   kafka:
@@ -35,7 +35,7 @@ spring:
 bie:
   kakfa-topic-prefix: "TST_"
 
-## Actuator for health check
+## Actuator for health check, liveness, and readiness
 management:
   server:
     port: 10301
@@ -45,3 +45,6 @@ management:
       enabled: true
       probes:
         enabled: true
+      group:
+        liveness.include: livenessState
+        readiness.include: readinessState

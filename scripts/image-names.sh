@@ -23,14 +23,15 @@ prodImageName() {
 # These names should match directory names.
 # Also add image to .github/workflows/delete-published-*images.yml
 IMAGES=( postgres \
-  vro-redis \
-  vro-rabbitmq
+  redis \
+  rabbitmq \
   api-gateway app db-init \
-#  svc-bgs-api \
+  svc-bgs-api \
   svc-lighthouse-api svc-bie-kafka svc-bip-api \
   xample-workflows \
   cc-app \
-  ee-max-cfi-app )
+  ee-max-cfi-app \
+  ee-ep-merge-app )
 echo
 echo "=== ${#IMAGES[@]} VRO images"
 for INDEX in "${!IMAGES[@]}"; do

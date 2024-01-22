@@ -12,7 +12,9 @@ dependencyResolutionManagement {
 rootProject.name = 'vro_mocks'
 
 include ':rabbitmq-dev-tools'
+include ':mock-bgs-api'
 include ':mock-bie-kafka'
+include ':mock-bie-schema-registry'
 include ':mock-bip-shared'
 include ':mock-bip-ce-api'
 include ':mock-bip-claims-api'

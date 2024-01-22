@@ -1,32 +1,20 @@
-from enum import Enum
-from typing import Any
-from uuid import UUID
-
-from pydantic import BaseModel, conint
-
-JobState = Enum('JobState', [
-    'COMPLETED_ERROR',
-    'PENDING',
-    'RUNNING_GET_PENDING_CLAIM_CONTENTIONS',
-    'RUNNING_GET_EP400_CLAIM_CONTENTIONS',
-    'RUNNING_SET_TEMP_STATION_OF_JURISDICTION',
-    'RUNNING_MERGE_CONTENTIONS',
-    'RUNNING_UPDATE_PENDING_CLAIM_CONTENTIONS',
-    'RUNNING_CANCEL_EP400_CLAIM',
-    'COMPLETED_SUCCESS'])
+from config import POSTGRES_SCHEMA
+from db.base_class import Base
+from sqlalchemy import Column, DateTime, Integer, String
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB, UUID
+from sqlalchemy.ext.mutable import MutableDict
+from sqlalchemy.sql import func
 
 
-class MergeJob(BaseModel):
-    job_id: UUID
-    pending_claim_id: conint(strict=True)
-    ep400_claim_id: conint(strict=True)
-    state: JobState = JobState.PENDING
-    error_state: JobState | None = None
-    messages: list[Any] | None = None
+class MergeJob(Base):
+    __tablename__ = "merge_jobs"
+    __table_args__ = {"schema": POSTGRES_SCHEMA}
 
-    def error(self, current_state, message):
-        self.error_state = current_state
-        self.state = JobState.COMPLETED_ERROR
-        if self.messages is None:
-            self.messages = []
-        self.messages.append(message)
+    job_id = Column(UUID(as_uuid=True), primary_key=True, index=True)
+    pending_claim_id = Column(Integer, index=True)
+    ep400_claim_id = Column(Integer, index=True)
+    state = Column(String, index=True)
+    error_state = Column(String)
+    messages = Column(ARRAY(MutableDict.as_mutable(JSONB)))
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())

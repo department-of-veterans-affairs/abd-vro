@@ -1,1 +1,1 @@
-hoppy @ git+https://github.com/department-of-veterans-affairs/abd-vro.git#subdirectory=shared/lib-hoppy
+hoppy @ git+https://github.com/department-of-veterans-affairs/abd-vro.git@shared/lib-hoppy-0.3#subdirectory=shared/lib-hoppy

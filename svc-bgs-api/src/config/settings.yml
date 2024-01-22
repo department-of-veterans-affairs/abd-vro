@@ -7,7 +7,8 @@ local:
     client_station_id: 281
     client_username: VROSYSACCT
     log: true
-    base_url: http://mock-bgs-api:9020
+    base_url: http://mock-bgs-api:8080/castlemock/mock/soap/project/x5KVzK
+    # to run locally without docker change base_url to http://localhost:8080/castlemock/mock/soap/project/x5KVzK
 
 dev:
   bgs:

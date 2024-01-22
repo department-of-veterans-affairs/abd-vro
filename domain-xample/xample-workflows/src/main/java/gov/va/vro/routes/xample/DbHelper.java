@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -60,12 +61,30 @@ public class DbHelper {
     contentionEventEntity.setDiagnosticTypeCode(bieMessagePayload.getDiagnosticTypeCode());
     contentionEventEntity.setContentionClassificationName(
         bieMessagePayload.getContentionClassificationName());
-    contentionEventEntity.setOccurredAt(convertTime(bieMessagePayload.getOccurredAt()));
+    contentionEventEntity.setOccurredAt(convertTime(bieMessagePayload.getEventTime()));
+    contentionEventEntity.setDateAdded(convertTime(bieMessagePayload.getDateAdded()));
+    contentionEventEntity.setDateCompleted(convertTime(bieMessagePayload.getDateCompleted()));
+    contentionEventEntity.setDateUpdated(convertTime(bieMessagePayload.getDateUpdated()));
+    contentionEventEntity.setActorStation(bieMessagePayload.getActorStation());
+    contentionEventEntity.setAutomationIndicator(
+        Optional.ofNullable(bieMessagePayload.getAutomationIndicator()).orElse(false));
+    contentionEventEntity.setBenefitClaimTypeCode(bieMessagePayload.getBenefitClaimTypeCode());
+    contentionEventEntity.setContentionStatusTypeCode(
+        bieMessagePayload.getContentionStatusTypeCode());
+    contentionEventEntity.setCurrentLifecycleStatus(bieMessagePayload.getCurrentLifecycleStatus());
+    contentionEventEntity.setDetails(bieMessagePayload.getDetails());
+    contentionEventEntity.setEventTime(convertTime(bieMessagePayload.getEventTime()));
+    contentionEventEntity.setJournalStatusTypeCode(bieMessagePayload.getJournalStatusTypeCode());
+    contentionEventEntity.setVeteranParticipantId(bieMessagePayload.getVeteranParticipantId());
+    contentionEventEntity.setActionName(bieMessagePayload.getActionName());
+    contentionEventEntity.setActionResultName(bieMessagePayload.getActionResultName());
 
     return contentionEventRepository.save(contentionEventEntity);
   }
 
-  public LocalDateTime convertTime(long time) {
+  public LocalDateTime convertTime(Long time) {
+    if (time == null) return null;
+
     return LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
   }
 }

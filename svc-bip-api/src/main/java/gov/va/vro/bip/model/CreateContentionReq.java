@@ -15,5 +15,5 @@ import java.util.List;
 @Setter
 @RequiredArgsConstructor
 public class CreateContentionReq {
-  private List<CreateContention> createContentions;
+  private List<Contention> createContentions;
 }

@@ -7,7 +7,7 @@ import lombok.Builder;
 @Builder
 public class HasStatusCodeAndMessage {
   @Builder.Default public int statusCode = 0;
-  @Builder.Default public String statusMessage;
+  @Builder.Default public String statusMessage = "";
 
   HasStatusCodeAndMessage() {}
 }

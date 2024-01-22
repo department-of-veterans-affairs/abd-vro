@@ -37,7 +37,7 @@ import java.util.Objects;
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @ContextConfiguration(classes = LighthouseProperties.class)
-@TestPropertySource({"classpath:application.properties", "classpath:application-test.properties"})
+@TestPropertySource({"classpath:application.yaml", "classpath:application-test.yaml"})
 @ExtendWith(MockitoExtension.class)
 @Slf4j
 class LighthouseApiServiceTest {

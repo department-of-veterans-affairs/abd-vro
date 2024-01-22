@@ -10,7 +10,7 @@ pdf_options = {
 redis_config = {
     "host": os.environ.get("REDIS_PLACEHOLDERS_HOST", "localhost"),
     "port": 6379,
-    "password": os.environ.get("REDIS_PLACEHOLDERS_PASSWORD", "not-redis-password"),
+    "password": os.environ.get("REDIS_PASSWORD", "not-redis-password"),
     "retry_limit": 3,
     # 3 hours
     "expiration": 60 * 60 * 3

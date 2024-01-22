@@ -71,6 +71,7 @@ class AsyncConsumer(BaseQueueClient):
     def _start_consuming(self):
         self._channel.add_on_cancel_callback(self._on_consumer_cancelled)
         self._consumer_tag = self._channel.basic_consume(self.queue_name, self._on_message)
+        self._is_ready = True
         self._consuming = True
         self._debug('startConsuming',
                     consumer_tag=self._consumer_tag)
