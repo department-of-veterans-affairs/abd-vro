@@ -1,11 +1,12 @@
 import asyncio
+
 import pytest
 from hoppy.async_hoppy_client import AsyncHoppyClient
 from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
 
 
 def get_client(app_id="test", exchange_name="exchange", queue_name="queue",
-               reply_queue="reply_queue", max_latency=3, requeue_attempts=3):
+               reply_queue="reply_queue", max_latency=3, requeue_attempts=3) -> AsyncHoppyClient:
     exchange_props = ExchangeProperties(name=exchange_name, passive_declare=False)
     request_props = QueueProperties(name=queue_name, passive_declare=False)
     reply_props = QueueProperties(name=reply_queue, passive_declare=False)
@@ -15,16 +16,19 @@ def get_client(app_id="test", exchange_name="exchange", queue_name="queue",
 
 
 @pytest.mark.asyncio
-async def test_stop_with_caller_provided_event_loop(event_loop):
+async def test_stop_with_caller_provided_event_loop():
     # given
     client = get_client()
 
     # when
+    event_loop = asyncio.get_running_loop()
     await client.start(event_loop)
+    assert client.is_ready()
     await client.stop()
 
     # Then
     assert not event_loop.is_closed()
+    assert not client.is_ready()
 
 
 def test_stop_without_caller_provided_event_loop():
