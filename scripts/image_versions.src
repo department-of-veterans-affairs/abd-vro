@@ -47,5 +47,4 @@ postgres_VER="v3.5.6"
 # Thu Dec 14 02:59:08 UTC 2023 -- v3.6.1
 # Mon Jan 22 18:32:01 UTC 2024 -- v3.6.2
 redis_VER="v3.6.2"
-rabbitmq_VER="v3.6.2"
 dbinit_VER="v3.6.2"
