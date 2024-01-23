@@ -66,6 +66,9 @@ class AsyncHoppyClient:
         while not self.async_publisher.is_stopped or not self.async_consumer.is_stopped:
             await asyncio.sleep(0)
 
+    def is_ready(self):
+        return self.async_publisher.is_ready and self.async_consumer.is_ready
+
     async def make_request(self, request_id, body):
         correlation_id = str(uuid.uuid4())
         logging.info(
