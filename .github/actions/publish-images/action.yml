@@ -149,7 +149,7 @@ runs:
           echo "::endgroup::"
         done
 
-        echo "\"ghcr.io/department-of-veterans-affairs/abd-vro-internal/vro-cc-app:631ea70\"" >> "$GITHUB_OUTPUT"
+        echo -n "\"ghcr.io/department-of-veterans-affairs/abd-vro-internal/vro-cc-app:631ea70\"" >> "$GITHUB_OUTPUT"
 
         echo "]" >> "$GITHUB_OUTPUT"
         echo "EOF" >> "$GITHUB_OUTPUT"
