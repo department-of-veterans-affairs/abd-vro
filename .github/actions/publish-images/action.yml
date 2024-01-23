@@ -139,15 +139,17 @@ runs:
             docker push "${GHCR_PATH}:latest"
 
             echo "* $IMG_NAME:$IMG_TAG" >> "$GITHUB_STEP_SUMMARY"
-            echo -n "\"${GHCR_PATH}:$IMG_TAG\"" >> "$GITHUB_OUTPUT"
+            # echo -n "\"${GHCR_PATH}:$IMG_TAG\"" >> "$GITHUB_OUTPUT"
 
             # For all but the last image include a comma
-            if [ ${PREFIX} != ${VAR_PREFIXES_ARR[-1]} ]; then
-              echo -n "," >> "$GITHUB_OUTPUT"
-            fi
+            #if [ ${PREFIX} != ${VAR_PREFIXES_ARR[-1]} ]; then
+            #  echo -n "," >> "$GITHUB_OUTPUT"
+            #fi
           fi
           echo "::endgroup::"
         done
+
+        echo "\"ghcr.io/department-of-veterans-affairs/abd-vro-internal/vro-cc-app:631ea70\"" >> "$GITHUB_OUTPUT"
 
         echo "]" >> "$GITHUB_OUTPUT"
         echo "EOF" >> "$GITHUB_OUTPUT"
