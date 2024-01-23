@@ -26,6 +26,7 @@ IMAGES=( postgres \
   redis \
   rabbitmq \
   api-gateway app db-init \
+  dev-tools \
   svc-bgs-api \
   svc-lighthouse-api svc-bie-kafka svc-bip-api \
   xample-workflows \
