@@ -1,11 +1,19 @@
 # Use the Bitnami RabbitMQ image as the base
 FROM bitnami/rabbitmq:3.12
 
+#RUN apt-get update && apt-get install -y gosu
+
 # Copy the modified configuration file to the correct location
-COPY rabbitmq.conf /opt/bitnami/rabbitmq/etc/rabbitmq/rabbitmq.conf
+COPY rabbitmq.conf /tmp/rabbitmq.conf
+
+USER root
+RUN chmod a+rw /tmp/rabbitmq.conf
+
+# Create a new user 'tron' and create a home directory for the user
+RUN useradd -m tron
+
 
 ## Copy the entrypoint script
-#COPY --chmod=755 entrypoint.sh /entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
 
-# Set the script as the entrypoint
-#ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
