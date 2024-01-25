@@ -2,7 +2,6 @@
 
 rabbitmq:
   enabled: true
-
 redis:
   enabled: true
 
