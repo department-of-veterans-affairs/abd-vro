@@ -5,7 +5,6 @@ COPY rabbitmq.conf /tmp/rabbitmq.conf
 
 USER root
 
-RUN apt-get update && apt-get install -y sudo
 RUN chown 1001 /tmp/rabbitmq.conf  \
     && chmod g+w /tmp/rabbitmq.conf
 
