@@ -5,6 +5,10 @@ plugins {
 group = 'gov.va.vro'
 version = '3.5.4-SNAPSHOT'
 
+docker {
+  copySpec.from("src/main/resources").into(".")
+}
+
 repositories {
   mavenCentral()
 }
