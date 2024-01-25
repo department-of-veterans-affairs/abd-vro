@@ -81,4 +81,5 @@ POSTGRES_HOST = os.environ.get("POSTGRES_HOST") or "localhost"
 POSTGRES_PORT = os.environ.get("POSTGRES_PORT") or "5432"
 POSTGRES_DB = os.environ.get("POSTGRES_DB") or "vro"
 POSTGRES_SCHEMA = os.environ.get("POSTGRES_SCHEMA") or "claims"
-SQLALCHEMY_DATABASE_URI = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+POSTGRES_URL = os.environ.get("POSTGRES_URL") or f"postgresql://{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+SQLALCHEMY_DATABASE_URI = POSTGRES_URL.replace('postgresql://', f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@")
