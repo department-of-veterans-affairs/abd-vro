@@ -9,6 +9,9 @@ class JobStore:
     def __init__(self, db: Database):
         self.db = db
 
+    def is_ready(self):
+        return self.db.is_ready(schema.MergeJob)
+
     def get_all_incomplete_jobs(self) -> list[MergeJob]:
         return [schema.MergeJob.model_validate(job) for job in self.get_merge_jobs_in_progress()]
 
@@ -37,4 +40,4 @@ class JobStore:
         self.db.update(merge_job)
 
 
-job_store = JobStore(database)
+JOB_STORE = JobStore(database)

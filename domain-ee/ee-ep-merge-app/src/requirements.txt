@@ -1,5 +1,5 @@
 fastapi==0.103.*
-hoppy @ git+https://github.com/department-of-veterans-affairs/abd-vro.git@shared/lib-hoppy-0.5#subdirectory=shared/lib-hoppy
+hoppy @ git+https://github.com/department-of-veterans-affairs/abd-vro.git@shared/lib-hoppy-0.6#subdirectory=shared/lib-hoppy
 httpx==0.24.*
 psycopg2-binary==2.9.*
 pydantic==2.4.*

@@ -4,7 +4,7 @@ import pytest
 from httpx import AsyncClient
 from src.python_src.api import app
 from src.python_src.schema.merge_job import JobState
-from src.python_src.service.job_store import job_store
+from src.python_src.service.job_store import JOB_STORE
 
 ACCEPTABLE_JOB_PROCESSING_DURATION = 0.2
 
@@ -54,7 +54,7 @@ def assert_job(job_id,
                expected_state: JobState,
                expected_error_state: JobState | None = None,
                expected_num_errors: int = 0):
-    job = job_store.get_merge_job(job_id)
+    job = JOB_STORE.get_merge_job(job_id)
     assert job is not None
     assert job.pending_claim_id == pending_claim_id
     assert job.ep400_claim_id == ep400_claim_id
