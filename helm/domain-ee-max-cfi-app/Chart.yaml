@@ -5,8 +5,8 @@ type: application
 
 # numbers, lowercase, and dashes only
 # https://helm.sh/docs/chart_best_practices/conventions/#chart-names
-name: domain-ee-chart
-description: Workflows and microservices for the Employee Experience domain
+name: domain-ee-max-cfi-app-chart
+description: Max Claim for Increase (CFI) API for the Employee Experience domain
 
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
@@ -16,4 +16,4 @@ version: 0.2.0
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
 # This field is informational, and has no impact on chart version calculations.
-appVersion: "3.6.1"
+appVersion: "3.6.3"

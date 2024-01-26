@@ -106,7 +106,7 @@ public class BipApiConfig {
           TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
       trustManagerFactory.init(trustStoreObj);
 
-      SSLContext sslContext = SSLContext.getInstance("TLS");
+      SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
       sslContext.init(
           keyManagerFactory.getKeyManagers(),
           trustManagerFactory.getTrustManagers(),

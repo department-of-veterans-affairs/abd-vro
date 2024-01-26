@@ -1,10 +1,10 @@
+import asyncio
 import logging
-import time
 from abc import ABC, abstractmethod
 
 from hoppy.config import RABBITMQ_CONFIG
-from pika.adapters.asyncio_connection import AsyncioConnection
 from pika import ConnectionParameters, PlainCredentials
+from pika.adapters.asyncio_connection import AsyncioConnection
 
 
 class BaseChannelOpener(ABC):
@@ -41,7 +41,7 @@ class BaseChannelOpener(ABC):
             Defaults to asyncio.get_event_loop()
         """
 
-        self._custom_loop = loop
+        self._custom_loop = loop if loop is not None else asyncio.get_event_loop()
 
         self._info('connectingToRabbitMq', config=self.config)
         self._connection = AsyncioConnection(
@@ -78,8 +78,7 @@ class BaseChannelOpener(ABC):
         self.stop()
         reconnect_delay = self._get_reconnect_delay()
         self._warning('reconnecting', reconnect_delay_seconds=reconnect_delay)
-        time.sleep(reconnect_delay)
-        self.connect(self._custom_loop)
+        self._custom_loop.call_later(reconnect_delay, self.connect, self._custom_loop)
 
     def _get_reconnect_delay(self):
         self._reconnect_delay += 1

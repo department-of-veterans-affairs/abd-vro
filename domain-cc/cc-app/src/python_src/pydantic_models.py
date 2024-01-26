@@ -27,3 +27,10 @@ class PredictedClassification(BaseModel):
 
     classification_code: int
     classification_name: str
+
+
+class ClaimLinkInfo(BaseModel):
+    """used for connecting VA.gov and VBMS claims to each other in order to track contention changes downstream"""
+
+    va_gov_claim_id: int
+    vbms_claim_id: int

@@ -21,10 +21,10 @@ dependencies {
 
   // Swagger UI for WebFlux
   implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:${spring_doc_version}"
-  implementation 'io.netty:netty-codec-http2:4.1.104.Final'
+  implementation 'io.netty:netty-codec-http2:4.1.105.Final'
 
   constraints {
     // To address Snyk alert on DoS vulnerability
-    implementation 'org.springframework.boot:spring-boot-autoconfigure:3.1.6'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure:3.2.2'
   }
 }

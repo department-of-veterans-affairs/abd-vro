@@ -1,18 +1,20 @@
+import json
 import logging
 import sys
+import time
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException
 
-from .pydantic_models import Claim, PredictedClassification
+from .pydantic_models import Claim, ClaimLinkInfo, PredictedClassification
 from .util.brd_classification_codes import get_classification_name
 from .util.logging_dropdown_selections import build_logging_table
 from .util.lookup_table import ConditionDropdownLookupTable, DiagnosticCodeLookupTable
+from .util.sanitizer import sanitize_log
 
 dc_lookup_table = DiagnosticCodeLookupTable()
 dropdown_lookup_table = ConditionDropdownLookupTable()
 dropdown_values = build_logging_table()
-
 
 app = FastAPI(
     title="Contention Classification",
@@ -32,7 +34,7 @@ app = FastAPI(
 )
 
 logging.basicConfig(
-    format="[%(asctime)s] %(levelname)-8s %(message)s",
+    format="%(message)s",
     level=logging.INFO,
     datefmt="%Y-%m-%d %H:%M:%S",
     stream=sys.stdout,
@@ -47,35 +49,56 @@ def get_health_status():
     return {"status": "ok"}
 
 
+def log_lookup_table_match(
+    classification_code: int,
+    contention_text: str,
+):
+    is_in_dropdown = contention_text.strip().lower() in dropdown_values
+    log_as_json({"is_in_dropdown": sanitize_log(is_in_dropdown)})
+    log_contention_text = contention_text if is_in_dropdown else "Not in dropdown"
+
+    if classification_code:
+        already_mapped_text = contention_text.strip().lower()  # do not leak PII
+        log_as_json({"lookup_table_match": sanitize_log(already_mapped_text)})
+    elif is_in_dropdown:
+        log_as_json(
+            {
+                "lookup_table_match": sanitize_log(
+                    f"No table match for {log_contention_text}"
+                )
+            }
+        )
+    else:
+        log_as_json(
+            {"lookup_table_match": sanitize_log("No table match for free text entry")}
+        )
+
+
+def log_as_json(log: dict):
+    if "date" not in log.keys():
+        log.update({"date": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())})
+    if "level" not in log.keys():
+        log.update({"level": "info"})
+    logging.info(json.dumps(log))
+
+
 @app.post("/classifier")
 def get_classification(claim: Claim) -> Optional[PredictedClassification]:
-    logging.info(
-        f"claim_id: {claim.claim_id}, form526_submission_id: {claim.form526_submission_id}"
+    log_as_json(
+        {
+            "claim_id": sanitize_log(claim.claim_id),
+            "form526_submission_id": sanitize_log(claim.form526_submission_id),
+        }
     )
     classification_code = None
     if claim.claim_type == "claim_for_increase":
-        logging.info(f"diagnostic code: {claim.diagnostic_code}")
+        log_as_json({"diagnostic code": sanitize_log(claim.diagnostic_code)})
         classification_code = dc_lookup_table.get(claim.diagnostic_code, None)
 
     if claim.contention_text and not classification_code:
         classification_code = dropdown_lookup_table.get(claim.contention_text, None)
-        is_in_dropdown = claim.contention_text.strip().lower() in dropdown_values
-        log_contention_text = (
-            claim.contention_text if is_in_dropdown else "Not in dropdown"
-        )
-        if classification_code:
-            already_mapped_text = (  # being explicit, do not leak PII
-                claim.contention_text.strip().lower()
-            )
-            logging.info(
-                f"In Dropdown: {is_in_dropdown}, "
-                f" Contention Text: {log_contention_text}, Lookup table match: {already_mapped_text}"
-            )
-        else:
-            logging.info(
-                f"In Dropdown: {is_in_dropdown}, "
-                f"Contention Text: {log_contention_text}, No Lookup table match"
-            )
+
+        log_lookup_table_match(classification_code, claim.contention_text)
 
     if classification_code:
         classification_name = get_classification_name(classification_code)
@@ -86,5 +109,19 @@ def get_classification(claim: Claim) -> Optional[PredictedClassification]:
     else:
         classification = None
 
-    logging.info(f"classification: {classification}")
+    log_as_json({"classification": classification})
     return classification
+
+
+@app.post("/claim-linker")
+def link_vbms_claim_id(claim_link_info: ClaimLinkInfo):
+    log_as_json(
+        {
+            "message": "linking claims",
+            "va_gov_claim_id": sanitize_log(claim_link_info.va_gov_claim_id),
+            "vbms_claim_id": sanitize_log(claim_link_info.vbms_claim_id),
+        }
+    )
+    return {
+        "success": True,
+    }

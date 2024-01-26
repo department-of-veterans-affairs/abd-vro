@@ -26,11 +26,13 @@ IMAGES=( postgres \
   redis \
   rabbitmq \
   api-gateway app db-init \
+  dev-tools \
   svc-bgs-api \
   svc-lighthouse-api svc-bie-kafka svc-bip-api \
   xample-workflows \
   cc-app \
-  ee-max-cfi-app )
+  ee-max-cfi-app \
+  ee-ep-merge-app )
 echo
 echo "=== ${#IMAGES[@]} VRO images"
 for INDEX in "${!IMAGES[@]}"; do

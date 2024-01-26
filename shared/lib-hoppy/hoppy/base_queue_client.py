@@ -3,7 +3,6 @@ from enum import Enum
 
 from hoppy.base_queue_declarer import BaseQueueDeclarer
 from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
-from pika import ConnectionParameters, PlainCredentials
 
 ClientType = Enum('ClientType', ['CONSUMER', 'PUBLISHER', 'CHANNEL_ONLY'])
 
@@ -60,10 +59,6 @@ class BaseQueueClient(BaseQueueDeclarer):
     def is_ready(self) -> bool:
         return self._is_ready
 
-    @property
-    def is_ready(self) -> bool:
-        return self._is_ready
-
     @abstractmethod
     def _ready(self):
         """Method to be called after the asyncio connection has successfully opened the connection, created the
@@ -93,6 +88,7 @@ class BaseQueueClient(BaseQueueDeclarer):
 
     def _on_connection_closed(self, _unused_connection, reason):
         self._channel = None
+        self._is_ready = False
         if self._stopping:
             if not self._custom_loop:
                 self._connection.ioloop.stop()

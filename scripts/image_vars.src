@@ -5,14 +5,14 @@
 
 # Array of VRO images
 # shellcheck disable=SC2034
-VRO_IMAGES_ARR=( postgres redis rabbitmq api-gateway app db-init svc-bgs-api svc-lighthouse-api svc-bie-kafka svc-bip-api xample-workflows cc-app ee-max-cfi-app )
+VRO_IMAGES_ARR=( postgres redis rabbitmq api-gateway app db-init dev-tools svc-bgs-api svc-lighthouse-api svc-bie-kafka svc-bip-api xample-workflows cc-app ee-max-cfi-app ee-ep-merge-app )
 # Usage: for IMG in ${VRO_IMAGES_ARR[@]}; do echo "- $IMG"; done
-export VRO_IMAGES="postgres redis rabbitmq api-gateway app db-init svc-bgs-api svc-lighthouse-api svc-bie-kafka svc-bip-api xample-workflows cc-app ee-max-cfi-app"
+export VRO_IMAGES="postgres redis rabbitmq api-gateway app db-init dev-tools svc-bgs-api svc-lighthouse-api svc-bie-kafka svc-bip-api xample-workflows cc-app ee-max-cfi-app ee-ep-merge-app"
 
 # Array of variable prefixes
 # shellcheck disable=SC2034
-VAR_PREFIXES_ARR=( postgres redis rabbitmq apigateway app dbinit svcbgsapi svclighthouseapi svcbiekafka svcbipapi xampleworkflows ccapp eemaxcfiapp )
-export VAR_PREFIXES="postgres redis rabbitmq apigateway app dbinit svcbgsapi svclighthouseapi svcbiekafka svcbipapi xampleworkflows ccapp eemaxcfiapp"
+VAR_PREFIXES_ARR=( postgres redis rabbitmq apigateway app dbinit devtools svcbgsapi svclighthouseapi svcbiekafka svcbipapi xampleworkflows ccapp eemaxcfiapp eeepmergeapp )
+export VAR_PREFIXES="postgres redis rabbitmq apigateway app dbinit devtools svcbgsapi svclighthouseapi svcbiekafka svcbipapi xampleworkflows ccapp eemaxcfiapp eeepmergeapp"
 
 LAST_RELEASE_VERSION=$(tail -1 versions.txt)
 
@@ -80,6 +80,10 @@ export dbinit_GRADLE_IMG="va/abd_vro-db-init"
 export dbinit_IMG="vro-db-init"
 export dbinit_VER="$LAST_RELEASE_VERSION"
 
+export devtools_GRADLE_IMG="va/abd_vro-dev-tools"
+export devtools_IMG="vro-dev-tools"
+export devtools_VER="$LAST_RELEASE_VERSION"
+
 export svcbgsapi_GRADLE_IMG="va/abd_vro-svc-bgs-api"
 export svcbgsapi_IMG="vro-svc-bgs-api"
 export svcbgsapi_VER="$LAST_RELEASE_VERSION"
@@ -107,6 +111,10 @@ export ccapp_VER="$LAST_RELEASE_VERSION"
 export eemaxcfiapp_GRADLE_IMG="va/abd_vro-ee-max-cfi-app"
 export eemaxcfiapp_IMG="vro-ee-max-cfi-app"
 export eemaxcfiapp_VER="$LAST_RELEASE_VERSION"
+
+export eeepmergeapp_GRADLE_IMG="va/abd_vro-ee-ep-merge-app"
+export eeepmergeapp_IMG="vro-ee-ep-merge-app"
+export eeepmergeapp_VER="$LAST_RELEASE_VERSION"
 
 ########################################
 # Override default *_VER variables above
