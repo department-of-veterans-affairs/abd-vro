@@ -30,6 +30,13 @@ RUN adduser --disabled-password --gecos "" tron
 COPY . .
 RUN chmod +x ./*.sh && chown -R tron /app
 
+# Copy health check scripts
+COPY src/healthcheck/liveness_script.rb /src/healthcheck/liveness_script.rb
+COPY src/healthcheck/readiness_script.rb /src/healthcheck/readiness_script.rb
+
+# Make scripts executable
+RUN chmod +x src/healthcheck/liveness_script.rb src/healthcheck/readiness_script.rb
+
 USER tron
 ENTRYPOINT ["/app/entrypoint-wrapper.sh"]
 
