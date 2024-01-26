@@ -1,5 +1,5 @@
-# This script is initializes a BgsClient instance and performs a specific readiness check using the svc-bgs-api application logic. 
-# This script provides more specific error feedback by catching and printing exceptions related to the actual operation of your application.
+# This script is used by the K8S Readiness probe to check the availability of the BGS-api service as well as the status of RabbitMQ thereby verifying 
+# that the BGS-api application is ready to perform its basic functions. 
 
 require_relative 'rabbit_subscriber'
 require_relative 'lib/bgs_client'
