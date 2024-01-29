@@ -1,5 +1,6 @@
 import os
 from enum import Enum
+from urllib.parse import quote, urlparse
 
 
 def int_from_env(key, default):
@@ -75,11 +76,24 @@ REPLY_QUEUES = {
         os.environ.get("ADD_CLAIM_NOTE_RESPONSE") or "add-note-response",
 }
 
-POSTGRES_USER = os.environ.get("POSTGRES_USER") or "vro_user"
-POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD") or "vro_user_pw"
-POSTGRES_HOST = os.environ.get("POSTGRES_HOST") or "localhost"
-POSTGRES_PORT = os.environ.get("POSTGRES_PORT") or "5432"
-POSTGRES_DB = os.environ.get("POSTGRES_DB") or "vro"
+
+def create_sqlalchemy_db_uri():
+    user = quote(os.environ.get("POSTGRES_USER") or "vro_user")
+    password = quote(os.environ.get("POSTGRES_PASSWORD") or "vro_user_pw")
+    host = os.environ.get("POSTGRES_HOST") or "localhost"
+    port = os.environ.get("POSTGRES_PORT") or "5432"
+    database = os.environ.get("POSTGRES_DB") or "vro"
+    postgres_url = os.environ.get("POSTGRES_URL")
+
+    if postgres_url is None:
+        return f"postgresql://{user}:{password}@{host}:{port}/{database}"
+
+    result = urlparse(postgres_url)
+    if not result.username:
+        return result._replace(netloc=f'{user}:{password}@{result.netloc}').geturl()
+
+    return postgres_url
+
+
 POSTGRES_SCHEMA = os.environ.get("POSTGRES_SCHEMA") or "claims"
-POSTGRES_URL = os.environ.get("POSTGRES_URL") or f"postgresql://{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
-SQLALCHEMY_DATABASE_URI = POSTGRES_URL.replace('postgresql://', f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@")
+SQLALCHEMY_DATABASE_URI = create_sqlalchemy_db_uri()
