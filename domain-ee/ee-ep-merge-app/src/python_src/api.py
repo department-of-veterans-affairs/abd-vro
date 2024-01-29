@@ -83,23 +83,24 @@ logging.basicConfig(
          response_model=HealthResponse,
          response_model_exclude_none=True)
 def get_health_status():
-    if is_healthy():
-        return {"status": "healthy"}
-    else:
-        errors = []
-        if not HOPPY.is_ready():
-            errors.append("Cannot connect to RabbitMQ.")
-        if not JOB_STORE.is_ready():
-            errors.append("Cannot connect to database.")
+    errors = health_check_errors()
+    if errors:
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                             content={
                                 "status": "unhealthy",
                                 "errors": errors
                             })
+    else:
+        return {"status": "healthy"}
 
 
-def is_healthy():
-    return HOPPY.is_ready() and JOB_STORE.is_ready()
+def health_check_errors():
+    errors = []
+    if not HOPPY.is_ready():
+        errors.append(CONNECT_TO_RABBIT_MQ_FAILURE)
+    if not JOB_STORE.is_ready():
+        errors.append(CONNECT_TO_DATABASE_FAILURE)
+    return errors
 
 
 @app.post("/merge",
@@ -109,12 +110,8 @@ def is_healthy():
 async def merge_claims(request: Request, merge_request: MergeEndProductsRequest, background_tasks: BackgroundTasks):
     validate_merge_request(merge_request)
 
-    if not is_healthy():
-        errors = []
-        if not HOPPY.is_ready():
-            errors.append(CONNECT_TO_RABBIT_MQ_FAILURE)
-        if not JOB_STORE.is_ready():
-            errors.append(CONNECT_TO_DATABASE_FAILURE)
+    errors = health_check_errors()
+    if errors:
         logging.error(f"event=mergeJobRejected errors={errors}")
         return JSONResponse(
             status_code=500,
@@ -122,8 +119,7 @@ async def merge_claims(request: Request, merge_request: MergeEndProductsRequest,
                 "method": "POST",
                 "url": str(request.url),
                 "errors": errors
-            })
-        )
+            }))
 
     job_id = uuid4()
 
