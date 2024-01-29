@@ -50,4 +50,3 @@ redis_VER="v3.6.2"
 dbinit_VER="v3.6.2"
 # Thu Jan 25 22:01:17 UTC 2024 -- v3.6.3
 rabbitmq_VER="v3.6.3"
-devtools_VER="v3.6.3"
