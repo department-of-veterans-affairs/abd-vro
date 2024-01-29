@@ -7,8 +7,13 @@ def check_rabbitmq_connection
   subscriber = RabbitSubscriber.new(BUNNY_ARGS)
   subscriber.connected?
 rescue StandardError => e
-  puts "Liveness check failed: #{e.message}"
+  puts "RabbitMQ connection check failed: #{e.message}"
   false
 end
 
-exit check_rabbitmq_connection ? 0 : 1
+if check_rabbitmq_connection
+  exit 0
+else
+  puts "Liveness check failed"
+  exit 1
+end
