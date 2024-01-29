@@ -205,4 +205,4 @@ async def sqlalchemy_exception_handler(request: Request, err: SQLAlchemyError):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="localhost", port=8140, loop='asyncio')
+    uvicorn.run(app, host="localhost", port=8140)

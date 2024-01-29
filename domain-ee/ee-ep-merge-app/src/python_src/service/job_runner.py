@@ -26,7 +26,7 @@ class JobRunner:
             asyncio.get_event_loop().run_in_executor(None, self.resume_job, in_progress_job)
 
     @staticmethod
-    def start_machine(machine: EpMergeMachine):
+    def __start_machine(machine: EpMergeMachine):
         try:
             machine.start()
         except Exception as e:
@@ -34,7 +34,7 @@ class JobRunner:
 
     def start_job(self, merge_job: MergeJob):
         machine = EpMergeMachine(merge_job)
-        self.start_machine(machine)
+        self.__start_machine(machine)
 
     def resume_job(self, in_progress_job: MergeJob):
         if in_progress_job.state == JobState.RUNNING_CANCEL_EP400_CLAIM:
@@ -43,7 +43,7 @@ class JobRunner:
             machine = EpMergeMachine(in_progress_job, Workflow.RESUME_ADD_NOTE)
         else:
             machine = EpMergeMachine(in_progress_job, Workflow.RESTART)
-        self.start_machine(machine)
+        self.__start_machine(machine)
 
 
 JOB_RUNNER = JobRunner()

@@ -55,10 +55,7 @@ class HoppyService:
             await client.stop()
 
     def is_ready(self) -> bool:
-        ready = True
-        for client in self.clients.values():
-            ready = ready and client.is_ready()
-        return ready
+        return all(client.is_ready() for client in self.clients.values())
 
 
 HOPPY = HoppyService()
