@@ -1,6 +1,7 @@
 from config import SQLALCHEMY_DATABASE_URI
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import create_engine, desc, inspect
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
 
 engine = create_engine(SQLALCHEMY_DATABASE_URI, pool_pre_ping=True)
@@ -46,6 +47,14 @@ class Database:
         primary_key = inspect(obj.Meta.orm_model).primary_key[0]
         db.query(obj.Meta.orm_model).filter(primary_key == getattr(obj, primary_key.name)).update(as_json)
         db.commit()
+
+    @with_connection
+    def is_ready(self, obj, db):
+        try:
+            db.query(obj.Meta.orm_model).count()
+            return True
+        except SQLAlchemyError:
+            return False
 
 
 database = Database()

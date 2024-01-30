@@ -5,6 +5,11 @@ from schema.merge_job import JobState, MergeJob
 from typing_extensions import Annotated
 
 
+class HealthResponse(BaseModel):
+    status: str
+    errors: list[str] | None = None
+
+
 class MergeEndProductsRequest(BaseModel):
     pending_claim_id: Annotated[int, Field(strict=True)]
     ep400_claim_id: Annotated[int, Field(strict=True)]

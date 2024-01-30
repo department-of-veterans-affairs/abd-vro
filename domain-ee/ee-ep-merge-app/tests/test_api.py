@@ -1,11 +1,13 @@
 import uuid
 from datetime import datetime
-from unittest.mock import Mock
+from unittest.mock import MagicMock, Mock
 
 import pytest
+from api import CONNECT_TO_DATABASE_FAILURE, CONNECT_TO_RABBIT_MQ_FAILURE
 from fastapi.testclient import TestClient
 from model.merge_job import MergeJob
 from schema.merge_job import JobState
+from sqlalchemy.exc import SQLAlchemyError
 
 MERGE = "/merge"
 JOB_ID = uuid.uuid4()
@@ -19,15 +21,24 @@ def mock_uuid(mocker):
 
 @pytest.fixture(autouse=True)
 def mock_background_tasks(mocker):
-    mocker.patch(
-        'src.python_src.api.start_job_state_machine',
-        return_value=Mock()
-    )
+    mocker.patch('src.python_src.api.JOB_RUNNER.start_job', return_value=Mock())
+
+
+@pytest.fixture(autouse=True)
+def mock_hoppy(mocker):
+    mock_hoppy = Mock()
+    mock_hoppy.is_ready = Mock(return_value=True)
+    return mocker.patch('src.python_src.api.HOPPY', return_value=mock_hoppy)
 
 
 @pytest.fixture(autouse=True)
 def mock_job_store(mocker):
-    return mocker.patch('src.python_src.api.job_store', return_value=Mock())
+    job_store_mock = Mock()
+    mock_job_store.submit_merge_job = Mock()
+    mock_job_store.update_merge_job = Mock()
+    mock_job_store.get_merge_job = MagicMock()
+    mock_job_store.is_ready = Mock(return_value=True)
+    return mocker.patch('src.python_src.api.JOB_STORE', return_value=job_store_mock)
 
 
 def submitted_job():
@@ -40,14 +51,29 @@ def submitted_job():
         updated_at=TIME)
 
 
-@pytest.fixture(autouse=True)
-def mock_job_submit(mock_job_store):
-    mock_job_store.submit_merge_job.return_value = submitted_job()
+@pytest.mark.parametrize("hoppy_ready, db_ready", [
+    pytest.param(True, True, id="all services up"),
+    pytest.param(True, False, id="db is down"),
+    pytest.param(False, True, id="hoppy is down"),
+])
+def test_health(client: TestClient, mocker, hoppy_ready, db_ready):
+    mocker.patch('src.python_src.api.HOPPY.is_ready', return_value=hoppy_ready)
+    mocker.patch('src.python_src.api.JOB_STORE.is_ready', return_value=db_ready)
 
-
-def test_health(client: TestClient):
     response = client.get("/health")
-    assert response.status_code == 200
+
+    json = response.json()
+    if hoppy_ready and db_ready:
+        assert response.status_code == 200
+        assert json['status'] == 'healthy'
+    else:
+        assert response.status_code == 500
+        assert json['status'] == 'unhealthy'
+        errors = json['errors']
+        if not hoppy_ready:
+            assert CONNECT_TO_RABBIT_MQ_FAILURE in errors
+        if not db_ready:
+            assert CONNECT_TO_DATABASE_FAILURE in errors
 
 
 @pytest.mark.parametrize("req", [
@@ -91,6 +117,29 @@ def test_merge_claims_ok(client: TestClient, mock_job_store):
     assert job['updated_at'] is not None
 
 
+@pytest.mark.parametrize("hoppy_ready, db_ready", [
+    pytest.param(False, False, id="both are down"),
+    pytest.param(True, False, id="db is down"),
+    pytest.param(False, True, id="hoppy is down"),
+])
+def test_merge_claims_while_unhealthy(client: TestClient, mocker, hoppy_ready, db_ready):
+    mocker.patch('src.python_src.api.HOPPY.is_ready', return_value=hoppy_ready)
+    mocker.patch('src.python_src.api.JOB_STORE.is_ready', return_value=db_ready)
+    request = {
+        "pending_claim_id": 1,
+        "ep400_claim_id": 2
+    }
+
+    response = client.post(MERGE, json=request)
+    assert response.status_code == 500
+    json = response.json()
+    errors = json['errors']
+    if not hoppy_ready:
+        assert CONNECT_TO_RABBIT_MQ_FAILURE in errors
+    if not db_ready:
+        assert CONNECT_TO_DATABASE_FAILURE in errors
+
+
 def test_get_job_by_job_id_job_not_found(client: TestClient, mock_job_store):
     mock_job_store.get_merge_job.return_value = None
     response = client.get(MERGE + f'/{uuid.uuid4()}')
@@ -110,6 +159,16 @@ def test_get_job_by_job_id_job_found(client: TestClient, mock_job_store):
     assert job['state'] == JobState.PENDING.value
     assert job['created_at'] == TIME.isoformat()
     assert job['updated_at'] == TIME.isoformat()
+
+
+def test_get_job_by_job_id_when_unhealthy(client: TestClient, mock_job_store):
+    mock_job_store.get_merge_job.side_effect = SQLAlchemyError()
+    response = client.get(MERGE + f'/{JOB_ID}')
+    assert response.status_code == 500
+    json = response.json()
+    errors = json['errors']
+    assert len(errors) == 1
+    assert CONNECT_TO_DATABASE_FAILURE in errors
 
 
 def make_merge_request(client: TestClient):
@@ -162,3 +221,13 @@ def test_get_merge_jobs_pagination(client: TestClient, mock_job_store, page, siz
         assert job['state'] == JobState.PENDING.value
         assert job['created_at'] == TIME.isoformat()
         assert job['updated_at'] == TIME.isoformat()
+
+
+def test_get_merge_jobs_pagination_when_unhealthy(client: TestClient, mock_job_store):
+    mock_job_store.query.side_effect = SQLAlchemyError()
+    response = client.get(MERGE)
+    assert response.status_code == 500
+    json = response.json()
+    errors = json['errors']
+    assert len(errors) == 1
+    assert CONNECT_TO_DATABASE_FAILURE in errors
