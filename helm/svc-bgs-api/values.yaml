@@ -11,6 +11,26 @@ resources:
 
 replicaCount: 1
 
+livenessProbe:
+  exec:
+    command:
+    - ruby
+    - /app/liveness_script.rb
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  timeoutSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  exec:
+    command:
+    - ruby
+    - /app/readiness_script.rb
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  timeoutSeconds: 10
+  failureThreshold: 3
+
 # autoscaling:
 #   enabled: false
 #   minReplicas: 1
