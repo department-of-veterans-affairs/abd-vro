@@ -52,6 +52,3 @@ dbinit_VER="v3.6.2"
 rabbitmq_VER="v3.6.3"
 # Tue Jan 30 02:15:11 UTC 2024 -- v3.6.4
 devtools_VER="v3.6.4"
-ccapp_VER="v3.6.4"
-eemaxcfiapp_VER="v3.6.4"
-eeepmergeapp_VER="v3.6.4"
