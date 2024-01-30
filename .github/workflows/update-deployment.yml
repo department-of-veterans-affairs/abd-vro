@@ -118,7 +118,7 @@ jobs:
     steps:
       - name: "Slack: workflow triggered"
         id: notify-slack
-        uses: archive/github-actions-slack@v2.6.0
+        uses: archive/github-actions-slack@v2.8.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
@@ -161,7 +161,7 @@ jobs:
 
       - name: "Slack thread: Post deploying message"
         # Post in thread to reduce clutter in Slack
-        uses: archive/github-actions-slack@v2.6.0
+        uses: archive/github-actions-slack@v2.8.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
@@ -219,7 +219,7 @@ jobs:
 
       - name: "Slack thread: Post failed status message"
         if: failure()
-        uses: archive/github-actions-slack@v2.6.0
+        uses: archive/github-actions-slack@v2.8.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
@@ -227,7 +227,7 @@ jobs:
           slack-text: ":panda_cry: Failed *${{ inputs.helm_chart }}* deployment to *${{ inputs.target_env }}*"
       - name: "Slack emoji: React failure on top-level Slack notification"
         if: failure()
-        uses: archive/github-actions-slack@v2.6.0
+        uses: archive/github-actions-slack@v2.8.0
         with:
           slack-function: send-reaction
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
@@ -236,14 +236,14 @@ jobs:
           slack-emoji-name: 'x'
 
       - name: "Slack thread: Post success status message"
-        uses: archive/github-actions-slack@v2.6.0
+        uses: archive/github-actions-slack@v2.8.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
           slack-text: ":panda_duck_yay: Completed *${{ inputs.helm_chart }}* deployment to *${{ inputs.target_env }}*"
       - name: "Slack emoji: React success on top-level Slack notification"
-        uses: archive/github-actions-slack@v2.6.0
+        uses: archive/github-actions-slack@v2.8.0
         with:
           slack-function: send-reaction
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
