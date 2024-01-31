@@ -69,11 +69,11 @@ class BgsClient
     end
   end
 
-   # Method to check BGS service availability. It makes use of the vro_participant_id method to check if BGS service is 
+  # Method to check BGS service availability. It makes use of the vro_participant_id method to check if BGS service is 
   # reachable and responding. This method should return a participant ID if the service is available.
-  def check_bgs_availability
+  def bgs_available?
     participant_id = vro_participant_id
-    !participant_id.nil? && participant_id.is_a?(String) && !participant_id.empty?
+    vro_participant_id.present?
   rescue StandardError => e
     puts "BGS-api availability check failed: #{e.message}"
     false
