@@ -77,7 +77,6 @@ class BgsClient
   rescue StandardError => e
     puts "BGS-api availability check failed: #{e.message}"
     false
-    end
   end
 
   def create_claim_notes(claim_id:, notes:)
