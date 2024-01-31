@@ -1,3 +1,4 @@
+datadog==0.48.0
 fastapi==0.97.*
 httpx==0.24.*
 pika==1.3.*

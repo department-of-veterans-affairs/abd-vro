@@ -2,8 +2,8 @@ import json
 import logging
 import time
 
-from .util.logging_dropdown_selections import build_logging_table
-from .util.sanitizer import sanitize_log
+from .logging_dropdown_selections import build_logging_table
+from .sanitizer import sanitize_log
 
 dropdown_values = build_logging_table()
 

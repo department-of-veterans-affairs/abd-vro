@@ -1,14 +1,20 @@
 import logging
+import os
 import sys
+import time
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException
+from datadog import initialize, statsd
+from fastapi import FastAPI, HTTPException, Request
 
 from .pydantic_models import Claim, ClaimLinkInfo, PredictedClassification
 from .util.brd_classification_codes import get_classification_name
 from .util.logging import log_as_json, log_lookup_table_match
 from .util.lookup_table import ConditionDropdownLookupTable, DiagnosticCodeLookupTable
 from .util.sanitizer import sanitize_log
+
+options = {"statsd_host": "127.0.0.1", "statsd_port": 8125}
+initialize(**options)
 
 dc_lookup_table = DiagnosticCodeLookupTable()
 dropdown_lookup_table = ConditionDropdownLookupTable()
@@ -29,6 +35,22 @@ app = FastAPI(
         },
     ],
 )
+
+env_flag = os.environ.get("ENV_FLAG", "local")
+
+
+@app.middleware("http")
+async def record_processing_time_in_datadog(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    process_time_milliseconds = (time.time() - start_time) * 1000
+    log_as_json({"process_time (milliseconds)": process_time_milliseconds})
+    statsd.increment(
+        "cc_processing_time.increment",
+        tags=["environment:" + env_flag, "app:contention-classification"],
+    )
+    return response
+
 
 logging.basicConfig(
     format="%(message)s",
