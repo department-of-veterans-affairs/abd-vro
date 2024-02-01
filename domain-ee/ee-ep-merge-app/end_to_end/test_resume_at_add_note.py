@@ -3,9 +3,9 @@ from datetime import datetime
 from uuid import uuid4
 
 import pytest
-from src.python_src.api import resume_job_state_machine
+from src.python_src.api import JOB_RUNNER
 from src.python_src.schema.merge_job import JobState, MergeJob
-from src.python_src.service.job_store import job_store
+from src.python_src.service.job_store import JOB_STORE
 
 PENDING_CLAIM_ID = 10000
 EP400_WITH_DUPLICATE = 10001
@@ -26,7 +26,7 @@ def assert_job(job_id,
                expected_state: JobState,
                expected_error_state: JobState | None = None,
                expected_num_errors: int = 0):
-    job = job_store.get_merge_job(job_id)
+    job = JOB_STORE.get_merge_job(job_id)
     assert job is not None
     assert job.pending_claim_id == pending_claim_id
     assert job.ep400_claim_id == ep400_claim_id
@@ -57,9 +57,9 @@ class TestSuccess:
                        state=JobState.RUNNING_ADD_CLAIM_NOTE_TO_EP400,
                        created_at=NOW,
                        updated_at=NOW)
-        job_store.submit_merge_job(job)
+        JOB_STORE.submit_merge_job(job)
 
-        await asyncio.get_event_loop().run_in_executor(None, resume_job_state_machine, job)
+        await asyncio.get_event_loop().run_in_executor(None, JOB_RUNNER.resume_job, job)
         assert_job(job_id, pending_claim_id, ep400_claim_id, JobState.COMPLETED_SUCCESS)
 
 
@@ -85,7 +85,7 @@ class TestError:
                        state=JobState.RUNNING_ADD_CLAIM_NOTE_TO_EP400,
                        created_at=NOW,
                        updated_at=NOW)
-        job_store.submit_merge_job(job)
+        JOB_STORE.submit_merge_job(job)
 
-        await asyncio.get_event_loop().run_in_executor(None, resume_job_state_machine, job)
+        await asyncio.get_event_loop().run_in_executor(None, JOB_RUNNER.resume_job, job)
         assert_job(job_id, pending_claim_id, ep400_claim_id, JobState.COMPLETED_ERROR, expected_error_state, expected_num_errors)

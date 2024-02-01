@@ -20,7 +20,7 @@ from schema.merge_job import JobState, MergeJob
 from schema.request import GeneralRequest
 from schema.response import GeneralResponse
 from service.hoppy_service import HOPPY, ClientName
-from service.job_store import job_store
+from service.job_store import JOB_STORE
 from statemachine import State, StateMachine
 from util.contentions_util import ContentionsUtil
 
@@ -127,7 +127,7 @@ class EpMergeMachine(StateMachine):
     def on_transition(self, event, source, target):
         logging.info(f"event=jobTransition trigger={event} job_id={self.job.job_id} old={source.value} new={target.value}")
         self.job.update(target.value)
-        job_store.update_merge_job(self.job)
+        JOB_STORE.update_merge_job(self.job)
 
     @pending.exit
     def on_start_process(self, event):

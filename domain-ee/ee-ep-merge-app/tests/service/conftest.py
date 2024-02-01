@@ -97,7 +97,7 @@ def mock_hoppy_service_get_client(mocker, mock_hoppy_async_client):
 
 @pytest.fixture(autouse=True)
 def mock_job_store(mocker):
-    return mocker.patch('src.python_src.service.ep_merge_machine.job_store.update_merge_job')
+    return mocker.patch('src.python_src.service.ep_merge_machine.JOB_STORE.update_merge_job')
 
 
 def get_mocked_async_response(side_effects):
