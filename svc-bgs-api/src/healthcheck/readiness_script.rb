@@ -2,6 +2,7 @@
 # that the BGS-api application is ready to perform its basic functions. 
 
 require_relative '../lib/rabbit_subscriber'
+require_relative '../config/constants'
 require_relative '../lib/bgs_client'
 
 def rabbitmq_connection_active?
