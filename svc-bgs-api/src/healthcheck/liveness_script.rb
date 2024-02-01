@@ -6,7 +6,7 @@ require_relative '../config/constants'
 
 def check_rabbitmq_connection
   subscriber = RabbitSubscriber.new(BUNNY_ARGS)
-  subscriber.connected?
+  subscriber.rabbitmq_connected?
 rescue StandardError => e
   puts "RabbitMQ connection check failed: #{e.message}"
   false

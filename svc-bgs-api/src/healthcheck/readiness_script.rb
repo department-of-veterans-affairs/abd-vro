@@ -7,7 +7,7 @@ require_relative '../lib/bgs_client'
 
 def rabbitmq_connection_active?
   subscriber = RabbitSubscriber.new(BUNNY_ARGS)
-  subscriber.connected?
+  subscriber.rabbitmq_connected?
 rescue StandardError => e
   puts "RabbitMQ connection check failed: #{e.message}"
   false
