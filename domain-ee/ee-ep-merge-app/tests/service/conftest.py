@@ -1,7 +1,7 @@
 import json
 import os
 import uuid
-from unittest.mock import AsyncMock
+from unittest.mock import ANY, AsyncMock, call
 
 import pytest
 from schema import (
@@ -14,7 +14,17 @@ from schema import (
 )
 from schema import update_temp_station_of_jurisdiction as tsoj
 from schema.merge_job import JobState
-from service.ep_merge_machine import CANCEL_TRACKING_EP, CANCELLATION_REASON_FORMAT
+from service.ep_merge_machine import (
+    CANCEL_TRACKING_EP,
+    CANCELLATION_REASON_FORMAT,
+    ERROR_STATES_TO_LOG_METRICS,
+    JOB_DURATION_METRIC,
+    JOB_ERROR_METRIC_PREFIX,
+    JOB_FAILURE_METRIC,
+    JOB_NEW_CONTENTIONS_METRIC,
+    JOB_SKIPPED_MERGE_METRIC,
+    JOB_SUCCESS_METRIC,
+)
 from util.contentions_util import ContentionsUtil
 
 JOB_ID = uuid.uuid4()
@@ -100,6 +110,16 @@ def mock_job_store(mocker):
     return mocker.patch('src.python_src.service.ep_merge_machine.JOB_STORE.update_merge_job')
 
 
+@pytest.fixture(autouse=True)
+def metric_logger_increment(mocker):
+    return mocker.patch('service.ep_merge_machine.increment')
+
+
+@pytest.fixture(autouse=True)
+def metric_logger_distribution(mocker):
+    return mocker.patch('service.ep_merge_machine.distribution')
+
+
 def get_mocked_async_response(side_effects):
     mock = AsyncMock()
     mock.side_effect = side_effects
@@ -119,3 +139,30 @@ def process_and_assert(machine, expected_state: JobState, expected_error_state: 
     assert machine.job.error_state == expected_error_state
     if num_errors > 0:
         assert len(machine.job.messages) == num_errors
+
+
+def assert_metrics_called(metric_logger_distribution,
+                          metric_logger_increment,
+                          expected_completed_state: JobState,
+                          expected_error_state: JobState = None,
+                          expected_new_contentions: int | None = None,
+                          expected_merge_skip: bool = True):
+
+    increment_calls = []
+    histogram_calls = [call(JOB_DURATION_METRIC, ANY)]
+    if expected_completed_state == JobState.COMPLETED_SUCCESS:
+        increment_calls.append(call(JOB_SUCCESS_METRIC))
+        histogram_calls.append(call(JOB_NEW_CONTENTIONS_METRIC, expected_new_contentions))
+        if expected_merge_skip:
+            increment_calls.append(call(JOB_SKIPPED_MERGE_METRIC))
+
+    else:
+        increment_calls.append(call(JOB_FAILURE_METRIC))
+        increment_calls.append(call(f'{JOB_ERROR_METRIC_PREFIX}.{expected_error_state}'))
+        if expected_error_state in ERROR_STATES_TO_LOG_METRICS:
+            histogram_calls.append(call(JOB_NEW_CONTENTIONS_METRIC, expected_new_contentions))
+            if expected_merge_skip:
+                increment_calls.append(call(JOB_SKIPPED_MERGE_METRIC))
+
+    metric_logger_increment.assert_has_calls(increment_calls)
+    metric_logger_distribution.assert_has_calls(histogram_calls)
