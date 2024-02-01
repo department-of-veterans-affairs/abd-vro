@@ -15,8 +15,7 @@ livenessProbe:
   exec:
     command:
     - ruby
-    - lib/liveness_script.rb
-
+    - /app/healthcheck/liveness_script.rb
   initialDelaySeconds: 120
   periodSeconds: 10
   timeoutSeconds: 10
@@ -26,7 +25,7 @@ readinessProbe:
   exec:
     command:
     - ruby
-    - lib/readiness_script.rb
+    - /app/healthcheck/liveness_script.rb
   initialDelaySeconds: 120
   periodSeconds: 10
   timeoutSeconds: 10
