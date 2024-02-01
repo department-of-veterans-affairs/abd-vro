@@ -77,6 +77,7 @@ class BieMessageUtilsTest {
     assertEquals("ClassificationName", actualPayload.getContentionClassificationName());
     assertEquals("DiagnosticCode", actualPayload.getDiagnosticTypeCode());
     assertEquals(Long.valueOf(1616161616L), actualPayload.getDateAdded());
+    assertEquals(ContentionEvent.CONTENTION_ASSOCIATED_TO_CLAIM, actualPayload.getEventType());
   }
 
   @Test
@@ -92,6 +93,7 @@ class BieMessageUtilsTest {
     assertEquals("ClassificationName", actualPayload.getContentionClassificationName());
     assertEquals("DiagnosticCode", actualPayload.getDiagnosticTypeCode());
     assertEquals(Long.valueOf(1616161616L), actualPayload.getDateAdded());
+    assertEquals(ContentionEvent.CONTENTION_CLASSIFIED, actualPayload.getEventType());
   }
 
   @Test
@@ -100,6 +102,7 @@ class BieMessageUtilsTest {
         BieMessageUtils.processBieMessagePayloadFields(
             ContentionEvent.CONTENTION_COMPLETED, genericRecord);
     testCommonFields(actualPayload);
+    assertEquals(ContentionEvent.CONTENTION_COMPLETED, actualPayload.getEventType());
   }
 
   @Test
@@ -108,6 +111,7 @@ class BieMessageUtilsTest {
         BieMessageUtils.processBieMessagePayloadFields(
             ContentionEvent.CONTENTION_DELETED, genericRecord);
     testCommonFields(actualPayload);
+    assertEquals(ContentionEvent.CONTENTION_DELETED, actualPayload.getEventType());
   }
 
   @Test
@@ -129,6 +133,7 @@ class BieMessageUtilsTest {
     assertEquals(Long.valueOf(1616161616L), actualPayload.getDateAdded());
     assertEquals(Long.valueOf(1616171717L), actualPayload.getDateCompleted());
     assertEquals(Long.valueOf(1616181818L), actualPayload.getDateUpdated());
+    assertEquals(ContentionEvent.CONTENTION_UPDATED, actualPayload.getEventType());
   }
 
   private void testCommonFields(BieMessagePayload actualPayload) {
