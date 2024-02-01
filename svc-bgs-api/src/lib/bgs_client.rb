@@ -69,6 +69,16 @@ class BgsClient
     end
   end
 
+  # Method to check BGS service availability. It makes use of the vro_participant_id method to check if BGS service is 
+  # reachable and responding. This method should return a participant ID if the service is available.
+  def bgs_available?
+    participant_id = vro_participant_id
+    vro_participant_id.present?
+  rescue StandardError => e
+    puts "BGS-api availability check failed: #{e.message}"
+    false
+  end
+
   def create_claim_notes(claim_id:, notes:)
     note_hashes = notes.map do |note|
       { claim_id: claim_id, txt: note, user_id: vro_participant_id }
