@@ -20,6 +20,8 @@ public class BieMessageUtils {
       ContentionEvent contentionEvent, GenericRecord genericRecord) {
     BieMessagePayload payload = BieMessagePayload.builder().status(200).build();
 
+    payload.setEventType(contentionEvent);
+
     for (Field field : BieMessagePayload.class.getDeclaredFields()) {
       String fieldName = field.getName();
 
