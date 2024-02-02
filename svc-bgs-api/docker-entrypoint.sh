@@ -22,11 +22,11 @@ openssl version
     echo "$BIP_TRUSTSTORE" | base64 -d > truststore.p12
 
     # shellcheck disable=SC2086
-    openssl pkcs12 ${PWD_ARG} -in keystore.p12   -out tls_bip.crt -nokeys || exit 2
+    openssl pkcs12 ${PWD_ARG} -in keystore.p12   -out tls_bip.crt -nokeys -legacy || exit 2
     # shellcheck disable=SC2086
-    openssl pkcs12 ${PWD_ARG} -in keystore.p12   -out tls.key -nocerts -nodes || exit 3
+    openssl pkcs12 ${PWD_ARG} -in keystore.p12   -out tls.key -nocerts -nodes -legacy || exit 3
     # shellcheck disable=SC2086
-    openssl pkcs12 ${PWD_ARG} -in truststore.p12 -out va_all.crt || exit 4
+    openssl pkcs12 ${PWD_ARG} -in truststore.p12 -out va_all.crt -legacy || exit 4
 }
 
 cd "$CURR_DIR" || exit 11
