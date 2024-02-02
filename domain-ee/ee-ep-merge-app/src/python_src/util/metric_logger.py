@@ -24,33 +24,21 @@ def stop():
     logging.info('Datadog DogStatsD socket closed.')
 
 
-def increment(metric: str, value: float = 1, tags: list = None):
+def increment(metric: str, value: float = 1):
     """
     Increments a count metric with by the name 'APP_PREFIX.{metric}'
     :param metric: string containing the metric name
     :param value: value to increment by
-    :param tags: any associated tags with the metric
     """
 
-    if not tags:
-        tags = STANDARD_TAGS
-    else:
-        tags.extend(STANDARD_TAGS)
-
-    datadog.statsd.increment(f'{APP_PREFIX}.{metric.strip(".").lower()}', value, tags)
+    datadog.statsd.increment(f'{APP_PREFIX}.{metric.strip(".").lower()}', value, STANDARD_TAGS)
 
 
-def distribution(metric: str, value: float = 1, tags: list = None):
+def distribution(metric: str, value: float):
     """
     Adds value to a distribution metric with by the name '{APP_PREFIX}.{metric}'
     :param metric: string containing the metric name
     :param value: value to increment by
-    :param tags: any associated tags with the metric
     """
 
-    if not tags:
-        tags = STANDARD_TAGS
-    else:
-        tags.extend(STANDARD_TAGS)
-
-    datadog.statsd.distribution(f'{APP_PREFIX}.{metric.strip(".").lower()}.distribution', value, tags)
+    datadog.statsd.distribution(f'{APP_PREFIX}.{metric.strip(".").lower()}.distribution', value, STANDARD_TAGS)
