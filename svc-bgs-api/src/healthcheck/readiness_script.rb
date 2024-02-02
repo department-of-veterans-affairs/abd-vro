@@ -15,7 +15,7 @@ end
 
 def bgs_service_available?
   client = BgsClient.new
-  client.bgs_available
+  client.bgs_available?
 rescue StandardError => e
   puts "BGS service availability check failed: #{e.message}"
   false
