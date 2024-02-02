@@ -25,7 +25,9 @@ from statemachine import State, StateMachine
 from util.contentions_util import ContentionsUtil
 from util.metric_logger import distribution, increment
 
-ERROR_STATES_TO_LOG_METRICS = [JobState.RUNNING_CANCEL_EP400_CLAIM, JobState.RUNNING_ADD_CLAIM_NOTE_TO_EP400]
+ERROR_STATES_TO_LOG_METRICS = [JobState.RUNNING_CANCEL_EP400_CLAIM,
+                               JobState.RUNNING_CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION,
+                               JobState.RUNNING_ADD_CLAIM_NOTE_TO_EP400]
 
 JOB_SUCCESS_METRIC = 'job.success'
 JOB_FAILURE_METRIC = 'job.failure'
