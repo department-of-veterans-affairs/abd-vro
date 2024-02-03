@@ -35,7 +35,7 @@ COPY healthcheck/liveness_script.rb /app/healthcheck/liveness_script.rb
 COPY healthcheck/readiness_script.rb /app/healthcheck/readiness_script.rb
 
 # Make scripts executable
-RUN chmod +x /app/healthcheck/liveness_script.rb /app/healthcheck/readiness_script.rb
+RUN chmod +x /app/healthcheck/liveness_script.rb && chmod +x /app/healthcheck/readiness_script.rb
 
 USER tron
 ENTRYPOINT ["/app/entrypoint-wrapper.sh"]
