@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, root_validator
 
 
 class Claim(BaseModel):
@@ -10,7 +10,7 @@ class Claim(BaseModel):
     claim_type: str = "claim_for_increase"
     contention_text: Optional[str]  # marked optional to retain compatibility with v1
 
-    @model_validator(mode="before")
+    @root_validator(pre="before")
     def check_dc_for_cfi(cls, values):
         claim_type = values.get("claim_type")
         diagnostic_code = values.get("diagnostic_code")
