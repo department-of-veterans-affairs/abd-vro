@@ -11,6 +11,17 @@ resources:
 
 replicaCount: 1
 
+startupProbe:
+  exec:
+    command:
+    - /bin/sh
+    - -c
+    - bundle exec ruby /app/healthcheck/startup_script.rb  
+  initialDelaySeconds: 120  
+  periodSeconds: 10
+  timeoutSeconds: 10
+  failureThreshold: 30  
+
 livenessProbe:
   exec:
     command:
