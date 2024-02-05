@@ -30,17 +30,17 @@ def check_bgs_configuration
     end
   end
   
-  def perform_startup_checks
-    bgs_config_ok = check_bgs_configuration
-    if bgs_config_ok
-      log "Startup probe checks passed!"
-      true
-    else
-      log "Startup probe checks failed!"
-      false
-    end
+def perform_startup_checks
+  bgs_config_ok = check_bgs_configuration
+  if bgs_config_ok
+    log "Startup probe checks passed!"
+    true
+  else
+    log "Startup probe checks failed!"
+    false
   end
+end
  
-  unless perform_startup_checks
-    exit(1)
-  end
+unless perform_startup_checks
+  exit(1)
+end
