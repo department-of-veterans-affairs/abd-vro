@@ -8,6 +8,9 @@ ext {
   jacocoExclude = ['**/*model*', '**/config']
 }
 
+docker {
+  copySpec.from("src/test/resources").into(".")
+}
 
 dependencies {
   implementation project(':domain-xample:xample-shared')

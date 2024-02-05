@@ -13,8 +13,8 @@ WORKDIR /app
 RUN mkdir test
 
 # Copy the requirements.txt file and the Python script into the /app/test directory
-COPY src/test/python/requirements.txt test/
-COPY src/test/python/env-integration-test.py test/
+COPY python/requirements.txt test/
+COPY python/env-integration-test.py test/
 
 # Install Python dependencies
 RUN pip3 install --no-cache-dir -r test/requirements.txt
