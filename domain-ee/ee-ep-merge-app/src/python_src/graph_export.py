@@ -4,8 +4,8 @@ import pydot
 from schema.merge_job import MergeJob
 from service.ep_merge_machine import EpMergeMachine
 
-ERROR = '#f5d200'
-SUCCESS = '#0ac28a'
+ERROR = "#f5d200"
+SUCCESS = "#0ac28a"
 
 
 class DotGraphMachine:
@@ -52,7 +52,7 @@ class DotGraphMachine:
         )
 
     def _state_as_node(self, state):
-        if 'failed' in state.name or 'failed' in state.name or 'error' in state.name:
+        if "failed" in state.name or "failed" in state.name or "error" in state.name:
             color = ERROR
         else:
             color = SUCCESS
@@ -75,7 +75,7 @@ class DotGraphMachine:
         if self.machine.main_event not in transition.events:
             return None
 
-        if 'failed' in transition.source.name or 'failed' in transition.target.name or 'error' in transition.target.name:
+        if "failed" in transition.source.name or "failed" in transition.target.name or "error" in transition.target.name:
             color = ERROR
         else:
             color = SUCCESS
@@ -96,9 +96,9 @@ class DotGraphMachine:
         for state in self.machine.states:
             node = self._state_as_node(state)
             if node:
-                if 'Completed success' == state.name:
+                if "Completed success" == state.name:
                     graph.add_node(node)
-                elif 'Completed error' == state.name:
+                elif "Completed error" == state.name:
                     graph.add_node(node)
                 else:
                     edges = []
@@ -119,9 +119,7 @@ class DotGraphMachine:
 
 
 def generate_graph(main_event):
-    job = MergeJob(job_id=uuid4(),
-                   pending_claim_id=1,
-                   ep400_claim_id=2)
+    job = MergeJob(job_id=uuid4(), pending_claim_id=1, ep400_claim_id=2)
 
     #
     graph = DotGraphMachine(EpMergeMachine(job, main_event))
@@ -131,9 +129,9 @@ def generate_graph(main_event):
 
 if __name__ == "__main__":
     events = [
-        'process',
-        'resume_processing_from_running_cancel_ep400_claim',
-        'resume_processing_from_running_add_note_to_ep400_claim',
+        "process",
+        "resume_processing_from_running_cancel_ep400_claim",
+        "resume_processing_from_running_add_note_to_ep400_claim",
     ]
     for event in events:
         generate_graph(event)

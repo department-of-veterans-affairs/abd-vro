@@ -1,4 +1,5 @@
 """ Pytest configuration. This file is automatically loaded by pytest before any tests. """
+
 import uuid
 from unittest.mock import MagicMock
 

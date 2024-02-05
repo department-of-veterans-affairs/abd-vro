@@ -2,8 +2,7 @@ import logging
 import sys
 
 from fastapi import FastAPI, HTTPException
-from pydantic_models import (MaxRatingsForClaimForIncreaseRequest,
-                             MaxRatingsForClaimForIncreaseResponse)
+from pydantic_models import MaxRatingsForClaimForIncreaseRequest, MaxRatingsForClaimForIncreaseResponse
 from util.lookup_table import MAX_RATINGS_BY_CODE, get_max_rating
 from util.sanitizer import sanitize
 
@@ -12,16 +11,13 @@ app = FastAPI(
     description="Maps a list of disabilities to their max rating.",
     contact={},
     version="v0.1",
-    license={
-        "name": "CCO 1.0",
-        "url": "https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md"
-    },
+    license={"name": "CCO 1.0", "url": "https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md"},
     servers=[
         {
             "url": "/cfi",
             "description": "Max Ratings for CFI",
         },
-    ]
+    ],
 )
 
 logging.basicConfig(
@@ -42,7 +38,8 @@ def get_health_status():
 
 @app.post("/max-ratings")
 def get_max_ratings(
-        claim_for_increase: MaxRatingsForClaimForIncreaseRequest, ) -> MaxRatingsForClaimForIncreaseResponse:
+    claim_for_increase: MaxRatingsForClaimForIncreaseRequest,
+) -> MaxRatingsForClaimForIncreaseResponse:
     ratings = []
     for dc in set(claim_for_increase.diagnostic_codes):
         validate_diagnostic_code(dc)
@@ -54,9 +51,7 @@ def get_max_ratings(
             }
             ratings.append(rating)
 
-    response = {
-        "ratings": ratings
-    }
+    response = {"ratings": ratings}
 
     logging.info(f"event=getMaxRating ratings={ratings}")
     return response

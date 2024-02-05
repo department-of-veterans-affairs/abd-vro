@@ -28,7 +28,7 @@ class Contention(BaseModel):
     special_issue_codes: list[str] | None = None
     associated_tracked_items: list[TrackedItemAssociation] | None = None
 
-    @field_serializer('begin_date', 'create_date', 'completed_date', 'notification_date')
+    @field_serializer("begin_date", "create_date", "completed_date", "notification_date")
     def serialize_datetime(self, dt: datetime, _info):
         return None if dt is None else dt.isoformat()
 
@@ -42,7 +42,7 @@ class ExistingContention(Contention):
     action: str | None = None
     automation_indicator: bool | None = None
 
-    @field_serializer('begin_date', 'create_date', 'completed_date', 'notification_date', 'last_modified')
+    @field_serializer("begin_date", "create_date", "completed_date", "notification_date", "last_modified")
     def serialize_datetime(self, dt: datetime, _info):
         return None if dt is None else dt.isoformat()
 
@@ -52,6 +52,6 @@ class ContentionSummary(ExistingContention):
 
     summary_date_time: datetime | None = None
 
-    @field_serializer('begin_date', 'create_date', 'completed_date', 'notification_date', 'last_modified')
+    @field_serializer("begin_date", "create_date", "completed_date", "notification_date", "last_modified")
     def serialize_datetime(self, dt: datetime, _info):
         return None if dt is None else dt.isoformat()

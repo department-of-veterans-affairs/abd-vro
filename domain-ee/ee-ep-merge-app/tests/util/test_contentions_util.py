@@ -9,36 +9,31 @@ new_tendinitis = ContentionSummary(
     medical_ind=True,
     begin_date=datetime(2023, 1, 1),
     last_modified=datetime(2023, 1, 1),
-    contention_type_code='NEW',
-    claimant_text='tendinitis/bilateral',
-    contention_id=1
+    contention_type_code="NEW",
+    claimant_text="tendinitis/bilateral",
+    contention_id=1,
 )
 new_tinnitus = ContentionSummary(
-    medical_ind=True,
-    begin_date=datetime(2023, 1, 1),
-    last_modified=datetime(2023, 1, 1),
-    contention_type_code='NEW',
-    claimant_text='tinnitus',
-    contention_id=1
+    medical_ind=True, begin_date=datetime(2023, 1, 1), last_modified=datetime(2023, 1, 1), contention_type_code="NEW", claimant_text="tinnitus", contention_id=1
 )
 increase_tendinitis = ContentionSummary(
     medical_ind=True,
     begin_date=datetime(2023, 1, 1),
     last_modified=datetime(2023, 1, 1),
-    contention_type_code='INCREASE',
-    claimant_text='tendinitis/bilateral',
-    contention_id=1
+    contention_type_code="INCREASE",
+    claimant_text="tendinitis/bilateral",
+    contention_id=1,
 )
 
 
 @pytest.fixture
 def pending_contentions():
-    return Response(contentions=[new_tendinitis, new_tinnitus], status_code=200, status_message='OK')
+    return Response(contentions=[new_tendinitis, new_tinnitus], status_code=200, status_message="OK")
 
 
 @pytest.fixture
 def ep400_contentions():
-    return Response(contentions=[new_tinnitus, increase_tendinitis], status_code=200, status_message='OK')
+    return Response(contentions=[new_tinnitus, increase_tendinitis], status_code=200, status_message="OK")
 
 
 def test_new_contentions_successful(pending_contentions, ep400_contentions):

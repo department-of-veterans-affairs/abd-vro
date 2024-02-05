@@ -15,7 +15,7 @@ config = {
     "app_id": os.environ.get("APP_ID") or "EP_MERGE",
     "request_timeout": int_from_env("REQUEST_TIMEOUT", 30),
     "request_retries": int_from_env("REQUEST_RETRIES", 3),
-    "response_delivery_attempts": int_from_env("RESPONSE_DELIVERY_ATTEMPTS", 3)
+    "response_delivery_attempts": int_from_env("RESPONSE_DELIVERY_ATTEMPTS", 3),
 }
 
 
@@ -43,37 +43,23 @@ EXCHANGES = {
 }
 
 QUEUES = {
-    ClientName.GET_CLAIM:
-        os.environ.get("GET_CLAIM_DETAILS_REQUEST") or "getClaimDetailsQueue",
-    ClientName.GET_CLAIM_CONTENTIONS:
-        os.environ.get("GET_CLAIM_CONTENTIONS_REQUEST") or "getClaimContentionsQueue",
-    ClientName.PUT_TSOJ:
-        os.environ.get("PUT_TSOJ_REQUEST") or "putTempStationOfJurisdictionQueue",
-    ClientName.CREATE_CLAIM_CONTENTIONS:
-        os.environ.get("CREATE_CLAIM_CONTENTIONS_REQUEST") or "createClaimContentionsQueue",
-    ClientName.UPDATE_CLAIM_CONTENTIONS:
-        os.environ.get("UPDATE_CLAIM_CONTENTIONS_REQUEST") or "updateClaimContentionsQueue",
-    ClientName.CANCEL_CLAIM:
-        os.environ.get("CANCEL_CLAIM_REQUEST") or "cancelClaimQueue",
-    ClientName.BGS_ADD_CLAIM_NOTE:
-        os.environ.get("ADD_CLAIM_NOTE_REQUEST") or "add-note",
+    ClientName.GET_CLAIM: os.environ.get("GET_CLAIM_DETAILS_REQUEST") or "getClaimDetailsQueue",
+    ClientName.GET_CLAIM_CONTENTIONS: os.environ.get("GET_CLAIM_CONTENTIONS_REQUEST") or "getClaimContentionsQueue",
+    ClientName.PUT_TSOJ: os.environ.get("PUT_TSOJ_REQUEST") or "putTempStationOfJurisdictionQueue",
+    ClientName.CREATE_CLAIM_CONTENTIONS: os.environ.get("CREATE_CLAIM_CONTENTIONS_REQUEST") or "createClaimContentionsQueue",
+    ClientName.UPDATE_CLAIM_CONTENTIONS: os.environ.get("UPDATE_CLAIM_CONTENTIONS_REQUEST") or "updateClaimContentionsQueue",
+    ClientName.CANCEL_CLAIM: os.environ.get("CANCEL_CLAIM_REQUEST") or "cancelClaimQueue",
+    ClientName.BGS_ADD_CLAIM_NOTE: os.environ.get("ADD_CLAIM_NOTE_REQUEST") or "add-note",
 }
 
 REPLY_QUEUES = {
-    ClientName.GET_CLAIM:
-        os.environ.get("GET_CLAIM_DETAILS_RESPONSE") or "getClaimDetailsResponseQueue",
-    ClientName.GET_CLAIM_CONTENTIONS:
-        os.environ.get("GET_CLAIM_CONTENTIONS_RESPONSE") or "getClaimContentionsResponseQueue",
-    ClientName.PUT_TSOJ:
-        os.environ.get("PUT_TSOJ_RESPONSE") or "putTempStationOfJurisdictionResponseQueue",
-    ClientName.CREATE_CLAIM_CONTENTIONS:
-        os.environ.get("CREATE_CLAIM_CONTENTIONS_RESPONSE") or "createClaimContentionsResponseQueue",
-    ClientName.UPDATE_CLAIM_CONTENTIONS:
-        os.environ.get("UPDATE_CLAIM_CONTENTIONS_RESPONSE") or "updateClaimContentionsResponseQueue",
-    ClientName.CANCEL_CLAIM:
-        os.environ.get("CANCEL_CLAIM_RESPONSE") or "cancelClaimResponseQueue",
-    ClientName.BGS_ADD_CLAIM_NOTE:
-        os.environ.get("ADD_CLAIM_NOTE_RESPONSE") or "add-note-response",
+    ClientName.GET_CLAIM: os.environ.get("GET_CLAIM_DETAILS_RESPONSE") or "getClaimDetailsResponseQueue",
+    ClientName.GET_CLAIM_CONTENTIONS: os.environ.get("GET_CLAIM_CONTENTIONS_RESPONSE") or "getClaimContentionsResponseQueue",
+    ClientName.PUT_TSOJ: os.environ.get("PUT_TSOJ_RESPONSE") or "putTempStationOfJurisdictionResponseQueue",
+    ClientName.CREATE_CLAIM_CONTENTIONS: os.environ.get("CREATE_CLAIM_CONTENTIONS_RESPONSE") or "createClaimContentionsResponseQueue",
+    ClientName.UPDATE_CLAIM_CONTENTIONS: os.environ.get("UPDATE_CLAIM_CONTENTIONS_RESPONSE") or "updateClaimContentionsResponseQueue",
+    ClientName.CANCEL_CLAIM: os.environ.get("CANCEL_CLAIM_RESPONSE") or "cancelClaimResponseQueue",
+    ClientName.BGS_ADD_CLAIM_NOTE: os.environ.get("ADD_CLAIM_NOTE_RESPONSE") or "add-note-response",
 }
 
 
@@ -90,7 +76,7 @@ def create_sqlalchemy_db_uri():
 
     result = urlparse(postgres_url)
     if not result.username:
-        return result._replace(netloc=f'{user}:{password}@{result.netloc}').geturl()
+        return result._replace(netloc=f"{user}:{password}@{result.netloc}").geturl()
 
     return postgres_url
 

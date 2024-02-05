@@ -9,3 +9,10 @@ env = [
     "REQUEST_TIMEOUT = 1",
     "REQUEST_RETRIES = 1"
 ]
+
+[tool.flake8]
+max-line-length = 160
+extend-ignore = ["E203", "E704"]
+
+[tool.black]
+line-length = 160
