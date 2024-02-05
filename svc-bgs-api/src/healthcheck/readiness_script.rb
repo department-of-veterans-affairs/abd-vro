@@ -50,10 +50,10 @@ def perform_readiness_checks
   rabbitmq_ok = rabbitmq_connection_active?
   if bgs_config_ok && rabbitmq_ok
     log "Readiness checks passed!"
-    return true
+    true
   else
     log "Readiness checks failed!"
-    return false
+    false
   end
 end
 
