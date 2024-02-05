@@ -1,11 +1,12 @@
 # This script is used by the K8S Liveness probe to check the connection between RabbitMQ and BGS-api thereby verifying 
 # that the BGS-api application is running and able to perform its basic functions. 
 
-require_relative 'rabbit_subscriber'
+require_relative '../lib/rabbit_subscriber'
+require_relative '../config/constants'
 
 def check_rabbitmq_connection
   subscriber = RabbitSubscriber.new(BUNNY_ARGS)
-  subscriber.connected?
+  subscriber.rabbitmq_connected?
 rescue StandardError => e
   puts "RabbitMQ connection check failed: #{e.message}"
   false
