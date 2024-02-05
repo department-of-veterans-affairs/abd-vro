@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from typing import Annotated
 from uuid import UUID, uuid4
 
+import util.metric_logger as metrics
 import uvicorn
 from fastapi import BackgroundTasks, FastAPI, HTTPException, Query, Request, status
 from fastapi.encoders import jsonable_encoder
@@ -36,6 +37,7 @@ async def lifespan(api: FastAPI):
 
 
 def on_start_up():
+    metrics.start()
     loop = asyncio.get_event_loop()
     loop.create_task(start_job_runner())
     loop.create_task(start_hoppy())
@@ -51,7 +53,7 @@ async def start_hoppy():
 
 async def on_shut_down():
     await HOPPY.stop_hoppy_clients()
-
+    metrics.stop()
 
 app = FastAPI(
     title="EP Merge Tool",
