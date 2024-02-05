@@ -16,8 +16,10 @@ RUN mkdir test
 COPY python/requirements.txt test/
 COPY python/env-integration-test.py test/
 
-# Install Python dependencies
-RUN pip3 install --no-cache-dir -r test/requirements.txt
+# Create a virtual environment and install Python dependencies
+RUN python3 -m venv venv && \
+    . venv/bin/activate && \
+    pip3 install --no-cache-dir -r test/requirements.txt
 
 # Copy script that runs docker-entrypoint.sh if it exists, otherwise run jar file
 COPY set-env-secrets.src entrypoint-wrapper.sh docker-entry*.sh ./
