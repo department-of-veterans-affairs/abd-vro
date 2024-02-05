@@ -57,6 +57,7 @@ def perform_readiness_checks
   end
 end
 
+
 unless perform_readiness_checks
   exit(1)
 end
