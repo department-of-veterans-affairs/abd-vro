@@ -10,7 +10,7 @@ class Claim(BaseModel):
     claim_type: str = "claim_for_increase"
     contention_text: Optional[str]  # marked optional to retain compatibility with v1
 
-    @root_validator
+    @root_validator(skip_on_failure=True)
     def check_dc_for_cfi(cls, values):
         claim_type = values.get("claim_type")
         diagnostic_code = values.get("diagnostic_code")
