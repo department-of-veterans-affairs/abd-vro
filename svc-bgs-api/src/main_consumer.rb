@@ -9,6 +9,7 @@ require 'rabbit_subscriber'
 require 'bgs_client'
 
 def initialize_subscriber(bgs_client)
+  $logger.info bgs_client.vro_participant_id
   subscriber = RabbitSubscriber.new(BUNNY_ARGS)
 
   # Setup queue/subscription for healthcheck
