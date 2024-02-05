@@ -11,6 +11,7 @@ require 'bgs_client'
 $stdout.sync = true
 
 def initialize_subscriber(bgs_client)
+  $logger.info bgs_client.vro_participant_id
   subscriber = RabbitSubscriber.new(BUNNY_ARGS)
 
   # Setup queue/subscription for healthcheck
