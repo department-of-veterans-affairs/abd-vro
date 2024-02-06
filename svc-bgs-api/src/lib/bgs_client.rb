@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'active_support/time'
+require 'active_support/core_ext/object/blank'
 require 'bgs'
 
 # patch bgs_ext with a createNote implementation that follows our spec better
@@ -67,16 +68,6 @@ class BgsClient
         bgs.security.find_participant_id(station_id: cfg.client_station_id, css_id: cfg.client_username)
       end
     end
-  end
-
-  # Method to check BGS service availability. It makes use of the vro_participant_id method to check if BGS service is 
-  # reachable and responding. This method should return a participant ID if the service is available.
-  def bgs_available?
-    participant_id = vro_participant_id
-    vro_participant_id.present?
-  rescue StandardError => e
-    puts "BGS-api availability check failed: #{e.message}"
-    false
   end
 
   def create_claim_notes(claim_id:, notes:)

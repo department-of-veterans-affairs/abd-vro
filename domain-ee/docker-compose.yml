@@ -37,6 +37,9 @@ x-postgres-vars: &postgres-vars
   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
   POSTGRES_SCHEMA: ${POSTGRES_SCHEMA}
 
+x-datadog-vars: &datadog-vars
+  DD_DOGSTATSD_DISABLE: ${DD_DOGSTATSD_DISABLE}
+
 services:
   # Containers with the `svc-` prefix are microservices to support domain workflows.
 
@@ -56,7 +59,7 @@ services:
     image: va/abd_vro-ee-ep-merge-app:latest
     <<: [*common-sde-security, *common-security-opt]
     environment:
-      <<: [ *rabbitmq-placeholder-vars, *postgres-vars, *common-vars ]
+      <<: [ *rabbitmq-placeholder-vars, *postgres-vars, *datadog-vars, *common-vars ]
     ports:
       - "8140:8140"
     networks:

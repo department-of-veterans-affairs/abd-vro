@@ -7,6 +7,7 @@ from conftest import (
     PENDING_CLAIM_ID,
     add_claim_note_200,
     add_claim_note_req,
+    assert_metrics_called,
     cancel_claim_200,
     cancel_ep400_claim_req,
     create_contentions_on_pending_claim_201,
@@ -79,7 +80,12 @@ class TestUpToGetPendingClaim:
                                      claim=ClaimDetail(claimId=3)
                                  ).model_dump(), id="claim has no endProductCode")
                              ])
-    def test_invalid_request(self, machine, mock_hoppy_async_client, invalid_request):
+    def test_invalid_request(self,
+                             machine,
+                             mock_hoppy_async_client,
+                             metric_logger_distribution,
+                             metric_logger_increment,
+                             invalid_request):
         mock_async_responses(mock_hoppy_async_client,
                              [
                                  invalid_request,
@@ -92,6 +98,10 @@ class TestUpToGetPendingClaim:
             call(machine.job.job_id, get_ep400_contentions_req),
             call(machine.job.job_id, update_contentions_on_ep400_req)
         ])
+        assert_metrics_called(metric_logger_distribution,
+                              metric_logger_increment,
+                              JobState.COMPLETED_ERROR,
+                              JobState.RUNNING_GET_PENDING_CLAIM)
 
     @pytest.mark.parametrize("no_contentions_response",
                              [
@@ -99,7 +109,12 @@ class TestUpToGetPendingClaim:
                                  pytest.param(get_contentions.Response(status_code=200, status_message="OK", contentions=None), id="Explicit None"),
                                  pytest.param(get_contentions.Response(status_code=200, status_message="OK", contentions=[]), id="Empty"),
                              ])
-    def test_no_contentions_on_ep400_after_get_pending_claim_failure(self, machine, mock_hoppy_async_client, no_contentions_response):
+    def test_no_contentions_on_ep400_after_get_pending_claim_failure(self,
+                                                                     machine,
+                                                                     mock_hoppy_async_client,
+                                                                     metric_logger_distribution,
+                                                                     metric_logger_increment,
+                                                                     no_contentions_response):
         mock_async_responses(mock_hoppy_async_client,
                              [
                                  ResponseException("Oops"),
@@ -110,6 +125,10 @@ class TestUpToGetPendingClaim:
             call(machine.job.job_id, get_pending_claim_req),
             call(machine.job.job_id, get_ep400_contentions_req),
         ])
+        assert_metrics_called(metric_logger_distribution,
+                              metric_logger_increment,
+                              JobState.COMPLETED_ERROR,
+                              JobState.RUNNING_GET_PENDING_CLAIM)
 
     @pytest.mark.parametrize("invalid_request",
                              [
@@ -121,6 +140,8 @@ class TestUpToGetPendingClaim:
     def test_invalid_request_at_get_ep400_contentions_after_get_pending_claim_failure(self,
                                                                                       machine,
                                                                                       mock_hoppy_async_client,
+                                                                                      metric_logger_distribution,
+                                                                                      metric_logger_increment,
                                                                                       invalid_request):
         mock_async_responses(mock_hoppy_async_client,
                              [
@@ -132,6 +153,10 @@ class TestUpToGetPendingClaim:
             call(machine.job.job_id, get_pending_claim_req),
             call(machine.job.job_id, get_ep400_contentions_req),
         ])
+        assert_metrics_called(metric_logger_distribution,
+                              metric_logger_increment,
+                              JobState.COMPLETED_ERROR,
+                              JobState.RUNNING_GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE)
 
     @pytest.mark.parametrize("invalid_request",
                              [
@@ -143,6 +168,8 @@ class TestUpToGetPendingClaim:
     def test_invalid_request_at_update_ep400_contentions_after_get_pending_claim_failure(self,
                                                                                          machine,
                                                                                          mock_hoppy_async_client,
+                                                                                         metric_logger_distribution,
+                                                                                         metric_logger_increment,
                                                                                          invalid_request):
         mock_async_responses(mock_hoppy_async_client,
                              [
@@ -155,6 +182,10 @@ class TestUpToGetPendingClaim:
             call(machine.job.job_id, get_pending_claim_req),
             call(machine.job.job_id, get_ep400_contentions_req),
         ])
+        assert_metrics_called(metric_logger_distribution,
+                              metric_logger_increment,
+                              JobState.COMPLETED_ERROR,
+                              JobState.RUNNING_GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE)
 
 
 class TestUpToGetPendingContentions:
@@ -165,7 +196,12 @@ class TestUpToGetPendingContentions:
                                  pytest.param(load_response(response_404, get_contentions.Response), id="404"),
                                  pytest.param(load_response(response_500, get_contentions.Response), id="500")
                              ])
-    def test_invalid_request(self, machine, mock_hoppy_async_client, invalid_request):
+    def test_invalid_request(self,
+                             machine,
+                             mock_hoppy_async_client,
+                             metric_logger_distribution,
+                             metric_logger_increment,
+                             invalid_request):
         mock_async_responses(mock_hoppy_async_client,
                              [
                                  get_pending_claim_200,
@@ -180,6 +216,10 @@ class TestUpToGetPendingContentions:
             call(machine.job.job_id, get_ep400_contentions_req),
             call(machine.job.job_id, update_contentions_on_ep400_req)
         ])
+        assert_metrics_called(metric_logger_distribution,
+                              metric_logger_increment,
+                              JobState.COMPLETED_ERROR,
+                              JobState.RUNNING_GET_PENDING_CLAIM_CONTENTIONS)
 
     @pytest.mark.parametrize("no_contentions_response",
                              [
@@ -187,7 +227,12 @@ class TestUpToGetPendingContentions:
                                  pytest.param(get_contentions.Response(status_code=200, status_message="OK", contentions=None), id="Explicit None"),
                                  pytest.param(get_contentions.Response(status_code=200, status_message="OK", contentions=[]), id="Empty"),
                              ])
-    def test_no_contentions_on_ep400_after_get_pending_contentions_failure(self, machine, mock_hoppy_async_client, no_contentions_response):
+    def test_no_contentions_on_ep400_after_get_pending_contentions_failure(self,
+                                                                           machine,
+                                                                           mock_hoppy_async_client,
+                                                                           metric_logger_distribution,
+                                                                           metric_logger_increment,
+                                                                           no_contentions_response):
         mock_async_responses(mock_hoppy_async_client,
                              [
                                  get_pending_claim_200,
@@ -200,6 +245,10 @@ class TestUpToGetPendingContentions:
             call(machine.job.job_id, get_pending_contentions_req),
             call(machine.job.job_id, get_ep400_contentions_req),
         ])
+        assert_metrics_called(metric_logger_distribution,
+                              metric_logger_increment,
+                              JobState.COMPLETED_ERROR,
+                              JobState.RUNNING_GET_PENDING_CLAIM_CONTENTIONS)
 
     @pytest.mark.parametrize("invalid_request",
                              [
@@ -211,6 +260,8 @@ class TestUpToGetPendingContentions:
     def test_invalid_request_at_get_ep400_contentions_after_get_pending_contentions_failure(self,
                                                                                             machine,
                                                                                             mock_hoppy_async_client,
+                                                                                            metric_logger_distribution,
+                                                                                            metric_logger_increment,
                                                                                             invalid_request):
         mock_async_responses(mock_hoppy_async_client,
                              [
@@ -224,6 +275,10 @@ class TestUpToGetPendingContentions:
             call(machine.job.job_id, get_pending_contentions_req),
             call(machine.job.job_id, get_ep400_contentions_req),
         ])
+        assert_metrics_called(metric_logger_distribution,
+                              metric_logger_increment,
+                              JobState.COMPLETED_ERROR,
+                              JobState.RUNNING_GET_PENDING_CLAIM_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE)
 
     @pytest.mark.parametrize("invalid_request",
                              [
@@ -235,6 +290,8 @@ class TestUpToGetPendingContentions:
     def test_invalid_request_at_update_ep400_contentions_after_get_pending_claim_failure(self,
                                                                                          machine,
                                                                                          mock_hoppy_async_client,
+                                                                                         metric_logger_distribution,
+                                                                                         metric_logger_increment,
                                                                                          invalid_request):
         mock_async_responses(mock_hoppy_async_client,
                              [
@@ -249,6 +306,10 @@ class TestUpToGetPendingContentions:
             call(machine.job.job_id, get_pending_contentions_req),
             call(machine.job.job_id, get_ep400_contentions_req),
         ])
+        assert_metrics_called(metric_logger_distribution,
+                              metric_logger_increment,
+                              JobState.COMPLETED_ERROR,
+                              JobState.RUNNING_GET_PENDING_CLAIM_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE)
 
 
 class TestUpToGetEp400Contentions:
@@ -259,7 +320,12 @@ class TestUpToGetEp400Contentions:
                                  pytest.param(load_response(response_404, get_contentions.Response), id="404"),
                                  pytest.param(load_response(response_500, get_contentions.Response), id="500")
                              ])
-    def test_invalid_request_at_get_ep400_contentions(self, machine, mock_hoppy_async_client, invalid_request):
+    def test_invalid_request_at_get_ep400_contentions(self,
+                                                      machine,
+                                                      mock_hoppy_async_client,
+                                                      metric_logger_distribution,
+                                                      metric_logger_increment,
+                                                      invalid_request):
         mock_async_responses(mock_hoppy_async_client,
                              [
                                  get_pending_claim_200,
@@ -271,6 +337,10 @@ class TestUpToGetEp400Contentions:
             call(machine.job.job_id, get_pending_contentions_req),
             call(machine.job.job_id, get_ep400_contentions_req)
         ])
+        assert_metrics_called(metric_logger_distribution,
+                              metric_logger_increment,
+                              JobState.COMPLETED_ERROR,
+                              JobState.RUNNING_GET_EP400_CLAIM_CONTENTIONS)
 
 
 class TestUpToSetTemporaryStationOfJurisdiction:
@@ -281,7 +351,12 @@ class TestUpToSetTemporaryStationOfJurisdiction:
                                  pytest.param(load_response(response_404, tsoj.Response), id="404"),
                                  pytest.param(load_response(response_500, tsoj.Response), id="500")
                              ])
-    def test_invalid_request(self, machine, mock_hoppy_async_client, invalid_request):
+    def test_invalid_request(self,
+                             machine,
+                             mock_hoppy_async_client,
+                             metric_logger_distribution,
+                             metric_logger_increment,
+                             invalid_request):
         mock_async_responses(mock_hoppy_async_client,
                              [
                                  get_pending_claim_200,
@@ -298,6 +373,10 @@ class TestUpToSetTemporaryStationOfJurisdiction:
             call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
             call(machine.job.job_id, update_contentions_on_ep400_req)
         ])
+        assert_metrics_called(metric_logger_distribution,
+                              metric_logger_increment,
+                              JobState.COMPLETED_ERROR,
+                              JobState.RUNNING_SET_TEMP_STATION_OF_JURISDICTION)
 
     @pytest.mark.parametrize("no_contentions_response",
                              [
@@ -305,7 +384,12 @@ class TestUpToSetTemporaryStationOfJurisdiction:
                                  pytest.param(get_contentions.Response(status_code=200, status_message="OK", contentions=None), id="Explicit None"),
                                  pytest.param(get_contentions.Response(status_code=200, status_message="OK", contentions=[]), id="Empty"),
                              ])
-    def test_no_contentions_on_ep400_after_set_tsoj_failure(self, machine, mock_hoppy_async_client, no_contentions_response):
+    def test_no_contentions_on_ep400_after_set_tsoj_failure(self,
+                                                            machine,
+                                                            mock_hoppy_async_client,
+                                                            metric_logger_distribution,
+                                                            metric_logger_increment,
+                                                            no_contentions_response):
         mock_async_responses(mock_hoppy_async_client,
                              [
                                  get_pending_claim_200,
@@ -320,6 +404,10 @@ class TestUpToSetTemporaryStationOfJurisdiction:
             call(machine.job.job_id, get_ep400_contentions_req),
             call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
         ])
+        assert_metrics_called(metric_logger_distribution,
+                              metric_logger_increment,
+                              JobState.COMPLETED_ERROR,
+                              JobState.RUNNING_SET_TEMP_STATION_OF_JURISDICTION)
 
     @pytest.mark.parametrize("invalid_request",
                              [
@@ -328,7 +416,12 @@ class TestUpToSetTemporaryStationOfJurisdiction:
                                  pytest.param(load_response(response_404, update_contentions.Response), id="404"),
                                  pytest.param(load_response(response_500, update_contentions.Response), id="500")
                              ])
-    def test_invalid_request_on_update_contentions_after_set_tsoj_failure(self, machine, mock_hoppy_async_client, invalid_request):
+    def test_invalid_request_on_update_contentions_after_set_tsoj_failure(self,
+                                                                          machine,
+                                                                          mock_hoppy_async_client,
+                                                                          metric_logger_distribution,
+                                                                          metric_logger_increment,
+                                                                          invalid_request):
         mock_async_responses(mock_hoppy_async_client,
                              [
                                  get_pending_claim_200,
@@ -345,6 +438,10 @@ class TestUpToSetTemporaryStationOfJurisdiction:
             call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
             call(machine.job.job_id, update_contentions_on_ep400_req)
         ])
+        assert_metrics_called(metric_logger_distribution,
+                              metric_logger_increment,
+                              JobState.COMPLETED_ERROR,
+                              JobState.RUNNING_SET_TEMP_STATION_OF_JURISDICTION_FAILED_REMOVE_SPECIAL_ISSUE)
 
 
 class TestUpToMoveContentionsToPendingClaim:
@@ -359,7 +456,13 @@ class TestUpToMoveContentionsToPendingClaim:
                                  pytest.param(load_response(response_404, create_contentions.Response), None, id="404, no original_tsoj"),
                                  pytest.param(load_response(response_500, create_contentions.Response), None, id="500, no original_tsoj")
                              ])
-    def test_fail(self, machine, mock_hoppy_async_client, invalid_request, original_tsoj):
+    def test_fail(self,
+                  machine,
+                  mock_hoppy_async_client,
+                  metric_logger_distribution,
+                  metric_logger_increment,
+                  invalid_request,
+                  original_tsoj):
         get_pending_claim_200.claim.temp_station_of_jurisdiction = original_tsoj
         revert_temporary_station_of_jurisdiction_req['tempStationOfJurisdiction'] = original_tsoj
 
@@ -383,6 +486,10 @@ class TestUpToMoveContentionsToPendingClaim:
             call(machine.job.job_id, update_contentions_on_ep400_req),
             call(machine.job.job_id, revert_temporary_station_of_jurisdiction_req)
         ])
+        assert_metrics_called(metric_logger_distribution,
+                              metric_logger_increment,
+                              JobState.COMPLETED_ERROR,
+                              JobState.RUNNING_MOVE_CONTENTIONS_TO_PENDING_CLAIM)
 
     @pytest.mark.parametrize("invalid_request",
                              [
@@ -391,7 +498,12 @@ class TestUpToMoveContentionsToPendingClaim:
                                  pytest.param(load_response(response_404, update_contentions.Response), id="404"),
                                  pytest.param(load_response(response_500, update_contentions.Response), id="500")
                              ])
-    def test_fail_to_remove_special_issues_after_move_contentions_to_pending_claim_failure(self, machine, mock_hoppy_async_client, invalid_request):
+    def test_fail_to_remove_special_issues_after_move_contentions_to_pending_claim_failure(self,
+                                                                                           machine,
+                                                                                           mock_hoppy_async_client,
+                                                                                           metric_logger_distribution,
+                                                                                           metric_logger_increment,
+                                                                                           invalid_request):
         mock_async_responses(mock_hoppy_async_client,
                              [
                                  get_pending_claim_200,
@@ -412,6 +524,10 @@ class TestUpToMoveContentionsToPendingClaim:
             call(machine.job.job_id, update_contentions_on_ep400_req),
             call(machine.job.job_id, revert_temporary_station_of_jurisdiction_req)
         ])
+        assert_metrics_called(metric_logger_distribution,
+                              metric_logger_increment,
+                              JobState.COMPLETED_ERROR,
+                              JobState.RUNNING_MOVE_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE)
 
     @pytest.mark.parametrize("invalid_request",
                              [
@@ -420,7 +536,12 @@ class TestUpToMoveContentionsToPendingClaim:
                                  pytest.param(load_response(response_404, tsoj.Response), id="404"),
                                  pytest.param(load_response(response_500, tsoj.Response), id="500")
                              ])
-    def test_fail_to_revert_tsoj_after_failure_to_move_contentions_to_pending_claim(self, machine, mock_hoppy_async_client, invalid_request):
+    def test_fail_to_revert_tsoj_after_failure_to_move_contentions_to_pending_claim(self,
+                                                                                    machine,
+                                                                                    mock_hoppy_async_client,
+                                                                                    metric_logger_distribution,
+                                                                                    metric_logger_increment,
+                                                                                    invalid_request):
         mock_async_responses(mock_hoppy_async_client,
                              [
                                  get_pending_claim_200,
@@ -439,6 +560,10 @@ class TestUpToMoveContentionsToPendingClaim:
             call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
             call(machine.job.job_id, create_contentions_on_pending_claim_req),
         ])
+        assert_metrics_called(metric_logger_distribution,
+                              metric_logger_increment,
+                              JobState.COMPLETED_ERROR,
+                              JobState.RUNNING_MOVE_CONTENTIONS_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION)
 
 
 class TestUpToCancelClaim:
@@ -453,7 +578,13 @@ class TestUpToCancelClaim:
                                  pytest.param(load_response(response_404, cancel_claim.Response), None, id="404, no original_tsoj"),
                                  pytest.param(load_response(response_500, cancel_claim.Response), None, id="500, no original_tsoj")
                              ])
-    def test_invalid_request_at_cancel_claim_due_to_exception(self, machine, mock_hoppy_async_client, invalid_request, original_tsoj):
+    def test_invalid_request_at_cancel_claim_due_to_exception(self,
+                                                              machine,
+                                                              mock_hoppy_async_client,
+                                                              metric_logger_distribution,
+                                                              metric_logger_increment,
+                                                              invalid_request,
+                                                              original_tsoj):
         get_pending_claim_200.claim.temp_station_of_jurisdiction = original_tsoj
         revert_temporary_station_of_jurisdiction_req['tempStationOfJurisdiction'] = original_tsoj
 
@@ -475,6 +606,12 @@ class TestUpToCancelClaim:
             call(machine.job.job_id, create_contentions_on_pending_claim_req),
             call(machine.job.job_id, cancel_ep400_claim_req)
         ])
+        assert_metrics_called(metric_logger_distribution,
+                              metric_logger_increment,
+                              JobState.COMPLETED_ERROR,
+                              JobState.RUNNING_CANCEL_EP400_CLAIM,
+                              1,
+                              False)
 
     @pytest.mark.parametrize("invalid_request",
                              [
@@ -483,7 +620,12 @@ class TestUpToCancelClaim:
                                  pytest.param(load_response(response_404, tsoj.Response), id="404"),
                                  pytest.param(load_response(response_500, tsoj.Response), id="500")
                              ])
-    def test_invalid_request_at_revert_tsoj_due_to_failure_to_cancel_claim(self, machine, mock_hoppy_async_client, invalid_request):
+    def test_invalid_request_at_revert_tsoj_due_to_failure_to_cancel_claim(self,
+                                                                           machine,
+                                                                           mock_hoppy_async_client,
+                                                                           metric_logger_distribution,
+                                                                           metric_logger_increment,
+                                                                           invalid_request):
         mock_async_responses(mock_hoppy_async_client,
                              [
                                  get_pending_claim_200,
@@ -503,6 +645,12 @@ class TestUpToCancelClaim:
             call(machine.job.job_id, cancel_ep400_claim_req),
             call(machine.job.job_id, revert_temporary_station_of_jurisdiction_req)
         ])
+        assert_metrics_called(metric_logger_distribution,
+                              metric_logger_increment,
+                              JobState.COMPLETED_ERROR,
+                              JobState.RUNNING_CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION,
+                              1,
+                              False)
 
 
 class TestUpToAddClaimNote:
@@ -513,7 +661,12 @@ class TestUpToAddClaimNote:
                                  pytest.param(load_response(response_400, add_claim_note.Response), id="400"),
                                  pytest.param(load_response(response_500, add_claim_note.Response), id="500")
                              ])
-    def test_invalid_request_at_add_claim_note_due_to_exception(self, machine, mock_hoppy_async_client, invalid_request):
+    def test_invalid_request_at_add_claim_note_due_to_exception(self,
+                                                                machine,
+                                                                mock_hoppy_async_client,
+                                                                metric_logger_distribution,
+                                                                metric_logger_increment,
+                                                                invalid_request):
         mock_async_responses(mock_hoppy_async_client,
                              [
                                  get_pending_claim_200,
@@ -533,6 +686,12 @@ class TestUpToAddClaimNote:
             call(machine.job.job_id, cancel_ep400_claim_req),
             call(machine.job.job_id, add_claim_note_req)
         ])
+        assert_metrics_called(metric_logger_distribution,
+                              metric_logger_increment,
+                              JobState.COMPLETED_ERROR,
+                              JobState.RUNNING_ADD_CLAIM_NOTE_TO_EP400,
+                              1,
+                              False)
 
 
 class TestSuccess:
@@ -553,7 +712,12 @@ class TestSuccess:
                                       load_response(ep400_contentions_increase_multicontention_200, get_contentions.Response)),
                                      id="different contention name alongside duplicate")
                              ])
-    def test_process_succeeds_with_different_contention(self, machine, mock_hoppy_async_client, get_contentions_res):
+    def test_process_succeeds_with_different_contention(self,
+                                                        machine,
+                                                        mock_hoppy_async_client,
+                                                        metric_logger_distribution,
+                                                        metric_logger_increment,
+                                                        get_contentions_res):
         pending_contentions, ep400_contentions = get_contentions_res
         create_pending_claim_req = create_contentions.Request(claim_id=PENDING_CLAIM_ID,
                                                               create_contentions=ContentionsUtil.new_contentions(
@@ -577,8 +741,18 @@ class TestSuccess:
             call(machine.job.job_id, create_pending_claim_req),
             call(machine.job.job_id, cancel_ep400_claim_req)
         ])
+        assert_metrics_called(metric_logger_distribution,
+                              metric_logger_increment,
+                              JobState.COMPLETED_SUCCESS,
+                              None,
+                              1,
+                              False)
 
-    def test_process_succeeds_with_duplicate_contention(self, machine, mock_hoppy_async_client):
+    def test_process_succeeds_with_duplicate_contention(self,
+                                                        machine,
+                                                        mock_hoppy_async_client,
+                                                        metric_logger_distribution,
+                                                        metric_logger_increment):
         mock_async_responses(mock_hoppy_async_client,
                              [
                                  get_pending_claim_200,
@@ -595,3 +769,9 @@ class TestSuccess:
             call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
             call(machine.job.job_id, cancel_ep400_claim_req)
         ])
+        assert_metrics_called(metric_logger_distribution,
+                              metric_logger_increment,
+                              JobState.COMPLETED_SUCCESS,
+                              None,
+                              0,
+                              True)
