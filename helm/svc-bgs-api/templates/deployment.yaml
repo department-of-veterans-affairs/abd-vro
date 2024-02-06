@@ -21,6 +21,7 @@ spec:
       containers:
         - name: svc-bgs-api{{ include "vro.containerSuffix" . }}
           image: {{ include "vro.imageRegistryPath" . }}vro-svc-bgs-api:{{ include "vro.imageTag" . }}
+          startupProbe: {{- toYaml .Values.startupProbe | nindent 12 }}
           livenessProbe: {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe: {{- toYaml .Values.readinessProbe | nindent 12 }}
           env:
