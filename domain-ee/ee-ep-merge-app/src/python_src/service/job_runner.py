@@ -13,8 +13,8 @@ class JobRunner:
 
     async def start(self):
         """
-            Resume any in-progress jobs that are in the database upon application startup, and after JOB_STORE and HOPPY
-            are ready. If some are found, they are restarted or resumed depending on their current JobState.
+        Resume any in-progress jobs that are in the database upon application startup, and after JOB_STORE and HOPPY
+        are ready. If some are found, they are restarted or resumed depending on their current JobState.
         """
         while not JOB_STORE.is_ready() or not HOPPY.is_ready():
             logging.info("event=resumeJobsInProgress status=waitingForResources'")

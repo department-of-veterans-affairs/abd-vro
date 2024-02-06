@@ -18,16 +18,19 @@ def create_job(state: JobState):
         'ep400_claim_id': 2,
         'state': state.value,
         'created_at': datetime.now().isoformat(),
-        'updated_at': datetime.now().isoformat()
+        'updated_at': datetime.now().isoformat(),
     }
 
 
-@pytest.mark.parametrize("in_progress_jobs", [
-    pytest.param([], id="0 incomplete jobs"),
-    pytest.param([create_job(JobState.PENDING)], id="1 incomplete jobs"),
-    pytest.param([create_job(JobState.PENDING), create_job(JobState.RUNNING_CANCEL_EP400_CLAIM)], id="2 incomplete jobs"),
-    pytest.param([create_job(state) for state in JobState.incomplete_states()], id="1 job in every incomplete state")
-])
+@pytest.mark.parametrize(
+    "in_progress_jobs",
+    [
+        pytest.param([], id="0 incomplete jobs"),
+        pytest.param([create_job(JobState.PENDING)], id="1 incomplete jobs"),
+        pytest.param([create_job(JobState.PENDING), create_job(JobState.RUNNING_CANCEL_EP400_CLAIM)], id="2 incomplete jobs"),
+        pytest.param([create_job(state) for state in JobState.incomplete_states()], id="1 job in every incomplete state"),
+    ],
+)
 def test_get_all_incomplete_jobs(db, in_progress_jobs):
     db.query_all.return_value = in_progress_jobs
 
@@ -79,15 +82,17 @@ def test_update_merge_job(db, merge_job):
     db.update.assert_called_once()
 
 
-@pytest.mark.parametrize("states,offset,limit",
-                         [
-                             pytest.param(None, None, None, id="defaults"),
-                             pytest.param([JobState.PENDING], 1, None, id="first page, default 10 items"),
-                             pytest.param([JobState.PENDING], None, 1, id="first page, default offset, 1 item"),
-                             pytest.param([JobState.PENDING], 1, 10, id="last page, 1 item"),
-                             pytest.param([JobState.PENDING], 1, 2, id="first page, 2 items"),
-                             pytest.param([JobState.PENDING], 6, 2, id="last page, 2 items"),
-                         ])
+@pytest.mark.parametrize(
+    "states,offset,limit",
+    [
+        pytest.param(None, None, None, id="defaults"),
+        pytest.param([JobState.PENDING], 1, None, id="first page, default 10 items"),
+        pytest.param([JobState.PENDING], None, 1, id="first page, default offset, 1 item"),
+        pytest.param([JobState.PENDING], 1, 10, id="last page, 1 item"),
+        pytest.param([JobState.PENDING], 1, 2, id="first page, 2 items"),
+        pytest.param([JobState.PENDING], 6, 2, id="last page, 2 items"),
+    ],
+)
 def test_query(db, merge_job, states: list, offset: int, limit: int):
     job_store = JobStore(db)
     kwargs = {}

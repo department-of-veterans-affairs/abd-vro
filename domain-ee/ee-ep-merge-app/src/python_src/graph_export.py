@@ -119,9 +119,7 @@ class DotGraphMachine:
 
 
 def generate_graph(main_event):
-    job = MergeJob(job_id=uuid4(),
-                   pending_claim_id=1,
-                   ep400_claim_id=2)
+    job = MergeJob(job_id=uuid4(), pending_claim_id=1, ep400_claim_id=2)
 
     #
     graph = DotGraphMachine(EpMergeMachine(job, main_event))

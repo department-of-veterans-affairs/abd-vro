@@ -47,13 +47,15 @@ def create_mq_endpoint(name):
 
 
 @pytest_asyncio.fixture(autouse=True, scope="session")
-async def endpoint_lifecycle(get_claim_endpoint: MqEndpoint,
-                             get_claim_contentions_endpoint: MqEndpoint,
-                             put_tsoj_endpoint: MqEndpoint,
-                             create_claim_contentions_endpoint: MqEndpoint,
-                             update_claim_contentions_endpoint: MqEndpoint,
-                             cancel_claim_endpoint: MqEndpoint,
-                             add_claim_note_endpoint: MqEndpoint):
+async def endpoint_lifecycle(
+    get_claim_endpoint: MqEndpoint,
+    get_claim_contentions_endpoint: MqEndpoint,
+    put_tsoj_endpoint: MqEndpoint,
+    create_claim_contentions_endpoint: MqEndpoint,
+    update_claim_contentions_endpoint: MqEndpoint,
+    cancel_claim_endpoint: MqEndpoint,
+    add_claim_note_endpoint: MqEndpoint,
+):
     event_loop = asyncio.get_running_loop()
     await get_claim_endpoint.start(event_loop)
     await get_claim_contentions_endpoint.start(event_loop)
@@ -77,11 +79,13 @@ async def endpoint_lifecycle(get_claim_endpoint: MqEndpoint,
 
 
 @pytest.fixture(autouse=True)
-def reset_responses(get_claim_endpoint: MqEndpoint,
-                    get_claim_contentions_endpoint: MqEndpoint,
-                    put_tsoj_endpoint: MqEndpoint,
-                    create_claim_contentions_endpoint: MqEndpoint,
-                    cancel_claim_endpoint: MqEndpoint):
+def reset_responses(
+    get_claim_endpoint: MqEndpoint,
+    get_claim_contentions_endpoint: MqEndpoint,
+    put_tsoj_endpoint: MqEndpoint,
+    create_claim_contentions_endpoint: MqEndpoint,
+    cancel_claim_endpoint: MqEndpoint,
+):
     get_claim_endpoint.set_responses()
     get_claim_contentions_endpoint.set_responses()
     put_tsoj_endpoint.set_responses()

@@ -11,15 +11,10 @@ new_tendinitis = ContentionSummary(
     last_modified=datetime(2023, 1, 1),
     contention_type_code='NEW',
     claimant_text='tendinitis/bilateral',
-    contention_id=1
+    contention_id=1,
 )
 new_tinnitus = ContentionSummary(
-    medical_ind=True,
-    begin_date=datetime(2023, 1, 1),
-    last_modified=datetime(2023, 1, 1),
-    contention_type_code='NEW',
-    claimant_text='tinnitus',
-    contention_id=1
+    medical_ind=True, begin_date=datetime(2023, 1, 1), last_modified=datetime(2023, 1, 1), contention_type_code='NEW', claimant_text='tinnitus', contention_id=1
 )
 increase_tendinitis = ContentionSummary(
     medical_ind=True,
@@ -27,7 +22,7 @@ increase_tendinitis = ContentionSummary(
     last_modified=datetime(2023, 1, 1),
     contention_type_code='INCREASE',
     claimant_text='tendinitis/bilateral',
-    contention_id=1
+    contention_id=1,
 )
 
 

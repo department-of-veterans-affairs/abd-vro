@@ -60,38 +60,29 @@ get_pending_claim_req = get_claim.Request(claim_id=PENDING_CLAIM_ID).model_dump(
 get_pending_claim_200 = load_response(pending_claim_200, get_claim.Response)
 get_pending_contentions_req = get_contentions.Request(claim_id=PENDING_CLAIM_ID).model_dump(by_alias=True)
 get_pending_contentions_200 = load_response(pending_contentions_increase_tendinitis_200, get_contentions.Response)
-get_pending_contentions_increase_tinnitus_200 = load_response(pending_contentions_increase_tinnitus_200,
-                                                              get_contentions.Response)
+get_pending_contentions_increase_tinnitus_200 = load_response(pending_contentions_increase_tinnitus_200, get_contentions.Response)
 get_ep400_contentions_req = get_contentions.Request(claim_id=EP400_CLAIM_ID).model_dump(by_alias=True)
 get_ep400_contentions_200 = load_response(ep400_contentions_increase_tinnitus_200, get_contentions.Response)
-get_ep400_contentions_without_special_issues_200 = load_response(
-    ep400_contentions_increase_tinnitus_without_special_issues_200, get_contentions.Response)
-update_temporary_station_of_jurisdiction_req = tsoj.Request(claim_id=EP400_CLAIM_ID,
-                                                            temp_station_of_jurisdiction="398").model_dump(
-    by_alias=True)
-revert_temporary_station_of_jurisdiction_req = tsoj.Request(claim_id=EP400_CLAIM_ID,
-                                                            temp_station_of_jurisdiction="111").model_dump(
-    by_alias=True)
+get_ep400_contentions_without_special_issues_200 = load_response(ep400_contentions_increase_tinnitus_without_special_issues_200, get_contentions.Response)
+update_temporary_station_of_jurisdiction_req = tsoj.Request(claim_id=EP400_CLAIM_ID, temp_station_of_jurisdiction="398").model_dump(by_alias=True)
+revert_temporary_station_of_jurisdiction_req = tsoj.Request(claim_id=EP400_CLAIM_ID, temp_station_of_jurisdiction="111").model_dump(by_alias=True)
 update_temporary_station_of_jurisdiction_200 = load_response(response_200, tsoj.Response)
 revert_temporary_station_of_jurisdiction_200 = load_response(response_200, tsoj.Response)
-create_contentions_on_pending_claim_req = create_contentions.Request(claim_id=PENDING_CLAIM_ID,
-                                                                     create_contentions=ContentionsUtil.new_contentions(
-                                                                         get_pending_contentions_200.contentions,
-                                                                         get_ep400_contentions_200.contentions)
-                                                                     ).model_dump(by_alias=True)
+create_contentions_on_pending_claim_req = create_contentions.Request(
+    claim_id=PENDING_CLAIM_ID,
+    create_contentions=ContentionsUtil.new_contentions(get_pending_contentions_200.contentions, get_ep400_contentions_200.contentions),
+).model_dump(by_alias=True)
 create_contentions_on_pending_claim_201 = load_response(response_201, create_contentions.Response)
-update_contentions_on_ep400_req = update_contentions.Request(claim_id=EP400_CLAIM_ID,
-                                                             update_contentions=get_ep400_contentions_without_special_issues_200.contentions
-                                                             ).model_dump(by_alias=True)
+update_contentions_on_ep400_req = update_contentions.Request(
+    claim_id=EP400_CLAIM_ID, update_contentions=get_ep400_contentions_without_special_issues_200.contentions
+).model_dump(by_alias=True)
 update_contentions_on_ep400_200 = load_response(response_200, update_contentions.Response)
 
-cancel_ep400_claim_req = cancel_claim.Request(claim_id=EP400_CLAIM_ID,
-                                              lifecycle_status_reason_code=CANCEL_TRACKING_EP,
-                                              close_reason_text=cancel_reason
-                                              ).model_dump(by_alias=True)
+cancel_ep400_claim_req = cancel_claim.Request(
+    claim_id=EP400_CLAIM_ID, lifecycle_status_reason_code=CANCEL_TRACKING_EP, close_reason_text=cancel_reason
+).model_dump(by_alias=True)
 cancel_claim_200 = load_response(response_200, cancel_claim.Response)
-add_claim_note_req = add_claim_note.Request(vbms_claim_id=EP400_CLAIM_ID,
-                                            claim_notes=[cancel_reason]).model_dump(by_alias=True)
+add_claim_note_req = add_claim_note.Request(vbms_claim_id=EP400_CLAIM_ID, claim_notes=[cancel_reason]).model_dump(by_alias=True)
 add_claim_note_200 = load_response(response_200, add_claim_note.Response)
 
 
@@ -141,12 +132,14 @@ def process_and_assert(machine, expected_state: JobState, expected_error_state: 
         assert len(machine.job.messages) == num_errors
 
 
-def assert_metrics_called(metric_logger_distribution,
-                          metric_logger_increment,
-                          expected_completed_state: JobState,
-                          expected_error_state: JobState = None,
-                          expected_new_contentions: int | None = None,
-                          expected_merge_skip: bool = True):
+def assert_metrics_called(
+    metric_logger_distribution,
+    metric_logger_increment,
+    expected_completed_state: JobState,
+    expected_error_state: JobState = None,
+    expected_new_contentions: int | None = None,
+    expected_merge_skip: bool = True,
+):
 
     increment_calls = []
     histogram_calls = [call(JOB_DURATION_METRIC, ANY)]
