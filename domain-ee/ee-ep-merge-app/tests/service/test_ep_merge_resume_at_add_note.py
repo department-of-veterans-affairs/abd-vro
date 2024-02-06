@@ -30,7 +30,7 @@ from service.ep_merge_machine import EpMergeMachine, Workflow
 @pytest.fixture
 def machine():
     return EpMergeMachine(
-        MergeJob(job_id=JOB_ID, pending_claim_id=PENDING_CLAIM_ID, ep400_claim_id=EP400_CLAIM_ID, state=JobState.RUNNING_ADD_CLAIM_NOTE_TO_EP400),
+        MergeJob(job_id=JOB_ID, pending_claim_id=PENDING_CLAIM_ID, ep400_claim_id=EP400_CLAIM_ID, state=JobState.ADD_CLAIM_NOTE_TO_EP400),
         Workflow.RESUME_ADD_NOTE,
     )
 
@@ -48,7 +48,7 @@ class TestUpToGetPendingClaim:
     )
     def test_invalid_request(self, machine, mock_hoppy_async_client, invalid_request):
         mock_async_responses(mock_hoppy_async_client, [invalid_request, get_ep400_contentions_200, update_contentions_on_ep400_200])
-        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_GET_PENDING_CLAIM, 1)
+        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM, 1)
         mock_hoppy_async_client.make_request.assert_has_calls(
             [
                 call(machine.job.job_id, get_pending_claim_req),
@@ -68,7 +68,7 @@ class TestUpToGetPendingClaim:
     )
     def test_no_contentions_on_ep400_after_get_pending_claim_failure(self, machine, mock_hoppy_async_client, no_contentions_response):
         mock_async_responses(mock_hoppy_async_client, [ResponseException("Oops"), no_contentions_response])
-        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_GET_PENDING_CLAIM, 1)
+        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM, 1)
         mock_hoppy_async_client.make_request.assert_has_calls(
             [
                 call(machine.job.job_id, get_pending_claim_req),
@@ -94,7 +94,7 @@ class TestUpToGetPendingClaim:
                 invalid_request,
             ],
         )
-        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE, 2)
+        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE, 2)
         mock_hoppy_async_client.make_request.assert_has_calls(
             [
                 call(machine.job.job_id, get_pending_claim_req),
@@ -121,7 +121,7 @@ class TestUpToGetPendingClaim:
                 invalid_request,
             ],
         )
-        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE, 2)
+        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE, 2)
         mock_hoppy_async_client.make_request.assert_has_calls(
             [
                 call(machine.job.job_id, get_pending_claim_req),
@@ -143,7 +143,7 @@ class TestUpToAddClaimNote:
     )
     def test_invalid_request_at_add_claim_note_due_to_exception(self, machine, mock_hoppy_async_client, invalid_request):
         mock_async_responses(mock_hoppy_async_client, [get_pending_claim_200, invalid_request])
-        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_ADD_CLAIM_NOTE_TO_EP400, 1)
+        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.ADD_CLAIM_NOTE_TO_EP400, 1)
         mock_hoppy_async_client.make_request.assert_has_calls(
             [
                 call(machine.job.job_id, get_pending_claim_req),

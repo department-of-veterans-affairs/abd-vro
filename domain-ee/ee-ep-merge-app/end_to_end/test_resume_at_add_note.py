@@ -53,7 +53,7 @@ class TestSuccess:
             job_id=job_id,
             pending_claim_id=pending_claim_id,
             ep400_claim_id=ep400_claim_id,
-            state=JobState.RUNNING_ADD_CLAIM_NOTE_TO_EP400,
+            state=JobState.ADD_CLAIM_NOTE_TO_EP400,
             created_at=NOW,
             updated_at=NOW,
         )
@@ -71,14 +71,14 @@ class TestError:
             pytest.param(
                 CLAIM_ID_ERROR_AT_GET_CLAIM_DETAILS,
                 EP400_WITH_MULTI_CONTENTION_NO_DUPLICATES,
-                JobState.RUNNING_GET_PENDING_CLAIM,
+                JobState.GET_PENDING_CLAIM,
                 1,
                 id="fail to get pending claim details",
             ),
             pytest.param(
                 CLAIM_ID_ERROR_AT_GET_CLAIM_DETAILS,
                 CLAIM_ID_ERROR_AT_UPDATE_CONTENTIONS,
-                JobState.RUNNING_GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE,
+                JobState.GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE,
                 2,
                 id="fail to remove special issues from ep400 claim after failing to get pending claim",
             ),
@@ -90,7 +90,7 @@ class TestError:
             job_id=job_id,
             pending_claim_id=pending_claim_id,
             ep400_claim_id=ep400_claim_id,
-            state=JobState.RUNNING_ADD_CLAIM_NOTE_TO_EP400,
+            state=JobState.ADD_CLAIM_NOTE_TO_EP400,
             created_at=NOW,
             updated_at=NOW,
         )

@@ -119,40 +119,40 @@ class TestError:
             pytest.param(
                 CLAIM_ID_ERROR_AT_GET_CLAIM_DETAILS,
                 EP400_WITH_MULTI_CONTENTION_NO_DUPLICATES,
-                JobState.RUNNING_GET_PENDING_CLAIM,
+                JobState.GET_PENDING_CLAIM,
                 1,
                 id="fail to get pending claim details",
             ),
             pytest.param(
                 CLAIM_ID_ERROR_AT_GET_CONTENTIONS,
                 EP400_WITH_MULTI_CONTENTION_NO_DUPLICATES,
-                JobState.RUNNING_GET_PENDING_CLAIM_CONTENTIONS,
+                JobState.GET_PENDING_CLAIM_CONTENTIONS,
                 1,
                 id="fail to get pending claim contentions",
             ),
             pytest.param(
-                PENDING_CLAIM_ID, CLAIM_ID_ERROR_AT_GET_CONTENTIONS, JobState.RUNNING_GET_EP400_CLAIM_CONTENTIONS, 1, id="fail to get ep400 claim contentions"
+                PENDING_CLAIM_ID, CLAIM_ID_ERROR_AT_GET_CONTENTIONS, JobState.GET_EP400_CLAIM_CONTENTIONS, 1, id="fail to get ep400 claim contentions"
             ),
-            pytest.param(PENDING_CLAIM_ID, CLAIM_ID_ERROR_AT_SET_TSOJ, JobState.RUNNING_SET_TEMP_STATION_OF_JURISDICTION, 1, id="fail to set tsoj on ep400"),
+            pytest.param(PENDING_CLAIM_ID, CLAIM_ID_ERROR_AT_SET_TSOJ, JobState.SET_TEMP_STATION_OF_JURISDICTION, 1, id="fail to set tsoj on ep400"),
             pytest.param(
                 CLAIM_ID_ERROR_AT_CREATE_CONTENTIONS,
                 EP400_WITH_MULTI_CONTENTION_NO_DUPLICATES,
-                JobState.RUNNING_MOVE_CONTENTIONS_TO_PENDING_CLAIM,
+                JobState.MOVE_CONTENTIONS_TO_PENDING_CLAIM,
                 1,
                 id="fail to move claim contentions to pending claim",
             ),
-            pytest.param(PENDING_CLAIM_ID, CLAIM_ID_ERROR_AT_CANCEL_CLAIM, JobState.RUNNING_CANCEL_EP400_CLAIM, 1, id="fail to cancel ep400 claim"),
+            pytest.param(PENDING_CLAIM_ID, CLAIM_ID_ERROR_AT_CANCEL_CLAIM, JobState.CANCEL_EP400_CLAIM, 1, id="fail to cancel ep400 claim"),
             pytest.param(
                 CLAIM_ID_ERROR_AT_GET_CLAIM_DETAILS,
                 CLAIM_ID_ERROR_AT_UPDATE_CONTENTIONS,
-                JobState.RUNNING_GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE,
+                JobState.GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE,
                 2,
                 id="fail to remove special issues from ep400 claim after failing to get pending claim",
             ),
             pytest.param(
                 CLAIM_ID_ERROR_AT_GET_CONTENTIONS,
                 CLAIM_ID_ERROR_AT_UPDATE_CONTENTIONS,
-                JobState.RUNNING_GET_PENDING_CLAIM_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE,
+                JobState.GET_PENDING_CLAIM_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE,
                 2,
                 id="fail to remove special issues from ep400 claim after failing to get pending claim contentions",
             ),

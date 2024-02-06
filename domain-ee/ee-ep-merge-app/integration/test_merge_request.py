@@ -105,7 +105,7 @@ class TestErrorAtGetPendingClaim(TestMergeRequestBase):
 
         async with AsyncClient(app=app, base_url="http://test") as client:
             response = await submit_request_and_process(client)
-            assert_error_response(response, JobState.RUNNING_GET_PENDING_CLAIM)
+            assert_error_response(response, JobState.GET_PENDING_CLAIM)
 
     @pytest.mark.asyncio(scope="session")
     async def test_error_at_remove_special_issue_fail_to_get_ep400_contentions(
@@ -118,7 +118,7 @@ class TestErrorAtGetPendingClaim(TestMergeRequestBase):
 
         async with AsyncClient(app=app, base_url="http://test") as client:
             response = await submit_request_and_process(client)
-            assert_error_response(response, JobState.RUNNING_GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE)
+            assert_error_response(response, JobState.GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE)
 
     @pytest.mark.asyncio(scope="session")
     async def test_error_at_remove_special_issue_fail_to_update_ep400_contentions(
@@ -132,7 +132,7 @@ class TestErrorAtGetPendingClaim(TestMergeRequestBase):
 
         async with AsyncClient(app=app, base_url="http://test") as client:
             response = await submit_request_and_process(client)
-            assert_error_response(response, JobState.RUNNING_GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE)
+            assert_error_response(response, JobState.GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE)
 
 
 class TestErrorAtGetPendingClaimContentions(TestMergeRequestBase):
@@ -147,7 +147,7 @@ class TestErrorAtGetPendingClaimContentions(TestMergeRequestBase):
 
         async with AsyncClient(app=app, base_url="http://test") as client:
             response = await submit_request_and_process(client)
-            assert_error_response(response, JobState.RUNNING_GET_PENDING_CLAIM_CONTENTIONS)
+            assert_error_response(response, JobState.GET_PENDING_CLAIM_CONTENTIONS)
 
     @pytest.mark.asyncio(scope="session")
     async def test_error_at_remove_special_issue_fail_to_get_ep400_contentions(
@@ -159,7 +159,7 @@ class TestErrorAtGetPendingClaimContentions(TestMergeRequestBase):
 
         async with AsyncClient(app=app, base_url="http://test") as client:
             response = await submit_request_and_process(client)
-            assert_error_response(response, JobState.RUNNING_GET_PENDING_CLAIM_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE)
+            assert_error_response(response, JobState.GET_PENDING_CLAIM_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE)
 
     @pytest.mark.asyncio(scope="session")
     async def test_error_at_remove_special_issue_fail_to_update_ep400_contentions(
@@ -173,7 +173,7 @@ class TestErrorAtGetPendingClaimContentions(TestMergeRequestBase):
 
         async with AsyncClient(app=app, base_url="http://test") as client:
             response = await submit_request_and_process(client)
-            assert_error_response(response, JobState.RUNNING_GET_PENDING_CLAIM_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE)
+            assert_error_response(response, JobState.GET_PENDING_CLAIM_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE)
 
 
 class TestErrorAtGetEp400ClaimContentions(TestMergeRequestBase):
@@ -185,7 +185,7 @@ class TestErrorAtGetEp400ClaimContentions(TestMergeRequestBase):
 
         async with AsyncClient(app=app, base_url="http://test") as client:
             response = await submit_request_and_process(client)
-            assert_error_response(response, JobState.RUNNING_GET_EP400_CLAIM_CONTENTIONS)
+            assert_error_response(response, JobState.GET_EP400_CLAIM_CONTENTIONS)
 
 
 class TestErrorAtSetTemporaryStationOfJurisdiction(TestMergeRequestBase):
@@ -205,7 +205,7 @@ class TestErrorAtSetTemporaryStationOfJurisdiction(TestMergeRequestBase):
 
         async with AsyncClient(app=app, base_url="http://test") as client:
             response = await submit_request_and_process(client)
-            assert_error_response(response, JobState.RUNNING_SET_TEMP_STATION_OF_JURISDICTION)
+            assert_error_response(response, JobState.SET_TEMP_STATION_OF_JURISDICTION)
 
     @pytest.mark.asyncio(scope="session")
     async def test_error_at_remove_special_issue_fail_to_update_ep400_contentions(
@@ -222,7 +222,7 @@ class TestErrorAtSetTemporaryStationOfJurisdiction(TestMergeRequestBase):
 
         async with AsyncClient(app=app, base_url="http://test") as client:
             response = await submit_request_and_process(client)
-            assert_error_response(response, JobState.RUNNING_SET_TEMP_STATION_OF_JURISDICTION_FAILED_REMOVE_SPECIAL_ISSUE)
+            assert_error_response(response, JobState.SET_TEMP_STATION_OF_JURISDICTION_FAILED_REMOVE_SPECIAL_ISSUE)
 
 
 class TestErrorAtMoveContentionsToPendingClaim(TestMergeRequestBase):
@@ -244,7 +244,7 @@ class TestErrorAtMoveContentionsToPendingClaim(TestMergeRequestBase):
 
         async with AsyncClient(app=app, base_url="http://test") as client:
             response = await submit_request_and_process(client)
-            assert_error_response(response, JobState.RUNNING_MOVE_CONTENTIONS_TO_PENDING_CLAIM)
+            assert_error_response(response, JobState.MOVE_CONTENTIONS_TO_PENDING_CLAIM)
 
     @pytest.mark.asyncio(scope="session")
     async def test_error_at_remove_special_issue_fail_to_update_ep400_contentions(
@@ -263,7 +263,7 @@ class TestErrorAtMoveContentionsToPendingClaim(TestMergeRequestBase):
 
         async with AsyncClient(app=app, base_url="http://test") as client:
             response = await submit_request_and_process(client)
-            assert_error_response(response, JobState.RUNNING_MOVE_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE)
+            assert_error_response(response, JobState.MOVE_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE)
 
     @pytest.mark.asyncio(scope="session")
     async def test_error_at_revert_tsoj(
@@ -282,7 +282,7 @@ class TestErrorAtMoveContentionsToPendingClaim(TestMergeRequestBase):
 
         async with AsyncClient(app=app, base_url="http://test") as client:
             response = await submit_request_and_process(client)
-            assert_error_response(response, JobState.RUNNING_MOVE_CONTENTIONS_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION)
+            assert_error_response(response, JobState.MOVE_CONTENTIONS_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION)
 
 
 class TestErrorAtCancelClaim(TestMergeRequestBase):
@@ -304,7 +304,7 @@ class TestErrorAtCancelClaim(TestMergeRequestBase):
 
         async with AsyncClient(app=app, base_url="http://test") as client:
             response = await submit_request_and_process(client)
-            assert_error_response(response, JobState.RUNNING_CANCEL_EP400_CLAIM)
+            assert_error_response(response, JobState.CANCEL_EP400_CLAIM)
 
     @pytest.mark.asyncio(scope="session")
     async def test_error_at_revert_tsoj(
@@ -323,7 +323,7 @@ class TestErrorAtCancelClaim(TestMergeRequestBase):
 
         async with AsyncClient(app=app, base_url="http://test") as client:
             response = await submit_request_and_process(client)
-            assert_error_response(response, JobState.RUNNING_CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION)
+            assert_error_response(response, JobState.CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION)
 
 
 class TestErrorAtAddClaimNote(TestMergeRequestBase):
@@ -349,7 +349,7 @@ class TestErrorAtAddClaimNote(TestMergeRequestBase):
 
         async with AsyncClient(app=app, base_url="http://test") as client:
             response = await submit_request_and_process(client)
-            assert_error_response(response, JobState.RUNNING_ADD_CLAIM_NOTE_TO_EP400)
+            assert_error_response(response, JobState.ADD_CLAIM_NOTE_TO_EP400)
 
     @pytest.mark.asyncio(scope="session")
     async def test_error_at_remove_special_issue_fail_to_update_ep400_contentions(
@@ -372,4 +372,4 @@ class TestErrorAtAddClaimNote(TestMergeRequestBase):
 
         async with AsyncClient(app=app, base_url="http://test") as client:
             response = await submit_request_and_process(client)
-            assert_error_response(response, JobState.RUNNING_ADD_CLAIM_NOTE_TO_EP400)
+            assert_error_response(response, JobState.ADD_CLAIM_NOTE_TO_EP400)
