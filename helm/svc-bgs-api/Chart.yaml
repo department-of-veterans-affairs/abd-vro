@@ -11,9 +11,9 @@ description: VRO microservice - client for BGS API
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # TODO discuss: How can we enforce or automate incrementing this?
-version: 0.1.4
+version: 0.1.5
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
 # This field is informational, and has no impact on chart version calculations.
-appVersion: "3.6.6"
+appVersion: "3.6.7"
