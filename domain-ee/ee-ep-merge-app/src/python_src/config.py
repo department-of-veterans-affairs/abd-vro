@@ -95,5 +95,6 @@ def create_sqlalchemy_db_uri():
     return postgres_url
 
 
+ENV = os.environ.get("ENV") or "local"
 POSTGRES_SCHEMA = os.environ.get("POSTGRES_SCHEMA") or "claims"
 SQLALCHEMY_DATABASE_URI = create_sqlalchemy_db_uri()

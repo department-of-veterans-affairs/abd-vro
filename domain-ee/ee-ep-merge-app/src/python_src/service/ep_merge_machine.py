@@ -23,6 +23,18 @@ from service.hoppy_service import HOPPY, ClientName
 from service.job_store import JOB_STORE
 from statemachine import State, StateMachine
 from util.contentions_util import ContentionsUtil
+from util.metric_logger import distribution, increment
+
+ERROR_STATES_TO_LOG_METRICS = [JobState.RUNNING_CANCEL_EP400_CLAIM,
+                               JobState.RUNNING_CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION,
+                               JobState.RUNNING_ADD_CLAIM_NOTE_TO_EP400]
+
+JOB_SUCCESS_METRIC = 'job.success'
+JOB_FAILURE_METRIC = 'job.failure'
+JOB_ERROR_METRIC_PREFIX = 'job.error'
+JOB_DURATION_METRIC = 'job.duration'
+JOB_SKIPPED_MERGE_METRIC = 'job.skipped_merge'
+JOB_NEW_CONTENTIONS_METRIC = 'job.new_contentions'
 
 CANCEL_TRACKING_EP = "60"
 CANCELLATION_REASON_FORMAT = "Issues moved into or confirmed in pending EP{ep_code} - claim #{claim_id}"
@@ -41,6 +53,8 @@ class EpMergeMachine(StateMachine):
     job: MergeJob | None = None
     cancellation_reason: str | None = None
     original_tsoj: str | None = None
+    num_new_contentions: int | None = None
+    skipped_merge: bool = True
 
     # States:
     pending = State(initial=True, value=JobState.PENDING)
@@ -189,6 +203,7 @@ class EpMergeMachine(StateMachine):
 
     @running_merge_contentions.enter
     def on_merge_contentions(self, event, pending_contentions_response=None, ep400_contentions_response=None):
+        self.skipped_merge = False
         new_contentions = None
         try:
             new_contentions = ContentionsUtil.new_contentions(pending_contentions_response.contentions, ep400_contentions_response.contentions)
@@ -271,6 +286,9 @@ class EpMergeMachine(StateMachine):
     @completed_success.enter
     @completed_error.enter
     def on_completed(self, event):
+        job_duration = (self.job.updated_at - self.job.created_at).total_seconds()
+        self.log_metrics(job_duration)
+
         if self.job.state == JobState.COMPLETED_ERROR:
             logging.error(f"event=jobCompletedWithError "
                           f"trigger={event} "
@@ -279,14 +297,32 @@ class EpMergeMachine(StateMachine):
                           f"ep400_claim_id={self.job.ep400_claim_id} "
                           f"state={self.job.state} "
                           f"errorState={self.job.error_state} "
-                          f"error=\"{jsonable_encoder(self.job.messages)}\"")
+                          f"error=\"{jsonable_encoder(self.job.messages)}\" "
+                          f"job_duration_seconds={job_duration}")
         else:
             logging.info(f"event=jobCompleted "
                          f"trigger={event} "
                          f"job_id={self.job.job_id} "
                          f"pending_claim_id={self.job.pending_claim_id} "
                          f"ep400_claim_id={self.job.ep400_claim_id} "
-                         f"state={self.job.state}")
+                         f"state={self.job.state}"
+                         f"job_duration_seconds={job_duration}")
+
+    def log_metrics(self, job_duration):
+        distribution(JOB_DURATION_METRIC, job_duration)
+
+        if self.job.state == JobState.COMPLETED_SUCCESS:
+            increment(JOB_SUCCESS_METRIC)
+            distribution(JOB_NEW_CONTENTIONS_METRIC, self.num_new_contentions)
+            if self.skipped_merge:
+                increment(JOB_SKIPPED_MERGE_METRIC)
+        else:
+            increment(JOB_FAILURE_METRIC)
+            increment(f'{JOB_ERROR_METRIC_PREFIX}.{self.job.error_state}')
+            if self.job.error_state in ERROR_STATES_TO_LOG_METRICS:
+                distribution(JOB_NEW_CONTENTIONS_METRIC, self.num_new_contentions)
+                if self.skipped_merge:
+                    increment(JOB_SKIPPED_MERGE_METRIC)
 
     def make_request(self,
                      request: GeneralRequest,
@@ -313,7 +349,9 @@ class EpMergeMachine(StateMachine):
         return self.job.state == JobState.COMPLETED_ERROR
 
     def has_new_contentions(self, pending_contentions_response: get_contentions.Response, ep400_contentions_response: get_contentions.Response):
-        return ContentionsUtil.new_contentions(pending_contentions_response.contentions, ep400_contentions_response.contentions)
+        contentions = ContentionsUtil.new_contentions(pending_contentions_response.contentions, ep400_contentions_response.contentions)
+        self.num_new_contentions = len(contentions)
+        return contentions
 
     def add_error(self, error):
         self.job.error(error)

@@ -1,3 +1,4 @@
+datadog>=0.48
 fastapi==0.103.*
 hoppy @ git+https://github.com/department-of-veterans-affairs/abd-vro.git@shared/lib-hoppy-0.6#subdirectory=shared/lib-hoppy
 httpx==0.24.*
