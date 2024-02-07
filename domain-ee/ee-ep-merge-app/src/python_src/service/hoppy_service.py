@@ -21,23 +21,22 @@ class HoppyService:
         exchange = EXCHANGES[name]
         req_queue = QUEUES[name]
         reply_queue = REPLY_QUEUES[name]
-        exchange_props = ExchangeProperties(name=exchange,
-                                            passive_declare=False)
-        request_queue_props = QueueProperties(name=req_queue,
-                                              passive_declare=False)
-        reply_queue_props = QueueProperties(name=reply_queue,
-                                            passive_declare=False)
-        client = RetryableAsyncHoppyClient(name=name.value,
-                                           app_id=config["app_id"],
-                                           config=config,
-                                           exchange_properties=exchange_props,
-                                           request_queue_properties=request_queue_props,
-                                           request_routing_key=req_queue,
-                                           reply_queue_properties=reply_queue_props,
-                                           reply_routing_key=reply_queue,
-                                           max_latency=config["request_timeout"],
-                                           max_retries=config["request_retries"],
-                                           response_reject_and_requeue_attempts=config["response_delivery_attempts"])
+        exchange_props = ExchangeProperties(name=exchange, passive_declare=False)
+        request_queue_props = QueueProperties(name=req_queue, passive_declare=False)
+        reply_queue_props = QueueProperties(name=reply_queue, passive_declare=False)
+        client = RetryableAsyncHoppyClient(
+            name=name.value,
+            app_id=config["app_id"],
+            config=config,
+            exchange_properties=exchange_props,
+            request_queue_properties=request_queue_props,
+            request_routing_key=req_queue,
+            reply_queue_properties=reply_queue_props,
+            reply_routing_key=reply_queue,
+            max_latency=config["request_timeout"],
+            max_retries=config["request_retries"],
+            response_reject_and_requeue_attempts=config["response_delivery_attempts"],
+        )
         self.clients[name] = client
 
     def get_client(self, name):

@@ -18,13 +18,8 @@ class JobStore:
     def clear(self):
         self.db.clear(MergeJob)
 
-    def query(self, states: list[schema.JobState] = schema.JobState.incomplete_states(), offset: int = 1, limit: int = 10) -> \
-            list[MergeJob]:
-        return self.db.query(MergeJob,
-                             MergeJob.state.in_(states) if states else True,
-                             MergeJob.updated_at,
-                             offset,
-                             limit)
+    def query(self, states: list[schema.JobState] = schema.JobState.incomplete_states(), offset: int = 1, limit: int = 10) -> list[MergeJob]:
+        return self.db.query(MergeJob, MergeJob.state.in_(states) if states else True, MergeJob.updated_at, offset, limit)
 
     def get_merge_jobs_in_progress(self) -> list[MergeJob]:
         return self.db.query_all(MergeJob, MergeJob.state.in_((schema.JobState.incomplete_states())))
