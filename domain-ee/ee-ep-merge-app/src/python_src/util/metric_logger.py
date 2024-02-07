@@ -12,7 +12,11 @@ STANDARD_TAGS = [ENV_TAG, SERVICE_TAG]
 
 def start():
     logging.info('Datadog DogStatsD initializing...')
-    datadog.initialize()
+    options = {
+        'statsd_host': '127.0.0.1',
+        'statsd_port': 8125
+    }
+    datadog.initialize(**options)
     logging.info('Datadog DogStatsD initialized.')
 
 
