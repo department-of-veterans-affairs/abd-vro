@@ -27,7 +27,7 @@ def create_job(state: JobState):
     [
         pytest.param([], id="0 incomplete jobs"),
         pytest.param([create_job(JobState.PENDING)], id="1 incomplete jobs"),
-        pytest.param([create_job(JobState.PENDING), create_job(JobState.RUNNING_CANCEL_EP400_CLAIM)], id="2 incomplete jobs"),
+        pytest.param([create_job(JobState.PENDING), create_job(JobState.CANCEL_EP400_CLAIM)], id="2 incomplete jobs"),
         pytest.param([create_job(state) for state in JobState.incomplete_states()], id="1 job in every incomplete state"),
     ],
 )

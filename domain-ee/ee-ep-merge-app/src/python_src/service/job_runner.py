@@ -37,9 +37,9 @@ class JobRunner:
         self.__start_machine(machine)
 
     def resume_job(self, in_progress_job: MergeJob):
-        if in_progress_job.state == JobState.RUNNING_CANCEL_EP400_CLAIM:
+        if in_progress_job.state == JobState.CANCEL_EP400_CLAIM:
             machine = EpMergeMachine(in_progress_job, Workflow.RESUME_CANCEL_EP400)
-        elif in_progress_job.state == JobState.RUNNING_ADD_CLAIM_NOTE_TO_EP400:
+        elif in_progress_job.state == JobState.ADD_CLAIM_NOTE_TO_EP400:
             machine = EpMergeMachine(in_progress_job, Workflow.RESUME_ADD_NOTE)
         else:
             machine = EpMergeMachine(in_progress_job, Workflow.RESTART)

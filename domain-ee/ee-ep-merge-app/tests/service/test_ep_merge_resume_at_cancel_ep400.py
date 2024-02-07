@@ -41,7 +41,7 @@ from service.ep_merge_machine import EpMergeMachine, Workflow
 @pytest.fixture
 def machine():
     return EpMergeMachine(
-        MergeJob(job_id=JOB_ID, pending_claim_id=PENDING_CLAIM_ID, ep400_claim_id=EP400_CLAIM_ID, state=JobState.RUNNING_CANCEL_EP400_CLAIM),
+        MergeJob(job_id=JOB_ID, pending_claim_id=PENDING_CLAIM_ID, ep400_claim_id=EP400_CLAIM_ID, state=JobState.CANCEL_EP400_CLAIM),
         Workflow.RESUME_CANCEL_EP400,
     )
 
@@ -59,7 +59,7 @@ class TestUpToGetPendingClaim:
     )
     def test_invalid_request(self, machine, mock_hoppy_async_client, invalid_request):
         mock_async_responses(mock_hoppy_async_client, [invalid_request, get_ep400_contentions_200, update_contentions_on_ep400_200])
-        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_GET_PENDING_CLAIM, 1)
+        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM, 1)
         mock_hoppy_async_client.make_request.assert_has_calls(
             [
                 call(machine.job.job_id, get_pending_claim_req),
@@ -79,7 +79,7 @@ class TestUpToGetPendingClaim:
     )
     def test_no_contentions_on_ep400_after_get_pending_claim_failure(self, machine, mock_hoppy_async_client, no_contentions_response):
         mock_async_responses(mock_hoppy_async_client, [ResponseException("Oops"), no_contentions_response])
-        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_GET_PENDING_CLAIM, 1)
+        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM, 1)
         mock_hoppy_async_client.make_request.assert_has_calls(
             [
                 call(machine.job.job_id, get_pending_claim_req),
@@ -105,7 +105,7 @@ class TestUpToGetPendingClaim:
                 invalid_request,
             ],
         )
-        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE, 2)
+        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE, 2)
         mock_hoppy_async_client.make_request.assert_has_calls(
             [
                 call(machine.job.job_id, get_pending_claim_req),
@@ -132,7 +132,7 @@ class TestUpToGetPendingClaim:
                 invalid_request,
             ],
         )
-        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE, 2)
+        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE, 2)
         mock_hoppy_async_client.make_request.assert_has_calls(
             [
                 call(machine.job.job_id, get_pending_claim_req),
@@ -161,7 +161,7 @@ class TestUpToCancelClaim:
         revert_temporary_station_of_jurisdiction_req['tempStationOfJurisdiction'] = original_tsoj
 
         mock_async_responses(mock_hoppy_async_client, [get_pending_claim_200, invalid_request, revert_temporary_station_of_jurisdiction_200])
-        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_CANCEL_EP400_CLAIM, 1)
+        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.CANCEL_EP400_CLAIM, 1)
         mock_hoppy_async_client.make_request.assert_has_calls(
             [
                 call(machine.job.job_id, get_pending_claim_req),
@@ -182,7 +182,7 @@ class TestUpToCancelClaim:
     )
     def test_invalid_request_at_revert_tsoj_due_to_failure_to_cancel_claim(self, machine, mock_hoppy_async_client, invalid_request):
         mock_async_responses(mock_hoppy_async_client, [get_pending_claim_200, ResponseException("Oops"), invalid_request])
-        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION, 2)
+        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION, 2)
         mock_hoppy_async_client.make_request.assert_has_calls(
             [
                 call(machine.job.job_id, get_pending_claim_req),
@@ -205,7 +205,7 @@ class TestUpToAddClaimNote:
     )
     def test_invalid_request_at_add_claim_note_due_to_exception(self, machine, mock_hoppy_async_client, invalid_request):
         mock_async_responses(mock_hoppy_async_client, [get_pending_claim_200, cancel_claim_200, invalid_request])
-        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.RUNNING_ADD_CLAIM_NOTE_TO_EP400, 1)
+        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.ADD_CLAIM_NOTE_TO_EP400, 1)
         mock_hoppy_async_client.make_request.assert_has_calls(
             [
                 call(machine.job.job_id, get_pending_claim_req),

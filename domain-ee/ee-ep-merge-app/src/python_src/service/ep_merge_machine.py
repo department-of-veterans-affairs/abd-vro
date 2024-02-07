@@ -26,9 +26,9 @@ from util.contentions_util import ContentionsUtil
 from util.metric_logger import distribution, increment
 
 ERROR_STATES_TO_LOG_METRICS = [
-    JobState.RUNNING_CANCEL_EP400_CLAIM,
-    JobState.RUNNING_CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION,
-    JobState.RUNNING_ADD_CLAIM_NOTE_TO_EP400,
+    JobState.CANCEL_EP400_CLAIM,
+    JobState.CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION,
+    JobState.ADD_CLAIM_NOTE_TO_EP400,
 ]
 
 JOB_SUCCESS_METRIC = 'job.success'
@@ -60,24 +60,20 @@ class EpMergeMachine(StateMachine):
 
     # States:
     pending = State(initial=True, value=JobState.PENDING)
-    running_get_pending_claim = State(value=JobState.RUNNING_GET_PENDING_CLAIM)
-    running_get_pending_claim_failed_remove_special_issue = State(value=JobState.RUNNING_GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE)
-    running_get_pending_contentions = State(value=JobState.RUNNING_GET_PENDING_CLAIM_CONTENTIONS)
-    running_get_pending_contentions_failed_remove_special_issue = State(value=JobState.RUNNING_GET_PENDING_CLAIM_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE)
-    running_get_ep400_contentions = State(value=JobState.RUNNING_GET_EP400_CLAIM_CONTENTIONS)
-    running_set_temp_station_of_jurisdiction = State(value=JobState.RUNNING_SET_TEMP_STATION_OF_JURISDICTION)
-    running_set_temp_station_of_jurisdiction_failed_remove_special_issue = State(
-        value=JobState.RUNNING_SET_TEMP_STATION_OF_JURISDICTION_FAILED_REMOVE_SPECIAL_ISSUE
-    )
-    running_merge_contentions = State(value=JobState.RUNNING_MERGE_CONTENTIONS)
-    running_move_contentions_to_pending_claim = State(value=JobState.RUNNING_MOVE_CONTENTIONS_TO_PENDING_CLAIM)
-    running_move_contentions_failed_remove_special_issue = State(value=JobState.RUNNING_MOVE_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE)
-    running_move_contentions_failed_revert_temp_station_of_jurisdiction = State(
-        value=JobState.RUNNING_MOVE_CONTENTIONS_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION
-    )
-    running_cancel_ep400_claim = State(value=JobState.RUNNING_CANCEL_EP400_CLAIM)
-    running_cancel_claim_failed_revert_temp_station_of_jurisdiction = State(value=JobState.RUNNING_CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION)
-    running_add_claim_note_to_ep400 = State(value=JobState.RUNNING_ADD_CLAIM_NOTE_TO_EP400)
+    running_get_pending_claim = State(value=JobState.GET_PENDING_CLAIM)
+    running_get_pending_claim_failed_remove_special_issue = State(value=JobState.GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE)
+    running_get_pending_contentions = State(value=JobState.GET_PENDING_CLAIM_CONTENTIONS)
+    running_get_pending_contentions_failed_remove_special_issue = State(value=JobState.GET_PENDING_CLAIM_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE)
+    running_get_ep400_contentions = State(value=JobState.GET_EP400_CLAIM_CONTENTIONS)
+    running_set_temp_station_of_jurisdiction = State(value=JobState.SET_TEMP_STATION_OF_JURISDICTION)
+    running_set_temp_station_of_jurisdiction_failed_remove_special_issue = State(value=JobState.SET_TEMP_STATION_OF_JURISDICTION_FAILED_REMOVE_SPECIAL_ISSUE)
+    running_merge_contentions = State(value=JobState.MERGE_CONTENTIONS)
+    running_move_contentions_to_pending_claim = State(value=JobState.MOVE_CONTENTIONS_TO_PENDING_CLAIM)
+    running_move_contentions_failed_remove_special_issue = State(value=JobState.MOVE_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE)
+    running_move_contentions_failed_revert_temp_station_of_jurisdiction = State(value=JobState.MOVE_CONTENTIONS_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION)
+    running_cancel_ep400_claim = State(value=JobState.CANCEL_EP400_CLAIM)
+    running_cancel_claim_failed_revert_temp_station_of_jurisdiction = State(value=JobState.CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION)
+    running_add_claim_note_to_ep400 = State(value=JobState.ADD_CLAIM_NOTE_TO_EP400)
     completed_success = State(final=True, value=JobState.COMPLETED_SUCCESS)
     completed_error = State(final=True, value=JobState.COMPLETED_ERROR)
 
