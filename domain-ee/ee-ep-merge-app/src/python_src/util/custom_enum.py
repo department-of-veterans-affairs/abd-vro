@@ -12,6 +12,6 @@ class StrEnum(str, Enum):
         """
         Uses the name as the automatic value, rather than an integer
 
-        See https://docs.python.org/3/library/enum.html#using-automatic-values for reference
+        See https://docs.python.org/3.10/library/enum.html#using-automatic-values for reference
         """
         return name
