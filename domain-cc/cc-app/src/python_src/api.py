@@ -82,6 +82,30 @@ def log_as_json(log: dict):
     logging.info(json.dumps(log))
 
 
+def log_claim_stats(claim: Claim, classification: Optional[PredictedClassification]):
+    if classification:
+        classification_code = classification.classification_code
+        classification_name = classification.classification_name
+    else:
+        classification_code = None
+        classification_name = None
+
+    is_in_dropdown = claim.contention_text.strip().lower() in dropdown_values
+    sanitized_contention_text = claim.contention_text if is_in_dropdown else "Not in dropdown"
+
+    log_as_json({
+        "claim_id": sanitize_log(claim.claim_id),
+        "claim_type": sanitize_log(claim.claim_type),
+        "classification_code": classification_code,
+        "classification_name": classification_name,
+        "contention_text": sanitized_contention_text,
+        "diagnostic_code": sanitize_log(claim.diagnostic_code),
+        "form526_submission_id": sanitize_log(claim.form526_submission_id),
+        "is_in_dropdown": claim.contention_text.strip().lower() in dropdown_values,
+        "is_lookup_table_match": classification_code is not None,
+    })
+
+
 @app.post("/classifier")
 def get_classification(claim: Claim) -> Optional[PredictedClassification]:
     log_as_json(
@@ -112,6 +136,7 @@ def get_classification(claim: Claim) -> Optional[PredictedClassification]:
         classification = None
 
     log_as_json({"classification": classification})
+    log_claim_stats(claim, classification)
     return classification
 
 
