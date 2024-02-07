@@ -81,6 +81,7 @@ def run(subscriber)
 end
 
 $logger.info "Initializing subscriber..."
+$logger.flush
 subscriber = initialize_subscriber(BgsClient.new)
 $logger.info "Initialized subscriber!"
 run(subscriber)
