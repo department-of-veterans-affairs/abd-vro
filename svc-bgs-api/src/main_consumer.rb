@@ -8,6 +8,8 @@ require_relative 'config/constants'
 require 'rabbit_subscriber'
 require 'bgs_client'
 
+$stdout.sync = true
+
 def initialize_subscriber(bgs_client)
   $logger.info bgs_client.vro_participant_id
   subscriber = RabbitSubscriber.new(BUNNY_ARGS)
@@ -79,6 +81,7 @@ def run(subscriber)
 end
 
 $logger.info "Initializing subscriber..."
+$logger.flush
 subscriber = initialize_subscriber(BgsClient.new)
 $logger.info "Initialized subscriber!"
 run(subscriber)
