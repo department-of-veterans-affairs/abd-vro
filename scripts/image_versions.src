@@ -52,3 +52,17 @@ postgres_VER="v3.5.6"
 devtools_VER="v3.6.5"
 # Wed Jan 31 22:15:37 UTC 2024 -- v3.6.6
 # Thu Feb  1 19:41:58 UTC 2024 -- v3.6.7
+# Thu Feb  8 19:13:49 UTC 2024 -- v3.6.8
+redis_VER="v3.6.8"
+rabbitmq_VER="v3.6.8"
+apigateway_VER="v3.6.8"
+app_VER="v3.6.8"
+dbinit_VER="v3.6.8"
+svcbgsapi_VER="v3.6.8"
+svclighthouseapi_VER="v3.6.8"
+svcbiekafka_VER="v3.6.8"
+svcbipapi_VER="v3.6.8"
+xampleworkflows_VER="v3.6.8"
+ccapp_VER="v3.6.8"
+eemaxcfiapp_VER="v3.6.8"
+eeepmergeapp_VER="v3.6.8"
