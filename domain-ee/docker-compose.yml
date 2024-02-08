@@ -38,7 +38,8 @@ x-postgres-vars: &postgres-vars
   POSTGRES_SCHEMA: ${POSTGRES_SCHEMA}
 
 x-datadog-vars: &datadog-vars
-  DD_DOGSTATSD_DISABLE: ${DD_DOGSTATSD_DISABLE}
+  DD_SITE: ${DD_SITE}
+  DD_API_KEY: ${DD_API_KEY}
 
 services:
   # Containers with the `svc-` prefix are microservices to support domain workflows.

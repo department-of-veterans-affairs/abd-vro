@@ -142,10 +142,10 @@ def assert_metrics_called(
 ):
 
     increment_calls = []
-    histogram_calls = [call(JOB_DURATION_METRIC, ANY)]
+    distribution_calls = [call(JOB_DURATION_METRIC, ANY)]
     if expected_completed_state == JobState.COMPLETED_SUCCESS:
         increment_calls.append(call(JOB_SUCCESS_METRIC))
-        histogram_calls.append(call(JOB_NEW_CONTENTIONS_METRIC, expected_new_contentions))
+        distribution_calls.append(call(JOB_NEW_CONTENTIONS_METRIC, expected_new_contentions))
         if expected_merge_skip:
             increment_calls.append(call(JOB_SKIPPED_MERGE_METRIC))
 
@@ -153,9 +153,9 @@ def assert_metrics_called(
         increment_calls.append(call(JOB_FAILURE_METRIC))
         increment_calls.append(call(f'{JOB_ERROR_METRIC_PREFIX}.{expected_error_state}'))
         if expected_error_state in ERROR_STATES_TO_LOG_METRICS:
-            histogram_calls.append(call(JOB_NEW_CONTENTIONS_METRIC, expected_new_contentions))
+            distribution_calls.append(call(JOB_NEW_CONTENTIONS_METRIC, expected_new_contentions))
             if expected_merge_skip:
                 increment_calls.append(call(JOB_SKIPPED_MERGE_METRIC))
 
     metric_logger_increment.assert_has_calls(increment_calls)
-    metric_logger_distribution.assert_has_calls(histogram_calls)
+    metric_logger_distribution.assert_has_calls(distribution_calls)
