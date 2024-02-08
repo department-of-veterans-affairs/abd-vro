@@ -136,7 +136,7 @@ def get_classification(claim: Claim) -> Optional[PredictedClassification]:
         classification = None
 
     log_as_json({"classification": classification})
-    log_claim_stats(claim, classification)
+    log_claim_stats(claim, PredictedClassification(**classification) if classification else None)
     return classification
 
 
