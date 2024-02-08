@@ -90,21 +90,23 @@ def log_claim_stats(claim: Claim, classification: Optional[PredictedClassificati
         classification_code = None
         classification_name = None
 
-    contention_text = claim.contention_text or ''
+    contention_text = claim.contention_text or ""
     is_in_dropdown = contention_text.strip().lower() in dropdown_values
     sanitized_contention_text = contention_text if is_in_dropdown else "Not in dropdown"
 
-    log_as_json({
-        "claim_id": sanitize_log(claim.claim_id),
-        "claim_type": sanitize_log(claim.claim_type),
-        "classification_code": classification_code,
-        "classification_name": classification_name,
-        "contention_text": sanitized_contention_text,
-        "diagnostic_code": sanitize_log(claim.diagnostic_code),
-        "form526_submission_id": sanitize_log(claim.form526_submission_id),
-        "is_in_dropdown": is_in_dropdown,
-        "is_lookup_table_match": classification_code is not None,
-    })
+    log_as_json(
+        {
+            "claim_id": sanitize_log(claim.claim_id),
+            "claim_type": sanitize_log(claim.claim_type),
+            "classification_code": classification_code,
+            "classification_name": classification_name,
+            "contention_text": sanitized_contention_text,
+            "diagnostic_code": sanitize_log(claim.diagnostic_code),
+            "form526_submission_id": sanitize_log(claim.form526_submission_id),
+            "is_in_dropdown": is_in_dropdown,
+            "is_lookup_table_match": classification_code is not None,
+        }
+    )
 
 
 @app.post("/classifier")
@@ -137,7 +139,9 @@ def get_classification(claim: Claim) -> Optional[PredictedClassification]:
         classification = None
 
     log_as_json({"classification": classification})
-    log_claim_stats(claim, PredictedClassification(**classification) if classification else None)
+    log_claim_stats(
+        claim, PredictedClassification(**classification) if classification else None
+    )
     return classification
 
 
