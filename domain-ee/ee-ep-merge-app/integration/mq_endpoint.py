@@ -15,15 +15,12 @@ class MqEndpoint:
 
         exchange_props = ExchangeProperties(name=exchange, auto_delete=True, passive_declare=False)
         queue_props = QueueProperties(name=req_queue, auto_delete=True, passive_declare=False)
-        self.consumer = async_consumer.AsyncConsumer(exchange_properties=exchange_props,
-                                                     queue_properties=queue_props,
-                                                     routing_key=req_queue,
-                                                     reply_callback=self._on_message)
+        self.consumer = async_consumer.AsyncConsumer(
+            exchange_properties=exchange_props, queue_properties=queue_props, routing_key=req_queue, reply_callback=self._on_message
+        )
 
         reply_props = QueueProperties(name=response_queue, passive_declare=False, auto_delete=True)
-        self.publisher = async_publisher.AsyncPublisher(exchange_properties=exchange_props,
-                                                        queue_properties=reply_props,
-                                                        routing_key=response_queue)
+        self.publisher = async_publisher.AsyncPublisher(exchange_properties=exchange_props, queue_properties=reply_props, routing_key=response_queue)
 
     async def start(self, event_loop):
         cons_connection = self.consumer.connect(event_loop)
@@ -51,10 +48,7 @@ class MqEndpoint:
         if self.auto_response_files:
             with open(self.auto_response_files[self.index]) as f:
                 body = json.load(f)
-                self.publisher.publish_message(body,
-                                               BasicProperties(app_id="Integration Test",
-                                                               content_type="application/json",
-                                                               correlation_id=correlation_id))
+                self.publisher.publish_message(body, BasicProperties(app_id="Integration Test", content_type="application/json", correlation_id=correlation_id))
             self.index = (self.index + 1) % len(self.auto_response_files)
 
     def set_responses(self, auto_response_files=None):

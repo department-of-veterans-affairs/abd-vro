@@ -26,6 +26,10 @@ class RabbitSubscriber
     end
   end
 
+  def rabbitmq_connected?
+    @connection && @connection.open?
+  end
+
   def close
     @connection.close
   end

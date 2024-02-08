@@ -1,7 +1,7 @@
 import json
 import os
 import uuid
-from unittest.mock import AsyncMock
+from unittest.mock import ANY, AsyncMock, call
 
 import pytest
 from schema import (
@@ -14,7 +14,17 @@ from schema import (
 )
 from schema import update_temp_station_of_jurisdiction as tsoj
 from schema.merge_job import JobState
-from service.ep_merge_machine import CANCEL_TRACKING_EP, CANCELLATION_REASON_FORMAT
+from service.ep_merge_machine import (
+    CANCEL_TRACKING_EP,
+    CANCELLATION_REASON_FORMAT,
+    ERROR_STATES_TO_LOG_METRICS,
+    JOB_DURATION_METRIC,
+    JOB_ERROR_METRIC_PREFIX,
+    JOB_FAILURE_METRIC,
+    JOB_NEW_CONTENTIONS_METRIC,
+    JOB_SKIPPED_MERGE_METRIC,
+    JOB_SUCCESS_METRIC,
+)
 from util.contentions_util import ContentionsUtil
 
 JOB_ID = uuid.uuid4()
@@ -50,38 +60,29 @@ get_pending_claim_req = get_claim.Request(claim_id=PENDING_CLAIM_ID).model_dump(
 get_pending_claim_200 = load_response(pending_claim_200, get_claim.Response)
 get_pending_contentions_req = get_contentions.Request(claim_id=PENDING_CLAIM_ID).model_dump(by_alias=True)
 get_pending_contentions_200 = load_response(pending_contentions_increase_tendinitis_200, get_contentions.Response)
-get_pending_contentions_increase_tinnitus_200 = load_response(pending_contentions_increase_tinnitus_200,
-                                                              get_contentions.Response)
+get_pending_contentions_increase_tinnitus_200 = load_response(pending_contentions_increase_tinnitus_200, get_contentions.Response)
 get_ep400_contentions_req = get_contentions.Request(claim_id=EP400_CLAIM_ID).model_dump(by_alias=True)
 get_ep400_contentions_200 = load_response(ep400_contentions_increase_tinnitus_200, get_contentions.Response)
-get_ep400_contentions_without_special_issues_200 = load_response(
-    ep400_contentions_increase_tinnitus_without_special_issues_200, get_contentions.Response)
-update_temporary_station_of_jurisdiction_req = tsoj.Request(claim_id=EP400_CLAIM_ID,
-                                                            temp_station_of_jurisdiction="398").model_dump(
-    by_alias=True)
-revert_temporary_station_of_jurisdiction_req = tsoj.Request(claim_id=EP400_CLAIM_ID,
-                                                            temp_station_of_jurisdiction="111").model_dump(
-    by_alias=True)
+get_ep400_contentions_without_special_issues_200 = load_response(ep400_contentions_increase_tinnitus_without_special_issues_200, get_contentions.Response)
+update_temporary_station_of_jurisdiction_req = tsoj.Request(claim_id=EP400_CLAIM_ID, temp_station_of_jurisdiction="398").model_dump(by_alias=True)
+revert_temporary_station_of_jurisdiction_req = tsoj.Request(claim_id=EP400_CLAIM_ID, temp_station_of_jurisdiction="111").model_dump(by_alias=True)
 update_temporary_station_of_jurisdiction_200 = load_response(response_200, tsoj.Response)
 revert_temporary_station_of_jurisdiction_200 = load_response(response_200, tsoj.Response)
-create_contentions_on_pending_claim_req = create_contentions.Request(claim_id=PENDING_CLAIM_ID,
-                                                                     create_contentions=ContentionsUtil.new_contentions(
-                                                                         get_pending_contentions_200.contentions,
-                                                                         get_ep400_contentions_200.contentions)
-                                                                     ).model_dump(by_alias=True)
+create_contentions_on_pending_claim_req = create_contentions.Request(
+    claim_id=PENDING_CLAIM_ID,
+    create_contentions=ContentionsUtil.new_contentions(get_pending_contentions_200.contentions, get_ep400_contentions_200.contentions),
+).model_dump(by_alias=True)
 create_contentions_on_pending_claim_201 = load_response(response_201, create_contentions.Response)
-update_contentions_on_ep400_req = update_contentions.Request(claim_id=EP400_CLAIM_ID,
-                                                             update_contentions=get_ep400_contentions_without_special_issues_200.contentions
-                                                             ).model_dump(by_alias=True)
+update_contentions_on_ep400_req = update_contentions.Request(
+    claim_id=EP400_CLAIM_ID, update_contentions=get_ep400_contentions_without_special_issues_200.contentions
+).model_dump(by_alias=True)
 update_contentions_on_ep400_200 = load_response(response_200, update_contentions.Response)
 
-cancel_ep400_claim_req = cancel_claim.Request(claim_id=EP400_CLAIM_ID,
-                                              lifecycle_status_reason_code=CANCEL_TRACKING_EP,
-                                              close_reason_text=cancel_reason
-                                              ).model_dump(by_alias=True)
+cancel_ep400_claim_req = cancel_claim.Request(
+    claim_id=EP400_CLAIM_ID, lifecycle_status_reason_code=CANCEL_TRACKING_EP, close_reason_text=cancel_reason
+).model_dump(by_alias=True)
 cancel_claim_200 = load_response(response_200, cancel_claim.Response)
-add_claim_note_req = add_claim_note.Request(vbms_claim_id=EP400_CLAIM_ID,
-                                            claim_notes=[cancel_reason]).model_dump(by_alias=True)
+add_claim_note_req = add_claim_note.Request(vbms_claim_id=EP400_CLAIM_ID, claim_notes=[cancel_reason]).model_dump(by_alias=True)
 add_claim_note_200 = load_response(response_200, add_claim_note.Response)
 
 
@@ -98,6 +99,16 @@ def mock_hoppy_service_get_client(mocker, mock_hoppy_async_client):
 @pytest.fixture(autouse=True)
 def mock_job_store(mocker):
     return mocker.patch('src.python_src.service.ep_merge_machine.JOB_STORE.update_merge_job')
+
+
+@pytest.fixture(autouse=True)
+def metric_logger_increment(mocker):
+    return mocker.patch('service.ep_merge_machine.increment')
+
+
+@pytest.fixture(autouse=True)
+def metric_logger_distribution(mocker):
+    return mocker.patch('service.ep_merge_machine.distribution')
 
 
 def get_mocked_async_response(side_effects):
@@ -119,3 +130,32 @@ def process_and_assert(machine, expected_state: JobState, expected_error_state: 
     assert machine.job.error_state == expected_error_state
     if num_errors > 0:
         assert len(machine.job.messages) == num_errors
+
+
+def assert_metrics_called(
+    metric_logger_distribution,
+    metric_logger_increment,
+    expected_completed_state: JobState,
+    expected_error_state: JobState = None,
+    expected_new_contentions: int | None = None,
+    expected_merge_skip: bool = True,
+):
+
+    increment_calls = []
+    histogram_calls = [call(JOB_DURATION_METRIC, ANY)]
+    if expected_completed_state == JobState.COMPLETED_SUCCESS:
+        increment_calls.append(call(JOB_SUCCESS_METRIC))
+        histogram_calls.append(call(JOB_NEW_CONTENTIONS_METRIC, expected_new_contentions))
+        if expected_merge_skip:
+            increment_calls.append(call(JOB_SKIPPED_MERGE_METRIC))
+
+    else:
+        increment_calls.append(call(JOB_FAILURE_METRIC))
+        increment_calls.append(call(f'{JOB_ERROR_METRIC_PREFIX}.{expected_error_state}'))
+        if expected_error_state in ERROR_STATES_TO_LOG_METRICS:
+            histogram_calls.append(call(JOB_NEW_CONTENTIONS_METRIC, expected_new_contentions))
+            if expected_merge_skip:
+                increment_calls.append(call(JOB_SKIPPED_MERGE_METRIC))
+
+    metric_logger_increment.assert_has_calls(increment_calls)
+    metric_logger_distribution.assert_has_calls(histogram_calls)
