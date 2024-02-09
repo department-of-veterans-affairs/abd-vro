@@ -151,7 +151,6 @@ class EpMergeMachine(StateMachine):
 
         if response is not None and response.status_code == 200:
             if response.claim is None or response.claim.end_product_code is None:
-                logging.info(self.job.state)
                 self.add_error(f"Pending claim #{self.job.pending_claim_id} does not have an end product code")
             else:
                 self.cancellation_reason = CANCELLATION_REASON_FORMAT.format(ep_code=response.claim.end_product_code, claim_id=self.job.pending_claim_id)

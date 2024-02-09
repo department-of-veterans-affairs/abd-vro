@@ -1,7 +1,7 @@
 labels:
   app: domain-ee-ep-merge-app
 
-serviceUriPrefix: employee-experience-ep-merge-app
+serviceUriPrefix: employee-experience/ep-merge
 
 replicaCount: 1
 
