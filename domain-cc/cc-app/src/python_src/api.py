@@ -92,7 +92,7 @@ def log_claim_stats(claim: Claim, classification: Optional[PredictedClassificati
 
     contention_text = claim.contention_text or ""
     is_in_dropdown = contention_text.strip().lower() in dropdown_values
-    is_mapped_text = dropdown_lookup_table.get(claim.contention_text, None) is not None
+    is_mapped_text = dropdown_lookup_table.get(contention_text, None) is not None
     log_contention_text = contention_text if is_mapped_text else "unmapped contention text"
 
     log_as_json(
