@@ -93,7 +93,7 @@ def log_claim_stats(claim: Claim, classification: Optional[PredictedClassificati
     contention_text = claim.contention_text or ""
     is_in_dropdown = contention_text.strip().lower() in dropdown_values
     is_mapped_text = dropdown_lookup_table.get(claim.contention_text, None) is not None
-    sanitized_contention_text = contention_text if is_mapped_text else "unmapped contention text"
+    log_contention_text = contention_text if is_mapped_text else "unmapped contention text"
 
     log_as_json(
         {
@@ -101,7 +101,7 @@ def log_claim_stats(claim: Claim, classification: Optional[PredictedClassificati
             "claim_type": sanitize_log(claim.claim_type),
             "classification_code": classification_code,
             "classification_name": classification_name,
-            "contention_text": sanitized_contention_text,
+            "contention_text": log_contention_text,
             "diagnostic_code": sanitize_log(claim.diagnostic_code),
             "form526_submission_id": sanitize_log(claim.form526_submission_id),
             "is_in_dropdown": is_in_dropdown,
