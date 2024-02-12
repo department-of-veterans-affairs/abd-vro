@@ -60,6 +60,8 @@ def increment(metric: str, value: float = 1):
         count_metrics_api.submit_metrics(body=body)
     except ApiException as e:
         logging.warning(f'event=logMetricFailed status={e.status} reason={e.reason} body={e.body}')
+    except Exception as e:
+        logging.warning(f'event=logMetricFailed type={type(e)} error="{e}"')
 
 
 def distribution(metric: str, value: float):
@@ -90,3 +92,5 @@ def distribution(metric: str, value: float):
         distribution_metrics_api.submit_distribution_points(body=body)
     except ApiException as e:
         logging.warning(f'event=logMetricFailed status={e.status} reason={e.reason} body={e.body}')
+    except Exception as e:
+        logging.warning(f'event=logMetricFailed type={type(e)} error="{e}"')
