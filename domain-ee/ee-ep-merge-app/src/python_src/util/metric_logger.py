@@ -1,7 +1,22 @@
 import logging
+from datetime import datetime
 
-import datadog
+import datadog_api_client.v1.api.metrics_api as metrics_v1
+import datadog_api_client.v2.api.metrics_api as metrics_v2
 from config import ENV
+from datadog_api_client import ApiClient, Configuration
+from datadog_api_client.exceptions import ApiException
+from datadog_api_client.v1.model.distribution_point import DistributionPoint
+from datadog_api_client.v1.model.distribution_points_payload import (
+    DistributionPointsPayload,
+)
+from datadog_api_client.v1.model.distribution_points_series import (
+    DistributionPointsSeries,
+)
+from datadog_api_client.v2.model.metric_intake_type import MetricIntakeType
+from datadog_api_client.v2.model.metric_payload import MetricPayload
+from datadog_api_client.v2.model.metric_point import MetricPoint
+from datadog_api_client.v2.model.metric_series import MetricSeries
 
 APP_PREFIX = 'ep_merge'
 
@@ -10,22 +25,12 @@ SERVICE_TAG = 'service:vro-ee-ep-merge-app'
 STANDARD_TAGS = [ENV_TAG, SERVICE_TAG]
 
 
-def start():
-    logging.info('Datadog DogStatsD initializing...')
-    options = {
-        'statsd_host': '127.0.0.1',
-        'statsd_port': 8125
-    }
-    datadog.initialize(**options)
-    logging.info('Datadog DogStatsD initialized.')
-
-
-def stop():
-    logging.info('Datadog DogStatsD flushing...')
-    datadog.statsd.flush()
-    logging.info('Datadog DogStatsD flushed. Closing socket...')
-    datadog.statsd.close_socket()
-    logging.info('Datadog DogStatsD socket closed.')
+configuration = Configuration(
+    enable_retry=True
+)
+api_client = ApiClient(configuration)
+count_metrics_api = metrics_v2.MetricsApi(api_client)
+distribution_metrics_api = metrics_v1.MetricsApi(api_client)  # Metrics API does not have an endpoint for distribution metrics
 
 
 def increment(metric: str, value: float = 1):
@@ -35,7 +40,26 @@ def increment(metric: str, value: float = 1):
     :param value: value to increment by
     """
 
-    datadog.statsd.increment(f'{APP_PREFIX}.{metric.strip(".").lower()}', value, STANDARD_TAGS)
+    body = MetricPayload(
+        series=[
+            MetricSeries(
+                metric=f'{APP_PREFIX}.{metric.strip(".").lower()}',
+                type=MetricIntakeType.COUNT,
+                points=[
+                    MetricPoint(
+                        timestamp=int(datetime.now().timestamp()),
+                        value=value,
+                    ),
+                ],
+                tags=STANDARD_TAGS
+            )
+        ],
+    )
+
+    try:
+        count_metrics_api.submit_metrics(body=body)
+    except ApiException as e:
+        logging.warning(f'event=logMetricFailed status={e.status} reason={e.reason} body={e.body}')
 
 
 def distribution(metric: str, value: float):
@@ -45,4 +69,24 @@ def distribution(metric: str, value: float):
     :param value: value to increment by
     """
 
-    datadog.statsd.distribution(f'{APP_PREFIX}.{metric.strip(".").lower()}.distribution', value, STANDARD_TAGS)
+    body = DistributionPointsPayload(
+        series=[
+            DistributionPointsSeries(
+                metric=f'{APP_PREFIX}.{metric.strip(".").lower()}.distribution',
+                points=[
+                    DistributionPoint(
+                        [
+                            datetime.now().timestamp(),
+                            [value],
+                        ]
+                    ),
+                ],
+                tags=STANDARD_TAGS
+            ),
+        ],
+    )
+
+    try:
+        distribution_metrics_api.submit_distribution_points(body=body)
+    except ApiException as e:
+        logging.warning(f'event=logMetricFailed status={e.status} reason={e.reason} body={e.body}')
