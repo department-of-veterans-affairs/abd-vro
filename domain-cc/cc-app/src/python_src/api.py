@@ -95,6 +95,7 @@ def get_classification(claim: Claim) -> Optional[PredictedClassification]:
     else:
         classification = None
 
+    log_as_json({"make changes to metric": "cc_processing_time.increment"})
     log_as_json({"classification": classification})
     return classification
 
