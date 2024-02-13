@@ -205,6 +205,18 @@ public class BipApiServiceTest {
   }
 
   @Test
+  public void testGetClaimContention_204() throws Exception {
+    ResponseEntity<?> resp204 = ResponseEntity.noContent().build();
+
+    mockResponseForUrl(
+        Mockito.doReturn(resp204), formatClaimUrl(CONTENTION, GOOD_CLAIM_ID), HttpMethod.GET);
+
+    GetClaimContentionsResponse result = service.getClaimContentions(GOOD_CLAIM_ID);
+    assertResponseIsSuccess(result, HttpStatus.NO_CONTENT);
+    assertNull(result.getContentions());
+  }
+
+  @Test
   public void testGetClaimContentions_404() throws Exception {
     String resp404Body = getTestData(CLAIM_RESPONSE_404);
 
@@ -650,12 +662,12 @@ public class BipApiServiceTest {
       this.ex =
           status == HttpStatus.INTERNAL_SERVER_ERROR
               ? new HttpServerErrorException(
-                  status, status.name(), getTestData(dataFile).getBytes(), Charset.defaultCharset())
+              status, status.name(), getTestData(dataFile).getBytes(), Charset.defaultCharset())
               : new HttpClientErrorException(
-                  status,
-                  status.name(),
-                  getTestData(dataFile).getBytes(),
-                  Charset.defaultCharset());
+              status,
+              status.name(),
+              getTestData(dataFile).getBytes(),
+              Charset.defaultCharset());
     }
   }
 }

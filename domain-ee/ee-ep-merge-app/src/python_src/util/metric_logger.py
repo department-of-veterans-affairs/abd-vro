@@ -39,11 +39,12 @@ def increment(metric: str, value: float = 1):
     :param metric: string containing the metric name
     :param value: value to increment by
     """
+    full_metric = f'{APP_PREFIX}.{metric.strip(".").lower()}'
 
     body = MetricPayload(
         series=[
             MetricSeries(
-                metric=f'{APP_PREFIX}.{metric.strip(".").lower()}',
+                metric=full_metric,
                 type=MetricIntakeType.COUNT,
                 points=[
                     MetricPoint(
@@ -59,9 +60,9 @@ def increment(metric: str, value: float = 1):
     try:
         count_metrics_api.submit_metrics(body=body)
     except ApiException as e:
-        logging.warning(f'event=logMetricFailed status={e.status} reason={e.reason} body={e.body}')
+        logging.warning(f'event=logMetricFailed metric={full_metric} type=count value={value} status={e.status} reason={e.reason} body={e.body}')
     except Exception as e:
-        logging.warning(f'event=logMetricFailed type={type(e)} error="{e}"')
+        logging.warning(f'event=logMetricFailed metric={full_metric} type=count value={value} type={type(e)} error="{e}"')
 
 
 def distribution(metric: str, value: float):
@@ -70,11 +71,12 @@ def distribution(metric: str, value: float):
     :param metric: string containing the metric name
     :param value: value to increment by
     """
+    full_metric = f'{APP_PREFIX}.{metric.strip(".").lower()}.distribution'
 
     body = DistributionPointsPayload(
         series=[
             DistributionPointsSeries(
-                metric=f'{APP_PREFIX}.{metric.strip(".").lower()}.distribution',
+                metric=full_metric,
                 points=[
                     DistributionPoint(
                         [
@@ -91,6 +93,6 @@ def distribution(metric: str, value: float):
     try:
         distribution_metrics_api.submit_distribution_points(body=body)
     except ApiException as e:
-        logging.warning(f'event=logMetricFailed status={e.status} reason={e.reason} body={e.body}')
+        logging.warning(f'event=logMetricFailed metric={full_metric} type=distribution value={value} status={e.status} reason={e.reason} body={e.body}')
     except Exception as e:
-        logging.warning(f'event=logMetricFailed type={type(e)} error="{e}"')
+        logging.warning(f'event=logMetricFailed metric={full_metric} type=distribution value={value} type={type(e)} error="{e}"')

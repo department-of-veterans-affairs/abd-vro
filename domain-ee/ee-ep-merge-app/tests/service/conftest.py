@@ -36,6 +36,7 @@ cancel_reason = CANCELLATION_REASON_FORMAT.format(ep_code=PENDING_CLAIM_EP_CODE,
 RESPONSE_DIR = os.path.abspath('./tests/responses')
 response_200 = f'{RESPONSE_DIR}/200_response.json'
 response_201 = f'{RESPONSE_DIR}/201_response.json'
+response_204 = f'{RESPONSE_DIR}/204_response.json'
 response_404 = f'{RESPONSE_DIR}/404_response.json'
 response_400 = f'{RESPONSE_DIR}/400_response.json'
 response_500 = f'{RESPONSE_DIR}/500_response.json'
@@ -63,6 +64,7 @@ get_pending_contentions_200 = load_response(pending_contentions_increase_tendini
 get_pending_contentions_increase_tinnitus_200 = load_response(pending_contentions_increase_tinnitus_200, get_contentions.Response)
 get_ep400_contentions_req = get_contentions.Request(claim_id=EP400_CLAIM_ID).model_dump(by_alias=True)
 get_ep400_contentions_200 = load_response(ep400_contentions_increase_tinnitus_200, get_contentions.Response)
+get_ep400_contentions_204 = load_response(response_204, get_contentions.Response)
 get_ep400_contentions_without_special_issues_200 = load_response(ep400_contentions_increase_tinnitus_without_special_issues_200, get_contentions.Response)
 update_temporary_station_of_jurisdiction_req = tsoj.Request(claim_id=EP400_CLAIM_ID, temp_station_of_jurisdiction="398").model_dump(by_alias=True)
 revert_temporary_station_of_jurisdiction_req = tsoj.Request(claim_id=EP400_CLAIM_ID, temp_station_of_jurisdiction="111").model_dump(by_alias=True)

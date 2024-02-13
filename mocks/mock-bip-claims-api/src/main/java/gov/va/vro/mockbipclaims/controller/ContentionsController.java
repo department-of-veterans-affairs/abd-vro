@@ -84,6 +84,9 @@ public class ContentionsController extends BaseController implements Contentions
     }
 
     List<ContentionSummary> contentions = item.getContentions();
+    if (contentions.isEmpty()) {
+      return create204();
+    }
 
     response.setContentions(contentions);
 
