@@ -146,8 +146,14 @@ public class BipApiService implements IBipApiService {
           url,
           method,
           bipResponse.getStatusCode().value());
+      BipPayloadResponse.BipPayloadResponseBuilder<?, ?> responseBuilder;
+      if (bipResponse.hasBody()) {
+        responseBuilder = mapper.readValue(bipResponse.getBody(), expectedResponse).toBuilder();
+      } else {
+        responseBuilder = mapper.readValue("{}", expectedResponse).toBuilder();
+      }
       return (T)
-          mapper.readValue(bipResponse.getBody(), expectedResponse).toBuilder()
+          responseBuilder
               .statusCode(bipResponse.getStatusCode().value())
               .statusMessage(HttpStatus.valueOf(bipResponse.getStatusCode().value()).name())
               .build();

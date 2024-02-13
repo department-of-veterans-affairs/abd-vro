@@ -17,6 +17,10 @@ public class BaseController {
     return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
 
+  protected <T extends ProviderResponse> ResponseEntity<T> create204() {
+    return ResponseEntity.noContent().build();
+  }
+
   protected <T extends ProviderResponse> ResponseEntity<T> create500(T response) {
     response.addMessagesItem(createInternalServerMessage());
     return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
