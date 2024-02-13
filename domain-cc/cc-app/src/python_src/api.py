@@ -112,23 +112,12 @@ def log_claim_stats(claim: Claim, classification: Optional[PredictedClassificati
 
 @app.post("/classifier")
 def get_classification(claim: Claim) -> Optional[PredictedClassification]:
-    log_as_json(
-        {
-            "claim_id": sanitize_log(claim.claim_id),
-            "form526_submission_id": sanitize_log(claim.form526_submission_id),
-        }
-    )
     classification_code = None
     if claim.claim_type == "claim_for_increase":
         classification_code = dc_lookup_table.get(claim.diagnostic_code, None)
 
     if claim.contention_text and not classification_code:
         classification_code = dropdown_lookup_table.get(claim.contention_text, None)
-
-    if claim.claim_type == "new":
-        log_lookup_table_match(classification_code, claim.contention_text)
-    else:
-        log_as_json({"diagnostic code": sanitize_log(claim.diagnostic_code)})
 
     if classification_code:
         classification_name = get_classification_name(classification_code)
@@ -139,7 +128,6 @@ def get_classification(claim: Claim) -> Optional[PredictedClassification]:
     else:
         classification = None
 
-    log_as_json({"classification": classification})
     log_claim_stats(
         claim, PredictedClassification(**classification) if classification else None
     )
