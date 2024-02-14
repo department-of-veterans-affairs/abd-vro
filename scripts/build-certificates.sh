@@ -69,13 +69,14 @@ openssl x509 -req -in "${targetPath}/server.csr"  -days 365 -sha256 \
   -CA "${targetPath}/server_root_ca.pem" \
   -CAkey "${targetPath}/server_root_ca.key" \
   -CAcreateserial \
-  -copy_extensions copyall \
+  -extfile <(printf "subjectAltName = DNS:localhost, DNS:mock-bip-ce-api, DNS:mock-bip-claims-api") \
   -out "${targetPath}/server.pem"
+
 openssl x509 -req -in "${targetPath}/client.csr"  -days 365 -sha256 \
   -CA "${targetPath}/client_root_ca.pem" \
   -CAkey "${targetPath}/client_root_ca.key" \
   -CAcreateserial \
-  -copy_extensions copyall \
+  -extfile <(printf "subjectAltName = DNS:localhost, DNS:app") \
   -out "${targetPath}/client.pem"
 
 # Next lines create PKCS#12 files for Server and Client certificates. These files are necessary
