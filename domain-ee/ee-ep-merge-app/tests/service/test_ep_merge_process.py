@@ -16,6 +16,7 @@ from conftest import (
     ep400_contentions_increase_tinnitus_200,
     ep400_contentions_new_tinnitus_200,
     get_ep400_contentions_200,
+    get_ep400_contentions_204,
     get_ep400_contentions_req,
     get_pending_claim_200,
     get_pending_claim_req,
@@ -718,6 +719,29 @@ class TestSuccess:
                 get_pending_claim_200,
                 get_pending_contentions_increase_tinnitus_200,
                 get_ep400_contentions_200,
+                update_temporary_station_of_jurisdiction_200,
+                cancel_claim_200,
+                add_claim_note_200,
+            ],
+        )
+        process_and_assert(machine, JobState.COMPLETED_SUCCESS)
+        mock_hoppy_async_client.make_request.assert_has_calls(
+            [
+                call(machine.job.job_id, get_pending_contentions_req),
+                call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
+                call(machine.job.job_id, cancel_ep400_claim_req),
+            ]
+        )
+        assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_SUCCESS, None, 0, True)
+
+    def test_process_succeeds_with_no_ep400_contentions(self, machine, mock_hoppy_async_client, metric_logger_distribution, metric_logger_increment):
+        mock_async_responses(
+            mock_hoppy_async_client,
+            [
+                get_pending_claim_200,
+                get_pending_contentions_increase_tinnitus_200,
+                get_ep400_contentions_204,
                 update_temporary_station_of_jurisdiction_200,
                 cancel_claim_200,
                 add_claim_note_200,

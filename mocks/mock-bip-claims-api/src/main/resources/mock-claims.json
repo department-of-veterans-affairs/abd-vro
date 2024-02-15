@@ -964,6 +964,17 @@
   },
   {
     "description": [
+      "Employee Experience EP Merge End 2 End Testing - EP 400 w/ no contentions"
+    ],
+    "claimDetail": {
+      "claimId": 10006,
+      "phase": "Claim Received",
+      "endProductCode": "400",
+      "claimLifecycleStatus": "Open"
+    }
+  },
+  {
+    "description": [
       "Employee Experience EP Merge End 2 End Testing - Fails at get claim details"
     ],
     "claimDetail": {

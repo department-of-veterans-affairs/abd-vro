@@ -7,6 +7,7 @@ from src.python_src.schema.merge_job import JobState
 RESPONSE_DIR = './tests/responses'
 response_200 = f'{RESPONSE_DIR}/200_response.json'
 response_201 = f'{RESPONSE_DIR}/201_response.json'
+response_204 = f'{RESPONSE_DIR}/204_response.json'
 response_404 = f'{RESPONSE_DIR}/404_response.json'
 response_400 = f'{RESPONSE_DIR}/400_response.json'
 response_500 = f'{RESPONSE_DIR}/500_response.json'
@@ -85,6 +86,19 @@ class TestSuccess(TestMergeRequestBase):
     ):
         get_claim_endpoint.set_responses([pending_claim_200])
         get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_duplicate_contentions_200])
+        put_tsoj_endpoint.set_responses([response_200])
+        cancel_claim_endpoint.set_responses([response_200])
+
+        async with AsyncClient(app=app, base_url="http://test") as client:
+            response = await submit_request_and_process(client)
+            assert_successful_response(response)
+
+    @pytest.mark.asyncio(scope="session")
+    async def test_completed_no_ep400_contentions(
+            self, get_claim_endpoint: MqEndpoint, get_claim_contentions_endpoint: MqEndpoint, put_tsoj_endpoint: MqEndpoint, cancel_claim_endpoint: MqEndpoint
+    ):
+        get_claim_endpoint.set_responses([pending_claim_200])
+        get_claim_contentions_endpoint.set_responses([pending_contentions_200, response_204])
         put_tsoj_endpoint.set_responses([response_200])
         cancel_claim_endpoint.set_responses([response_200])
 
