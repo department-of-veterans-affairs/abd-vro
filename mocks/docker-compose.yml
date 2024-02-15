@@ -74,6 +74,7 @@ services:
       # Purpose of EXTERNAL port 9094: see https://github.com/bitnami/containers/blob/main/bitnami/kafka/README.md#accessing-apache-kafka-with-internal-and-external-clients
       KAFKA_CFG_LISTENERS: INTERNAL://:9092,CONTROLLER://:9093,EXTERNAL://:9094
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://mock-bie-kafka:9092,EXTERNAL://localhost:9094
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,INTERNAL:SASL_PLAINTEXT,EXTERNAL:SASL_PLAINTEXT
       KAFKA_CFG_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
       KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: 'true'
       KAFKA_MESSAGE_MAX_BYTES: "1000000"
@@ -87,24 +88,34 @@ services:
       # https://github.com/bitnami/containers/blob/main/bitnami/kafka/README.md
       # https://stackoverflow.com/a/72018409
       # Caution: Empty string '' and "" don't work; however ' ' or " " does work
-      KAFKA_CFG_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: " "
+#      KAFKA_CFG_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: " "
 
       # For development without having to deal with connecting via SSL, use port 9092 or do the following.
       # To disable SSL, uncomment the following and comment out the next SSL section
-      # ALLOW_PLAINTEXT_LISTENER: 'yes'
+#      ALLOW_PLAINTEXT_LISTENER: 'yes'
       # KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
 
-      # Set up SSL -- see "Security" section of https://hub.docker.com/r/bitnami/kafka/
-      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:SSL
-      KAFKA_CFG_SSL_CLIENT_AUTH: required
-    # PEM https://medium.com/analytics-vidhya/how-to-use-pem-certificates-with-apache-kafka-f3b444a00816
-      KAFKA_TLS_TYPE: JKS
-      KAFKA_CERTIFICATE_PASSWORD: mockKafka
+      # For SASL for client communications -- see "Security" section of https://hub.docker.com/r/bitnami/kafka/
+      KAFKA_CLIENT_USERS: USERNAME
+      KAFKA_CLIENT_PASSWORDS: PASSWORD
+      KAFKA_CLIENT_LISTENER_NAME: INTERNAL
+      KAFKA_CFG_SASL_MECHANISM_CONTROLLER_PROTOCOL: PLAIN
+      KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
+      KAFKA_CFG_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_CONTROLLER_USER: USERNAME
+      KAFKA_CONTROLLER_PASSWORD: PASSWORD
+      KAFKA_INTER_BROKER_USER: USERNAME
+      KAFKA_INTER_BROKER_PASSWORD: PASSWORD
 
-    volumes:
-      # scripts/setenv.sh creates jks files from env variables
-      - './mock-bie-kafka/kafka.keystore.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro'
-      - './mock-bie-kafka/kafka.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro'
+      # Set up SSL -- see "Security" section of https://hub.docker.com/r/bitnami/kafka/
+    # PEM https://medium.com/analytics-vidhya/how-to-use-pem-certificates-with-apache-kafka-f3b444a00816
+#      KAFKA_TLS_TYPE: JKS
+#      KAFKA_CERTIFICATE_PASSWORD: mockKafka
+#
+#    volumes:
+#      # scripts/setenv.sh creates jks files from env variables
+#      - './mock-bie-kafka/kafka.keystore.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro'
+#      - './mock-bie-kafka/kafka.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro'
     networks:
       - vro_intranet
 
