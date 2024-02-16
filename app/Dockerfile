@@ -2,8 +2,9 @@ FROM eclipse-temurin:17-jre-alpine
 
 # hadolint ignore=DL3018
 RUN apk update && \
-    apk --no-cache add curl redis sudo && \
-    apk upgrade openssl libssl3 libcrypto3 libexpat && \
+    apk --no-cache add curl redis sudo gcompat && \
+    apk search libgcrypt && \
+    apk upgrade openssl libssl3 libcrypto3 libexpat libgcrypt && \
     rm -rf /var/cache/apk/*
 
 WORKDIR /app
