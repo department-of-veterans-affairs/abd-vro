@@ -31,6 +31,8 @@
   For Flyway to connect to set up Postgres DB schema
 */}}
 {{- define "vro.flyway.envVars" -}}
+- name: FLYWAY_URL
+  {{ include "vro.postgresUrl" . }}
 - name: POSTGRES_URL
   {{ include "vro.postgresUrl" . }}
 - name: FLYWAY_USER
