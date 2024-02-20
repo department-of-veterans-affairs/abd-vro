@@ -168,7 +168,12 @@ class EpMergeMachine(StateMachine):
     @running_get_ep400_contentions.enter
     def on_get_ep400_contentions(self, event, pending_contentions_response=None):
         request = get_contentions.Request(claim_id=self.job.ep400_claim_id)
-        response = self.make_request(request=request, hoppy_client=HOPPY.get_client(ClientName.GET_CLAIM_CONTENTIONS), response_type=get_contentions.Response, expected_statuses=[200, 204])
+        response = self.make_request(
+            request=request,
+            hoppy_client=HOPPY.get_client(ClientName.GET_CLAIM_CONTENTIONS),
+            response_type=get_contentions.Response,
+            expected_statuses=[200, 204],
+        )
         self.send(event=event, pending_contentions_response=pending_contentions_response, ep400_contentions_response=response)
 
     @running_set_temp_station_of_jurisdiction.enter
@@ -191,7 +196,10 @@ class EpMergeMachine(StateMachine):
     def on_move_contentions_to_pending_claim(self, event, new_contentions=None, ep400_contentions_response=None):
         request = create_contentions.Request(claim_id=self.job.pending_claim_id, create_contentions=new_contentions)
         self.make_request(
-            request=request, hoppy_client=HOPPY.get_client(ClientName.CREATE_CLAIM_CONTENTIONS), response_type=create_contentions.Response, expected_statuses=201
+            request=request,
+            hoppy_client=HOPPY.get_client(ClientName.CREATE_CLAIM_CONTENTIONS),
+            response_type=create_contentions.Response,
+            expected_statuses=201,
         )
         self.send(event=event, ep400_contentions_response=ep400_contentions_response)
 
@@ -291,7 +299,9 @@ class EpMergeMachine(StateMachine):
                 if self.skipped_merge:
                     increment(JOB_SKIPPED_MERGE_METRIC)
 
-    def make_request(self, request: GeneralRequest, hoppy_client: AsyncHoppyClient, response_type: Type[GeneralResponse], expected_statuses: list[int] | int = 200):
+    def make_request(
+        self, request: GeneralRequest, hoppy_client: AsyncHoppyClient, response_type: Type[GeneralResponse], expected_statuses: list[int] | int = 200
+    ):
         if not isinstance(expected_statuses, list):
             expected_statuses = [expected_statuses]
         try:
