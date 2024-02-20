@@ -101,16 +101,12 @@ services:
       KAFKA_CLIENT_LISTENER_NAME: INTERNAL
       KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
       KAFKA_CFG_SASL_MECHANISM_CONTROLLER_PROTOCOL: PLAIN
-#      KAFKA_CONTROLLER_USER: USERNAME
-#      KAFKA_CONTROLLER_PASSWORD: PASSWORD
-#      KAFKA_INTER_BROKER_USER: USERNAME
-#      KAFKA_INTER_BROKER_PASSWORD: PASSWORD
 
       # Set up SSL -- see "Security" section of https://hub.docker.com/r/bitnami/kafka/
     # PEM https://medium.com/analytics-vidhya/how-to-use-pem-certificates-with-apache-kafka-f3b444a00816
       KAFKA_TLS_TYPE: JKS
       KAFKA_CERTIFICATE_PASSWORD: mockKafka
-#
+
     volumes:
       # scripts/setenv.sh creates jks files from env variables
       - './mock-bie-kafka/kafka.keystore.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro'

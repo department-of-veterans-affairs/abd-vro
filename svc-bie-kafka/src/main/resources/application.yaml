@@ -14,16 +14,14 @@ spring:
   kafka:
     bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:localhost:9092}"
     properties:
-      schema.registry.url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://USERNAME:PASSWORD@schemaregistry.dev.bip.va.gov:443}"
+      schema.registry.url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://${BIE_SASL_USERNAME}:${BIE_SASL_PASSWORD}@schemaregistry.dev.bip.va.gov:443}"
       specific.avro.reader: false
       security.protocol: SASL_SSL
       security.inter.broker.protocol: SASL_SSL
       sasl:
         mechanism: PLAIN
-        username: USERNAME
-        password: PASSWORD
         jaas:
-          config: "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"USERNAME\" password=\"PASSWORD\";"
+          config: "org.apache.kafka.common.security.plain.PlainLoginModule required username=${BIE_SASL_USERNAME:USERNAME} password=${BIE_SASL_PASSWORD:PASSWORD};"
     consumer:
       group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-tst-vro}"
       key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
