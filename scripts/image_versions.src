@@ -53,19 +53,5 @@ postgres_VER="v3.5.6"
 # Thu Feb  1 19:41:58 UTC 2024 -- v3.6.7
 # Thu Feb  8 19:13:49 UTC 2024 -- v3.6.8
 # Thu Feb 15 00:26:56 UTC 2024 -- v3.6.9
-redis_VER="v3.6.9"
-rabbitmq_VER="v3.6.9"
-apigateway_VER="v3.6.9"
-app_VER="v3.6.9"
-dbinit_VER="v3.6.9"
-devtools_VER="v3.6.9"
-svcbgsapi_VER="v3.6.9"
-svclighthouseapi_VER="v3.6.9"
-svcbiekafka_VER="v3.6.9"
-svcbipapi_VER="v3.6.9"
-xampleworkflows_VER="v3.6.9"
-ccapp_VER="v3.6.9"
-eemaxcfiapp_VER="v3.6.9"
-eeepmergeapp_VER="v3.6.9"
 # Fri Feb 16 23:58:06 UTC 2024 -- v3.6.10
 # Tue Feb 20 14:32:01 UTC 2024 -- v3.6.11
