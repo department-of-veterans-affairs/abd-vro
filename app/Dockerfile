@@ -1,11 +1,8 @@
 FROM eclipse-temurin:17-jre-alpine
 
 # hadolint ignore=DL3018
-RUN apk update && \
-    apk --no-cache add curl redis sudo gcompat && \
-    apk upgrade --available && \
-    apk add libxml2=2.11.7-r0 && \
-    rm -rf /var/cache/apk/*
+RUN apk add --no-cache curl redis sudo gcompat libxml2=2.11.7-r0 && \
+    apk upgrade --available 
 
 WORKDIR /app
 COPY set-env-secrets.src entrypoint-wrapper.sh docker-entry*.sh ./
