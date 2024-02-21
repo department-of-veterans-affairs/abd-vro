@@ -3,7 +3,7 @@ FROM eclipse-temurin:17-jre-alpine
 # hadolint ignore=DL3018
 RUN apk update && \
     apk --no-cache add curl redis sudo gcompat && \
-    apk upgrade && \
+    apk upgrade --available && \
     rm -rf /var/cache/apk/*
 
 WORKDIR /app
