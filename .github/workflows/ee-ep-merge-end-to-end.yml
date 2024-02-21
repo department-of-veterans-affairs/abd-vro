@@ -65,6 +65,7 @@ jobs:
       - name: "Run Employee Experience Integration Tests"
         run: |
           ./gradlew :domain-ee:ee-ep-merge-app:integrationTest
+        timeout-minutes: 15
 
       - name: "Start svc-bip-api and mock-bip-claims-api"
         run: |
@@ -90,6 +91,7 @@ jobs:
         shell: bash
         run: |
           ./gradlew :domain-ee:ee-ep-merge-app:endToEndTest
+        timeout-minutes: 15
 
       - name: 'Clean shutdown of all containers'
         if: always()
