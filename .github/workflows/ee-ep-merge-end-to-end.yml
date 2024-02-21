@@ -71,11 +71,14 @@ jobs:
         run: |
           source scripts/setenv.sh
 
+          # Temporary workaround until secret is updated with correct value
+          export BIP_CLAIM_URL="mock-bip-claims-api:20300"
+
           export -p | sed 's/declare -x //'
 
           ./gradlew :app:dockerComposeUp
           ./gradlew -p mocks docker
-          BIP_CLAIM_URL="mock-bip-claims-api:20300" ./gradlew -p mocks :dockerComposeUp
+          ./gradlew -p mocks :dockerComposeUp
 
       - name: 'Wait for other containers to start'
         run: sleep 60s
