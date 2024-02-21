@@ -157,7 +157,7 @@ jobs:
           fi
 
       - name: "Checkout source code"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: "Slack thread: Post deploying message"
         # Post in thread to reduce clutter in Slack

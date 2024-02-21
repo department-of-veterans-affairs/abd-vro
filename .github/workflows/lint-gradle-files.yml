@@ -11,15 +11,15 @@ jobs:
   lint-gradle-files:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: "Install Java"
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
           # "When using gradle-build-action we recommend that you
-          # not use actions/cache or actions/setup-java@v3 to explicitly
+          # not use actions/cache or actions/setup-java@v4 to explicitly
           # cache the Gradle User Home"
           # cache: 'gradle'
       - name: "Setup Gradle"

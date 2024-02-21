@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout source code"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Checkout using a PAT so that we can do `git push` later
           token: ${{ secrets.ACCESS_TOKEN_PUSH_TO_DEVELOP }}
