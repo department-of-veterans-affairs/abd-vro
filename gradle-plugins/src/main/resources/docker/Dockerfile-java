@@ -6,11 +6,8 @@ FROM eclipse-temurin:17-jre-alpine
 
 # curl is needed for HEALTHCHECK
 # hadolint ignore=DL3018
-RUN apk update && \
-    apk --no-cache add curl redis sudo gcompat && \
+RUN apk add --no-cache curl redis sudo gcompat libxml2=2.11.7-r0 && \
     apk upgrade --available && \
-    apk add libxml2=2.11.7-r0 && \
-    rm -rf /var/cache/apk/*
 
 WORKDIR /app
 
