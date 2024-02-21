@@ -1,4 +1,3 @@
-import logging
 import os
 from enum import Enum
 from urllib.parse import quote, urlparse
@@ -85,5 +84,3 @@ def create_sqlalchemy_db_uri():
 ENV = os.environ.get("ENV") or "local"
 POSTGRES_SCHEMA = os.environ.get("POSTGRES_SCHEMA") or "claims"
 SQLALCHEMY_DATABASE_URI = create_sqlalchemy_db_uri()
-
-logging.debug(SQLALCHEMY_DATABASE_URI)
