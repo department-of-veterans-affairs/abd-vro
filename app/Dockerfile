@@ -1,7 +1,7 @@
 FROM eclipse-temurin:17-jre-alpine
 
 # hadolint ignore=DL3018
-RUN apk add --no-cache curl redis sudo gcompat libxml2=2.11.7-r0 && \
+RUN apk add --no-cache curl redis sudo gcompat libxml2 && \
     apk upgrade --available 
 
 WORKDIR /app
