@@ -62,6 +62,8 @@ REPLY_QUEUES = {
     ClientName.BGS_ADD_CLAIM_NOTE: os.environ.get("ADD_CLAIM_NOTE_RESPONSE") or "add-note-response",
 }
 
+EP_MERGE_SPECIAL_ISSUE_CODE = os.environ.get("EP_MERGE_SPECIAL_ISSUE_CODE") or "EMP"
+
 
 def create_sqlalchemy_db_uri():
     user = quote(os.environ.get("POSTGRES_USER") or "vro_user")
