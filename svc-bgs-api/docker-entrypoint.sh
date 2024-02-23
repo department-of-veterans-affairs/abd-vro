@@ -23,12 +23,18 @@ openssl version
 
     # shellcheck disable=SC2086
     openssl pkcs12 ${PWD_ARG} -in keystore.p12   -out tls_bip.crt -nokeys -legacy || exit 2
+    echo "Emitted tls_bip.crt"
+
     # shellcheck disable=SC2086
     openssl pkcs12 ${PWD_ARG} -in keystore.p12   -out tls.key -nocerts -nodes -legacy || exit 3
+    echo "Emitted tls.key"
+
     # shellcheck disable=SC2086
     openssl pkcs12 ${PWD_ARG} -in truststore.p12 -out va_all.crt -legacy || exit 4
+    echo "Emitted va_all.crt"
 }
 
 cd "$CURR_DIR" || exit 11
 
+echo "Executing Ruby application..."
 exec bundle exec ruby main_consumer.rb
