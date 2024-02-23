@@ -8,6 +8,8 @@ require_relative 'config/constants'
 require 'rabbit_subscriber'
 require 'bgs_client'
 
+$stdout.sync = true
+
 def initialize_subscriber(bgs_client)
   subscriber = RabbitSubscriber.new(BUNNY_ARGS)
 
