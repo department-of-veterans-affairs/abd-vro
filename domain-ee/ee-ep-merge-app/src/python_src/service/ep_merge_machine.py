@@ -7,6 +7,7 @@ from fastapi.encoders import jsonable_encoder
 from hoppy.async_hoppy_client import AsyncHoppyClient
 from hoppy.exception import ResponseException
 from pydantic import ValidationError
+from config import EP_MERGE_SPECIAL_ISSUE_CODE
 from schema import (
     add_claim_note,
     cancel_claim,
@@ -40,7 +41,6 @@ JOB_NEW_CONTENTIONS_METRIC = 'job.new_contentions'
 
 CANCEL_TRACKING_EP = "60"
 CANCELLATION_REASON_FORMAT = "Issues moved into or confirmed in pending EP{ep_code} - claim #{claim_id}"
-SPECIAL_ISSUE_CODE = "EMP"
 
 
 class Workflow(str, Enum):
@@ -238,7 +238,7 @@ class EpMergeMachine(StateMachine):
             updates = []
             for contention in ContentionsUtil.to_existing_contentions(contentions):
                 contention.special_issue_codes = (
-                    [code for code in contention.special_issue_codes if code != SPECIAL_ISSUE_CODE] if contention.special_issue_codes else None
+                    [code for code in contention.special_issue_codes if code != EP_MERGE_SPECIAL_ISSUE_CODE] if contention.special_issue_codes else None
                 )
                 updates.append(contention)
 
