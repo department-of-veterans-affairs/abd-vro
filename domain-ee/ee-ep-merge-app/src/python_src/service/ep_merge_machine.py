@@ -7,6 +7,7 @@ from fastapi.encoders import jsonable_encoder
 from hoppy.async_hoppy_client import AsyncHoppyClient
 from hoppy.exception import ResponseException
 from pydantic import ValidationError
+from config import EP_MERGE_SPECIAL_ISSUE_CODE
 from schema import (
     add_claim_note,
     cancel_claim,
@@ -40,7 +41,6 @@ JOB_NEW_CONTENTIONS_METRIC = 'job.new_contentions'
 
 CANCEL_TRACKING_EP = "60"
 CANCELLATION_REASON_FORMAT = "Issues moved into or confirmed in pending EP{ep_code} - claim #{claim_id}"
-SPECIAL_ISSUE_CODE = "EMP"
 
 
 class Workflow(str, Enum):
@@ -168,7 +168,12 @@ class EpMergeMachine(StateMachine):
     @running_get_ep400_contentions.enter
     def on_get_ep400_contentions(self, event, pending_contentions_response=None):
         request = get_contentions.Request(claim_id=self.job.ep400_claim_id)
-        response = self.make_request(request=request, hoppy_client=HOPPY.get_client(ClientName.GET_CLAIM_CONTENTIONS), response_type=get_contentions.Response, expected_statuses=[200, 204])
+        response = self.make_request(
+            request=request,
+            hoppy_client=HOPPY.get_client(ClientName.GET_CLAIM_CONTENTIONS),
+            response_type=get_contentions.Response,
+            expected_statuses=[200, 204],
+        )
         self.send(event=event, pending_contentions_response=pending_contentions_response, ep400_contentions_response=response)
 
     @running_set_temp_station_of_jurisdiction.enter
@@ -191,7 +196,10 @@ class EpMergeMachine(StateMachine):
     def on_move_contentions_to_pending_claim(self, event, new_contentions=None, ep400_contentions_response=None):
         request = create_contentions.Request(claim_id=self.job.pending_claim_id, create_contentions=new_contentions)
         self.make_request(
-            request=request, hoppy_client=HOPPY.get_client(ClientName.CREATE_CLAIM_CONTENTIONS), response_type=create_contentions.Response, expected_statuses=201
+            request=request,
+            hoppy_client=HOPPY.get_client(ClientName.CREATE_CLAIM_CONTENTIONS),
+            response_type=create_contentions.Response,
+            expected_statuses=201,
         )
         self.send(event=event, ep400_contentions_response=ep400_contentions_response)
 
@@ -230,7 +238,7 @@ class EpMergeMachine(StateMachine):
             updates = []
             for contention in ContentionsUtil.to_existing_contentions(contentions):
                 contention.special_issue_codes = (
-                    [code for code in contention.special_issue_codes if code != SPECIAL_ISSUE_CODE] if contention.special_issue_codes else None
+                    [code for code in contention.special_issue_codes if code != EP_MERGE_SPECIAL_ISSUE_CODE] if contention.special_issue_codes else None
                 )
                 updates.append(contention)
 
@@ -291,7 +299,9 @@ class EpMergeMachine(StateMachine):
                 if self.skipped_merge:
                     increment(JOB_SKIPPED_MERGE_METRIC)
 
-    def make_request(self, request: GeneralRequest, hoppy_client: AsyncHoppyClient, response_type: Type[GeneralResponse], expected_statuses: list[int] | int = 200):
+    def make_request(
+        self, request: GeneralRequest, hoppy_client: AsyncHoppyClient, response_type: Type[GeneralResponse], expected_statuses: list[int] | int = 200
+    ):
         if not isinstance(expected_statuses, list):
             expected_statuses = [expected_statuses]
         try:
