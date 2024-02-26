@@ -8,8 +8,11 @@ from src.python_src.config import EXCHANGES, QUEUES, REPLY_QUEUES, ClientName
 
 
 def pytest_collection_modifyitems(items):
-    """Modifies test items in place to ensure test modules run in a given order."""
-    module_order = ["test_get_endpoints", "test_merge_reqeust"]
+    """Modifies test items in place to ensure test modules run in a given order:
+    1. All test from modules not specified in the `module_order` below
+    2. Test from each module in module_order (in order)
+    """
+    module_order = ["integration.test_get_endpoints", "integration.test_merge_request"]
     module_mapping = {item: item.module.__name__ for item in items}
 
     sorted_items = items.copy()
