@@ -4,6 +4,7 @@ import uuid
 from unittest.mock import ANY, AsyncMock, call
 
 import pytest
+from src.python_src.config import EP_MERGE_SPECIAL_ISSUE_CODE
 from schema import (
     add_claim_note,
     cancel_claim,
@@ -64,8 +65,10 @@ get_pending_contentions_200 = load_response(pending_contentions_increase_tendini
 get_pending_contentions_increase_tinnitus_200 = load_response(pending_contentions_increase_tinnitus_200, get_contentions.Response)
 get_ep400_contentions_req = get_contentions.Request(claim_id=EP400_CLAIM_ID).model_dump(by_alias=True)
 get_ep400_contentions_200 = load_response(ep400_contentions_increase_tinnitus_200, get_contentions.Response)
+# Add special issue code to contention from config
+get_ep400_contentions_200.contentions[0].special_issue_codes.append(EP_MERGE_SPECIAL_ISSUE_CODE)
 get_ep400_contentions_204 = load_response(response_204, get_contentions.Response)
-get_ep400_contentions_without_special_issues_200 = load_response(ep400_contentions_increase_tinnitus_without_special_issues_200, get_contentions.Response)
+get_ep400_contentions_without_special_issues_200 = load_response(ep400_contentions_increase_tinnitus_200, get_contentions.Response)
 update_temporary_station_of_jurisdiction_req = tsoj.Request(claim_id=EP400_CLAIM_ID, temp_station_of_jurisdiction="398").model_dump(by_alias=True)
 revert_temporary_station_of_jurisdiction_req = tsoj.Request(claim_id=EP400_CLAIM_ID, temp_station_of_jurisdiction="111").model_dump(by_alias=True)
 update_temporary_station_of_jurisdiction_200 = load_response(response_200, tsoj.Response)
