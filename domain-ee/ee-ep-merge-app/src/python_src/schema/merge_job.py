@@ -30,7 +30,7 @@ class JobState(StrEnum):
     COMPLETED_ERROR = auto()
 
     @classmethod
-    def incomplete_states(cls):
+    def incomplete_states(cls) -> list[str]:
         return [state.name for state in cls if state != JobState.COMPLETED_SUCCESS and state != JobState.COMPLETED_ERROR]
 
     def __str__(self):
