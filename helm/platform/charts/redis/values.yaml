@@ -5,6 +5,8 @@ labels:
 
 imageTag: "latest"
 
+serviceNameSuffix: redis
+
 replicaCount: 1
 
 service:
