@@ -119,7 +119,7 @@ jobs:
         if: inputs.run_all_tests || steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
           cd svc-bgs-api/src
-          bundle config set --local frozen false
+          bundle config set frozen false
           bundle install
 
       - name: "Run rspec tests"
