@@ -1,1 +1,1 @@
-{{- include "vro.destinationrule"}}
+{{- include "vro.destinationrule" .}}
