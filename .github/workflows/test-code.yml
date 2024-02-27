@@ -111,13 +111,18 @@ jobs:
         if: inputs.run_all_tests || steps.changed-files-specific.outputs.any_changed == 'true'
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: .
           bundler-cache: true
           # Used to resolve .ruby-version, .tool-versions and Gemfile.lock
           working-directory: svc-bgs-api/src
-          post-install-hook: |
-            bundle config set frozen false
-
+          
+      - name: "Configure Bundler and Install Dependencies"
+        if: inputs.run_all_tests || steps.changed-files-specific.outputs.any_changed == 'true'
+        run: |
+          cd svc-bgs-api/src
+          bundle config set --local frozen false
+          bundle install
+        working-directory: svc-bgs-api/src
+        
       - name: "Run rspec tests"
         if: inputs.run_all_tests || steps.changed-files-specific.outputs.any_changed == 'true'
         env:
