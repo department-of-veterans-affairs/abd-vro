@@ -4,9 +4,9 @@ from typing import Any
 from uuid import UUID
 
 import model.merge_job
-from util.custom_enum import StrEnum
 from pydantic import BaseModel, ConfigDict, conint
 from typing_extensions import ClassVar
+from util.custom_enum import StrEnum
 
 
 class JobState(StrEnum):
@@ -30,8 +30,8 @@ class JobState(StrEnum):
     COMPLETED_ERROR = auto()
 
     @classmethod
-    def incomplete_states(cls):
-        return [state for state in cls if state != JobState.COMPLETED_SUCCESS and state != JobState.COMPLETED_ERROR]
+    def incomplete_states(cls) -> list[str]:
+        return [state.name for state in cls if state != JobState.COMPLETED_SUCCESS and state != JobState.COMPLETED_ERROR]
 
     def __str__(self):
         return self.value

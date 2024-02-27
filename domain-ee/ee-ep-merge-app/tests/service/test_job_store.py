@@ -16,7 +16,7 @@ def create_job(state: JobState):
         'job_id': uuid4(),
         'pending_claim_id': 1,
         'ep400_claim_id': 2,
-        'state': state.value,
+        'state': state,
         'created_at': datetime.now().isoformat(),
         'updated_at': datetime.now().isoformat(),
     }

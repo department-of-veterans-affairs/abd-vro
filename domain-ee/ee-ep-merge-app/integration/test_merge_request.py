@@ -95,7 +95,7 @@ class TestSuccess(TestMergeRequestBase):
 
     @pytest.mark.asyncio(scope="session")
     async def test_completed_no_ep400_contentions(
-            self, get_claim_endpoint: MqEndpoint, get_claim_contentions_endpoint: MqEndpoint, put_tsoj_endpoint: MqEndpoint, cancel_claim_endpoint: MqEndpoint
+        self, get_claim_endpoint: MqEndpoint, get_claim_contentions_endpoint: MqEndpoint, put_tsoj_endpoint: MqEndpoint, cancel_claim_endpoint: MqEndpoint
     ):
         get_claim_endpoint.set_responses([pending_claim_200])
         get_claim_contentions_endpoint.set_responses([pending_contentions_200, response_204])
