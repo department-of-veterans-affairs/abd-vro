@@ -115,7 +115,7 @@ jobs:
           # Used to resolve .ruby-version, .tool-versions and Gemfile.lock
           working-directory: svc-bgs-api/src
           
-      - name: "Configure Bundler and Install Dependencies"
+      - name: "Configure Bundler"
         if: inputs.run_all_tests || steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
           cd svc-bgs-api/src
