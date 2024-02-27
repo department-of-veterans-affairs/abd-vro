@@ -116,7 +116,7 @@ jobs:
           # Used to resolve .ruby-version, .tool-versions and Gemfile.lock
           working-directory: svc-bgs-api/src
           post-install-hook: |
-            bundle config set --local frozen false
+            bundle config set frozen false
 
       - name: "Run rspec tests"
         if: inputs.run_all_tests || steps.changed-files-specific.outputs.any_changed == 'true'
