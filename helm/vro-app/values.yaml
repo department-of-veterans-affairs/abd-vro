@@ -8,6 +8,8 @@ replicaCount: 1
 
 serviceUriPrefix: vro-app
 
+serviceNameSuffix: app
+
 service:
   app:
     sourcePort: 8110

@@ -3,6 +3,8 @@ labels:
 
 serviceUriPrefix: employee-experience-ep-merge-app
 
+serviceNameSuffix: ee-ep-merge-app
+
 replicaCount: 1
 
 # autoscaling:

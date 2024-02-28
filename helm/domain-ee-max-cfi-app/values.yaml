@@ -3,6 +3,8 @@ labels:
 
 serviceUriPrefix: employee-experience
 
+serviceNameSuffix: ee-max-cfi-app
+
 replicaCount: 1
 
 # autoscaling:
