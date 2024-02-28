@@ -25,9 +25,7 @@ SERVICE_TAG = 'service:vro-ee-ep-merge-app'
 STANDARD_TAGS = [ENV_TAG, SERVICE_TAG]
 
 
-configuration = Configuration(
-    enable_retry=True
-)
+configuration = Configuration(enable_retry=True)
 api_client = ApiClient(configuration)
 count_metrics_api = metrics_v2.MetricsApi(api_client)
 distribution_metrics_api = metrics_v1.MetricsApi(api_client)  # Metrics API does not have an endpoint for distribution metrics
@@ -52,7 +50,7 @@ def increment(metric: str, value: float = 1):
                         value=value,
                     ),
                 ],
-                tags=STANDARD_TAGS
+                tags=STANDARD_TAGS,
             )
         ],
     )
@@ -85,7 +83,7 @@ def distribution(metric: str, value: float):
                         ]
                     ),
                 ],
-                tags=STANDARD_TAGS
+                tags=STANDARD_TAGS,
             ),
         ],
     )

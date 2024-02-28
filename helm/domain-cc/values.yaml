@@ -3,6 +3,8 @@ labels:
 
 serviceUriPrefix: contention-classification
 
+serviceNameSuffix: cc-app
+
 replicaCount: 1
 
 # autoscaling:
