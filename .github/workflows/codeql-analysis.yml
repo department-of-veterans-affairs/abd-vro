@@ -33,7 +33,7 @@ jobs:
           - ruby
     steps:
       - name: "Checkout source code"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up VRO build env
         uses: ./.github/actions/setup-vro
