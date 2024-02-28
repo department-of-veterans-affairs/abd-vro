@@ -17,7 +17,7 @@ jobs:
       issues: write
     steps:
       - name: "Add comment"
-        uses: peter-evans/create-or-update-comment@v2
+        uses: peter-evans/create-or-update-comment@v4
         with:
           token: ${{ secrets.MACHINE_USER_TOKEN_TO_ADD_COMMENT }}
           issue-number: 28
