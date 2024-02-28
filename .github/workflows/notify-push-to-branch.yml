@@ -29,7 +29,7 @@ jobs:
 
       - name: "Notify Slack"
         id: notify-slack
-        uses: archive/github-actions-slack@v2.6.0
+        uses: archive/github-actions-slack@v2.9.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
@@ -43,7 +43,7 @@ jobs:
       - name: "Slack thread: Post git commit message"
         if: steps.get-pr-title.outputs.multiline == 'true'
         # Post in thread to reduce clutter in Slack
-        uses: archive/github-actions-slack@v2.6.0
+        uses: archive/github-actions-slack@v2.9.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
