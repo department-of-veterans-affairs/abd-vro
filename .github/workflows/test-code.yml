@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: "Checkout source code"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: "Set up VRO build env"
         uses: ./.github/actions/setup-vro
@@ -95,7 +95,7 @@ jobs:
 
     steps:
       - name: "Checkout source code"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Need to fetch more than 1 deep to see changes
           fetch-depth: 2
@@ -129,7 +129,7 @@ jobs:
 
     steps:
       - name: "Checkout source code"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Need to fetch more than 1 deep to see changes
           fetch-depth: 2

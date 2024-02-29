@@ -148,7 +148,11 @@ async def get_merge_request_by_job_id(job_id: UUID):
 
 
 @app.get("/merge", response_model=MergeJobsResponse, responses={status.HTTP_200_OK: {"description": "Find all jobs"}}, response_model_exclude_none=True)
-async def get_merge_jobs(state: Annotated[list[JobState], Query()] = JobState.incomplete_states(), page: int = 1, size: int = 10):
+async def get_merge_jobs(
+    state: Annotated[list[JobState], Query()] = JobState.incomplete_states(),
+    page: Annotated[int, Query(title='the page of results to return', ge=1)] = 1,
+    size: Annotated[int, Query(title='the number of results per page', ge=1)] = 10,
+):
     jobs, total = JOB_STORE.query(states=state, offset=page, limit=size)
     logging.info(f"event=getMergeJobs " f"total={total} " f"page={sanitize(page)} " f"size={sanitize(size)} " f"states={sanitize(state)}")
 

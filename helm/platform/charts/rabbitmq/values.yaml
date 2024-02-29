@@ -5,6 +5,8 @@ labels:
 
 imageTag: "latest"
 
+serviceNameSuffix: rabbitmq
+
 replicaCount: 1
 
 service:
