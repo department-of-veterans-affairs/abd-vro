@@ -116,7 +116,7 @@ jobs:
           dest: './healthchecks-container-logs'
       - name: "Upload artifact"
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: healthchecks-container-logs
           path: ./healthchecks-container-logs/**
