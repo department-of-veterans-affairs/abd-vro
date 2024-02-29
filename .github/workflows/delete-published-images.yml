@@ -80,7 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: "Delete old images in GHCR"
-      uses: vlaurin/action-ghcr-prune@v0.5.0
+      uses: vlaurin/action-ghcr-prune@v0.6.0
       with:
         token: ${{ secrets.ACCESS_TOKEN_DELETE_PACKAGE }}
         organization: department-of-veterans-affairs

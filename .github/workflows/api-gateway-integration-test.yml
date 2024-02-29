@@ -151,7 +151,7 @@ jobs:
           dest: './api-gw-itest-container-logs'
       - name: "Upload artifact"
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: api-gw-itest-container-logs
           path: ./api-gw-itest-container-logs/**
