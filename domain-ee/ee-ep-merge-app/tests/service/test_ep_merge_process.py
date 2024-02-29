@@ -5,6 +5,8 @@ from conftest import (
     EP400_CLAIM_ID,
     JOB_ID,
     PENDING_CLAIM_ID,
+    CREATED_AT,
+    UPDATED_AT,
     add_claim_note_200,
     add_claim_note_req,
     assert_metrics_called,
@@ -56,7 +58,9 @@ from util.contentions_util import ContentionsUtil
 
 @pytest.fixture
 def machine():
-    return EpMergeMachine(MergeJob(job_id=JOB_ID, pending_claim_id=PENDING_CLAIM_ID, ep400_claim_id=EP400_CLAIM_ID))
+    return EpMergeMachine(
+        MergeJob(job_id=JOB_ID, pending_claim_id=PENDING_CLAIM_ID, ep400_claim_id=EP400_CLAIM_ID, created_at=CREATED_AT, updated_at=UPDATED_AT)
+    )
 
 
 def test_constructor():

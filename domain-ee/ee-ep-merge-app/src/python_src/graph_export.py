@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import uuid4
 
 import pydot
@@ -119,7 +120,8 @@ class DotGraphMachine:
 
 
 def generate_graph(main_event):
-    job = MergeJob(job_id=uuid4(), pending_claim_id=1, ep400_claim_id=2)
+    now = datetime.now()
+    job = MergeJob(job_id=uuid4(), pending_claim_id=1, ep400_claim_id=2, created_at=now, updated_at=now)
 
     #
     graph = DotGraphMachine(EpMergeMachine(job, main_event))

@@ -2,6 +2,7 @@
 
 import uuid
 from unittest.mock import MagicMock
+from datetime import datetime
 
 import pytest
 from fastapi.testclient import TestClient
@@ -22,4 +23,5 @@ def db():
 
 @pytest.fixture
 def merge_job():
-    return schema.MergeJob(job_id=uuid.uuid4(), pending_claim_id=1, ep400_claim_id=2, state="PENDING")
+    now = datetime.now()
+    return schema.MergeJob(job_id=uuid.uuid4(), pending_claim_id=1, ep400_claim_id=2, state="PENDING", created_at=now, updated_at=now)
