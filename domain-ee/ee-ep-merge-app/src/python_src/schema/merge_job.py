@@ -4,8 +4,7 @@ from typing import Any
 from uuid import UUID
 
 import model.merge_job
-from pydantic import BaseModel, ConfigDict, conint
-from typing_extensions import ClassVar
+from pydantic import BaseModel, ConfigDict, conint, Field
 from util.custom_enum import StrEnum
 
 
@@ -38,7 +37,6 @@ class JobState(StrEnum):
 
 
 class MergeJob(BaseModel):
-    _init_time: ClassVar[datetime] = datetime.now()
 
     job_id: UUID
     pending_claim_id: conint(strict=True)
@@ -46,8 +44,13 @@ class MergeJob(BaseModel):
     state: JobState = JobState.PENDING
     error_state: JobState | None = None
     messages: list[Any] | None = None
-    created_at: datetime = _init_time
-    updated_at: datetime = _init_time
+    created_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime = None
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        if "updated_at" not in kwargs or not self.updated_at:
+            self.updated_at = self.created_at
 
     model_config = ConfigDict(from_attributes=True)
 
