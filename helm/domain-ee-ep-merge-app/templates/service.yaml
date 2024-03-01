@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   # name is used as the hostname of the service
-  name: {{ .Values.global.hostnamePrefix }}-ee-ep-merge-app
+  name: {{ .Values.global.hostnamePrefix }}-{{ .Values.serviceNameSuffix }}
   labels: {{- toYaml .Values.labels | nindent 4 }}
 spec:
   type: ClusterIP

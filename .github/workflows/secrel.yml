@@ -151,14 +151,14 @@ jobs:
           echo "publish_mode: ${{ steps.image-props.outputs.publish_mode }}"
 
       - name: "Checkout source code"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Checkout using a PAT so that we can do `git push` later in publish-images
           token: ${{ secrets.ACCESS_TOKEN_PUSH_TO_DEVELOP }}
 
       - name: "Slack: workflow triggered"
         id: notify-slack
-        uses: archive/github-actions-slack@v2.6.0
+        uses: archive/github-actions-slack@v2.9.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
@@ -183,7 +183,7 @@ jobs:
           publish_mode: ${{ steps.image-props.outputs.publish_mode }}
 
       - name: "Slack thread: Images published"
-        uses: archive/github-actions-slack@v2.6.0
+        uses: archive/github-actions-slack@v2.9.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
@@ -216,7 +216,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Slack: SecRel Failure"
-        uses: archive/github-actions-slack@v2.6.0
+        uses: archive/github-actions-slack@v2.9.0
         # only run for the internal repo
         if: ${{ github.repository == 'department-of-veterans-affairs/abd-vro-internal' }}
         with:
@@ -262,7 +262,7 @@ jobs:
 
       - name: "Slack thread: Post final status"
         if: always() && needs.gate-check.outputs.continue == 'true'
-        uses: archive/github-actions-slack@v2.6.0
+        uses: archive/github-actions-slack@v2.9.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
@@ -270,7 +270,7 @@ jobs:
           slack-text: ${{ env.WORKFLOW_STATE_TEXT }}
       - name: "Slack emoji: React success on top-level Slack notification"
         if: always() && needs.gate-check.outputs.continue == 'true'
-        uses: archive/github-actions-slack@v2.6.0
+        uses: archive/github-actions-slack@v2.9.0
         with:
           slack-function: send-reaction
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}

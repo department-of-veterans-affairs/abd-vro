@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: "Checkout source code"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: "Set up VRO build env"
         uses: ./.github/actions/setup-vro
@@ -95,7 +95,7 @@ jobs:
 
     steps:
       - name: "Checkout source code"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Need to fetch more than 1 deep to see changes
           fetch-depth: 2
@@ -129,7 +129,7 @@ jobs:
 
     steps:
       - name: "Checkout source code"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Need to fetch more than 1 deep to see changes
           fetch-depth: 2
@@ -153,7 +153,7 @@ jobs:
 
       - name: "Install Python"
         if: inputs.run_all_tests || steps.changed-files-specific.outputs.any_changed == 'true' || steps.ee-changed-files-specific.outputs.any_changed == 'true'
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
           cache: "pip"

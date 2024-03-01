@@ -9,6 +9,8 @@ replicaCount: 1
 
 serviceUriPrefix: abd-vro
 
+serviceNameSuffix: api-gateway
+
 ports:
   - name: liveness
     containerPort: 8061

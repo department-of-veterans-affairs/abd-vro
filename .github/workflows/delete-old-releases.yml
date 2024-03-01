@@ -65,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: "Delete old releases in GHCR"
-      uses: yoomlam/delete-older-releases@v0.3.0
+      uses: yoomlam/delete-older-releases@v0.3.2
       with:
         dry_run: ${{ inputs.dry_run || false }}
         delete_tags: true

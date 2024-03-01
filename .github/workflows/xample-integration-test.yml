@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout source code"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: "Build the images"
         uses: ./.github/actions/build-images
@@ -90,7 +90,7 @@ jobs:
 
       - name: "Upload artifact"
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: xample-itest-container-logs
           path: ./xample-itest-container-logs/**

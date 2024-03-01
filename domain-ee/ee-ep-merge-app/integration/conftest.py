@@ -7,6 +7,21 @@ from src.python_src.api import on_shut_down, start_hoppy
 from src.python_src.config import EXCHANGES, QUEUES, REPLY_QUEUES, ClientName
 
 
+def pytest_collection_modifyitems(items):
+    """Modifies test items in place to ensure test modules run in a given order:
+    1. All test from modules not specified in the `module_order` below
+    2. Test from each module in module_order (in order)
+    """
+    module_order = ["integration.test_get_endpoints", "integration.test_merge_request"]
+    module_mapping = {item: item.module.__name__ for item in items}
+
+    sorted_items = items.copy()
+    # Iteratively move tests of each module to the end of the test queue
+    for module in module_order:
+        sorted_items = [it for it in sorted_items if module_mapping[it] != module] + [it for it in sorted_items if module_mapping[it] == module]
+    items[:] = sorted_items
+
+
 @pytest.fixture(autouse=True, scope="session")
 def get_claim_endpoint():
     return create_mq_endpoint(ClientName.GET_CLAIM)
