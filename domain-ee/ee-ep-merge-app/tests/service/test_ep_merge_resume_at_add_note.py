@@ -5,8 +5,6 @@ from conftest import (
     EP400_CLAIM_ID,
     JOB_ID,
     PENDING_CLAIM_ID,
-    CREATED_AT,
-    UPDATED_AT,
     add_claim_note_200,
     add_claim_note_req,
     get_ep400_contentions_200,
@@ -32,14 +30,7 @@ from service.ep_merge_machine import EpMergeMachine, Workflow
 @pytest.fixture
 def machine():
     return EpMergeMachine(
-        MergeJob(
-            job_id=JOB_ID,
-            pending_claim_id=PENDING_CLAIM_ID,
-            ep400_claim_id=EP400_CLAIM_ID,
-            state=JobState.ADD_CLAIM_NOTE_TO_EP400,
-            created_at=CREATED_AT,
-            updated_at=UPDATED_AT,
-        ),
+        MergeJob(job_id=JOB_ID, pending_claim_id=PENDING_CLAIM_ID, ep400_claim_id=EP400_CLAIM_ID, state=JobState.ADD_CLAIM_NOTE_TO_EP400),
         Workflow.RESUME_ADD_NOTE,
     )
 

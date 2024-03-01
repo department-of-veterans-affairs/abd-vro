@@ -2,7 +2,6 @@ import json
 import os
 import uuid
 from unittest.mock import ANY, AsyncMock, call
-from datetime import datetime
 
 import pytest
 from src.python_src.config import EP_MERGE_SPECIAL_ISSUE_CODE
@@ -33,8 +32,6 @@ JOB_ID = uuid.uuid4()
 PENDING_CLAIM_ID = 1
 PENDING_CLAIM_EP_CODE = "010"
 EP400_CLAIM_ID = 2
-CREATED_AT = datetime.now()
-UPDATED_AT = CREATED_AT
 cancel_reason = CANCELLATION_REASON_FORMAT.format(ep_code=PENDING_CLAIM_EP_CODE, claim_id=PENDING_CLAIM_ID)
 
 RESPONSE_DIR = os.path.abspath('./tests/responses')

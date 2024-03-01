@@ -4,7 +4,6 @@ import sys
 from contextlib import asynccontextmanager
 from typing import Annotated
 from uuid import UUID, uuid4
-from datetime import datetime
 
 import uvicorn
 from fastapi import BackgroundTasks, FastAPI, HTTPException, Query, Request, status
@@ -105,11 +104,8 @@ async def merge_claims(request: Request, merge_request: MergeEndProductsRequest,
         return JSONResponse(status_code=500, content=jsonable_encoder({"method": "POST", "url": str(request.url), "errors": errors}))
 
     job_id = uuid4()
-    now = datetime.now()
 
-    merge_job = MergeJob(
-        job_id=job_id, pending_claim_id=merge_request.pending_claim_id, ep400_claim_id=merge_request.ep400_claim_id, created_at=now, updated_at=now
-    )
+    merge_job = MergeJob(job_id=job_id, pending_claim_id=merge_request.pending_claim_id, ep400_claim_id=merge_request.ep400_claim_id)
     JOB_STORE.submit_merge_job(merge_job)
 
     logging.info(

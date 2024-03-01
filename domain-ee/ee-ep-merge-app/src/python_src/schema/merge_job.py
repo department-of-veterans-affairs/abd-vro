@@ -5,6 +5,7 @@ from uuid import UUID
 
 import model.merge_job
 from pydantic import BaseModel, ConfigDict, conint
+from typing_extensions import ClassVar
 from util.custom_enum import StrEnum
 
 
@@ -37,14 +38,16 @@ class JobState(StrEnum):
 
 
 class MergeJob(BaseModel):
+    _init_time: ClassVar[datetime] = datetime.now()
+
     job_id: UUID
     pending_claim_id: conint(strict=True)
     ep400_claim_id: conint(strict=True)
     state: JobState = JobState.PENDING
     error_state: JobState | None = None
     messages: list[Any] | None = None
-    created_at: datetime
-    updated_at: datetime
+    created_at: datetime = _init_time
+    updated_at: datetime = _init_time
 
     model_config = ConfigDict(from_attributes=True)
 
