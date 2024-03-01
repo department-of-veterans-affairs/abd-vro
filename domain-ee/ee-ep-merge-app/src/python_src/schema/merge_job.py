@@ -49,7 +49,7 @@ class MergeJob(BaseModel):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        if "updated_at" not in kwargs or not self.updated_at:
+        if not self.updated_at:
             self.updated_at = self.created_at
 
     model_config = ConfigDict(from_attributes=True)
