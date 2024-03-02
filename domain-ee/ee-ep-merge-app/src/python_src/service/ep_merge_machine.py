@@ -294,7 +294,7 @@ class EpMergeMachine(StateMachine):
                 f"job_id={self.job.job_id} "
                 f"pending_claim_id={self.job.pending_claim_id} "
                 f"ep400_claim_id={self.job.ep400_claim_id} "
-                f"state={self.job.state}"
+                f"state={self.job.state} "
                 f"job_duration_seconds={job_duration}"
             )
 
