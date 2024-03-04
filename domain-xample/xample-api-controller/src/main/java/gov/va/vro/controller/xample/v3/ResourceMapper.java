@@ -13,6 +13,7 @@ public interface ResourceMapper {
   @Mapping(target = "header", ignore = true)
   SomeDtoModel toModel(ResourceRequest request);
 
+  // Maps a someDtoModel of type SomeDtoModel to a generalized ResourceResponse object
   ResourceResponse toResourceResponse(SomeDtoModel someDtoModel);
 
   // default ResourceResponse toResourceResponse(Optional<SomeDtoModel> sharedModel) {

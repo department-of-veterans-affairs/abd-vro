@@ -55,9 +55,9 @@ public class SecurityConfig {
 
   private final ApiAuthKeyManager apiAuthKeyManager;
 
-  private final String ACTUATOR_URLS = "/actuator/**";
+  private final String actuatorUrls = "/actuator/**";
 
-  private final String V3_URLS = "/v3/**";
+  private final String v3Urls = "/v3/**";
 
   /**
    * Sets the security filter chain.
@@ -97,8 +97,8 @@ public class SecurityConfig {
                       new AntPathRequestMatcher(fullHealth),
                       new AntPathRequestMatcher(healthAssessment),
                       new AntPathRequestMatcher(immediatePdf),
-                      new AntPathRequestMatcher(ACTUATOR_URLS),
-                      new AntPathRequestMatcher(V3_URLS))
+                      new AntPathRequestMatcher(actuatorUrls),
+                      new AntPathRequestMatcher(v3Urls))
                   .permitAll()
                   .anyRequest()
                   .authenticated();
@@ -142,8 +142,8 @@ public class SecurityConfig {
                     .requestMatchers(
                         new AntPathRequestMatcher(automatedClaim),
                         new AntPathRequestMatcher(examOrder),
-                        new AntPathRequestMatcher(ACTUATOR_URLS),
-                        new AntPathRequestMatcher(V3_URLS))
+                        new AntPathRequestMatcher(actuatorUrls),
+                        new AntPathRequestMatcher(v3Urls))
                     .permitAll()
                     .anyRequest()
                     .authenticated())

@@ -10,8 +10,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +32,11 @@ public class ContentionEntity extends BaseEntity {
       orphanRemoval = true)
   private List<AssessmentResultEntity> assessmentResults = new ArrayList<>();
 
-  @OneToMany(mappedBy = "contention", cascade = CascadeType.ALL, orphanRemoval = true)
-  @LazyCollection(LazyCollectionOption.FALSE)
+  @OneToMany(
+      mappedBy = "contention",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      fetch = FetchType.EAGER)
   private List<EvidenceSummaryDocumentEntity> evidenceSummaryDocuments = new ArrayList<>();
 
   private String conditionName;
