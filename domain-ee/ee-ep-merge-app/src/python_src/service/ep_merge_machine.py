@@ -44,8 +44,8 @@ CANCEL_TRACKING_EP = "60"
 CANCELLATION_REASON_FORMAT = "Issues moved into or confirmed in pending EP{ep_code} - claim #{claim_id}"
 
 # definitions for retrying to get contentions from EP400
-EP400_CONTENTION_RETRIES = int(os.getenv("EP400_CONTENTION_RETRIES", 30))
-EP400_CONTENTION_RETRY_RATE = int(os.getenv("EP400_CONTENTION_RETRY_RATE", 2))
+EP400_CONTENTION_RETRIES = int(os.getenv("EP400_CONTENTION_RETRIES") or 30)
+EP400_CONTENTION_RETRY_WAIT_TIME = int(os.getenv("EP400_CONTENTION_RETRY_WAIT_TIME") or 2)
 
 
 def ep400_has_no_contentions(response: get_contentions.Response):
@@ -183,7 +183,7 @@ class EpMergeMachine(StateMachine):
             response_type=get_contentions.Response,
             expected_statuses=expected_responses,
             max_retries=EP400_CONTENTION_RETRIES,
-            retry_rate=EP400_CONTENTION_RETRY_RATE,
+            retry_rate=EP400_CONTENTION_RETRY_WAIT_TIME,
             will_retry_condition=ep400_has_no_contentions,
         )
         if response and (response.status_code in expected_responses and not response.contentions):
