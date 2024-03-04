@@ -60,16 +60,5 @@ devtools_VER="v3.6.12"
 # Wed Feb 21 15:29:25 UTC 2024 -- v3.6.13
 # Thu Feb 22 20:00:43 UTC 2024 -- v3.6.14
 redis_VER="v3.6.14"
-dbinit_VER="v3.6.14"
 # Thu Feb 29 21:50:04 UTC 2024 -- v3.6.15
 rabbitmq_VER="v3.6.15"
-apigateway_VER="v3.6.15"
-app_VER="v3.6.15"
-svcbgsapi_VER="v3.6.15"
-svclighthouseapi_VER="v3.6.15"
-svcbiekafka_VER="v3.6.15"
-svcbipapi_VER="v3.6.15"
-xampleworkflows_VER="v3.6.15"
-ccapp_VER="v3.6.15"
-eemaxcfiapp_VER="v3.6.15"
-eeepmergeapp_VER="v3.6.15"
