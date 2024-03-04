@@ -1,6 +1,6 @@
 spring:
   kafka:
-    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:bip-kafka.tst.bip.va.gov}"
+    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:bip-kafka.tst.bip.va.gov:443}"
     properties:
       schema.registry.url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://${BIE_KAFKA_RBAC_USERNAME}:${BIE_KAFKA_RBAC_PASSWORD}@bip-schemaregistry.tst.bip.va.gov}"
       security.protocol: SASL_SSL

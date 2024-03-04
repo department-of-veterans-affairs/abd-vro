@@ -1,31 +1,35 @@
 spring:
   kafka:
-    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:kafka.stage.bip.va.gov:443}"
+    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:bip-kafka.tst.bip.va.gov}"
     properties:
       schema:
         registry:
-          url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://schemaregistry.stage.bip.va.gov:443}"
-          ssl:
-            protocol: SSL
-            keystore:
-              type: PKCS12
-              location: "${KEYSTORE_FILE}"
-              password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
-            truststore:
-              type: PKCS12
-              location: "${TRUSTSTORE_FILE}"
-              password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
+          url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://${BIE_KAFKA_RBAC_USERNAME}:${BIE_KAFKA_RBAC_PASSWORD}@bip-schemaregistry.tst.bip.va.gov}"
+      sasl:
+        mechanism: PLAIN
+        jaas:
+          config: "org.apache.kafka.common.security.plain.PlainLoginModule required username=${BIE_KAFKA_RBAC_USERNAME:USERNAME} password=${BIE_KAFKA_RBAC_PASSWORD:PASSWORD};"
+      ssl:
+#            keystore:
+#              type: PKCS12
+#              location: "${KEYSTORE_FILE}"
+#              password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
+        truststore:
+          type: PKCS12
+          location: "${TRUSTSTORE_FILE}"
+          password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
     consumer:
       group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-uat-vro}"
       key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
       value-deserializer: "io.confluent.kafka.serializers.KafkaAvroDeserializer"
       properties:
-        security.protocol: SSL
+        security.protocol: SASL_SSL
         ssl:
-          keystore:
-            type: PKCS12
-            location: "${KEYSTORE_FILE}"
-            password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
+          # Keystore not needed https://dsva.slack.com/archives/C04U8GESRT7/p1708456986385019?thread_ts=1706878417.546749&cid=C04U8GESRT7
+#          keystore:
+#            type: PKCS12
+#            location: "${KEYSTORE_FILE}"
+#            password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
           truststore:
             type: PKCS12
             location: "${TRUSTSTORE_FILE}"
