@@ -109,7 +109,8 @@ services:
 
     volumes:
       # scripts/setenv.sh creates jks files from env variables
-      - './mock-bie-kafka/kafka.keystore.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro'
+      # keystore is unneeded only truststore https://dsva.slack.com/archives/C04U8GESRT7/p1708456986385019?thread_ts=1706878417.546749&cid=C04U8GESRT7
+      # - './mock-bie-kafka/kafka.keystore.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro'
       - './mock-bie-kafka/kafka.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro'
     networks:
       - vro_intranet
