@@ -183,7 +183,7 @@ class EpMergeMachine(StateMachine):
             response_type=get_contentions.Response,
             expected_statuses=expected_responses,
             max_retries=EP400_CONTENTION_RETRIES,
-            retry_rate=EP400_CONTENTION_RETRY_WAIT_TIME,
+            retry_wait_time=EP400_CONTENTION_RETRY_WAIT_TIME,
             will_retry_condition=ep400_has_no_contentions,
         )
         if response and (response.status_code in expected_responses and not response.contentions):
@@ -315,7 +315,15 @@ class EpMergeMachine(StateMachine):
                     increment(JOB_SKIPPED_MERGE_METRIC)
 
     async def make_hoppy_request(
-        self, hoppy_client, request_id, request_body, response_type: Type[GeneralResponse], expected_statuses, max_retries, retry_rate, will_retry_condition
+        self,
+        hoppy_client,
+        request_id,
+        request_body,
+        response_type: Type[GeneralResponse],
+        expected_statuses,
+        max_retries,
+        retry_wait_time,
+        will_retry_condition,
     ):
         attempts = 0
         while True:
@@ -332,7 +340,7 @@ class EpMergeMachine(StateMachine):
             attempts += 1
             if attempts == max_retries or not will_retry_condition(model):
                 break
-            await asyncio.sleep(retry_rate)
+            await asyncio.sleep(retry_wait_time)
         return model
 
     def make_request(
@@ -342,7 +350,7 @@ class EpMergeMachine(StateMachine):
         response_type: Type[GeneralResponse],
         expected_statuses: list[int] | int = 200,
         max_retries: int = 1,
-        retry_rate: int = 2,
+        retry_wait_time: int = 2,
         will_retry_condition: Callable[[Type[GeneralResponse]], bool] = lambda x: False,
     ):
         if not isinstance(expected_statuses, list):
@@ -356,7 +364,7 @@ class EpMergeMachine(StateMachine):
                 response_type,
                 expected_statuses,
                 max_retries,
-                retry_rate,
+                retry_wait_time,
                 will_retry_condition,
             )
             return loop.run_until_complete(req)
