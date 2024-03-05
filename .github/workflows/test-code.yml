@@ -33,7 +33,7 @@ jobs:
           configuration: --profile black
           requirementsFiles: "**/requirements.txt \
                               **/dev-requirements.txt"
-
+                              
       - name: "Run tests and checks"
         # `check` runs all checks, including spectralLint, hadolint, and shellcheck
         run: |
