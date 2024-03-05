@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 /** Data object used in create claim contention(s) endpoint: POST /claims/{claimId}/contentions */
@@ -21,19 +21,19 @@ public class Contention {
   private boolean medicalInd;
 
   @JsonProperty("beginDate")
-  private Instant beginDate;
+  private OffsetDateTime beginDate;
 
   @JsonProperty("createDate")
-  private Instant createDate;
+  private OffsetDateTime createDate;
+
+  @JsonProperty("completedDate")
+  private OffsetDateTime completedDate;
 
   @JsonProperty("altContentionName")
   private String altContentionName;
 
-  @JsonProperty("completedDate")
-  private Instant completedDate;
-
   @JsonProperty("notificationDate")
-  private String notificationDate;
+  private OffsetDateTime notificationDate;
 
   @JsonProperty("contentionTypeCode")
   private String contentionTypeCode;

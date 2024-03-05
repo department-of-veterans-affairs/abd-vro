@@ -136,7 +136,6 @@ public class BipApiService implements IBipApiService {
   private <T extends BipPayloadResponse> T makeRequest(
       String url, HttpMethod method, Object requestBody, Class<T> expectedResponse) {
     try {
-      log.info("event=requestMade url={} method={}", url, method);
       HttpEntity<Object> httpEntity = new HttpEntity<>(requestBody, getBipHeader());
       log.info("event=requestSent url={} method={}", url, method);
       ResponseEntity<String> bipResponse =
@@ -159,8 +158,9 @@ public class BipApiService implements IBipApiService {
               .build();
     } catch (HttpStatusCodeException e) {
       log.info(
-          "event=responseReceived url={} status={} statusMessage={}",
+          "event=responseReceived url={} method={} status={} statusMessage={}",
           url,
+          method,
           e.getStatusCode(),
           ((HttpStatus) e.getStatusCode()).name());
       throw e;
