@@ -971,7 +971,8 @@
       "phase": "Claim Received",
       "endProductCode": "400",
       "claimLifecycleStatus": "Open"
-    }
+    },
+    "contentions": []
   },
   {
     "description": [

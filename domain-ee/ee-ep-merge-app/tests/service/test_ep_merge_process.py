@@ -297,6 +297,9 @@ class TestUpToGetEp400Contentions:
             pytest.param(load_response(response_400, get_contentions.Response), id="400"),
             pytest.param(load_response(response_404, get_contentions.Response), id="404"),
             pytest.param(load_response(response_500, get_contentions.Response), id="500"),
+            pytest.param(get_ep400_contentions_204, id="No contentions found"),
+            pytest.param(get_contentions.Response(status_code=200, status_message="OK", contentions=None), id="None"),
+            pytest.param(get_contentions.Response(status_code=200, status_message="OK", contentions=[]), id="Empty"),
         ],
     )
     def test_invalid_request_at_get_ep400_contentions(
@@ -333,29 +336,6 @@ class TestUpToSetTemporaryStationOfJurisdiction:
                 call(machine.job.job_id, get_ep400_contentions_req),
                 call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
                 call(machine.job.job_id, update_contentions_on_ep400_req),
-            ]
-        )
-        assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.SET_TEMP_STATION_OF_JURISDICTION)
-
-    @pytest.mark.parametrize(
-        "no_contentions_response",
-        [
-            pytest.param(get_contentions.Response(status_code=200, status_message="OK"), id="Implicit None"),
-            pytest.param(get_contentions.Response(status_code=200, status_message="OK", contentions=None), id="Explicit None"),
-            pytest.param(get_contentions.Response(status_code=200, status_message="OK", contentions=[]), id="Empty"),
-        ],
-    )
-    def test_no_contentions_on_ep400_after_set_tsoj_failure(
-        self, machine, mock_hoppy_async_client, metric_logger_distribution, metric_logger_increment, no_contentions_response
-    ):
-        mock_async_responses(mock_hoppy_async_client, [get_pending_claim_200, get_pending_contentions_200, no_contentions_response, ResponseException("Oops")])
-        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.SET_TEMP_STATION_OF_JURISDICTION, 1)
-        mock_hoppy_async_client.make_request.assert_has_calls(
-            [
-                call(machine.job.job_id, get_pending_claim_req),
-                call(machine.job.job_id, get_pending_contentions_req),
-                call(machine.job.job_id, get_ep400_contentions_req),
-                call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
             ]
         )
         assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.SET_TEMP_STATION_OF_JURISDICTION)
@@ -719,29 +699,6 @@ class TestSuccess:
                 get_pending_claim_200,
                 get_pending_contentions_increase_tinnitus_200,
                 get_ep400_contentions_200,
-                update_temporary_station_of_jurisdiction_200,
-                cancel_claim_200,
-                add_claim_note_200,
-            ],
-        )
-        process_and_assert(machine, JobState.COMPLETED_SUCCESS)
-        mock_hoppy_async_client.make_request.assert_has_calls(
-            [
-                call(machine.job.job_id, get_pending_contentions_req),
-                call(machine.job.job_id, get_ep400_contentions_req),
-                call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
-                call(machine.job.job_id, cancel_ep400_claim_req),
-            ]
-        )
-        assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_SUCCESS, None, 0, True)
-
-    def test_process_succeeds_with_no_ep400_contentions(self, machine, mock_hoppy_async_client, metric_logger_distribution, metric_logger_increment):
-        mock_async_responses(
-            mock_hoppy_async_client,
-            [
-                get_pending_claim_200,
-                get_pending_contentions_increase_tinnitus_200,
-                get_ep400_contentions_204,
                 update_temporary_station_of_jurisdiction_200,
                 cancel_claim_200,
                 add_claim_note_200,
