@@ -10,6 +10,9 @@ pip3 install --no-cache-dir sqlfluff==2.1.2
 pip3 install --no-cache-dir jinja2==3.1.3
 EOR
 
+COPY database /flyway/sql
+COPY flyway.conf /flyway/conf
+
 RUN adduser --no-create-home --disabled-password tron
 USER tron
 CMD [ "migrate", "-X" ]
