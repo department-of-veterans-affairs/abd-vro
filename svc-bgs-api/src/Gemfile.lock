@@ -65,7 +65,7 @@ GEM
     nori (2.6.0)
     public_suffix (5.0.4)
     racc (1.7.3)
-    rack (3.0.8)
+    rack (3.0.9.1)
     rbtree (0.4.6)
     rexml (3.2.6)
     rspec (3.12.0)
