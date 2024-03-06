@@ -17,7 +17,7 @@ class MessageExchangeConfigTest {
   @BeforeEach
   void setUp() {
     bieProperties = new BieProperties();
-    bieProperties.kakfaTopicPrefix = "TST_";
+    bieProperties.kakfaTopicPrefix = "EXT_VRO_TST_";
   }
 
   @Test
@@ -34,11 +34,11 @@ class MessageExchangeConfigTest {
     final String[] topicNames = bieProperties.topicNames();
     assertArrayEquals(
         new String[] {
-          "TST_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02",
-          "TST_CONTENTION_BIE_CONTENTION_UPDATED_V02",
-          "TST_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02",
-          "TST_CONTENTION_BIE_CONTENTION_COMPLETED_V02",
-          "TST_CONTENTION_BIE_CONTENTION_DELETED_V02"
+          "EXT_VRO_TST_BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_ASSOCIATED_TO_CLAIM",
+          "EXT_VRO_TST_BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_UPDATED",
+          "EXT_VRO_TST_BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_CLASSIFIED",
+          "EXT_VRO_TST_BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_COMPLETED",
+          "EXT_VRO_TST_BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_DELETED"
         },
         topicNames);
   }
