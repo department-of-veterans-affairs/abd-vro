@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 
 /**
  * Data object used in get claim contention summaries endpoint: GET /claims/{claimId}/contentions
@@ -19,5 +19,5 @@ import java.time.Instant;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ContentionSummary extends ExistingContention {
   @JsonProperty("summaryDateTime")
-  private Instant summaryDateTime;
+  private OffsetDateTime summaryDateTime;
 }
