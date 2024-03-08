@@ -82,25 +82,39 @@ class TestSuccess(TestMergeRequestBase):
 
     @pytest.mark.asyncio(scope="session")
     async def test_completed_success_with_duplicate_contention(
-        self, get_claim_endpoint: MqEndpoint, get_claim_contentions_endpoint: MqEndpoint, put_tsoj_endpoint: MqEndpoint, cancel_claim_endpoint: MqEndpoint
+        self,
+        get_claim_endpoint: MqEndpoint,
+        get_claim_contentions_endpoint: MqEndpoint,
+        put_tsoj_endpoint: MqEndpoint,
+        cancel_claim_endpoint: MqEndpoint,
+        add_claim_note_endpoint: MqEndpoint,
     ):
         get_claim_endpoint.set_responses([pending_claim_200])
         get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_duplicate_contentions_200])
         put_tsoj_endpoint.set_responses([response_200])
         cancel_claim_endpoint.set_responses([response_200])
+        add_claim_note_endpoint.set_responses([response_200])
 
         async with AsyncClient(app=app, base_url="http://test") as client:
             response = await submit_request_and_process(client)
             assert_successful_response(response)
 
     @pytest.mark.asyncio(scope="session")
-    async def test_completed_no_ep400_contentions(
-        self, get_claim_endpoint: MqEndpoint, get_claim_contentions_endpoint: MqEndpoint, put_tsoj_endpoint: MqEndpoint, cancel_claim_endpoint: MqEndpoint
+    async def test_completed_no_ep400_contentions_on_first_attempt(
+        self,
+        get_claim_endpoint: MqEndpoint,
+        get_claim_contentions_endpoint: MqEndpoint,
+        put_tsoj_endpoint: MqEndpoint,
+        create_claim_contentions_endpoint: MqEndpoint,
+        cancel_claim_endpoint: MqEndpoint,
+        add_claim_note_endpoint: MqEndpoint,
     ):
         get_claim_endpoint.set_responses([pending_claim_200])
-        get_claim_contentions_endpoint.set_responses([pending_contentions_200, response_204])
+        get_claim_contentions_endpoint.set_responses([pending_contentions_200, response_204, ep400_contentions_200])
         put_tsoj_endpoint.set_responses([response_200])
+        create_claim_contentions_endpoint.set_responses([response_201])
         cancel_claim_endpoint.set_responses([response_200])
+        add_claim_note_endpoint.set_responses([response_200])
 
         async with AsyncClient(app=app, base_url="http://test") as client:
             response = await submit_request_and_process(client)
@@ -196,6 +210,16 @@ class TestErrorAtGetEp400ClaimContentions(TestMergeRequestBase):
     async def test(self, get_claim_endpoint: MqEndpoint, get_claim_contentions_endpoint: MqEndpoint):
         get_claim_endpoint.set_responses([pending_claim_200])
         get_claim_contentions_endpoint.set_responses([pending_contentions_200, response_500])
+
+        async with AsyncClient(app=app, base_url="http://test") as client:
+            response = await submit_request_and_process(client)
+            assert_error_response(response, JobState.GET_EP400_CLAIM_CONTENTIONS)
+
+    @pytest.mark.asyncio(scope="session")
+    async def test_no_contentions_found(self, get_claim_endpoint: MqEndpoint, get_claim_contentions_endpoint: MqEndpoint):
+        get_claim_endpoint.set_responses([pending_claim_200])
+        get_claim_contentions_endpoint.set_responses([pending_contentions_200, response_204, response_204])
+        # Note the second 204 is because the tests are set up to try to get the ep400 contentions twice in pyproject.toml
 
         async with AsyncClient(app=app, base_url="http://test") as client:
             response = await submit_request_and_process(client)
@@ -312,7 +336,7 @@ class TestErrorAtCancelClaim(TestMergeRequestBase):
     ):
         get_claim_endpoint.set_responses([pending_claim_200])
         get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_contentions_200])
-        put_tsoj_endpoint.set_responses([response_200])
+        put_tsoj_endpoint.set_responses([response_200, response_200])  # Note the 200 to revert tsoj
         create_claim_contentions_endpoint.set_responses([response_201])
         cancel_claim_endpoint.set_responses([response_500])
 

@@ -3,19 +3,11 @@ from enum import Enum
 from urllib.parse import quote, urlparse
 
 
-def int_from_env(key, default):
-    val = os.environ.get(key)
-    if val is not None:
-        return int(val)
-    else:
-        return default
-
-
 config = {
     "app_id": os.environ.get("APP_ID") or "EP_MERGE",
-    "request_timeout": int_from_env("REQUEST_TIMEOUT", 30),
-    "request_retries": int_from_env("REQUEST_RETRIES", 3),
-    "response_delivery_attempts": int_from_env("RESPONSE_DELIVERY_ATTEMPTS", 3),
+    "request_timeout": int(os.getenv("REQUEST_TIMEOUT") or 30),
+    "request_retries": int(os.getenv("REQUEST_RETRIES") or 3),
+    "response_delivery_attempts": int(os.getenv("RESPONSE_DELIVERY_ATTEMPTS") or 3),
 }
 
 

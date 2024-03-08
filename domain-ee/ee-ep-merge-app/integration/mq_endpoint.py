@@ -6,6 +6,10 @@ from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
 from pika import BasicProperties
 
 
+class MqEndpointConsumerException(Exception):
+    pass
+
+
 class MqEndpoint:
 
     def __init__(self, name, exchange, req_queue, response_queue):
@@ -45,11 +49,16 @@ class MqEndpoint:
 
         self.consumer.acknowledge_message(properties, delivery_tag)
 
-        if self.auto_response_files:
-            with open(self.auto_response_files[self.index]) as f:
-                body = json.load(f)
-                self.publisher.publish_message(body, BasicProperties(app_id="Integration Test", content_type="application/json", correlation_id=correlation_id))
-            self.index = (self.index + 1) % len(self.auto_response_files)
+        if not self.auto_response_files:
+            raise MqEndpointConsumerException(f"{self.name}: Auto-responses is empty")
+
+        if self.index == len(self.auto_response_files):
+            raise MqEndpointConsumerException(f"{self.name}: There are not enough auto-responses defined")
+
+        with open(self.auto_response_files[self.index]) as f:
+            body = json.load(f)
+            self.publisher.publish_message(body, BasicProperties(app_id="Integration Test", content_type="application/json", correlation_id=correlation_id))
+        self.index += 1
 
     def set_responses(self, auto_response_files=None):
         if auto_response_files is None:
