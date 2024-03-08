@@ -33,7 +33,9 @@ import org.springframework.web.client.RestTemplate;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -52,8 +54,6 @@ public class BipApiService implements IBipApiService {
   static final String CONTENTION = "/claims/%s/contentions";
   static final String SPECIAL_ISSUE_TYPES = "/contentions/special_issue_types";
 
-  static final String JWT_TYPE = "JWT";
-
   @Qualifier("bipCERestTemplate")
   @NonNull
   final RestTemplate restTemplate;
@@ -66,7 +66,7 @@ public class BipApiService implements IBipApiService {
   public GetClaimResponse getClaimDetails(long claimId) {
     String url = bipApiProps.getClaimRequestUrl(String.format(CLAIM_DETAILS, claimId));
 
-    return makeRequest(url, HttpMethod.GET, GetClaimResponse.class);
+    return makeRequest(url, HttpMethod.GET, null, GetClaimResponse.class);
   }
 
   @Override
@@ -82,7 +82,7 @@ public class BipApiService implements IBipApiService {
   public GetClaimContentionsResponse getClaimContentions(long claimId) {
     String url = bipApiProps.getClaimRequestUrl(String.format(CONTENTION, claimId));
 
-    return makeRequest(url, HttpMethod.GET, GetClaimContentionsResponse.class);
+    return makeRequest(url, HttpMethod.GET, null, GetClaimContentionsResponse.class);
   }
 
   @Override
@@ -125,8 +125,8 @@ public class BipApiService implements IBipApiService {
     String url =
         bipApiProps.getClaimRequestUrl(String.format(TEMP_STATION_OF_JURISDICTION, claimId));
 
-    String tsoj = request.getTempStationOfJurisdiction();
-    Map<String, String> requestBody = Map.of("tempStationOfJurisdiction", tsoj);
+    Map<String, Object> requestBody = new HashMap<>();
+    requestBody.put("tempStationOfJurisdiction", request.getTempStationOfJurisdiction());
 
     return makeRequest(
         url, HttpMethod.PUT, requestBody, PutTempStationOfJurisdictionResponse.class);
@@ -138,16 +138,17 @@ public class BipApiService implements IBipApiService {
     try {
       HttpEntity<Object> httpEntity = new HttpEntity<>(requestBody, getBipHeader());
       log.info("event=requestSent url={} method={}", url, method);
-      ResponseEntity<String> bipResponse =
-          restTemplate.exchange(url, method, httpEntity, String.class);
+      ResponseEntity<T> bipResponse =
+          restTemplate.exchange(url, method, httpEntity, expectedResponse);
       log.info(
           "event=responseReceived url={} method={} status={}",
           url,
           method,
           bipResponse.getStatusCode().value());
+
       BipPayloadResponse.BipPayloadResponseBuilder<?, ?> responseBuilder;
       if (bipResponse.hasBody()) {
-        responseBuilder = mapper.readValue(bipResponse.getBody(), expectedResponse).toBuilder();
+        responseBuilder = Objects.requireNonNull(bipResponse.getBody()).toBuilder();
       } else {
         responseBuilder = mapper.readValue("{}", expectedResponse).toBuilder();
       }
@@ -173,11 +174,6 @@ public class BipApiService implements IBipApiService {
           e.getMessage());
       throw new BipException(e.getMessage(), e);
     }
-  }
-
-  private <T extends BipPayloadResponse> T makeRequest(
-      String url, HttpMethod method, Class<T> expectedResponse) {
-    return makeRequest(url, method, null, expectedResponse);
   }
 
   /**
