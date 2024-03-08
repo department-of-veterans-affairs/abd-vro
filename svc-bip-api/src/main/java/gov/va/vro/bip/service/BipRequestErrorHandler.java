@@ -68,6 +68,7 @@ public class BipRequestErrorHandler implements RabbitListenerErrorHandler {
           .build();
 
     } else {
+      log.error("Unexpected Error in svc-bip-api", exception);
       String timestamp = Instant.now().toString();
       List<BipMessage> errs =
           List.of(

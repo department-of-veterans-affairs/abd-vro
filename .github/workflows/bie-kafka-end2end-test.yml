@@ -154,7 +154,7 @@ jobs:
 
       - name: "Upload artifact"
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: bie-kafka-end2end-test-with-mock-container-logs
           path: ./bie-kafka-end2end-test-with-mock-container-logs/**

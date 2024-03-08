@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 
 /** Data object used in update claim contention(s) endpoint: PUT /claims/{claimId}/contentions */
 @Getter
@@ -20,7 +20,7 @@ public class ExistingContention extends Contention {
   private long contentionId;
 
   @JsonProperty("lastModified")
-  private Instant lastModified;
+  private OffsetDateTime lastModified;
 
   @JsonProperty("lifecycleStatus")
   private String lifecycleStatus;

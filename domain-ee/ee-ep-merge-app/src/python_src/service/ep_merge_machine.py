@@ -1,7 +1,8 @@
 import asyncio
 import logging
+import os
 from enum import Enum
-from typing import Type
+from typing import Type, Callable
 
 from fastapi.encoders import jsonable_encoder
 from hoppy.async_hoppy_client import AsyncHoppyClient
@@ -41,6 +42,14 @@ JOB_NEW_CONTENTIONS_METRIC = 'job.new_contentions'
 
 CANCEL_TRACKING_EP = "60"
 CANCELLATION_REASON_FORMAT = "Issues moved into or confirmed in pending EP{ep_code} - claim #{claim_id}"
+
+# definitions for retrying to get contentions from EP400
+EP400_CONTENTION_RETRIES = int(os.getenv("EP400_CONTENTION_RETRIES") or 30)
+EP400_CONTENTION_RETRY_WAIT_TIME = int(os.getenv("EP400_CONTENTION_RETRY_WAIT_TIME") or 2)
+
+
+def ep400_has_no_contentions(response: get_contentions.Response):
+    return not response.contentions
 
 
 class Workflow(str, Enum):
@@ -151,8 +160,7 @@ class EpMergeMachine(StateMachine):
 
         if response is not None and response.status_code == 200:
             if response.claim is None or response.claim.end_product_code is None:
-                logging.info(self.job.state)
-                self.add_error(f"Pending claim #{self.job.pending_claim_id} does not have an end product code")
+                self.add_error(f"error='Pending claim #{self.job.pending_claim_id} does not have an end product code'")
             else:
                 self.cancellation_reason = CANCELLATION_REASON_FORMAT.format(ep_code=response.claim.end_product_code, claim_id=self.job.pending_claim_id)
             self.original_tsoj = response.claim.temp_station_of_jurisdiction
@@ -168,12 +176,19 @@ class EpMergeMachine(StateMachine):
     @running_get_ep400_contentions.enter
     def on_get_ep400_contentions(self, event, pending_contentions_response=None):
         request = get_contentions.Request(claim_id=self.job.ep400_claim_id)
+        expected_responses = [200, 204]
         response = self.make_request(
             request=request,
             hoppy_client=HOPPY.get_client(ClientName.GET_CLAIM_CONTENTIONS),
             response_type=get_contentions.Response,
-            expected_statuses=[200, 204],
+            expected_statuses=expected_responses,
+            max_retries=EP400_CONTENTION_RETRIES,
+            retry_wait_time=EP400_CONTENTION_RETRY_WAIT_TIME,
+            will_retry_condition=ep400_has_no_contentions,
         )
+        if response and (response.status_code in expected_responses and not response.contentions):
+            self.add_error(f"error='EP400 claim #{self.job.ep400_claim_id} does not have any contentions'")
+
         self.send(event=event, pending_contentions_response=pending_contentions_response, ep400_contentions_response=response)
 
     @running_set_temp_station_of_jurisdiction.enter
@@ -279,7 +294,7 @@ class EpMergeMachine(StateMachine):
                 f"job_id={self.job.job_id} "
                 f"pending_claim_id={self.job.pending_claim_id} "
                 f"ep400_claim_id={self.job.ep400_claim_id} "
-                f"state={self.job.state}"
+                f"state={self.job.state} "
                 f"job_duration_seconds={job_duration}"
             )
 
@@ -299,15 +314,20 @@ class EpMergeMachine(StateMachine):
                 if self.skipped_merge:
                     increment(JOB_SKIPPED_MERGE_METRIC)
 
-    def make_request(
-        self, request: GeneralRequest, hoppy_client: AsyncHoppyClient, response_type: Type[GeneralResponse], expected_statuses: list[int] | int = 200
+    async def make_hoppy_request(
+        self,
+        hoppy_client,
+        request_id,
+        request_body,
+        response_type: Type[GeneralResponse],
+        expected_statuses,
+        max_retries,
+        retry_wait_time,
+        will_retry_condition,
     ):
-        if not isinstance(expected_statuses, list):
-            expected_statuses = [expected_statuses]
-        try:
-            loop = asyncio.new_event_loop()
-            req = hoppy_client.make_request(self.job.job_id, request.model_dump(by_alias=True))
-            response = loop.run_until_complete(req)
+        attempts = 0
+        while True:
+            response = await hoppy_client.make_request(request_id, request_body)
             model = response_type.model_validate(response)
             if model.status_code not in expected_statuses:
                 self.add_error(
@@ -315,7 +335,39 @@ class EpMergeMachine(StateMachine):
                     if model.messages
                     else f"client={hoppy_client.name} error='Unknown Downstream Error' status={model.status_code} status_message={model.status_message}"
                 )
-            return model
+                break
+
+            attempts += 1
+            if attempts == max_retries or not will_retry_condition(model):
+                break
+            await asyncio.sleep(retry_wait_time)
+        return model
+
+    def make_request(
+        self,
+        request: GeneralRequest,
+        hoppy_client: AsyncHoppyClient,
+        response_type: Type[GeneralResponse],
+        expected_statuses: list[int] | int = 200,
+        max_retries: int = 1,
+        retry_wait_time: int = 2,
+        will_retry_condition: Callable[[Type[GeneralResponse]], bool] = lambda x: False,
+    ):
+        if not isinstance(expected_statuses, list):
+            expected_statuses = [expected_statuses]
+        try:
+            loop = asyncio.new_event_loop()
+            req = self.make_hoppy_request(
+                hoppy_client,
+                self.job.job_id,
+                request.model_dump(by_alias=True),
+                response_type,
+                expected_statuses,
+                max_retries,
+                retry_wait_time,
+                will_retry_condition,
+            )
+            return loop.run_until_complete(req)
         except ValidationError as e:
             self.add_error(f"client={hoppy_client.name} error={e.errors(include_url=False, include_input=False)}")
         except ResponseException as e:
@@ -333,7 +385,5 @@ class EpMergeMachine(StateMachine):
         return contentions
 
     def add_error(self, error):
+        logging.warning(f"event=jobError job_id={self.job.job_id} state={self.job.state} {error}")
         self.job.error(error)
-
-    def add_message(self, message):
-        self.job.add_message(message)

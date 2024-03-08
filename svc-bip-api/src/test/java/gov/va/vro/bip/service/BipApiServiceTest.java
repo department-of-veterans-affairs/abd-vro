@@ -52,7 +52,7 @@ import org.springframework.web.client.RestTemplate;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -283,7 +283,7 @@ public class BipApiServiceTest {
                 List.of(
                     Contention.builder()
                         .medicalInd(true)
-                        .beginDate(Instant.parse("2023-09-27T00:00:00-06:00"))
+                        .beginDate(OffsetDateTime.parse("2023-09-27T00:00:00-06:00"))
                         .contentionTypeCode("NEW")
                         .claimantText("tendinitis/bilateral")
                         .build()))
@@ -307,7 +307,7 @@ public class BipApiServiceTest {
                 List.of(
                     Contention.builder()
                         .medicalInd(true)
-                        .beginDate(Instant.parse("2023-09-27T00:00:00-06:00"))
+                        .beginDate(OffsetDateTime.parse("2023-09-27T00:00:00-06:00"))
                         .contentionTypeCode("NEW")
                         .claimantText("tendinitis/bilateral")
                         .build()))
@@ -330,7 +330,7 @@ public class BipApiServiceTest {
                 List.of(
                     Contention.builder()
                         .medicalInd(true)
-                        .beginDate(Instant.parse("2023-09-27T00:00:00-06:00"))
+                        .beginDate(OffsetDateTime.parse("2023-09-27T00:00:00-06:00"))
                         .contentionTypeCode("NEW")
                         .claimantText("tendinitis/bilateral")
                         .build()))
@@ -354,7 +354,7 @@ public class BipApiServiceTest {
                 List.of(
                     ExistingContention.builder()
                         .medicalInd(true)
-                        .beginDate(Instant.parse("2023-09-27T00:00:00-06:00"))
+                        .beginDate(OffsetDateTime.parse("2023-09-27T00:00:00-06:00"))
                         .contentionTypeCode("NEW")
                         .claimantText("tendinitis/bilateral")
                         .build()))
@@ -376,7 +376,7 @@ public class BipApiServiceTest {
                 List.of(
                     ExistingContention.builder()
                         .medicalInd(true)
-                        .beginDate(Instant.parse("2023-09-27T00:00:00-06:00"))
+                        .beginDate(OffsetDateTime.parse("2023-09-27T00:00:00-06:00"))
                         .contentionTypeCode("NEW")
                         .claimantText("tendinitis/bilateral")
                         .build()))
@@ -399,7 +399,7 @@ public class BipApiServiceTest {
                 List.of(
                     ExistingContention.builder()
                         .medicalInd(true)
-                        .beginDate(Instant.parse("2023-09-27T00:00:00-06:00"))
+                        .beginDate(OffsetDateTime.parse("2023-09-27T00:00:00-06:00"))
                         .contentionTypeCode("NEW")
                         .claimantText("tendinitis/bilateral")
                         .build()))
