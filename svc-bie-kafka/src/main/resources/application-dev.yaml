@@ -1,14 +1,14 @@
 spring:
   kafka:
-    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:bip-kafka.tst.bip.va.gov:443}"
+    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:bip-kafka.dev.bip.va.gov:443}"
     properties:
-      schema.registry.url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://${BIE_KAFKA_RBAC_USERNAME}:${BIE_KAFKA_RBAC_PASSWORD}@bip-schemaregistry.tst.bip.va.gov}"
+      schema.registry.url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://${BIE_KAFKA_RBAC_USERNAME}:${BIE_KAFKA_RBAC_PASSWORD}@bip-schemaregistry.dev.bip.va.gov}"
       security.protocol: SASL_SSL
       security.inter.broker.protocol: SASL_SSL
       sasl:
         mechanism: PLAIN
         jaas:
-          config: "org.apache.kafka.common.security.plain.PlainLoginModule required username=${BIE_KAFKA_RBAC_USERNAME:USERNAME} password=${BIE_KAFKA_RBAC_PASSWORD:PASSWORD};"
+          config: "org.apache.kafka.common.security.plain.PlainLoginModule required username=${BIE_KAFKA_RBAC_USERNAME} password=${BIE_KAFKA_RBAC_PASSWORD};"
       ssl:
         # Keystore not needed https://dsva.slack.com/archives/C04U8GESRT7/p1708456986385019?thread_ts=1706878417.546749&cid=C04U8GESRT7
 #        key-store-type: PKCS12
