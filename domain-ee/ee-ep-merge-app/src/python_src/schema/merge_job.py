@@ -57,17 +57,16 @@ class MergeJob(BaseModel):
     class Meta:
         orm_model = model.merge_job.MergeJob
 
-    def error(self, messages):
+    def error(self, message: dict[Any, Any]):
         self.error_state = self.state
         self.state = JobState.COMPLETED_ERROR
-        self.add_message(messages)
+        self.add_message(message)
 
-    def add_message(self, messages):
-        if messages:
+    def add_message(self, message: dict[Any, Any]):
+        if len(message):
             if self.messages is None:
                 self.messages = []
-            msgs = [str(m) for m in messages] if isinstance(messages, list) else [str(messages)]
-            self.messages.extend(msgs)
+            self.messages.append(message)
 
     def update(self, new_state: JobState):
         self.state = new_state
