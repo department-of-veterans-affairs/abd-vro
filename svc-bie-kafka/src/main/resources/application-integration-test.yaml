@@ -11,7 +11,7 @@ spring:
       sasl:
         mechanism: PLAIN
         jaas:
-          config: "org.apache.kafka.common.security.plain.PlainLoginModule required username=${BIE_KAFKA_RBAC_USERNAME:USERNAME} password=${BIE_KAFKA_RBAC_PASSWORD:PASSWORD};"
+          config: "org.apache.kafka.common.security.plain.PlainLoginModule required username=${BIE_KAFKA_RBAC_USERNAME} password=${BIE_KAFKA_RBAC_PASSWORD};"
       ssl:
         # Disable hostname verification to avoid error for 'localhost' by setting to empty string
         endpoint.identification.algorithm:
