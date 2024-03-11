@@ -331,7 +331,9 @@ class EpMergeMachine(StateMachine):
             response = await hoppy_client.make_request(request_id, request_body)
             model = response_type.model_validate(response)
             if model.status_code not in expected_statuses:
-                self.add_client_error(hoppy_client.name, GeneralResponse.model_validate(response))
+                self.add_client_error(
+                    hoppy_client.name, GeneralResponse(status_code=model.status_code, status_message=model.status_message, messages=model.messages)
+                )
                 break
 
             attempts += 1
