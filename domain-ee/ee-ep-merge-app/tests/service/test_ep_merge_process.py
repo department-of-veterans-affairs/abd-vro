@@ -101,7 +101,7 @@ class TestUpToGetPendingClaim:
         self, machine, mock_hoppy_async_client, metric_logger_distribution, metric_logger_increment, no_contentions_response
     ):
         mock_async_responses(mock_hoppy_async_client, [ResponseException("Oops"), no_contentions_response])
-        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM, 1)
+        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM, 2)
         mock_hoppy_async_client.make_request.assert_has_calls(
             [
                 call(machine.job.job_id, get_pending_claim_req),
@@ -129,7 +129,7 @@ class TestUpToGetPendingClaim:
                 invalid_request,
             ],
         )
-        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE, 2)
+        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE, 3)
         mock_hoppy_async_client.make_request.assert_has_calls(
             [
                 call(machine.job.job_id, get_pending_claim_req),
@@ -207,7 +207,7 @@ class TestUpToGetPendingContentions:
         self, machine, mock_hoppy_async_client, metric_logger_distribution, metric_logger_increment, no_contentions_response
     ):
         mock_async_responses(mock_hoppy_async_client, [get_pending_claim_200, ResponseException("Oops"), no_contentions_response])
-        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM_CONTENTIONS, 1)
+        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM_CONTENTIONS, 2)
         mock_hoppy_async_client.make_request.assert_has_calls(
             [
                 call(machine.job.job_id, get_pending_claim_req),
@@ -237,7 +237,7 @@ class TestUpToGetPendingContentions:
                 invalid_request,
             ],
         )
-        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE, 2)
+        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE, 3)
         mock_hoppy_async_client.make_request.assert_has_calls(
             [
                 call(machine.job.job_id, get_pending_claim_req),
@@ -488,7 +488,7 @@ class TestUpToMoveContentionsToPendingClaim:
                 invalid_request,
             ],
         )
-        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.MOVE_CONTENTIONS_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION, 2)
+        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.MOVE_CONTENTIONS_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION, 3)
         mock_hoppy_async_client.make_request.assert_has_calls(
             [
                 call(machine.job.job_id, get_pending_claim_req),
@@ -574,7 +574,7 @@ class TestUpToCancelClaim:
                 invalid_request,
             ],
         )
-        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION, 2)
+        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION, 3)
         mock_hoppy_async_client.make_request.assert_has_calls(
             [
                 call(machine.job.job_id, get_pending_contentions_req),
