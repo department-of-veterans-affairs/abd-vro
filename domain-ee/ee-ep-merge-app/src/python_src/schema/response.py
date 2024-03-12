@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_serializer
 from pydantic.alias_generators import to_camel
 
 
@@ -13,6 +13,10 @@ class Message(BaseModel):
     text: str | None = None
     timestamp: datetime | None = None
     http_status: str | None = None
+
+    @field_serializer('timestamp')
+    def serialize_datetime(self, dt: datetime, _info):
+        return None if dt is None else dt.isoformat()
 
 
 class GeneralResponse(BaseModel):
