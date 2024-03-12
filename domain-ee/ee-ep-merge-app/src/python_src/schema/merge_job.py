@@ -63,7 +63,7 @@ class MergeJob(BaseModel):
         self.add_message(message)
 
     def add_message(self, message: dict[Any, Any]):
-        if len(message):
+        if message:
             if self.messages is None:
                 self.messages = []
             self.messages.append(message)
