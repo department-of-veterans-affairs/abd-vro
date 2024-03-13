@@ -11,11 +11,11 @@ import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuil
 import org.apache.hc.client5.http.io.HttpClientConnectionManager;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.ByteArrayInputStream;
@@ -28,6 +28,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.util.Base64;
+import java.util.List;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
@@ -65,7 +66,7 @@ public class BipApiConfig {
       throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
     KeyStore keyStore = KeyStore.getInstance("PKCS12");
     String noSpaceBase64 = base64.replaceAll("\\s+", "");
-    byte[] decodedBytes = new byte[] {};
+    byte[] decodedBytes;
     try {
       decodedBytes = Base64.getDecoder().decode(noSpaceBase64);
     } catch (IllegalArgumentException e) {
@@ -77,15 +78,9 @@ public class BipApiConfig {
     return keyStore;
   }
 
-  /**
-   * Get Rest template for BIP API connection.
-   *
-   * @param builder RestTemplateBuilder
-   * @return Rest template, request factory
-   * @throws BipException failure to create connection
-   */
   @Bean(name = "bipCERestTemplate")
-  public RestTemplate getHttpsRestTemplate(RestTemplateBuilder builder) throws BipException {
+  public RestTemplate getHttpsRestTemplate(List<HttpMessageConverter<?>> messageConverters)
+      throws BipException {
     try {
       if (trustStore.isEmpty() && password.isEmpty()) {
         log.info("No valid BIP mTLS setup. Skip related setup.");
@@ -122,7 +117,9 @@ public class BipApiConfig {
           HttpClients.custom().setConnectionManager(connectionManager).build();
       ClientHttpRequestFactory requestFactory =
           new HttpComponentsClientHttpRequestFactory(httpClient);
-      return new RestTemplate(requestFactory);
+      RestTemplate restTemplate = new RestTemplate(requestFactory);
+      restTemplate.setMessageConverters(messageConverters);
+      return restTemplate;
     } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
       log.error("Failed to create SSL context for VA certificate. {}", e.getMessage(), e);
       throw new BipException("Failed to create SSL context.", e);
