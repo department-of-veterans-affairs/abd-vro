@@ -18,7 +18,8 @@ EP400_WITH_NO_CONTENTIONS = 10006
 CLAIM_ID_ERROR_AT_GET_CLAIM_DETAILS = 5001
 CLAIM_ID_ERROR_AT_CANCEL_CLAIM = 5002
 CLAIM_ID_ERROR_AT_SET_TSOJ = 5003
-CLAIM_ID_ERROR_AT_GET_CONTENTIONS = 5004
+CLAIM_ID_ERROR_AT_GET_PENDING_CONTENTIONS = 5004
+CLAIM_ID_ERROR_AT_GET_EP400_CONTENTIONS = 50041
 CLAIM_ID_ERROR_AT_UPDATE_CONTENTIONS = 5005
 CLAIM_ID_ERROR_AT_CREATE_CONTENTIONS = 5006
 
@@ -80,7 +81,14 @@ class TestRestart:
                     id="fail to get pending claim details",
                 ),
                 pytest.param(
-                    CLAIM_ID_ERROR_AT_GET_CONTENTIONS,
+                    PENDING_CLAIM_ID,
+                    CLAIM_ID_ERROR_AT_GET_CLAIM_DETAILS,
+                    JobState.GET_EP400_CLAIM,
+                    1,
+                    id="fail to get ep400 claim details",
+                ),
+                pytest.param(
+                    CLAIM_ID_ERROR_AT_GET_PENDING_CONTENTIONS,
                     EP400_WITH_MULTI_CONTENTION_NO_DUPLICATES,
                     JobState.GET_PENDING_CLAIM_CONTENTIONS,
                     1,
@@ -88,7 +96,7 @@ class TestRestart:
                 ),
                 pytest.param(
                     PENDING_CLAIM_ID,
-                    CLAIM_ID_ERROR_AT_GET_CONTENTIONS,
+                    CLAIM_ID_ERROR_AT_GET_EP400_CONTENTIONS,
                     JobState.GET_EP400_CLAIM_CONTENTIONS,
                     1,
                     id="fail to get ep400 claim contentions",
@@ -111,7 +119,7 @@ class TestRestart:
                     id="fail to remove special issues from ep400 claim after failing to get pending claim",
                 ),
                 pytest.param(
-                    CLAIM_ID_ERROR_AT_GET_CONTENTIONS,
+                    CLAIM_ID_ERROR_AT_GET_EP400_CONTENTIONS,
                     CLAIM_ID_ERROR_AT_UPDATE_CONTENTIONS,
                     JobState.GET_PENDING_CLAIM_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE,
                     2,
