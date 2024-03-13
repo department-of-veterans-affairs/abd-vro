@@ -12,7 +12,8 @@ public class ClaimIdConstants {
   public static final int CLAIM_ID_SET_TSOJ_YIELDS_500 = 5003;
 
   // GET /claims/{claimId}/contentions
-  public static final int CLAIM_ID_GET_CONTENTIONS_YIELDS_500 = 5004;
+  public static final int CLAIM_ID_GET_PENDING_EP_CONTENTIONS_YIELDS_500 = 5004;
+  public static final int CLAIM_ID_GET_SUPP_EP_CONTENTIONS_YIELDS_500 = 50041;
   // PUT /claims/{claimId}/contentions
   public static final int CLAIM_ID_UPDATE_CONTENTIONS_YIELDS_500 = 5005;
   // POST /claims/{claimId}/contentions
