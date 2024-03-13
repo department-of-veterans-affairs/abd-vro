@@ -40,7 +40,7 @@ JOB_DURATION_METRIC = 'job.duration'
 JOB_SKIPPED_MERGE_METRIC = 'job.skipped_merge'
 JOB_NEW_CONTENTIONS_METRIC = 'job.new_contentions'
 
-EP400_PRODUCT_CODES = range(400, 410)
+EP400_PRODUCT_CODES = frozenset([str(i) for i in range(400, 410)])
 EP400_BENEFIT_CLAIM_TYPE_CODES = frozenset(['400SUPP'])
 
 CANCEL_TRACKING_EP = "60"
