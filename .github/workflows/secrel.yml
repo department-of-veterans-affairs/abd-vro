@@ -48,16 +48,6 @@ jobs:
         id: check-state
         run: |
           # Gate Check
-
-          # Use triggering_actor instead of actor to allow manually re-running this workflow as another user
-          if [ "${{github.triggering_actor}}" == "abd-vro-machine" ]; then
-            elif echo "$HEAD_COMMIT_MSG" | grep '^Automated commit:'; then
-              CONTINUE=false
-              echo "Skipping this workflow b/c it was triggered by an automated commit that \
-          doesn't change container images." | tee -a "$GITHUB_STEP_SUMMARY"
-            fi
-          fi
-
           if [ "${{ github.event_name }}" == "pull_request" ]; then
             if echo "$GITHUB_HEAD_REF" | grep '^dependabot/'; then
               CONTINUE=true

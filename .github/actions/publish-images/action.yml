@@ -59,6 +59,9 @@ runs:
         echo -n "[" >> "$GITHUB_OUTPUT"
         source scripts/image_vars.src
         for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
+          # This IMG_TAG value will cause a new image to be publish (and scanned by SecRel)
+          IMG_TAG="${{ inputs.image_tag }}"
+
           IMG_NAME="${{ inputs.image_prefix }}$(getVarValue "${PREFIX}" _IMG)"
           echo "::group::Push image $IMG_NAME $IMG_TAG"
           GHCR_PATH="ghcr.io/${{ github.repository }}/${IMG_NAME}"

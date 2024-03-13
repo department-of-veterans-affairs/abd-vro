@@ -50,7 +50,44 @@ do
   fi
 done
 
-#echo "HELM_ARGS: $HELM_ARGS"
+helmArgsForSubchart(){
+  if [ -z "$2" ] || [ "$2" == "(disable)" ]; then
+    echo "--set $1.enabled=false"
+  else
+    echo "--set $1.enabled=true --set-string $1-chart.imageTag=$2"
+  fi
+}
+platformChartArgs(){
+  HELM_ARGS="$HELM_ARGS \
+    $(helmArgsForSubchart rabbitmq "$RABBITMQ_VER") \
+    $(helmArgsForSubchart redis "$REDIS_VER") \
+  "
+  echo "Platform HELM_ARGS: $HELM_ARGS"
+}
+
+case "$HELM_CHART" in
+  platform)
+    if [ "${SHUTDOWN_FIRST}" == "true" ]; then
+      : echo "Since Helm chart was shut down, don't need to delete other charts."
+    fi
+    platformChartArgs
+    ;;
+  api-gateway)
+    HELM_ARGS="$HELM_ARGS --set-string imageTag=$apigateway_VER ";;
+  vro-app)
+    HELM_ARGS="$HELM_ARGS --set-string imageTag=$app_VER \
+      --set-string dbInit.imageTag=$dbinit_VER "
+    ;;
+  svc-bgs-api)
+    HELM_ARGS="$HELM_ARGS --set-string imageTag=$svcbgsapi_VER ";;
+  svc-lighthouse-api)
+    HELM_ARGS="$HELM_ARGS --set-string imageTag=$svclighthouseapi_VER ";;
+  svc-bip-api)
+    HELM_ARGS="$HELM_ARGS --set-string imageTag=$svcbipapi_VER";;
+  postgres)
+    HELM_ARGS="$HELM_ARGS --set-string imageTag=$postgres_VER";;
+esac
+
 set -x
 # Exit with error code when command fails so that GH Action fails
 set -e

@@ -179,7 +179,6 @@ jobs:
           export WAIT_TIMEOUT=10m
           export TRIGGERING_ACTOR="${{github.triggering_actor}}"
 
-          # To override pinned image version default, export env variable, e.g., 'apigateway_VER' for Helm chart 'api-gateway'
           VAR_PREFIX=$(bashVarPrefix "${{inputs.helm_chart}}")
           eval export "${VAR_PREFIX}_VER=${{inputs.image_tag}}"
 
