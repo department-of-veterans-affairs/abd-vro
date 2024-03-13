@@ -40,6 +40,9 @@ JOB_DURATION_METRIC = 'job.duration'
 JOB_SKIPPED_MERGE_METRIC = 'job.skipped_merge'
 JOB_NEW_CONTENTIONS_METRIC = 'job.new_contentions'
 
+EP400_PRODUCT_CODES = frozenset([str(i) for i in range(400, 410)])
+EP400_BENEFIT_CLAIM_TYPE_CODES = frozenset(['400SUPP'])
+
 CANCEL_TRACKING_EP = "60"
 CANCELLATION_REASON_FORMAT = "Issues moved into or confirmed in pending EP{ep_code} - claim #{claim_id}"
 
@@ -73,6 +76,8 @@ class EpMergeMachine(StateMachine):
     running_get_pending_claim_failed_remove_special_issue = State(value=JobState.GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE)
     running_get_pending_contentions = State(value=JobState.GET_PENDING_CLAIM_CONTENTIONS)
     running_get_pending_contentions_failed_remove_special_issue = State(value=JobState.GET_PENDING_CLAIM_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE)
+    running_get_ep400_claim = State(value=JobState.GET_EP400_CLAIM)
+    running_get_ep400_claim_failed_remove_special_issue = State(value=JobState.GET_EP400_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE)
     running_get_ep400_contentions = State(value=JobState.GET_EP400_CLAIM_CONTENTIONS)
     running_set_temp_station_of_jurisdiction = State(value=JobState.SET_TEMP_STATION_OF_JURISDICTION)
     running_set_temp_station_of_jurisdiction_failed_remove_special_issue = State(value=JobState.SET_TEMP_STATION_OF_JURISDICTION_FAILED_REMOVE_SPECIAL_ISSUE)
@@ -88,9 +93,12 @@ class EpMergeMachine(StateMachine):
 
     process = (
         pending.to(running_get_pending_claim)
-        | running_get_pending_claim.to(running_get_pending_contentions, unless="has_error")
+        | running_get_pending_claim.to(running_get_ep400_claim, unless="has_error")
         | running_get_pending_claim.to(running_get_pending_claim_failed_remove_special_issue, cond="has_error")
         | running_get_pending_claim_failed_remove_special_issue.to(completed_error)
+        | running_get_ep400_claim.to(running_get_pending_contentions, unless="has_error")
+        | running_get_ep400_claim.to(running_get_ep400_claim_failed_remove_special_issue, cond="has_error")
+        | running_get_ep400_claim_failed_remove_special_issue.to(completed_error)
         | running_get_pending_contentions.to(running_get_ep400_contentions, unless="has_error")
         | running_get_pending_contentions.to(running_get_pending_contentions_failed_remove_special_issue, cond="has_error")
         | running_get_pending_contentions_failed_remove_special_issue.to(completed_error)
@@ -167,6 +175,24 @@ class EpMergeMachine(StateMachine):
 
         self.send(event=event)
 
+    @running_get_ep400_claim.enter
+    def on_get_ep400_claim(self, event):
+        request = get_claim.Request(claim_id=self.job.ep400_claim_id)
+        response = self.make_request(request=request, hoppy_client=HOPPY.get_client(ClientName.GET_CLAIM), response_type=get_claim.Response)
+
+        if response is not None and response.status_code == 200:
+            claim = response.claim
+            if claim is None or claim.end_product_code is None:
+                self.add_job_error(f"EP400 claim #{self.job.ep400_claim_id} does not have an end product code")
+            elif claim.end_product_code not in EP400_PRODUCT_CODES:
+                self.add_job_error(f"EP400 claim #{self.job.ep400_claim_id} end product code of '{claim.end_product_code}' is not supported")
+            elif claim.benefit_claim_type is None or claim.benefit_claim_type.code is None:
+                self.add_job_error(f"EP400 claim #{self.job.ep400_claim_id} does not have a benefit claim type code")
+            elif claim.benefit_claim_type.code not in EP400_BENEFIT_CLAIM_TYPE_CODES:
+                self.add_job_error(f"EP400 claim #{self.job.ep400_claim_id} benefit claim type code of '{claim.benefit_claim_type.code}' is not supported")
+
+        self.send(event=event)
+
     @running_get_pending_contentions.enter
     def on_get_pending_contentions(self, event):
         request = get_contentions.Request(claim_id=self.job.pending_claim_id)
@@ -230,6 +256,7 @@ class EpMergeMachine(StateMachine):
 
     @running_get_pending_claim_failed_remove_special_issue.enter
     @running_get_pending_contentions_failed_remove_special_issue.enter
+    @running_get_ep400_claim_failed_remove_special_issue.enter
     @running_set_temp_station_of_jurisdiction_failed_remove_special_issue.enter
     @running_move_contentions_failed_remove_special_issue.enter
     def on_pre_cancel_step_failed_remove_special_issue_code(self, event, ep400_contentions_response=None):

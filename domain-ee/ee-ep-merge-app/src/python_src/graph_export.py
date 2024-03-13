@@ -25,7 +25,7 @@ class DotGraphMachine:
             label=f"{machine.name} {machine.main_event}",
             fontname=self.font_name,
             fontsize=self.state_font_size,
-            rankdir="LR",
+            rankdir="TB",
         )
 
     def _initial_node(self):

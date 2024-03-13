@@ -43,6 +43,7 @@ response_400 = f'{RESPONSE_DIR}/400_response.json'
 response_500 = f'{RESPONSE_DIR}/500_response.json'
 pending_claim_200 = f'{RESPONSE_DIR}/get_pending_claim_200.json'
 pending_contentions_increase_tendinitis_200 = f'{RESPONSE_DIR}/claim_contentions_increase_tendinitis_200.json'
+ep400_claim_200 = f'{RESPONSE_DIR}/get_ep400_claim_200.json'
 ep400_contentions_increase_tinnitus_200 = f'{RESPONSE_DIR}/claim_contentions_increase_tinnitus_200.json'
 ep400_contentions_increase_tinnitus_without_special_issues_200 = f'{RESPONSE_DIR}/claim_contentions_increase_tinnitus_without_special_issues_200.json'
 pending_contentions_increase_tinnitus_200 = f'{RESPONSE_DIR}/claim_contentions_increase_tinnitus_200.json'
@@ -63,6 +64,8 @@ get_pending_claim_200 = load_response(pending_claim_200, get_claim.Response)
 get_pending_contentions_req = get_contentions.Request(claim_id=PENDING_CLAIM_ID).model_dump(by_alias=True)
 get_pending_contentions_200 = load_response(pending_contentions_increase_tendinitis_200, get_contentions.Response)
 get_pending_contentions_increase_tinnitus_200 = load_response(pending_contentions_increase_tinnitus_200, get_contentions.Response)
+get_ep400_claim_req = get_claim.Request(claim_id=EP400_CLAIM_ID).model_dump(by_alias=True)
+get_ep400_claim_200 = load_response(ep400_claim_200, get_claim.Response)
 get_ep400_contentions_req = get_contentions.Request(claim_id=EP400_CLAIM_ID).model_dump(by_alias=True)
 get_ep400_contentions_200 = load_response(ep400_contentions_increase_tinnitus_200, get_contentions.Response)
 # Add special issue code to contention from config
