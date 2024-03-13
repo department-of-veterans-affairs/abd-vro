@@ -23,9 +23,6 @@ NAMESPACE=va-abd-rrd-${TARGET_ENV}
 : ${GITHUB_SHA:=$(git rev-parse HEAD)}
 : ${TRIGGERING_ACTOR:=$USER}
 
-#echo -e "TARGET_ENV=$TARGET_ENV \t HELM_CHART=HELM_CHART \t IMAGE_TAG=$IMAGE_TAG"
-#echo -e "RELEASE_NAME=$RELEASE_NAME \t NAMESPACE=$NAMESPACE \t GITHUB_SHA=$GITHUB_SHA"
-
 if [ "${SHUTDOWN_FIRST}" == "true" ]; then
   helm del "$RELEASE_NAME" --wait -n "$NAMESPACE" || exit 5
 fi
@@ -52,44 +49,6 @@ do
     HELM_ARGS="$HELM_ARGS -f $VALUES_FILE"
   fi
 done
-
-helmArgsForSubchart(){
-  if [ -z "$2" ] || [ "$2" == "(disable)" ]; then
-    echo "--set $1.enabled=false"
-  else
-    echo "--set $1.enabled=true --set-string $1-chart.imageTag=$2"
-  fi
-}
-platformChartArgs(){
-  HELM_ARGS="$HELM_ARGS \
-    $(helmArgsForSubchart rabbitmq "$RABBITMQ_VER") \
-    $(helmArgsForSubchart redis "$REDIS_VER") \
-  "
-  echo "Platform HELM_ARGS: $HELM_ARGS"
-}
-
-case "$HELM_CHART" in
-  platform)
-    if [ "${SHUTDOWN_FIRST}" == "true" ]; then
-      : echo "Since Helm chart was shut down, don't need to delete other charts."
-    fi
-    platformChartArgs
-    ;;
-  api-gateway)
-    HELM_ARGS="$HELM_ARGS --set-string imageTag=$apigateway_VER ";;
-  vro-app)
-    HELM_ARGS="$HELM_ARGS --set-string imageTag=$app_VER \
-      --set-string dbInit.imageTag=$dbinit_VER "
-    ;;
-  svc-bgs-api)
-    HELM_ARGS="$HELM_ARGS --set-string imageTag=$svcbgsapi_VER ";;
-  svc-lighthouse-api)
-    HELM_ARGS="$HELM_ARGS --set-string imageTag=$svclighthouseapi_VER ";;
-  svc-bip-api)
-    HELM_ARGS="$HELM_ARGS --set-string imageTag=$svcbipapi_VER";;
-  postgres)
-    HELM_ARGS="$HELM_ARGS --set-string imageTag=$postgres_VER";;
-esac
 
 #echo "HELM_ARGS: $HELM_ARGS"
 set -x
