@@ -2,18 +2,10 @@ buildscript {
   dependencies {
     classpath "org.yaml:snakeyaml:2.2"
   }
-
-  // There's a conflict between versions of jgit between spotless and axion release plugin
-  configurations.classpath {
-    resolutionStrategy {
-      force 'org.eclipse.jgit:org.eclipse.jgit:6.9.0.202403050737-r'
-    }
-  }
 }
 
 plugins {
   id 'local.std.base-project-conventions'
-  id 'pl.allegro.tech.build.axion-release' version '1.17.0'
 
   // Set versions for these plugins (but don't apply) so we don't have to repeat the versions in subprojects
   id "org.springframework.boot" version "${spring_boot_version}" apply false
@@ -93,72 +85,6 @@ subprojects {
 ext {
   jacoco_enforce_violations = true
   jacoco_minimum_coverage = 0.8
-}
-
-// Used by `release` task to create a new version
-scmVersion {
-  // never connect to remote
-  localOnly = true
-  useHighestVersion = true
-
-  def helmChartAppVersions = [
-
-    // These change often (i.e., with each release)
-    // A null value will result in the currentVersion being used
-    '..'         : null, // '..' will resolve to helm/Charts.yaml
-    'api-gateway': null, // Update the version presented in SwaggerUI
-    'vro-app'    : null,
-    'svc-bgs-api': null,
-    'svc-lighthouse-api': null,
-    'redis'      : null,
-    'rabbitmq'   : null,
-    // Once stable, set a version and move to previous section
-    'domain-cc'  : null,
-    'domain-ee-max-cfi-app'  : null,
-    'domain-ee-ep-merge-app'  : null,
-  ]
-
-  def setHelmChartAppVersions = { currentVersion ->
-    helmChartAppVersions.collect { projectName, version ->
-      if (version == null) version = currentVersion
-
-      def helmChartFilePaths = [
-        project.findProperty("helm.${projectName}.chart_file"),
-        "/helm/${projectName}/Chart.yaml",
-        "/helm/platform/charts/${projectName}/Chart.yaml",
-        "/helm/vro/charts/${projectName}/Chart.yaml"
-      ]
-      def helmChartFilePath = helmChartFilePaths.find{ it != null && file("${project.rootDir}/$it").exists() }
-      println String.format( "%-14s %-12s => %s", projectName, version, helmChartFilePath)
-      if (version != null && helmChartFilePath != null) {
-        def helmChartFile = file("${project.rootDir}/$helmChartFilePath")
-        String s = helmChartFile.text.replaceFirst(/(?m)^appVersion: ".*"/, "appVersion: \"$version\"")
-        helmChartFile.setText(s)
-        helmChartFile
-      }
-    }
-  }
-
-  hooks {
-    pre("fileUpdate", [file: "scripts/image_versions.src",
-      pattern    : { v, p -> /CURRENT_RELEASE_VER="v.*"/ },
-      replacement: { v, p -> "CURRENT_RELEASE_VER=\"v$v\"" }])
-    pre({ context ->
-      def versionsFile = file("${project.rootDir}/versions.txt")
-      versionsFile.append("v${context.currentVersion}\n")
-      context.addCommitPattern(versionsFile.canonicalPath)
-    })
-    pre({ context ->
-      setHelmChartAppVersions(context.currentVersion)
-          .findAll{ it !=null }.each { file -> context.addCommitPattern(file.canonicalPath) }
-    })
-    pre("commit")
-  }
-}
-
-allprojects {
-  // https://axion-release-plugin.readthedocs.io/en/latest/configuration/basic_usage
-  project.version = scmVersion.version
 }
 
 tasks.named("dockerComposeDown").configure {

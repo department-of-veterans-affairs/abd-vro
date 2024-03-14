@@ -23,9 +23,6 @@ NAMESPACE=va-abd-rrd-${TARGET_ENV}
 : ${GITHUB_SHA:=$(git rev-parse HEAD)}
 : ${TRIGGERING_ACTOR:=$USER}
 
-#echo -e "TARGET_ENV=$TARGET_ENV \t HELM_CHART=HELM_CHART \t IMAGE_TAG=$IMAGE_TAG"
-#echo -e "RELEASE_NAME=$RELEASE_NAME \t NAMESPACE=$NAMESPACE \t GITHUB_SHA=$GITHUB_SHA"
-
 if [ "${SHUTDOWN_FIRST}" == "true" ]; then
   helm del "$RELEASE_NAME" --wait -n "$NAMESPACE" || exit 5
 fi
@@ -91,7 +88,6 @@ case "$HELM_CHART" in
     HELM_ARGS="$HELM_ARGS --set-string imageTag=$postgres_VER";;
 esac
 
-#echo "HELM_ARGS: $HELM_ARGS"
 set -x
 # Exit with error code when command fails so that GH Action fails
 set -e
