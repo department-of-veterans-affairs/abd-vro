@@ -64,8 +64,6 @@ overwriteSrcFile(){
   echo '# shellcheck disable=SC2034'
   echo "VAR_PREFIXES_ARR=( ${VAR_PREFIXES[@]} )"
   echo "export VAR_PREFIXES=\"${VAR_PREFIXES[@]}\""
-  echo
-  echo 'LAST_RELEASE_VERSION=$(tail -1 versions.txt)'
   echo '
 ## Helper functions
 # Usage example to get the variable value for app_GRADLE_IMG: GRADLE_IMG_TAG=`getVarValue app _GRADLE_IMG`
@@ -97,19 +95,10 @@ imageTagExists(){
 #   echo "The value of ${PREFIX}_GRADLE_IMG is $(getVarValue ${PREFIX} _GRADLE_IMG)"
 #   echo
 # done
-
-imageVersions(){
- # shellcheck disable=SC2068
- for PREFIX in ${VAR_PREFIXES_ARR[@]}; do
-   echo "$(getVarValue ${PREFIX} _IMG) $(getVarValue ${PREFIX} _VER)"
- done
-}
-
 ######################################
 '
 
   # Load current image versions by setting *_VER variables
-  >&2 source scripts/image_versions.src
   getVarValue(){
     local VARNAME=${1}${2}
     echo "${!VARNAME}"
@@ -118,17 +107,7 @@ imageVersions(){
     local PREFIX=$(bashVarPrefix "$IMG")
     echo "export ${PREFIX}_GRADLE_IMG=\"$(gradleImageName "$IMG")\""
     echo "export ${PREFIX}_IMG=\"$(prodImageName "$IMG")\""
-    echo "export ${PREFIX}_VER=\"\$LAST_RELEASE_VERSION\""
     echo
   done
-
-  echo '########################################
-# Override default *_VER variables above
-source scripts/image_versions.src
-
-if [ "$1" ]; then
-  eval "$@"
-fi
-# End of file'
 }
 overwriteSrcFile > "$SRC_FILE"

@@ -6,10 +6,6 @@ on:
   push:
     branches: [ main, qa, develop, domain-* ]
 
-  # Trigger on all published GitHub Releases
-  release:
-    types: [ "created" ]
-
   pull_request:
     branches: [ develop ]
 
@@ -34,14 +30,6 @@ on:
         required: true
         type: boolean
         default: true
-      publish_mode:
-        description: "Which images to publish"
-        required: true
-        type: choice
-        options:
-          - "only_changed"
-          - "all"
-          - "pinned_only"
 
 env:
   # Id for the #benefits-vro-devops Slack channel
@@ -60,23 +48,6 @@ jobs:
         id: check-state
         run: |
           # Gate Check
-
-          # Use triggering_actor instead of actor to allow manually re-running this workflow as another user
-          if [ "${{github.triggering_actor}}" == "abd-vro-machine" ]; then
-            if echo "$HEAD_COMMIT_MSG" | grep '^Automated commit: Pin versions'; then
-              CONTINUE=false
-              echo "Skipping this workflow b/c it was triggered by a commit that pins image versions \
-          immediately after a release. Otherwise, the workflow will fail.
-          Until the release images are published to GHCR (so that they're available for comparison), \
-          the 'Publish to GHCR' step of this workflow will fail." | tee -a "$GITHUB_STEP_SUMMARY"
-
-            elif echo "$HEAD_COMMIT_MSG" | grep '^Automated commit:'; then
-              CONTINUE=false
-              echo "Skipping this workflow b/c it was triggered by an automated commit that \
-          doesn't change container images." | tee -a "$GITHUB_STEP_SUMMARY"
-            fi
-          fi
-
           if [ "${{ github.event_name }}" == "pull_request" ]; then
             if echo "$GITHUB_HEAD_REF" | grep '^dependabot/'; then
               CONTINUE=true
@@ -106,24 +77,16 @@ jobs:
           IMG_TAG=${GITHUB_SHA:0:7}
           IMG_PREFIX="dev_"
           RUN_GRADLE_TESTS="true"
-          PUBLISH_MODE="all"
           RUN_SECREL="true"
 
           # Override some defaults depending on the branch/ref_name
           echo "ref_name: ${{ github.ref_name }}"
           case "${{ github.ref_name }}" in
             main)      IMG_PREFIX=""
-                       PUBLISH_MODE="all"
-                       ;;
-            release-*|v*.*.*) # if git tag reflects a release, then publish non-dev images
-                       IMG_PREFIX=""
-                       # For release events, all images are pinned so use the pinned version
-                       PUBLISH_MODE="pinned_only"
                        ;;
             develop)   # To reduce workflow runtime, don't run tests
                        RUN_GRADLE_TESTS=false
                        # To reduce SecRel scans, only published changed images
-                       PUBLISH_MODE="only_changed"
                        ;;
           esac
 
@@ -132,7 +95,6 @@ jobs:
             [ "${{ inputs.image_prefix }}" == "(no prefix)" ] && IMG_PREFIX=""
             RUN_GRADLE_TESTS=${{ inputs.run_tests }}
             RUN_SECREL=${{ inputs.run_secrel }}
-            PUBLISH_MODE=${{ inputs.publish_mode }}
           fi
 
           {
@@ -140,7 +102,6 @@ jobs:
             echo "image_prefix=${IMG_PREFIX}"
             echo "run_tests=${RUN_GRADLE_TESTS}"
             echo "run_secrel=${RUN_SECREL}"
-            echo "publish_mode=${PUBLISH_MODE}"
           } >> "$GITHUB_OUTPUT"
 
       - name: "DEBUG"
@@ -148,7 +109,6 @@ jobs:
           echo "image_prefix: ${{ steps.image-props.outputs.image_prefix }}"
           echo "image_tag: ${{ steps.image-props.outputs.image_tag }}"
           echo "run_tests: ${{ steps.image-props.outputs.run_tests }}"
-          echo "publish_mode: ${{ steps.image-props.outputs.publish_mode }}"
 
       - name: "Checkout source code"
         uses: actions/checkout@v4
@@ -180,7 +140,6 @@ jobs:
           ghcr_username: ${{ github.actor }}
           ghcr_password: ${{ secrets.GITHUB_TOKEN }}
           run_tests: ${{ steps.image-props.outputs.run_tests }}
-          publish_mode: ${{ steps.image-props.outputs.publish_mode }}
 
       - name: "Slack thread: Images published"
         uses: archive/github-actions-slack@v2.9.0
@@ -203,8 +162,7 @@ jobs:
     name: SecRel Pipeline
     needs: publish-to-ghcr
     if: needs.publish-to-ghcr.outputs.run-secrel == 'true'
-    # https://psychic-disco-c1251ea1.pages.github.io/pipeline/release_notes/v4.2.0/
-    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v5.0.19
+    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v5
     with:
       config-file: .github/secrel/config.yml
       images: ${{ needs.publish-to-ghcr.outputs.vro-images }}
