@@ -814,7 +814,11 @@
       "claimId": 10001,
       "phase": "Claim Received",
       "endProductCode": "400",
-      "claimLifecycleStatus": "Open"
+      "claimLifecycleStatus": "Open",
+      "benefitClaimType": {
+        "name": "eBenefits 526EZ-Supplemental (400)",
+        "code": "400SUPP"
+      }
     },
     "contentions": [
       {
@@ -840,7 +844,11 @@
       "claimId": 10002,
       "phase": "Claim Received",
       "endProductCode": "400",
-      "claimLifecycleStatus": "Open"
+      "claimLifecycleStatus": "Open",
+      "benefitClaimType": {
+        "name": "eBenefits 526EZ-Supplemental (400)",
+        "code": "400SUPP"
+      }
     },
     "contentions": [
       {
@@ -866,7 +874,11 @@
       "claimId": 10003,
       "phase": "Claim Received",
       "endProductCode": "400",
-      "claimLifecycleStatus": "Open"
+      "claimLifecycleStatus": "Open",
+      "benefitClaimType": {
+        "name": "eBenefits 526EZ-Supplemental (400)",
+        "code": "400SUPP"
+      }
     },
     "contentions": [
       {
@@ -892,7 +904,11 @@
       "claimId": 10004,
       "phase": "Claim Received",
       "endProductCode": "400",
-      "claimLifecycleStatus": "Open"
+      "claimLifecycleStatus": "Open",
+      "benefitClaimType": {
+        "name": "eBenefits 526EZ-Supplemental (400)",
+        "code": "400SUPP"
+      }
     },
     "contentions": [
       {
@@ -931,7 +947,11 @@
       "claimId": 10005,
       "phase": "Claim Received",
       "endProductCode": "400",
-      "claimLifecycleStatus": "Open"
+      "claimLifecycleStatus": "Open",
+      "benefitClaimType": {
+        "name": "eBenefits 526EZ-Supplemental (400)",
+        "code": "400SUPP"
+      }
     },
     "contentions": [
       {
@@ -970,7 +990,11 @@
       "claimId": 10006,
       "phase": "Claim Received",
       "endProductCode": "400",
-      "claimLifecycleStatus": "Open"
+      "claimLifecycleStatus": "Open",
+      "benefitClaimType": {
+        "name": "eBenefits 526EZ-Supplemental (400)",
+        "code": "400SUPP"
+      }
     },
     "contentions": []
   },
@@ -1005,7 +1029,12 @@
       "claimId": 5002,
       "phase": "Claim Received",
       "tempStationOfJurisdiction": "398",
-      "endProductCode": "400"
+      "endProductCode": "400",
+      "claimLifecycleStatus": "Open",
+      "benefitClaimType": {
+        "name": "eBenefits 526EZ-Supplemental (400)",
+        "code": "400SUPP"
+      }
     },
     "contentions": [
       {
@@ -1028,7 +1057,12 @@
       "claimId": 5003,
       "phase": "Claim Received",
       "tempStationOfJurisdiction": "398",
-      "endProductCode": "400"
+      "endProductCode": "400",
+      "claimLifecycleStatus": "Open",
+      "benefitClaimType": {
+        "name": "eBenefits 526EZ-Supplemental (400)",
+        "code": "400SUPP"
+      }
     },
     "contentions": [
       {
@@ -1045,7 +1079,7 @@
   },
   {
     "description": [
-      "Employee Experience EP Merge End 2 End Testing - Fails at get claim contentions"
+      "Employee Experience EP Merge End 2 End Testing - Fails at get pending claim contentions"
     ],
     "claimDetail": {
       "claimId": 5004,
@@ -1068,13 +1102,45 @@
   },
   {
     "description": [
+      "Employee Experience EP Merge End 2 End Testing - Fails at get ep400 claim contentions"
+    ],
+    "claimDetail": {
+      "claimId": 50041,
+      "phase": "Claim Received",
+      "endProductCode": "400",
+      "claimLifecycleStatus": "Open",
+      "benefitClaimType": {
+        "name": "eBenefits 526EZ-Supplemental (400)",
+        "code": "400SUPP"
+      }
+    },
+    "contentions": [
+      {
+        "medicalInd": true,
+        "beginDate": "2023-01-01T00:00:00Z",
+        "contentionTypeCode": "NEW",
+        "classificationType": 1250,
+        "diagnosticTypeCode": "6100",
+        "claimantText": "tendinitis/bilateral",
+        "contentionId": "1",
+        "lastModified": "2023-01-01T00:00:01Z"
+      }
+    ]
+  },
+  {
+    "description": [
       "Employee Experience EP Merge End 2 End Testing - Fails at update claim contentions"
     ],
     "claimDetail": {
       "claimId": 5005,
       "phase": "Claim Received",
       "tempStationOfJurisdiction": "398",
-      "endProductCode": "400"
+      "endProductCode": "400",
+      "claimLifecycleStatus": "Open",
+      "benefitClaimType": {
+        "name": "eBenefits 526EZ-Supplemental (400)",
+        "code": "400SUPP"
+      }
     },
     "contentions": [
       {

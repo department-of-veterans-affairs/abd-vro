@@ -1,7 +1,7 @@
 {
   "messages": [
     {
-      "timestamp": "2023-02-06T18:27:32.316",
+      "timestamp": "2023-02-06T18:27:32.316Z",
       "key": "bip.vetservices.lastmodified.not.matched",
       "severity": "ERROR",
       "status": "412",

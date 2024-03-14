@@ -69,7 +69,7 @@ jobs:
         # This takes about 1 minute, so don't run on PRs
         # if: github.event_name != 'pull_request'
         id: jacoco_reporter
-        uses: PavanMudigonda/jacoco-reporter@v4.9
+        uses: PavanMudigonda/jacoco-reporter@v5.0
         # Skip if Dependabot created the PR due to check-runs permission error
         if: github.actor != 'dependabot[bot]'
         with:
