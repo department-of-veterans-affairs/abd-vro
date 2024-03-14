@@ -18,7 +18,7 @@ on:
         - prod-test
 
       image_tag:
-        description: 'Image tag: first 7 of commit hash, "latest", "v1.2.3", or "release-1.2.3"'
+        description: 'Image tag: first 7 of commit hash or "latest"'
         required: true
         default: 'latest'
         type: string
