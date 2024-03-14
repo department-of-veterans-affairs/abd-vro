@@ -29,7 +29,7 @@ dependencies {
   implementation "org.apache.camel:camel-spring-rabbitmq:${camel_version}"
 
   // Actuator for health check
-  implementation 'org.springframework.boot:spring-boot-starter-web:3.2.3'
+  implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
   testImplementation "org.apache.camel:camel-test-junit5:${camel_version}"
