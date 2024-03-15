@@ -7,6 +7,10 @@ plugins {
     id 'checkstyle'
 }
 
+repositories {
+    mavenCentral()
+}
+
 configurations {
     checkstyleRules
 }
@@ -33,6 +37,18 @@ checkstyle {
     ]
     ignoreFailures = true
     showViolations = true
+}
+
+afterEvaluate {
+    configurations.all {
+        resolutionStrategy.capabilitiesResolution.withCapability("com.google.collections:google-collections") {
+            select("com.google.guava:guava:0")
+        }
+        // and/or
+        resolutionStrategy.capabilitiesResolution.withCapability("com.google.guava:listenablefuture") {
+            select("com.google.guava:guava:0")
+        }
+    }
 }
 
 checkstyleMain {
