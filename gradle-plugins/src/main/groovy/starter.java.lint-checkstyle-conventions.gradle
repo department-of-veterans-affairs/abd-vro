@@ -7,10 +7,6 @@ plugins {
     id 'checkstyle'
 }
 
-repositories {
-    mavenCentral()
-}
-
 configurations {
     checkstyleRules
 }
@@ -22,7 +18,7 @@ dependencies {
 
 // Also refer to https://github.com/moznion/gradle-multi-project-checkstyle/blob/master/build.gradle
 checkstyle {
-    toolVersion "10.12.7"
+    toolVersion "8.36"
     configFile = file('checkstyle.xml')
     if(! configFile.exists()){
         configFile = rootProject.file('settings/checkstyle/checkstyle.xml')
@@ -37,18 +33,6 @@ checkstyle {
     ]
     ignoreFailures = true
     showViolations = true
-}
-
-afterEvaluate {
-    configurations.all {
-        resolutionStrategy.capabilitiesResolution.withCapability("com.google.collections:google-collections") {
-            select("com.google.guava:guava:0")
-        }
-        // and/or
-        resolutionStrategy.capabilitiesResolution.withCapability("com.google.guava:listenablefuture") {
-            select("com.google.guava:guava:0")
-        }
-    }
 }
 
 checkstyleMain {
