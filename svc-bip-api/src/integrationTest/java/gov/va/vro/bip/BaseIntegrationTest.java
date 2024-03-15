@@ -4,11 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import gov.va.vro.bip.model.BipClaim;
 import gov.va.vro.bip.model.BipPayloadRequest;
 import gov.va.vro.bip.model.BipPayloadResponse;
-import gov.va.vro.bip.model.ExistingContention;
+import gov.va.vro.bip.model.claim.BipClaim;
 import gov.va.vro.bip.model.claim.GetClaimResponse;
+import gov.va.vro.bip.model.contentions.ExistingContention;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 import gov.va.vro.bip.service.BipResetMockController;
 import gov.va.vro.bip.service.IBipApiService;
@@ -71,16 +71,16 @@ public class BaseIntegrationTest {
     return (T) rabbitTemplate.convertSendAndReceive(exchangeName, queue, request);
   }
 
-  protected ExistingContention getExistingContention(long claimId) {
-    GetClaimContentionsResponse getResponse = bipApiService.getClaimContentions(claimId);
+  protected ExistingContention getExistingContention() {
+    GetClaimContentionsResponse getResponse = bipApiService.getClaimContentions(BaseIntegrationTest.CLAIM_ID_200);
     assertBaseResponseIs2xx(getResponse, HttpStatus.OK);
     assertNotNull(getResponse.getContentions());
     assertEquals(1, getResponse.getContentions().size());
     return getResponse.getContentions().get(0);
   }
 
-  protected BipClaim getExistingClaim(long claimId) {
-    GetClaimResponse getResponse = bipApiService.getClaimDetails(claimId);
+  protected BipClaim getExistingClaim() {
+    GetClaimResponse getResponse = bipApiService.getClaimDetails(BaseIntegrationTest.CLAIM_ID_200);
     assertBaseResponseIs2xx(getResponse, HttpStatus.OK);
     assertNotNull(getResponse.getClaim());
     return getResponse.getClaim();

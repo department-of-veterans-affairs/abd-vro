@@ -1,4 +1,4 @@
-package gov.va.vro.bip.model;
+package gov.va.vro.bip.model.claim;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
