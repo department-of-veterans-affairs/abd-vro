@@ -34,7 +34,7 @@ def check_vro_participant_id
   bgs_client = BgsClient.new
   participant_id = bgs_client.vro_participant_id
   if participant_id
-    log "Successfully fetched VRO participant ID: #{participant_id}"
+    log "Successfully fetched VRO participant ID"
     true
   else
     log "Failed to fetch VRO participant ID"
