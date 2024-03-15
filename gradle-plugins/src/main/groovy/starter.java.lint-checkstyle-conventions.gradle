@@ -14,7 +14,6 @@ configurations {
 dependencies {
 //    checkstyleRules platform('gov.va.starter:checkstyle-bom')
 //    checkstyleRules 'gov.va.starter:checkstyle'
-    implementation 'com.google.guava:guava:33.0.0-jre'
 }
 
 // Also refer to https://github.com/moznion/gradle-multi-project-checkstyle/blob/master/build.gradle
