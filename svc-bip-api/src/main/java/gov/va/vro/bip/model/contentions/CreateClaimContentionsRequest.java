@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.va.vro.bip.model.BipPayloadRequest;
-import gov.va.vro.bip.model.Contention;
 import lombok.Builder;
 import lombok.Getter;
 

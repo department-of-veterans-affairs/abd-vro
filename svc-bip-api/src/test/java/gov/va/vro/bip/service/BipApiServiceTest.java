@@ -13,13 +13,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.bip.config.JacksonConfig;
 import gov.va.vro.bip.model.BipMessage;
 import gov.va.vro.bip.model.BipPayloadResponse;
-import gov.va.vro.bip.model.Contention;
-import gov.va.vro.bip.model.ExistingContention;
 import gov.va.vro.bip.model.cancel.CancelClaimRequest;
 import gov.va.vro.bip.model.cancel.CancelClaimResponse;
 import gov.va.vro.bip.model.claim.GetClaimResponse;
+import gov.va.vro.bip.model.contentions.Contention;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
+import gov.va.vro.bip.model.contentions.ExistingContention;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsResponse;
@@ -136,12 +136,12 @@ public class BipApiServiceTest {
             ArgumentMatchers.eq(clazz));
   }
 
-  private void mockResponseForUrl(Stubber response, String claimUrl, HttpMethod httpMethod) {
+  private void mockResponseForUrl(Stubber response, String claimUrl) {
     response
         .when(restTemplate)
         .exchange(
             ArgumentMatchers.eq(claimUrl),
-            ArgumentMatchers.eq(httpMethod),
+            ArgumentMatchers.eq(HttpMethod.GET),
             ArgumentMatchers.any(HttpEntity.class),
             ArgumentMatchers.eq(String.class));
   }
@@ -478,7 +478,7 @@ public class BipApiServiceTest {
 
     String goodUrl = HTTPS + CLAIM_URL + SPECIAL_ISSUE_TYPES;
 
-    mockResponseForUrl(Mockito.doReturn(resp200), goodUrl, HttpMethod.GET);
+    mockResponseForUrl(Mockito.doReturn(resp200), goodUrl);
     try {
       assertTrue(service.isApiFunctioning());
     } catch (BipException e) {
@@ -487,7 +487,7 @@ public class BipApiServiceTest {
     }
     ResponseEntity<String> respEmpty = ResponseEntity.ok("");
 
-    mockResponseForUrl(Mockito.doReturn(respEmpty), goodUrl, HttpMethod.GET);
+    mockResponseForUrl(Mockito.doReturn(respEmpty), goodUrl);
     try {
       assertFalse(service.isApiFunctioning());
     } catch (BipException e) {
@@ -495,9 +495,7 @@ public class BipApiServiceTest {
       fail();
     }
     mockResponseForUrl(
-        Mockito.doThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)),
-        goodUrl,
-        HttpMethod.GET);
+        Mockito.doThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)), goodUrl);
     try {
       assertFalse(service.isApiFunctioning());
     } catch (BipException e) {
