@@ -1,9 +1,9 @@
-FROM postgres:14.9-alpine
+FROM postgres:14.11-alpine3.19
 
 # hadolint ignore=DL3018
 RUN apk update && \
     apk --no-cache add curl redis sudo && \
-    apk upgrade openssl libssl3 libcrypto3 && \
+    apk upgrade openssl libssl3 libcrypto3 libxml2 && \
     rm -rf /var/cache/apk/*
 
 # The following is needed to run the init-folder.sh script as root (to run chown)
