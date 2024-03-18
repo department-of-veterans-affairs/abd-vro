@@ -72,7 +72,8 @@ public class BaseIntegrationTest {
   }
 
   protected ExistingContention getExistingContention() {
-    GetClaimContentionsResponse getResponse = bipApiService.getClaimContentions(BaseIntegrationTest.CLAIM_ID_200);
+    GetClaimContentionsResponse getResponse =
+        bipApiService.getClaimContentions(BaseIntegrationTest.CLAIM_ID_200);
     assertBaseResponseIs2xx(getResponse, HttpStatus.OK);
     assertNotNull(getResponse.getContentions());
     assertEquals(1, getResponse.getContentions().size());

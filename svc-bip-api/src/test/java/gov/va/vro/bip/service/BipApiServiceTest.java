@@ -495,9 +495,7 @@ public class BipApiServiceTest {
       fail();
     }
     mockResponseForUrl(
-        Mockito.doThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)),
-        goodUrl
-    );
+        Mockito.doThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)), goodUrl);
     try {
       assertFalse(service.isApiFunctioning());
     } catch (BipException e) {
