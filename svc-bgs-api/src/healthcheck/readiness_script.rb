@@ -4,6 +4,7 @@
 
 require 'logger'
 require_relative '../lib/rabbit_subscriber'
+require_relative '../lib/bgs_client'
 require_relative '../config/constants'
 require_relative '../config/setup'
 
@@ -28,27 +29,23 @@ def rabbitmq_connection_active?
   end
 end
 
-# Function to check if BGS settings are correctly loaded and configured
-def check_bgs_configuration
-  bgs_settings = SETTINGS['bgs']
-  
-  # Check if all required BGS settings in the settings.yml file are present
-  required_keys = %w[application client_station_id client_username log base_url]
-  missing_keys = required_keys.select { |key| bgs_settings[key].nil? || bgs_settings[key].to_s.empty? }
-  
-  if missing_keys.empty?
-    log "BGS configuration loaded successfully."
+# Function to fetch the VRO participant ID from BGS
+def check_vro_participant_id
+  bgs_client = BgsClient.new
+  participant_id = bgs_client.vro_participant_id
+  if participant_id
+    log "Successfully fetched VRO participant ID"
     true
   else
-    log "Missing BGS configuration keys: #{missing_keys.join(', ')}"
+    log "Failed to fetch VRO participant ID"
     false
   end
 end
 
 def perform_readiness_checks
-  bgs_config_ok = check_bgs_configuration
   rabbitmq_ok = rabbitmq_connection_active?
-  if bgs_config_ok && rabbitmq_ok
+  vro_participant_id_ok = check_vro_participant_id
+  if rabbitmq_ok && vro_participant_id_ok
     log "Readiness checks passed!"
     true
   else
@@ -56,7 +53,6 @@ def perform_readiness_checks
     false
   end
 end
-
 
 unless perform_readiness_checks
   exit(1)

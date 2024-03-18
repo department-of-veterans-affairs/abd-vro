@@ -20,7 +20,7 @@ startupProbe:
   initialDelaySeconds: 120  
   periodSeconds: 10
   timeoutSeconds: 10
-  failureThreshold: 30  
+  failureThreshold: 25 
 
 livenessProbe:
   exec:
