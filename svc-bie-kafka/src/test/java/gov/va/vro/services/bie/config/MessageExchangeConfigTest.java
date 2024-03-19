@@ -17,7 +17,7 @@ class MessageExchangeConfigTest {
   @BeforeEach
   void setUp() {
     bieProperties = new BieProperties();
-    bieProperties.kakfaTopicPrefix = "EXT_VRO_TST_";
+    bieProperties.kafkaTopicEnv = "TST";
   }
 
   @Test
@@ -34,11 +34,11 @@ class MessageExchangeConfigTest {
     final String[] topicNames = bieProperties.topicNames();
     assertArrayEquals(
         new String[] {
-          "EXT_VRO_TST_BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_ASSOCIATED_TO_CLAIM",
-          "EXT_VRO_TST_BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_UPDATED",
-          "EXT_VRO_TST_BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_CLASSIFIED",
-          "EXT_VRO_TST_BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_COMPLETED",
-          "EXT_VRO_TST_BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_DELETED"
+          "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_ASSOCIATED_TO_CLAIM",
+          "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_UPDATED",
+          "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_CLASSIFIED",
+          "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_COMPLETED",
+          "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_DELETED"
         },
         topicNames);
   }

@@ -3,11 +3,11 @@ package gov.va.vro.model.biekafka;
 import java.util.Arrays;
 
 public enum ContentionEvent {
-  CONTENTION_ASSOCIATED_TO_CLAIM("BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_ASSOCIATED_TO_CLAIM"),
-  CONTENTION_UPDATED("BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_UPDATED"),
-  CONTENTION_CLASSIFIED("BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_CLASSIFIED"),
-  CONTENTION_COMPLETED("BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_COMPLETED"),
-  CONTENTION_DELETED("BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_DELETED");
+  CONTENTION_ASSOCIATED_TO_CLAIM("BIA_SERVICES_BIE_CATALOG_CONTENTION_ASSOCIATED_TO_CLAIM"),
+  CONTENTION_UPDATED("BIA_SERVICES_BIE_CATALOG_CONTENTION_UPDATED"),
+  CONTENTION_CLASSIFIED("BIA_SERVICES_BIE_CATALOG_CONTENTION_CLASSIFIED"),
+  CONTENTION_COMPLETED("BIA_SERVICES_BIE_CATALOG_CONTENTION_COMPLETED"),
+  CONTENTION_DELETED("BIA_SERVICES_BIE_CATALOG_CONTENTION_DELETED");
 
   private final String topicName;
 
@@ -20,13 +20,13 @@ public enum ContentionEvent {
   }
 
   public static ContentionEvent mapTopicToEvent(String topic) {
-    // TODO(3/5/24): Add a better
-    String prefixPattern = "^EXT_VRO_[A-Z]+_";
-    String noPrefixTopic = topic.replaceFirst(prefixPattern, "");
+    String subString = "CATALOG_.*?_CONTENTION";
+    String noSubStringTopic = topic.replaceAll(subString, "CATALOG_CONTENTION");
+
     return Arrays.stream(ContentionEvent.values())
-        .filter(event -> event.getTopicName().equals(noPrefixTopic))
+        .filter(event -> event.getTopicName().equals(noSubStringTopic))
         .findFirst()
-        .orElseThrow(() -> new IllegalArgumentException("Unrecognized topic: " + noPrefixTopic));
+        .orElseThrow(() -> new IllegalArgumentException("Unrecognized topic: " + noSubStringTopic));
   }
 
   public static String rabbitMqExchangeName(String topic) {
