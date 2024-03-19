@@ -1,5 +1,6 @@
 package gov.va.vro.model.biekafka;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import gov.va.vro.model.biekafka.annotation.Ignore;
 import gov.va.vro.model.biekafka.annotation.TargetEvents;
@@ -11,6 +12,7 @@ import lombok.*;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BieMessagePayload {
   // These are VRO fields
   @Ignore private Integer status;

@@ -3,7 +3,7 @@ package gov.va.vro.bip;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import gov.va.vro.bip.model.Contention;
+import gov.va.vro.bip.model.contentions.Contention;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
 import org.junit.jupiter.api.Test;
