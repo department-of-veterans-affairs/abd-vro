@@ -1,4 +1,4 @@
-package gov.va.vro.bip.model;
+package gov.va.vro.bip.model.contentions;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -11,6 +11,6 @@ import lombok.Setter;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TrackedItemAssociations {
+public class TrackedItemAssociation {
   private int trackedItemId;
 }

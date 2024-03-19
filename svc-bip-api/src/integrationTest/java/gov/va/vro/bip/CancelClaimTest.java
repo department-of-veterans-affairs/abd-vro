@@ -2,9 +2,9 @@ package gov.va.vro.bip;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import gov.va.vro.bip.model.BipClaim;
 import gov.va.vro.bip.model.cancel.CancelClaimRequest;
 import gov.va.vro.bip.model.cancel.CancelClaimResponse;
+import gov.va.vro.bip.model.claim.BipClaim;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
@@ -15,7 +15,7 @@ public class CancelClaimTest extends BaseIntegrationTest {
 
   @Test
   void testCancelClaim_200() {
-    BipClaim existingClaim = getExistingClaim(CLAIM_ID_200);
+    BipClaim existingClaim = getExistingClaim();
     assertEquals(OPEN, existingClaim.getClaimLifecycleStatus());
 
     CancelClaimRequest request =
@@ -27,7 +27,7 @@ public class CancelClaimTest extends BaseIntegrationTest {
     CancelClaimResponse response = sendAndReceive(cancelClaimQueue, request);
     assertBaseResponseIs2xx(response, HttpStatus.OK);
 
-    BipClaim updatedClaim = getExistingClaim(CLAIM_ID_200);
+    BipClaim updatedClaim = getExistingClaim();
     assertEquals(CANCELLED, updatedClaim.getClaimLifecycleStatus());
   }
 

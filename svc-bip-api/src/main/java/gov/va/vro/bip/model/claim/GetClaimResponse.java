@@ -2,7 +2,6 @@ package gov.va.vro.bip.model.claim;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import gov.va.vro.bip.model.BipClaim;
 import gov.va.vro.bip.model.BipPayloadResponse;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
