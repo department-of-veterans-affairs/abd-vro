@@ -3,7 +3,7 @@ package gov.va.vro.bip;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import gov.va.vro.bip.model.ExistingContention;
+import gov.va.vro.bip.model.contentions.ExistingContention;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsResponse;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ public class UpdateClaimContentionsTest extends BaseIntegrationTest {
 
   @Test
   void testUpdateClaimContentions_200() {
-    ExistingContention original = getExistingContention(CLAIM_ID_200);
+    ExistingContention original = getExistingContention();
     assertNull(original.getAltContentionName());
     String altContentionName = "This didnt exist";
     ExistingContention modified = original.toBuilder().altContentionName(altContentionName).build();
@@ -29,7 +29,7 @@ public class UpdateClaimContentionsTest extends BaseIntegrationTest {
         sendAndReceive(updateClaimContentionsQueue, updateRequest);
     assertBaseResponseIs2xx(updateResponse, HttpStatus.OK);
 
-    ExistingContention updated = getExistingContention(CLAIM_ID_200);
+    ExistingContention updated = getExistingContention();
     assertEquals(altContentionName, updated.getAltContentionName());
   }
 
