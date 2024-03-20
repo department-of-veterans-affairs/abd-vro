@@ -4,7 +4,7 @@
 - `main` branch: [![CI](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/continuous-integration.yml/badge.svg?branch=main)](https://github.com/department-of-veterans-affairs/abd-vro/actions/workflows/continuous-integration.yml)
 [![SecRel](https://github.com/department-of-veterans-affairs/abd-vro-internal/actions/workflows/secrel.yml/badge.svg?branch=main)](https://github.com/department-of-veterans-affairs/abd-vro-internal/actions/workflows/secrel.yml)
 
-# ABD VRO
+# Update ABD VRO
 
 ABD VRO (Automated Benefits Delivery - Virtual Regional Office)
 
