@@ -8,6 +8,7 @@ from conftest import (
     add_claim_note_200,
     add_claim_note_req,
     assert_metrics_called,
+    assert_hoppy_requests,
     cancel_claim_200,
     cancel_ep400_claim_req,
     create_contentions_on_pending_claim_201,
@@ -76,18 +77,38 @@ class TestUpToGetPendingClaim:
             pytest.param(load_response(response_400, get_claim.Response), id="400"),
             pytest.param(load_response(response_404, get_claim.Response), id="404"),
             pytest.param(load_response(response_500, get_claim.Response), id="500"),
-            pytest.param(get_claim.Response(statusCode=200, statusMessage="OK", claim=ClaimDetail(claimId=3)).model_dump(), id="claim has no endProductCode"),
+            pytest.param(
+                get_claim.Response(statusCode=200, statusMessage="OK", claim=ClaimDetail(claimId=3, claimLifecycleStatus="OPEN")).model_dump(),
+                id="claim has no endProductCode",
+            ),
+            pytest.param(
+                get_claim.Response(statusCode=200, statusMessage="OK", claim=ClaimDetail(claimId=3, endProductCode="010")).model_dump(),
+                id="claim has no claim_lifecycle_status",
+            ),
+            pytest.param(
+                get_claim.Response(
+                    statusCode=200, statusMessage="OK", claim=ClaimDetail(claimId=3, endProductCode="010", claimLifecycleStatus="Cancelled")
+                ).model_dump(),
+                id="claim has ineligible claim_lifecycle_status 'Cancelled'",
+            ),
+            pytest.param(
+                get_claim.Response(
+                    statusCode=200, statusMessage="OK", claim=ClaimDetail(claimId=3, endProductCode="010", claimLifecycleStatus="Ready For Decision")
+                ).model_dump(),
+                id="claim has ineligible claim_lifecycle_status 'Ready to Work'",
+            ),
         ],
     )
     def test_invalid_request(self, machine, mock_hoppy_async_client, metric_logger_distribution, metric_logger_increment, invalid_request):
         mock_async_responses(mock_hoppy_async_client, [invalid_request, get_ep400_contentions_200, update_contentions_on_ep400_200])
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM, 1)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
                 call(machine.job.job_id, update_contentions_on_ep400_req),
-            ]
+            ],
         )
         assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM)
 
@@ -104,11 +125,12 @@ class TestUpToGetPendingClaim:
     ):
         mock_async_responses(mock_hoppy_async_client, [ResponseException("Oops"), no_contentions_response])
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM, 2)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
-            ]
+            ],
         )
         assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM)
 
@@ -132,11 +154,12 @@ class TestUpToGetPendingClaim:
             ],
         )
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE, 3)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
-            ]
+            ],
         )
         assert_metrics_called(
             metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE
@@ -163,11 +186,13 @@ class TestUpToGetPendingClaim:
             ],
         )
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE, 2)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
-            ]
+                call(machine.job.job_id, update_contentions_on_ep400_req),
+            ],
         )
         assert_metrics_called(
             metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE
@@ -210,13 +235,14 @@ class TestUpToGetEP400Claim:
     def test_invalid_request(self, machine, mock_hoppy_async_client, metric_logger_distribution, metric_logger_increment, invalid_request):
         mock_async_responses(mock_hoppy_async_client, [get_pending_claim_200, invalid_request, get_ep400_contentions_200, update_contentions_on_ep400_200])
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_EP400_CLAIM, 1)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
                 call(machine.job.job_id, update_contentions_on_ep400_req),
-            ]
+            ],
         )
         assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.GET_EP400_CLAIM)
 
@@ -233,12 +259,13 @@ class TestUpToGetEP400Claim:
     ):
         mock_async_responses(mock_hoppy_async_client, [get_pending_claim_200, ResponseException("Oops"), no_contentions_response])
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_EP400_CLAIM, 2)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
-            ]
+            ],
         )
         assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.GET_EP400_CLAIM)
 
@@ -263,12 +290,13 @@ class TestUpToGetEP400Claim:
             ],
         )
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_EP400_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE, 3)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
-            ]
+            ],
         )
         assert_metrics_called(
             metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.GET_EP400_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE
@@ -296,12 +324,14 @@ class TestUpToGetEP400Claim:
             ],
         )
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_EP400_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE, 2)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
-            ]
+                call(machine.job.job_id, update_contentions_on_ep400_req),
+            ],
         )
         assert_metrics_called(
             metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.GET_EP400_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE
@@ -323,14 +353,15 @@ class TestUpToGetPendingContentions:
             mock_hoppy_async_client, [get_pending_claim_200, get_ep400_claim_200, invalid_request, get_ep400_contentions_200, update_contentions_on_ep400_200]
         )
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM_CONTENTIONS, 1)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
                 call(machine.job.job_id, update_contentions_on_ep400_req),
-            ]
+            ],
         )
         assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM_CONTENTIONS)
 
@@ -347,13 +378,14 @@ class TestUpToGetPendingContentions:
     ):
         mock_async_responses(mock_hoppy_async_client, [get_pending_claim_200, get_ep400_claim_200, ResponseException("Oops"), no_contentions_response])
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM_CONTENTIONS, 2)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
-            ]
+            ],
         )
         assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM_CONTENTIONS)
 
@@ -379,13 +411,14 @@ class TestUpToGetPendingContentions:
             ],
         )
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE, 3)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
-            ]
+            ],
         )
         assert_metrics_called(
             metric_logger_distribution,
@@ -417,13 +450,15 @@ class TestUpToGetPendingContentions:
             ],
         )
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE, 2)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
-            ]
+                call(machine.job.job_id, update_contentions_on_ep400_req),
+            ],
         )
         assert_metrics_called(
             metric_logger_distribution,
@@ -441,20 +476,142 @@ class TestUpToGetEp400Contentions:
             pytest.param(load_response(response_400, get_contentions.Response), id="400"),
             pytest.param(load_response(response_404, get_contentions.Response), id="404"),
             pytest.param(load_response(response_500, get_contentions.Response), id="500"),
-            pytest.param(get_ep400_contentions_204, id="No contentions found"),
-            pytest.param(get_contentions.Response(status_code=200, status_message="OK", contentions=None), id="None"),
-            pytest.param(get_contentions.Response(status_code=200, status_message="OK", contentions=[]), id="Empty"),
         ],
     )
     def test_invalid_request_at_get_ep400_contentions(
         self, machine, mock_hoppy_async_client, metric_logger_distribution, metric_logger_increment, invalid_request
     ):
-        mock_async_responses(mock_hoppy_async_client, [get_pending_claim_200, get_ep400_claim_200, get_pending_contentions_200, invalid_request])
+        mock_async_responses(
+            mock_hoppy_async_client, [get_pending_claim_200, get_ep400_claim_200, get_pending_contentions_200, invalid_request, invalid_request]
+        )
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_EP400_CLAIM_CONTENTIONS, 1)
-        mock_hoppy_async_client.make_request.assert_has_calls(
-            [call(machine.job.job_id, get_pending_contentions_req), call(machine.job.job_id, get_ep400_contentions_req)]
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
+            [
+                call(machine.job.job_id, get_pending_claim_req),
+                call(machine.job.job_id, get_ep400_claim_req),
+                call(machine.job.job_id, get_pending_contentions_req),
+                call(machine.job.job_id, get_ep400_contentions_req),
+            ],
         )
         assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.GET_EP400_CLAIM_CONTENTIONS)
+
+    @pytest.mark.parametrize(
+        "valid_request",
+        [
+            pytest.param(get_ep400_contentions_204, id="No contentions found"),
+            pytest.param(get_contentions.Response(status_code=200, status_message="OK", contentions=None), id="None"),
+            pytest.param(get_contentions.Response(status_code=200, status_message="OK", contentions=[]), id="Empty"),
+        ],
+    )
+    def test_valid_request_but_empty_contentions_at_get_ep400_contentions(
+        self, machine, mock_hoppy_async_client, metric_logger_distribution, metric_logger_increment, valid_request
+    ):
+        mock_async_responses(mock_hoppy_async_client, [get_pending_claim_200, get_ep400_claim_200, get_pending_contentions_200, valid_request, valid_request])
+        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_EP400_CLAIM_CONTENTIONS, 1)
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
+            [
+                call(machine.job.job_id, get_pending_claim_req),
+                call(machine.job.job_id, get_ep400_claim_req),
+                call(machine.job.job_id, get_pending_contentions_req),
+                call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_ep400_contentions_req),
+            ],
+        )
+        assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.GET_EP400_CLAIM_CONTENTIONS)
+
+
+class TestUpToCheckPendingIsOpen:
+    @pytest.mark.parametrize(
+        "invalid_request",
+        [
+            pytest.param(ResponseException("Oops"), id="Caught Exception"),
+            pytest.param(load_response(response_400, get_claim.Response), id="400"),
+            pytest.param(load_response(response_404, get_claim.Response), id="404"),
+            pytest.param(load_response(response_500, get_claim.Response), id="500"),
+            pytest.param(
+                get_claim.Response(statusCode=200, statusMessage="OK", claim=ClaimDetail(claimId=3, endProductCode="010")).model_dump(),
+                id="claim has no claim_lifecycle_status",
+            ),
+            pytest.param(
+                get_claim.Response(
+                    statusCode=200, statusMessage="OK", claim=ClaimDetail(claimId=3, endProductCode="010", claimLifecycleStatus="Cancelled")
+                ).model_dump(),
+                id="claim has ineligible claim_lifecycle_status 'Cancelled'",
+            ),
+            pytest.param(
+                get_claim.Response(
+                    statusCode=200, statusMessage="OK", claim=ClaimDetail(claimId=3, endProductCode="010", claimLifecycleStatus="Ready For Decision")
+                ).model_dump(),
+                id="claim has ineligible claim_lifecycle_status 'Ready to Work'",
+            ),
+        ],
+    )
+    def test_invalid_request(self, machine, mock_hoppy_async_client, metric_logger_distribution, metric_logger_increment, invalid_request):
+        mock_async_responses(
+            mock_hoppy_async_client,
+            [
+                get_pending_claim_200,
+                get_ep400_claim_200,
+                get_pending_contentions_200,
+                get_ep400_contentions_200,
+                invalid_request,
+                update_contentions_on_ep400_200,
+            ],
+        )
+        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.CHECK_PENDING_EP_IS_OPEN, 1)
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
+            [
+                call(machine.job.job_id, get_pending_claim_req),
+                call(machine.job.job_id, get_ep400_claim_req),
+                call(machine.job.job_id, get_pending_contentions_req),
+                call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_pending_claim_req),
+                call(machine.job.job_id, update_contentions_on_ep400_req),
+            ],
+        )
+        assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.CHECK_PENDING_EP_IS_OPEN)
+
+    @pytest.mark.parametrize(
+        "invalid_request",
+        [
+            pytest.param(ResponseException("Oops"), id="Caught Exception"),
+            pytest.param(load_response(response_400, update_contentions.Response), id="400"),
+            pytest.param(load_response(response_404, update_contentions.Response), id="404"),
+            pytest.param(load_response(response_500, update_contentions.Response), id="500"),
+        ],
+    )
+    def test_invalid_request_at_update_ep400_contentions_after_get_pending_claim_failure(
+        self, machine, mock_hoppy_async_client, metric_logger_distribution, metric_logger_increment, invalid_request
+    ):
+        mock_async_responses(
+            mock_hoppy_async_client,
+            [
+                get_pending_claim_200,
+                get_ep400_claim_200,
+                get_pending_contentions_200,
+                get_ep400_contentions_200,
+                ResponseException("Oops"),
+                invalid_request,
+            ],
+        )
+        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.CHECK_PENDING_EP_IS_OPEN_FAILED_REMOVE_SPECIAL_ISSUE, 2)
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
+            [
+                call(machine.job.job_id, get_pending_claim_req),
+                call(machine.job.job_id, get_ep400_claim_req),
+                call(machine.job.job_id, get_pending_contentions_req),
+                call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_pending_claim_req),
+                call(machine.job.job_id, update_contentions_on_ep400_req),
+            ],
+        )
+        assert_metrics_called(
+            metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.CHECK_PENDING_EP_IS_OPEN_FAILED_REMOVE_SPECIAL_ISSUE
+        )
 
 
 class TestUpToSetTemporaryStationOfJurisdiction:
@@ -475,20 +632,23 @@ class TestUpToSetTemporaryStationOfJurisdiction:
                 get_ep400_claim_200,
                 get_pending_contentions_200,
                 get_ep400_contentions_200,
+                get_pending_claim_200,
                 invalid_request,
                 update_contentions_on_ep400_200,
             ],
         )
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.SET_TEMP_STATION_OF_JURISDICTION, 1)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
                 call(machine.job.job_id, update_contentions_on_ep400_req),
-            ]
+            ],
         )
         assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.SET_TEMP_STATION_OF_JURISDICTION)
 
@@ -511,20 +671,23 @@ class TestUpToSetTemporaryStationOfJurisdiction:
                 get_ep400_claim_200,
                 get_pending_contentions_200,
                 get_ep400_contentions_200,
+                get_pending_claim_200,
                 ResponseException("Oops"),
                 invalid_request,
             ],
         )
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.SET_TEMP_STATION_OF_JURISDICTION_FAILED_REMOVE_SPECIAL_ISSUE, 2)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
                 call(machine.job.job_id, update_contentions_on_ep400_req),
-            ]
+            ],
         )
         assert_metrics_called(
             metric_logger_distribution,
@@ -559,6 +722,7 @@ class TestUpToMoveContentionsToPendingClaim:
                 get_ep400_claim_200,
                 get_pending_contentions_200,
                 get_ep400_contentions_200,
+                get_pending_claim_200,
                 update_temporary_station_of_jurisdiction_200,
                 invalid_request,
                 update_contentions_on_ep400_200,
@@ -566,17 +730,19 @@ class TestUpToMoveContentionsToPendingClaim:
             ],
         )
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.MOVE_CONTENTIONS_TO_PENDING_CLAIM, 1)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
                 call(machine.job.job_id, create_contentions_on_pending_claim_req),
                 call(machine.job.job_id, update_contentions_on_ep400_req),
                 call(machine.job.job_id, revert_temporary_station_of_jurisdiction_req),
-            ]
+            ],
         )
         assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.MOVE_CONTENTIONS_TO_PENDING_CLAIM)
 
@@ -599,6 +765,7 @@ class TestUpToMoveContentionsToPendingClaim:
                 get_ep400_claim_200,
                 get_pending_contentions_200,
                 get_ep400_contentions_200,
+                get_pending_claim_200,
                 update_temporary_station_of_jurisdiction_200,
                 ResponseException("Oops"),
                 invalid_request,
@@ -606,17 +773,19 @@ class TestUpToMoveContentionsToPendingClaim:
             ],
         )
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.MOVE_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE, 2)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
                 call(machine.job.job_id, create_contentions_on_pending_claim_req),
                 call(machine.job.job_id, update_contentions_on_ep400_req),
                 call(machine.job.job_id, revert_temporary_station_of_jurisdiction_req),
-            ]
+            ],
         )
         assert_metrics_called(
             metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.MOVE_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE
@@ -641,6 +810,7 @@ class TestUpToMoveContentionsToPendingClaim:
                 get_ep400_claim_200,
                 get_pending_contentions_200,
                 get_ep400_contentions_200,
+                get_pending_claim_200,
                 update_temporary_station_of_jurisdiction_200,
                 ResponseException("Oops"),
                 update_contentions_on_ep400_200,
@@ -648,15 +818,19 @@ class TestUpToMoveContentionsToPendingClaim:
             ],
         )
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.MOVE_CONTENTIONS_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION, 3)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
                 call(machine.job.job_id, create_contentions_on_pending_claim_req),
-            ]
+                call(machine.job.job_id, update_contentions_on_ep400_req),
+                call(machine.job.job_id, revert_temporary_station_of_jurisdiction_req),
+            ],
         )
         assert_metrics_called(
             metric_logger_distribution,
@@ -693,6 +867,7 @@ class TestUpToCancelClaim:
                 get_ep400_claim_200,
                 get_pending_contentions_200,
                 get_ep400_contentions_200,
+                get_pending_claim_200,
                 update_temporary_station_of_jurisdiction_200,
                 create_contentions_on_pending_claim_201,
                 invalid_request,
@@ -700,14 +875,19 @@ class TestUpToCancelClaim:
             ],
         )
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.CANCEL_EP400_CLAIM, 1)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
+                call(machine.job.job_id, get_pending_claim_req),
+                call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
                 call(machine.job.job_id, create_contentions_on_pending_claim_req),
                 call(machine.job.job_id, cancel_ep400_claim_req),
-            ]
+                call(machine.job.job_id, revert_temporary_station_of_jurisdiction_req),
+            ],
         )
         assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.CANCEL_EP400_CLAIM, 1, False)
 
@@ -730,6 +910,7 @@ class TestUpToCancelClaim:
                 get_ep400_claim_200,
                 get_pending_contentions_200,
                 get_ep400_contentions_200,
+                get_pending_claim_200,
                 update_temporary_station_of_jurisdiction_200,
                 create_contentions_on_pending_claim_201,
                 ResponseException("Oops"),
@@ -737,15 +918,19 @@ class TestUpToCancelClaim:
             ],
         )
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION, 3)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
+                call(machine.job.job_id, get_pending_claim_req),
+                call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
                 call(machine.job.job_id, create_contentions_on_pending_claim_req),
                 call(machine.job.job_id, cancel_ep400_claim_req),
                 call(machine.job.job_id, revert_temporary_station_of_jurisdiction_req),
-            ]
+            ],
         )
         assert_metrics_called(
             metric_logger_distribution,
@@ -777,6 +962,7 @@ class TestUpToAddClaimNote:
                 get_ep400_claim_200,
                 get_pending_contentions_200,
                 get_ep400_contentions_200,
+                get_pending_claim_200,
                 update_temporary_station_of_jurisdiction_200,
                 create_contentions_on_pending_claim_201,
                 cancel_claim_200,
@@ -784,15 +970,19 @@ class TestUpToAddClaimNote:
             ],
         )
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.ADD_CLAIM_NOTE_TO_EP400, 1)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
+                call(machine.job.job_id, get_pending_claim_req),
+                call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
                 call(machine.job.job_id, create_contentions_on_pending_claim_req),
                 call(machine.job.job_id, cancel_ep400_claim_req),
                 call(machine.job.job_id, add_claim_note_req),
-            ]
+            ],
         )
         assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.ADD_CLAIM_NOTE_TO_EP400, 1, False)
 
@@ -838,6 +1028,7 @@ class TestSuccess:
                 get_ep400_claim_200,
                 pending_contentions,
                 ep400_contentions,
+                get_pending_claim_200,
                 update_temporary_station_of_jurisdiction_200,
                 create_contentions_on_pending_claim_201,
                 cancel_claim_200,
@@ -845,14 +1036,19 @@ class TestSuccess:
             ],
         )
         process_and_assert(machine, JobState.COMPLETED_SUCCESS)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
+                call(machine.job.job_id, get_pending_claim_req),
+                call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
                 call(machine.job.job_id, create_pending_claim_req),
                 call(machine.job.job_id, cancel_ep400_claim_req),
-            ]
+                call(machine.job.job_id, add_claim_note_req),
+            ],
         )
         assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_SUCCESS, None, 1, False)
 
@@ -864,18 +1060,24 @@ class TestSuccess:
                 get_ep400_claim_200,
                 get_pending_contentions_increase_tinnitus_200,
                 get_ep400_contentions_200,
+                get_pending_claim_200,
                 update_temporary_station_of_jurisdiction_200,
                 cancel_claim_200,
                 add_claim_note_200,
             ],
         )
         process_and_assert(machine, JobState.COMPLETED_SUCCESS)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
+                call(machine.job.job_id, get_pending_claim_req),
+                call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
                 call(machine.job.job_id, cancel_ep400_claim_req),
-            ]
+                call(machine.job.job_id, add_claim_note_req),
+            ],
         )
         assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_SUCCESS, None, 0, True)
