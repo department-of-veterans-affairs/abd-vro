@@ -1,0 +1,38 @@
+name: Assign Python Tasks to Reviewers
+
+on:
+  pull_request:
+    types:
+      - opened
+
+jobs:
+  assign_tasks:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.9
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r .github/reviewer-tasks/requirements.txt
+
+    - name: Run Python tasks for each reviewer
+      run: |
+        reviewers=$(jq -r ".review.reviewers[].login" $GITHUB_EVENT_PATH)
+        for reviewer in $reviewers; do
+          task_script=".github/reviewer-tasks/${reviewer}_task.py"
+          if [ -f "$task_script" ]; then
+            echo "Running Reviewer Task $task_script in Python for reviewer: $reviewer"
+            python "$task_script" $reviewer
+          else
+            echo "No reviewer task found for reviewer: $reviewer, running default task"
+            # python .github/reviewer-tasks/default_task.py $reviewer
+          fi
+        done
