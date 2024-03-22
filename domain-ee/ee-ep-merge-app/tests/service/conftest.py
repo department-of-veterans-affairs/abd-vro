@@ -140,6 +140,13 @@ def process_and_assert(machine, expected_state: JobState, expected_error_state: 
         assert len(machine.job.messages) == num_errors
 
 
+def assert_hoppy_requests(mock_hoppy_async_client, calls):
+    # Number of expected calls should be equal number of actual calls
+    assert len(calls) == len(mock_hoppy_async_client.make_request.call_args_list)
+    # Assert calls are made in expected order
+    mock_hoppy_async_client.make_request.assert_has_calls(calls)
+
+
 def assert_metrics_called(
     metric_logger_distribution,
     metric_logger_increment,
