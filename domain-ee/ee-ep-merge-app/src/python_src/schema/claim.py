@@ -20,4 +20,3 @@ class ClaimDetail(BaseModel):
     benefit_claim_type: BenefitClaimType | None = None
     end_product_code: str | None = None
     temp_station_of_jurisdiction: str | None = None
-    claim_lifecycle_status: str | None = None
