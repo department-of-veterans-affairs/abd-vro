@@ -17,7 +17,6 @@ from schema import (
     get_contentions,
     update_contentions,
 )
-from schema.claim import ClaimDetail
 from schema import update_temp_station_of_jurisdiction as tsoj
 from schema.merge_job import JobState, MergeJob
 from schema.request import GeneralRequest
@@ -41,7 +40,6 @@ JOB_DURATION_METRIC = 'job.duration'
 JOB_SKIPPED_MERGE_METRIC = 'job.skipped_merge'
 JOB_NEW_CONTENTIONS_METRIC = 'job.new_contentions'
 
-ELIGIBLE_CLAIM_LIFECYCLE_STATUSES = frozenset(['open'])
 EP400_PRODUCT_CODES = frozenset([str(i) for i in range(400, 410)])
 EP400_BENEFIT_CLAIM_TYPE_CODES = frozenset(['400SUPP'])
 
@@ -55,13 +53,6 @@ EP400_CONTENTION_RETRY_WAIT_TIME = int(os.getenv("EP400_CONTENTION_RETRY_WAIT_TI
 
 def ep400_has_no_contentions(response: get_contentions.Response):
     return not response.contentions
-
-
-def is_claim_open(claim: ClaimDetail):
-    """
-    Check if the claim's lifecycle status is in the list of ELIGIBLE_CLAIM_LIFECYCLE_STATUSES
-    """
-    return claim and claim.claim_lifecycle_status and claim.claim_lifecycle_status.lower() in ELIGIBLE_CLAIM_LIFECYCLE_STATUSES
 
 
 class Workflow(str, Enum):
@@ -88,8 +79,6 @@ class EpMergeMachine(StateMachine):
     running_get_ep400_claim = State(value=JobState.GET_EP400_CLAIM)
     running_get_ep400_claim_failed_remove_special_issue = State(value=JobState.GET_EP400_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE)
     running_get_ep400_contentions = State(value=JobState.GET_EP400_CLAIM_CONTENTIONS)
-    running_check_pending_is_open = State(value=JobState.CHECK_PENDING_EP_IS_OPEN)
-    running_check_pending_is_open_failed_remove_special_issue = State(value=JobState.CHECK_PENDING_EP_IS_OPEN_FAILED_REMOVE_SPECIAL_ISSUE)
     running_set_temp_station_of_jurisdiction = State(value=JobState.SET_TEMP_STATION_OF_JURISDICTION)
     running_set_temp_station_of_jurisdiction_failed_remove_special_issue = State(value=JobState.SET_TEMP_STATION_OF_JURISDICTION_FAILED_REMOVE_SPECIAL_ISSUE)
     running_merge_contentions = State(value=JobState.MERGE_CONTENTIONS)
@@ -113,11 +102,8 @@ class EpMergeMachine(StateMachine):
         | running_get_pending_contentions.to(running_get_ep400_contentions, unless="has_error")
         | running_get_pending_contentions.to(running_get_pending_contentions_failed_remove_special_issue, cond="has_error")
         | running_get_pending_contentions_failed_remove_special_issue.to(completed_error)
-        | running_get_ep400_contentions.to(running_check_pending_is_open, unless="has_error")
+        | running_get_ep400_contentions.to(running_set_temp_station_of_jurisdiction, unless="has_error")
         | running_get_ep400_contentions.to(completed_error, cond="has_error")
-        | running_check_pending_is_open.to(running_set_temp_station_of_jurisdiction, unless="has_error")
-        | running_check_pending_is_open.to(running_check_pending_is_open_failed_remove_special_issue, cond="has_error")
-        | running_check_pending_is_open_failed_remove_special_issue.to(completed_error)
         | running_set_temp_station_of_jurisdiction.to(running_merge_contentions, cond="has_new_contentions", unless="has_error")
         | running_set_temp_station_of_jurisdiction.to(running_cancel_ep400_claim, unless=["has_new_contentions", "has_error"])
         | running_set_temp_station_of_jurisdiction.to(running_set_temp_station_of_jurisdiction_failed_remove_special_issue, cond="has_error")
@@ -183,11 +169,6 @@ class EpMergeMachine(StateMachine):
         if response is not None and response.status_code == 200:
             if response.claim is None or response.claim.end_product_code is None:
                 self.add_job_error(f"Pending claim #{self.job.pending_claim_id} does not have an end product code")
-            if not is_claim_open(response.claim):
-                self.add_job_error(
-                    f"Pending claim #{self.job.pending_claim_id} does not have an eligible lifecycle status of: "
-                    f"{', '.join(list(ELIGIBLE_CLAIM_LIFECYCLE_STATUSES))}"
-                )
             else:
                 self.cancellation_reason = CANCELLATION_REASON_FORMAT.format(ep_code=response.claim.end_product_code, claim_id=self.job.pending_claim_id)
             self.original_tsoj = response.claim.temp_station_of_jurisdiction
@@ -236,20 +217,6 @@ class EpMergeMachine(StateMachine):
 
         self.send(event=event, pending_contentions_response=pending_contentions_response, ep400_contentions_response=response)
 
-    @running_check_pending_is_open.enter
-    def on_check_pending_claim_is_open(self, event, pending_contentions_response, ep400_contentions_response):
-        request = get_claim.Request(claim_id=self.job.pending_claim_id)
-        response = self.make_request(request=request, hoppy_client=HOPPY.get_client(ClientName.GET_CLAIM), response_type=get_claim.Response)
-
-        if response is not None and response.status_code == 200:
-            if not is_claim_open(response.claim):
-                self.add_job_error(
-                    f"Pending claim #{self.job.pending_claim_id} does not have an eligible lifecycle status of: "
-                    f"{', '.join(list(ELIGIBLE_CLAIM_LIFECYCLE_STATUSES))}"
-                )
-
-        self.send(event=event, pending_contentions_response=pending_contentions_response, ep400_contentions_response=ep400_contentions_response)
-
     @running_set_temp_station_of_jurisdiction.enter
     def on_set_temp_station_of_jurisdiction(self, event, pending_contentions_response=None, ep400_contentions_response=None):
         request = tsoj.Request(temp_station_of_jurisdiction="398", claim_id=self.job.ep400_claim_id)
@@ -290,7 +257,6 @@ class EpMergeMachine(StateMachine):
     @running_get_pending_claim_failed_remove_special_issue.enter
     @running_get_pending_contentions_failed_remove_special_issue.enter
     @running_get_ep400_claim_failed_remove_special_issue.enter
-    @running_check_pending_is_open_failed_remove_special_issue.enter
     @running_set_temp_station_of_jurisdiction_failed_remove_special_issue.enter
     @running_move_contentions_failed_remove_special_issue.enter
     def on_pre_cancel_step_failed_remove_special_issue_code(self, event, ep400_contentions_response=None):
