@@ -1,4 +1,0 @@
-## Logging
-logging:
-  level:
-    root: INFO
