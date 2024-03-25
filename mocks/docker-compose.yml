@@ -88,7 +88,7 @@ services:
       # https://github.com/bitnami/containers/blob/main/bitnami/kafka/README.md
       # https://stackoverflow.com/a/72018409
       # Caution: Empty string '' and "" don't work; however ' ' or " " does work
-      KAFKA_CFG_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: " "
+#      KAFKA_CFG_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: " "
 
       # For development without having to deal with connecting via SSL, use port 9092 or do the following.
       # To disable SSL, uncomment the following and comment out the next SSL section
