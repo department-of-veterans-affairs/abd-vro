@@ -78,10 +78,10 @@ jobs:
         run: |
           # Verify broker is up with 30 second timeout
           BROKER_QUERY=$(kafkacat -m 30 -b localhost:9092 \
-          -X debug='security,broker'
+          -X debug='security,broker' \
           -X security.protocol=sasl_ssl -X sasl.mechanisms=PLAIN \
           -X sasl.username=USERNAME -X sasl.password=PASSWORD  \
-          -L )
+          -L)
           if echo "$BROKER_QUERY" | grep -q '1 brokers'
           then
             echo "Found Broker: $BROKER_QUERY"
