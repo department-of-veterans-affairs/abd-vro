@@ -1,5 +1,5 @@
 name: "2. (Internal) SecRel workflow"
-run-name: "SecRel ${{inputs.image_prefix}} (${{github.ref_name}}) ${{github.event.head_commit.message}}"
+run-name: "SecRel (${{github.ref_name}}) ${{github.event.head_commit.message}}"
 
 on:
   # Trigger on every code push to main and develop branches
@@ -12,14 +12,6 @@ on:
   # Allow manual runs
   workflow_dispatch:
     inputs:
-      image_prefix:
-        description: 'Image prefix for the chosen branch. Choose `(no prefix)` to create non-dev images for deployment to sandbox, prod-test, and prod.'
-        required: true
-        default: 'dev_'
-        type: choice
-        options:
-          - "dev_"
-          - "(no prefix)"
       run_tests:
         description: "Run Gradle tests?"
         required: true
@@ -70,43 +62,31 @@ jobs:
       run-secrel: ${{ steps.image-props.outputs.run_secrel }}
     runs-on: ubuntu-latest
     steps:
-      - name: "Determine image prefix and tag"
+      - name: "Determine image tag"
         id: image-props
         run: |
           # Set defaults
           IMG_TAG=${GITHUB_SHA:0:7}
-          IMG_PREFIX="dev_"
           RUN_GRADLE_TESTS="true"
           RUN_SECREL="true"
 
           # Override some defaults depending on the branch/ref_name
           echo "ref_name: ${{ github.ref_name }}"
-          case "${{ github.ref_name }}" in
-            main)      IMG_PREFIX=""
-                       ;;
-            develop)   # To reduce workflow runtime, don't run tests
-                       RUN_GRADLE_TESTS=false
-                       # To reduce SecRel scans, only published changed images
-                       ;;
-          esac
 
           # If workflow was manually dispatched, override settings
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            [ "${{ inputs.image_prefix }}" == "(no prefix)" ] && IMG_PREFIX=""
             RUN_GRADLE_TESTS=${{ inputs.run_tests }}
             RUN_SECREL=${{ inputs.run_secrel }}
           fi
 
           {
             echo "image_tag=${IMG_TAG}"
-            echo "image_prefix=${IMG_PREFIX}"
             echo "run_tests=${RUN_GRADLE_TESTS}"
             echo "run_secrel=${RUN_SECREL}"
           } >> "$GITHUB_OUTPUT"
 
       - name: "DEBUG"
         run: |
-          echo "image_prefix: ${{ steps.image-props.outputs.image_prefix }}"
           echo "image_tag: ${{ steps.image-props.outputs.image_tag }}"
           echo "run_tests: ${{ steps.image-props.outputs.run_tests }}"
 
@@ -125,17 +105,15 @@ jobs:
           slack-text: ":arrow_forward: \
             <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|\
             SecRel running (#${{ github.run_number }})>: \
-            Publishing images with prefix `${{ steps.image-props.outputs.image_prefix }}` \
-            and tag `${{ steps.image-props.outputs.image_tag }}` \
+            Publishing images with tag `${{ steps.image-props.outputs.image_tag }}` \
             from ${{github.ref_type}} `${{github.ref_name}}`, \
             caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}` \
             (Run tests? ${{ steps.image-props.outputs.run_tests }})...\n"
 
-      - name: "Publish ${{ steps.image-props.outputs.image_prefix }} images to GHCR"
+      - name: "Publish images to GHCR"
         id: publish-images
         uses: ./.github/actions/publish-images
         with:
-          image_prefix: "${{ steps.image-props.outputs.image_prefix }}"
           image_tag: "${{ steps.image-props.outputs.image_tag }}"
           ghcr_username: ${{ github.actor }}
           ghcr_password: ${{ secrets.GITHUB_TOKEN }}
