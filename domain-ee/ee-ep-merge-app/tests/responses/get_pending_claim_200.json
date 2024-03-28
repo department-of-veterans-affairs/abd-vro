@@ -4,7 +4,6 @@
   "claim": {
     "claimId": 1,
     "endProductCode": "010",
-    "tempStationOfJurisdiction": "111",
-    "claimLifecycleStatus": "Open"
+    "tempStationOfJurisdiction": "111"
   }
 }
