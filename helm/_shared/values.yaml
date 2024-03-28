@@ -24,3 +24,4 @@ global:
       targetPort: 5432
       databaseName: vro
       schemaName: claims
+      domainCcSchemaName: domain-cc
