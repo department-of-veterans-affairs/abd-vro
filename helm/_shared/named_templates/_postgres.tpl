@@ -60,3 +60,20 @@
       name: vro-db
       key: DB_CLIENTUSER_PASS
 {{- end }}
+
+{{/*
+  For Flyway to connect to set up Postgres DB schema
+*/}}
+{{- define "domainCc.alembic.envVars" -}}
+- name: DOMAIN_CC_USER
+  valueFrom:
+    secretKeyRef:
+      name: domain-cc-db
+      key: DOMAIN_CC_USER
+- name: DOMAIN_CC_PW
+  valueFrom:
+    secretKeyRef:
+      name: domain-cc-db
+      key: DOMAIN_CC_PW
+- name: ALEMBIC_SCHEMA
+  value: {{ .Values.global.service.db.domainCcSchemaName }}
