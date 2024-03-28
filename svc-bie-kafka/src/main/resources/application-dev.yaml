@@ -18,7 +18,7 @@ spring:
         trust-store-location: "${TRUSTSTORE_FILE}"
         trust-store-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
     consumer:
-      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-tst-vro-1}"
+      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:EXT_VRO_DEV}"
       key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
       value-deserializer: "io.confluent.kafka.serializers.KafkaAvroDeserializer"
 
