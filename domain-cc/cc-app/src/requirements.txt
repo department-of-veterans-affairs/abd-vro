@@ -1,3 +1,4 @@
+datadog-api-client==2.23.0
 fastapi==0.109.*
 httpx==0.24.*
 pika==1.3.*
