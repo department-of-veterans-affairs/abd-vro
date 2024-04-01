@@ -8,7 +8,7 @@ spring:
       sasl:
         mechanism: PLAIN
         jaas:
-          config: "org.apache.kafka.common.security.plain.PlainLoginModule required username=${BIE_KAFKA_RBAC_USERNAME} password=${BIE_KAFKA_RBAC_PASSWORD};"
+          config: "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"${BIE_KAFKA_RBAC_USERNAME}\" password=\"${BIE_KAFKA_RBAC_PASSWORD}\";"
       ssl:
         # Keystore not needed https://dsva.slack.com/archives/C04U8GESRT7/p1708456986385019?thread_ts=1706878417.546749&cid=C04U8GESRT7
 #        key-store-type: PKCS12
