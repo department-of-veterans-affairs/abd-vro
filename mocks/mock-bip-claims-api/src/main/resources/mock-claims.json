@@ -791,7 +791,8 @@
       "claimId": 10000,
       "phase": "Claim Received",
       "tempStationOfJurisdiction": "398",
-      "endProductCode": "010"
+      "endProductCode": "010",
+      "claimLifecycleStatus": "Open"
     },
     "contentions": [
       {
@@ -1006,7 +1007,8 @@
       "claimId": 5001,
       "phase": "Claim Received",
       "tempStationOfJurisdiction": "398",
-      "endProductCode": "010"
+      "endProductCode": "010",
+      "claimLifecycleStatus": "Open"
     },
     "contentions": [
       {
@@ -1085,7 +1087,8 @@
       "claimId": 5004,
       "phase": "Claim Received",
       "tempStationOfJurisdiction": "398",
-      "endProductCode": "010"
+      "endProductCode": "010",
+      "claimLifecycleStatus": "Open"
     },
     "contentions": [
       {
@@ -1163,7 +1166,8 @@
       "claimId": 5006,
       "phase": "Claim Received",
       "tempStationOfJurisdiction": "398",
-      "endProductCode": "010"
+      "endProductCode": "010",
+      "claimLifecycleStatus": "Open"
     },
     "contentions": [
       {
