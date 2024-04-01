@@ -1,4 +1,5 @@
 import logging
+import os
 from datetime import datetime
 
 from datadog_api_client import ApiClient, ApiException, Configuration
@@ -14,6 +15,7 @@ api_client = ApiClient(configuration)
 v1_metrics_api = MetricsApi(api_client)
 
 APP_PREFIX = "cc-app"
+ENV = os.environ.get("ENV") or "local"
 
 
 def submit_duration_metric(metric: str, value: float):
@@ -35,6 +37,10 @@ def submit_duration_metric(metric: str, value: float):
                             [value],
                         ]
                     ),
+                ],
+                tags=[
+                    f"environment:{ENV}",
+                    f"service:{APP_PREFIX}",
                 ],
             )
         ],

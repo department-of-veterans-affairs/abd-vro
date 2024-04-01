@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 import sys
 import time
 from typing import Optional
@@ -17,7 +18,7 @@ dc_lookup_table = DiagnosticCodeLookupTable()
 dropdown_lookup_table = ConditionDropdownLookupTable()
 dropdown_values = build_logging_table()
 DATADOG_RESPONSE_TIME_METRIC = "contention_classification.response_time"
-IS_RUNNING_PROD = True
+ENV = os.environ.get("ENV") or "local"
 
 app = FastAPI(
     title="Contention Classification",
@@ -52,7 +53,7 @@ async def save_process_time_as_metric(request: Request, call_next):
     response.headers["X-Process-Time"] = str(process_time)
     if request.url.path != "/classifier":
         return response
-    if not IS_RUNNING_PROD:
+    if ENV == "local":
         return response
     submit_duration_metric(DATADOG_RESPONSE_TIME_METRIC, process_time)
 
