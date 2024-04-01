@@ -4,10 +4,11 @@ import sys
 import time
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 
 from .pydantic_models import Claim, ClaimLinkInfo, PredictedClassification
 from .util.brd_classification_codes import get_classification_name
+from .util.datadog_metrics import submit_duration_metric
 from .util.logging_dropdown_selections import build_logging_table
 from .util.lookup_table import ConditionDropdownLookupTable, DiagnosticCodeLookupTable
 from .util.sanitizer import sanitize_log
@@ -15,6 +16,8 @@ from .util.sanitizer import sanitize_log
 dc_lookup_table = DiagnosticCodeLookupTable()
 dropdown_lookup_table = ConditionDropdownLookupTable()
 dropdown_values = build_logging_table()
+DATADOG_RESPONSE_TIME_METRIC = "contention_classification.response_time"
+IS_RUNNING_PROD = True
 
 app = FastAPI(
     title="Contention Classification",
@@ -39,6 +42,21 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
     stream=sys.stdout,
 )
+
+
+@app.middleware("http")
+async def save_process_time_as_metric(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    process_time = time.time() - start_time
+    response.headers["X-Process-Time"] = str(process_time)
+    if request.url.path != "/classifier":
+        return response
+    if not IS_RUNNING_PROD:
+        return response
+    submit_duration_metric(DATADOG_RESPONSE_TIME_METRIC, process_time)
+
+    return response
 
 
 @app.get("/health")
