@@ -4,11 +4,13 @@ from datetime import datetime
 
 from datadog_api_client import ApiClient, Configuration
 from datadog_api_client.exceptions import ApiException
-from datadog_api_client.v1.api.metrics_api import (
-    DistributionPoint,
+from datadog_api_client.v1.api.metrics_api import MetricsApi
+from datadog_api_client.v1.model.distribution_point import DistributionPoint
+from datadog_api_client.v1.model.distribution_points_payload import (
     DistributionPointsPayload,
+)
+from datadog_api_client.v1.model.distribution_points_series import (
     DistributionPointsSeries,
-    MetricsApi,
 )
 
 configuration = Configuration(enable_retry=True)

@@ -51,10 +51,12 @@ async def save_process_time_as_metric(request: Request, call_next):
     response = await call_next(request)
     process_time = time.time() - start_time
     response.headers["X-Process-Time"] = str(process_time)
-    log_as_json({
-        "process_time": process_time,
-        "url": request.url.path,
-    })
+    log_as_json(
+        {
+            "process_time": process_time,
+            "url": request.url.path,
+        }
+    )
     if request.url.path != "/classifier":
         return response
     if ENV == "local":
