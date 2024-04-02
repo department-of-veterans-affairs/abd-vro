@@ -45,11 +45,11 @@ export TRUSTSTORE_PWD=$(generate_password)
 # Keeping them will result in password mismatch error. They are safe to delete as they are recreated.
 rm -f bip.truststore.jks keystore.p12 bip.truststore.p12 passwd output.json
 
-keytool -import -alias AllVA1 -file VA-Internal-S2-ICA4.cer -storetype JKS -keystore bip.truststore.jks -storepass "$TRUSTSTORE_PWD"
+echo "yes" | keytool -import -alias AllVA1 -file VA-Internal-S2-ICA4.cer -storetype JKS -keystore bip.truststore.jks -storepass "$TRUSTSTORE_PWD"
 # shellcheck disable=SC2086
-keytool -import -alias AllVA2 -file VA-Internal-S2-ICA19.cer -storetype JKS -keystore bip.truststore.jks -storepass "$TRUSTSTORE_PWD"
-keytool -import -alias AllVA3 -file VA-Internal-S2-ICA11.cer -storetype JKS -keystore bip.truststore.jks -storepass "$TRUSTSTORE_PWD"
-keytool -import -alias AllVA4 -file VA-Internal-S2-RCA2.cer -storetype JKS -keystore bip.truststore.jks -storepass "$TRUSTSTORE_PWD"
+echo "yes" | keytool -import -alias AllVA2 -file VA-Internal-S2-ICA19.cer -storetype JKS -keystore bip.truststore.jks -storepass "$TRUSTSTORE_PWD"
+echo "yes" | keytool -import -alias AllVA3 -file VA-Internal-S2-ICA11.cer -storetype JKS -keystore bip.truststore.jks -storepass "$TRUSTSTORE_PWD"
+echo "yes" | keytool -import -alias AllVA4 -file VA-Internal-S2-RCA2.cer -storetype JKS -keystore bip.truststore.jks -storepass "$TRUSTSTORE_PWD"
 
 echo "$TRUSTSTORE_PWD" | keytool -importkeystore -srckeystore bip.truststore.jks -srcstoretype jks -srcstorepass "$TRUSTSTORE_PWD" -destkeystore bip.truststore.p12 -deststoretype pkcs12 -deststorepass "$TRUSTSTORE_PWD"
 
