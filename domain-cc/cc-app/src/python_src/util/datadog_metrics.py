@@ -2,7 +2,8 @@ import logging
 import os
 from datetime import datetime
 
-from datadog_api_client import ApiClient, ApiException, Configuration
+from datadog_api_client import ApiClient, Configuration
+from datadog_api_client.exceptions import ApiException
 from datadog_api_client.v1.api.metrics_api import (
     DistributionPoint,
     DistributionPointsPayload,
