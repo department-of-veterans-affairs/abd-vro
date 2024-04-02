@@ -21,6 +21,8 @@ spring:
       group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:EXT_VRO_DEV}"
       key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
       value-deserializer: "io.confluent.kafka.serializers.KafkaAvroDeserializer"
+      properties:
+        spring-deserializer-value-delegate-class: "org.springframework.kafka.support.serializer.JsonDeserializer"
 
 bie:
   kafka-topic-env: "DEV"
