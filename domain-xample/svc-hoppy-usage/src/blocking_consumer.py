@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 import time
 
-import hoppy
+from hoppy.mq import Service, ServiceError
 
-print(f"Imported hoppy with default RabbitMQ config", flush=True)
+print("Imported hoppy with default RabbitMQ config", flush=True)
 
 
-class ServiceUnavailableError(hoppy.ServiceError):
+class ServiceUnavailableError(ServiceError):
     ERROR_CODE = 503
 
     def __str__(self):
@@ -18,9 +18,7 @@ def handler_one(message, routing_key):
     return {
         "result": f"This is the result of handling {message}",
         "timestamp": time.time(),
-        "header": {
-            "statusMessage": "Success!"
-        },
+        "header": {"statusMessage": "Success!"},
     }
 
 
@@ -33,12 +31,14 @@ def handler_reciprocal(message, routing_key):
     return {"value": 1 / message["value"]}
 
 
-hoppy.Service(
-    config={"retry_limit": 5},
-    exchange="sample-exchange",
-    consumers={
-        "queue-one": handler_one,
-        "queue-two": handler_two,
-        "queue-reciprocal": handler_reciprocal,
-    },
-).run()
+if __name__ == "__main__":
+
+    Service(
+        config={"retry_limit": 5},
+        exchange="sample-exchange",
+        consumers={
+            "queue-one": handler_one,
+            "queue-two": handler_two,
+            "queue-reciprocal": handler_reciprocal,
+        },
+    ).run()
