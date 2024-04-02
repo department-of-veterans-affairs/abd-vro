@@ -30,9 +30,9 @@ spring:
       # Comment out the following line to connect without SSL
       ssl:
         # Keystore not needed https://dsva.slack.com/archives/C04U8GESRT7/p1708456986385019?thread_ts=1706878417.546749&cid=C04U8GESRT7
-        key-store-location: "file:${KEYSTORE_FILE}"
-        key-store-password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
-        key-store-type: "PKCS12"
+#        key-store-location: "file:${KEYSTORE_FILE}"
+#        key-store-password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
+#        key-store-type: "PKCS12"
         trust-store-location: "file:${TRUSTSTORE_FILE}"
         trust-store-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
         trust-store-type: "PKCS12"
