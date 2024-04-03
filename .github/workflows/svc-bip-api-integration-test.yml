@@ -56,7 +56,7 @@ jobs:
         uses: ./.github/actions/check-disk-space
 
       - name: 'Wait for RabbitMQ to be ready'
-        uses: indiesdev/curl@v1.1
+        uses: Ponnia-M/curl@v1.0.0
         with:
           url: 'http://localhost:15672/api/vhosts'
           method: 'GET'
