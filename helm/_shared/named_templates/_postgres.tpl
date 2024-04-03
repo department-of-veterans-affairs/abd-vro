@@ -62,7 +62,7 @@
 {{- end }}
 
 {{/*
-  For Flyway to connect to set up Postgres DB schema
+  For Alembic to connect to Postgres Domain-cc DB schema
 */}}
 {{- define "domainCc.alembic.envVars" -}}
 - name: DOMAIN_CC_USER
