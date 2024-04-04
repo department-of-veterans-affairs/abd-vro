@@ -30,6 +30,10 @@ x-postgres-vars: &postgres-vars
   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
   POSTGRES_SCHEMA: ${POSTGRES_SCHEMA}
 
+x-datadog-vars: &datadog-vars
+  DD_SITE: ${DD_SITE}
+  DD_API_KEY: ${DD_API_KEY}
+
 services:
   # Containers with the `svc-` prefix are microservices to support domain workflows.
 
@@ -37,7 +41,7 @@ services:
     image: va/abd_vro-cc-app:latest
     <<: [*common-sde-security, *common-security-opt]
     environment:
-      <<: [*common-vars, *postgres-vars]
+      <<: [*common-vars, *postgres-vars, *datadog-vars]
     ports:
       - "8120:8120"
     networks:
