@@ -9,18 +9,15 @@ spring:
         jaas:
           config: "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"${BIE_KAFKA_RBAC_USERNAME}\" password=\"${BIE_KAFKA_RBAC_PASSWORD}\";"
     consumer:
-      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:EXT_VRO_DEV}"
+      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:EXT_VRO_TST}"
       key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
       value-deserializer: "io.confluent.kafka.serializers.KafkaAvroDeserializer"
       properties:
         spring-deserializer-value-delegate-class: "org.springframework.kafka.support.serializer.JsonDeserializer"
       ssl:
-        key-store-location: "file:${KEYSTORE_FILE}"
-        key-store-password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
-        key-store-type: "PKCS12"
         trust-store-location: "file:${TRUSTSTORE_FILE}"
         trust-store-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
         trust-store-type: "PKCS12"
 
 bie:
-  kafka-topic-env: "DEV"
+  kafka-topic-env: "TST"
