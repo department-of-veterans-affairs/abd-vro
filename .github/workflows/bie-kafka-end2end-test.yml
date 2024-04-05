@@ -54,7 +54,7 @@ jobs:
         uses: ./.github/actions/check-disk-space
 
       - name: 'Wait for RabbitMQ to be ready'
-        uses: department-of-veterans-affairs/curl-action@v1.0.0
+        uses: department-of-veterans-affairs/curl-action/action.yml@v1.0.0
         with:
           url: 'http://localhost:15672/api/vhosts'
           method: 'GET'
