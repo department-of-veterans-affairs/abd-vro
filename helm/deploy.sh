@@ -87,7 +87,7 @@ case "$HELM_CHART" in
   postgres)
     HELM_ARGS="$HELM_ARGS --set-string imageTag=$postgres_VER";;
   dev-tools)
-    HELM_ARGS="$HELM_ARGS --set-string imageTage=$devtools_VER";;
+    HELM_ARGS="$HELM_ARGS --set-string imageTag=$devtools_VER";;
 esac
 
 set -x
