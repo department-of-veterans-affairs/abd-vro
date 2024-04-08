@@ -30,30 +30,29 @@ generate_password() {
 
 # Generate a password for the keystore
 STOREPASS=$(generate_password)
-echo "Generated keystore password: $STOREPASS"
+echo "Generated truststore password: $STOREPASS"
 
-# Define the keystore file name
+# Define the truststore file name
 TRUSTSTORE="vro-truststore.p12"
 
-# Create or clear the existing keystore
+# Create or clear the existing truststore
 rm -f "$TRUSTSTORE"
 
-# Loop through the .cer files and import each into the keystore
+# Loop through the .cer files and import each into the truststore
 for certfile in *.cer; do
     # Extract alias name by removing the 'VA-Internal-' prefix from the filename
     alias=$(echo "$certfile" | sed 's/VA-Internal-//; s/.cer$//')
 
-    # Import the certificate into the keystore
+    # Import the certificate into the truststore
     keytool -import -noprompt -alias "$alias" -file "$certfile" -keystore "$TRUSTSTORE" -storepass "$STOREPASS" -storetype PKCS12
 done
 
-# Encode the keystore file to Base64 and print it
+# Encode the truststore file to Base64 and print it
 echo "Base64 Encoded Truststore:"
 base64 -i "$TRUSTSTORE"
 
 
 # Encode the files
-keystore=$(cat "$TRUSTSTORE" | base64 | tr -d '\n')
 truststore=$(cat "$TRUSTSTORE" | base64 | tr -d '\n')
 
 # Create the JSON file
