@@ -1,20 +1,16 @@
 spring:
   kafka:
-    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:bip-kafka.tst.bip.va.gov:443}"
+    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:kafka.preprod.bip.va.gov:443}"
     properties:
       schema:
         registry:
-          url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://${BIE_KAFKA_RBAC_USERNAME}:${BIE_KAFKA_RBAC_PASSWORD}@bip-schemaregistry.tst.bip.va.gov}"
-          sasl:
-            mechanism: PLAIN
-            jaas:
-              config: "org.apache.kafka.common.security.plain.PlainLoginModule required username=${BIE_KAFKA_RBAC_USERNAME:USERNAME} password=${BIE_KAFKA_RBAC_PASSWORD:PASSWORD};"
+          url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://schemaregistry.preprod.bip.va.gov:443}"
           ssl:
-#            protocol: SSL
-#            keystore:
-#              type: PKCS12
-#              location: "${KEYSTORE_FILE}"
-#              password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
+            protocol: SSL
+            keystore:
+              type: PKCS12
+              location: "${KEYSTORE_FILE}"
+              password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
             truststore:
               type: PKCS12
               location: "${TRUSTSTORE_FILE}"
@@ -24,16 +20,16 @@ spring:
       key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
       value-deserializer: "io.confluent.kafka.serializers.KafkaAvroDeserializer"
       properties:
-        security.protocol: SASL_SSL
+        security.protocol: SSL
         ssl:
-#          keystore:
-#            type: PKCS12
-#            location: "${KEYSTORE_FILE}"
-#            password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
+          keystore:
+            type: PKCS12
+            location: "${KEYSTORE_FILE}"
+            password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
           truststore:
             type: PKCS12
             location: "${TRUSTSTORE_FILE}"
             password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
 
 bie:
-  kafka-topic-env: "PRE_"
+  kakfa-topic-prefix: "PRE_"

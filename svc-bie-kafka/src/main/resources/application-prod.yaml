@@ -32,4 +32,4 @@ spring:
             password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
 
 bie:
-  kafka-topic-env: "PROD_"
+  kakfa-topic-prefix: "PROD_"
