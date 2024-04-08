@@ -5,9 +5,9 @@ spring:
       schema.registry:
         url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://${BIE_KAFKA_RBAC_USERNAME}:${BIE_KAFKA_RBAC_PASSWORD}@bip-schemaregistry.dev.bip.va.gov}"
         ssl:
-          trust-store-location: "${TRUSTSTORE_FILE}"
-          trust-store-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
-          trust-store-type: "PKCS12"
+          truststore.location: "${TRUSTSTORE_FILE}"
+          truststore.password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
+          truststore.type: "PKCS12"
       security.protocol: SASL_SSL
       sasl:
         mechanism: PLAIN
