@@ -1,1 +1,1 @@
-TABLE_VERSION = "v0.1"
+TABLE_VERSION = "v1.0"
