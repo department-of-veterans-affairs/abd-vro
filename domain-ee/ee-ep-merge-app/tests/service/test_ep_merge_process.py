@@ -712,7 +712,7 @@ class TestUpToMoveContentionsToPendingClaim:
         ],
     )
     def test_fail(self, machine, mock_hoppy_async_client, metric_logger_distribution, metric_logger_increment, invalid_request, original_tsoj):
-        get_pending_claim_200.claim.temp_station_of_jurisdiction = original_tsoj
+        get_ep400_claim_200.claim.temp_station_of_jurisdiction = original_tsoj
         revert_temporary_station_of_jurisdiction_req['tempStationOfJurisdiction'] = original_tsoj
 
         mock_async_responses(
@@ -857,7 +857,7 @@ class TestUpToCancelClaim:
     def test_invalid_request_at_cancel_claim_due_to_exception(
         self, machine, mock_hoppy_async_client, metric_logger_distribution, metric_logger_increment, invalid_request, original_tsoj
     ):
-        get_pending_claim_200.claim.temp_station_of_jurisdiction = original_tsoj
+        get_ep400_claim_200.claim.temp_station_of_jurisdiction = original_tsoj
         revert_temporary_station_of_jurisdiction_req['tempStationOfJurisdiction'] = original_tsoj
 
         mock_async_responses(
