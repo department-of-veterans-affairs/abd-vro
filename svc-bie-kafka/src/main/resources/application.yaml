@@ -14,38 +14,26 @@ spring:
   kafka:
     bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:localhost:9092}"
     properties:
-      basic.auth.credentials.source: USER_INFO
-      basic.auth.user.info: "${BIE_KAFKA_RBAC_USERNAME}:${BIE_KAFKA_RBAC_PASSWORD}"
-      schema.registry:
-        basic.auth.credentials.source: USER_INFO
-        basic.auth.user.info: "${BIE_KAFKA_RBAC_USERNAME}:${BIE_KAFKA_RBAC_PASSWORD}"
-        url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://bip-kafka.tst.bip.va.gov}"
-        ssl:
-          truststore.location: "${TRUSTSTORE_FILE}"
-          truststore.password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
-          truststore.type: "PKCS12"
+      schema.registry.url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://schemaregistry.dev.bip.va.gov:443}"
       specific.avro.reader: false
-      security.protocol: SASL_SSL
-      security.inter.broker.protocol: SASL_SSL
-      sasl:
-        mechanism: PLAIN
-        jaas:
-          config: "org.apache.kafka.common.security.plain.PlainLoginModule required username=${BIE_KAFKA_RBAC_USERNAME} password=${BIE_KAFKA_RBAC_PASSWORD};"
     consumer:
       group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-tst-vro}"
       key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
       value-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
       auto-offset-reset: earliest
-      security:
-        protocol: SASL_SSL
+      # Comment out the following line to connect without SSL
+      security.protocol: SSL
       ssl:
-        trust-store-location: "file:${TRUSTSTORE_FILE}"
-        trust-store-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
+        keystore-location: "file:${KEYSTORE_FILE}"
+        keystore-password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
+        key-store-type: "PKCS12"
+        truststore-location: "file:${TRUSTSTORE_FILE}"
+        truststore-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
         trust-store-type: "PKCS12"
 
 ## Specify bie properties
 bie:
-  kafka-topic-env: "TST"
+  kafka-topic-infix: "TST"
 
 ## Actuator for health check, liveness, and readiness
 management:
