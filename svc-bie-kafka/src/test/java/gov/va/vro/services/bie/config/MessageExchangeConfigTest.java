@@ -17,7 +17,7 @@ class MessageExchangeConfigTest {
   @BeforeEach
   void setUp() {
     bieProperties = new BieProperties();
-    bieProperties.kafkaTopicEnv = "TST";
+    bieProperties.kafkaTopicInfix = "TST";
   }
 
   @Test

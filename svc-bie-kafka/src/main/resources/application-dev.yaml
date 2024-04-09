@@ -29,4 +29,4 @@ spring:
         trust-store-type: "PKCS12"
 
 bie:
-  kafka-topic-env: "TST"
+  kafka-topic-infix: "TST"

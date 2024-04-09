@@ -13,13 +13,13 @@ import java.util.Arrays;
 @Setter
 public class BieProperties {
 
-  @Getter String kafkaTopicEnv;
+  @Getter String kafkaTopicInfix;
 
   public String[] topicNames() {
     return Arrays.stream(ContentionEvent.values())
         .map(
             contention -> {
-              String subString = "CATALOG_" + kafkaTopicEnv + "_CONTENTION";
+              String subString = "CATALOG_" + kafkaTopicInfix + "_CONTENTION";
               return contention.getTopicName().replaceAll("CATALOG_CONTENTION", subString);
             })
         .toArray(String[]::new);
