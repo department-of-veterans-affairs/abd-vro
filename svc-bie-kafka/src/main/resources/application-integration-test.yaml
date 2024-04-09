@@ -1,4 +1,3 @@
-
 spring:
   kafka:
     # To prevent java.net.UnknownHostException mock-bie-kafka, use mock Kafka's 'EXTERNAL' port 9094
@@ -12,20 +11,20 @@ spring:
     producer:
       key-serializer: "org.apache.kafka.common.serialization.StringSerializer"
       value-serializer: "org.apache.kafka.common.serialization.StringSerializer"
-      security.protocol: SASL_SSL
+      security.protocol: SSL
       ssl:
-        key-store-location: "file:${KEYSTORE_FILE}"
-        key-store-password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
+        keystore-location: "file:${KEYSTORE_FILE}"
+        keystore-password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
         key-store-type: "PKCS12"
-        trust-store-location: "file:${TRUSTSTORE_FILE}"
-        trust-store-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
+        truststore-location: "file:${TRUSTSTORE_FILE}"
+        truststore-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
         trust-store-type: "PKCS12"
     admin:
       security.protocol: SSL
       ssl:
-        key-store-location: "file:${KEYSTORE_FILE}"
-        key-store-password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
+        keystore-location: "file:${KEYSTORE_FILE}"
+        keystore-password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
         key-store-type: "PKCS12"
-        trust-store-location: "file:${TRUSTSTORE_FILE}"
-        trust-store-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
+        truststore-location: "file:${TRUSTSTORE_FILE}"
+        truststore-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
         trust-store-type: "PKCS12"
