@@ -5,6 +5,7 @@ from conftest import (
     EP400_CLAIM_ID,
     JOB_ID,
     PENDING_CLAIM_ID,
+    assert_hoppy_requests,
     add_claim_note_200,
     add_claim_note_req,
     get_ep400_contentions_200,
@@ -43,19 +44,23 @@ class TestUpToGetPendingClaim:
             pytest.param(load_response(response_400, get_claim.Response), id="400"),
             pytest.param(load_response(response_404, get_claim.Response), id="404"),
             pytest.param(load_response(response_500, get_claim.Response), id="500"),
-            pytest.param(get_claim.Response(statusCode=200, statusMessage="OK", claim=ClaimDetail(claimId=3)).model_dump(), id="claim has no endProductCode"),
+            pytest.param(
+                get_claim.Response(statusCode=200, statusMessage="OK", claim=ClaimDetail(claimId=3, claimLifecycleStatus="Open")).model_dump(),
+                id="claim has no endProductCode",
+            ),
         ],
     )
     def test_invalid_request(self, machine, mock_hoppy_async_client, invalid_request):
         mock_async_responses(mock_hoppy_async_client, [invalid_request, get_ep400_contentions_200, update_contentions_on_ep400_200])
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM, 1)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
                 # calls below are to attempt remove the special issue codes upon failure to get pending_claim
                 call(machine.job.job_id, get_ep400_contentions_req),
                 call(machine.job.job_id, update_contentions_on_ep400_req),
-            ]
+            ],
         )
 
     @pytest.mark.parametrize(
@@ -69,12 +74,13 @@ class TestUpToGetPendingClaim:
     def test_no_contentions_on_ep400_after_get_pending_claim_failure(self, machine, mock_hoppy_async_client, no_contentions_response):
         mock_async_responses(mock_hoppy_async_client, [ResponseException("Oops"), no_contentions_response])
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM, 2)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
                 # calls below are to attempt remove the special issue codes upon failure to get pending_claim, but there are no ep400 contentions
                 call(machine.job.job_id, get_ep400_contentions_req),
-            ]
+            ],
         )
 
     @pytest.mark.parametrize(
@@ -95,12 +101,13 @@ class TestUpToGetPendingClaim:
             ],
         )
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE, 3)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
                 # calls below are to attempt remove the special issue codes upon failure to get pending_claim, fails on call to get ep400 contentions
                 call(machine.job.job_id, get_ep400_contentions_req),
-            ]
+            ],
         )
 
     @pytest.mark.parametrize(
@@ -122,12 +129,14 @@ class TestUpToGetPendingClaim:
             ],
         )
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE, 2)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
                 # calls below are to attempt remove the special issue codes upon failure to get pending_claim, fails on update ep400 contentions
                 call(machine.job.job_id, get_ep400_contentions_req),
-            ]
+                call(machine.job.job_id, update_contentions_on_ep400_req),
+            ],
         )
 
 
@@ -144,12 +153,13 @@ class TestUpToAddClaimNote:
     def test_invalid_request_at_add_claim_note_due_to_exception(self, machine, mock_hoppy_async_client, invalid_request):
         mock_async_responses(mock_hoppy_async_client, [get_pending_claim_200, invalid_request])
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.ADD_CLAIM_NOTE_TO_EP400, 1)
-        mock_hoppy_async_client.make_request.assert_has_calls(
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
                 # call below is attempt to add note, which fails
                 call(machine.job.job_id, add_claim_note_req),
-            ]
+            ],
         )
 
 
@@ -158,4 +168,4 @@ class TestSuccess:
     def test_process_succeeds_with_different_contention(self, machine, mock_hoppy_async_client):
         mock_async_responses(mock_hoppy_async_client, [get_pending_claim_200, add_claim_note_200])
         process_and_assert(machine, JobState.COMPLETED_SUCCESS)
-        mock_hoppy_async_client.make_request.assert_has_calls([call(machine.job.job_id, get_pending_claim_req), call(machine.job.job_id, add_claim_note_req)])
+        assert_hoppy_requests(mock_hoppy_async_client, [call(machine.job.job_id, get_pending_claim_req), call(machine.job.job_id, add_claim_note_req)])
