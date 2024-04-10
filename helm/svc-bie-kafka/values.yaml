@@ -24,7 +24,7 @@ ports:
 
 livenessProbe:
   httpGet:
-    path: /actuator/health/liveness  
+    path: /actuator/health/liveness
     port: 10301
   initialDelaySeconds: 120
   periodSeconds: 10
