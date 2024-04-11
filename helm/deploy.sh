@@ -94,6 +94,7 @@ set -x
 # Exit with error code when command fails so that GH Action fails
 set -e
 helm upgrade "$RELEASE_NAME" "helm/$HELM_CHART" -n "${NAMESPACE}" \
+  --timeout 600 \
   --install --reset-values \
   --set-string "global.imageTag=${IMAGE_TAG}" \
   --set-string "global.commitSha=${GITHUB_SHA}" \
