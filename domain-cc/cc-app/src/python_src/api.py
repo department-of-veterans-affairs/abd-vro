@@ -1,6 +1,5 @@
 import json
 import logging
-import os
 import sys
 import time
 from typing import Optional
@@ -9,7 +8,6 @@ from fastapi import FastAPI, HTTPException, Request
 
 from .pydantic_models import Claim, ClaimLinkInfo, PredictedClassification
 from .util.brd_classification_codes import get_classification_name
-from .util.datadog_metrics import submit_duration_metric
 from .util.logging_dropdown_selections import build_logging_table
 from .util.lookup_table import ConditionDropdownLookupTable, DiagnosticCodeLookupTable
 from .util.sanitizer import sanitize_log
@@ -17,8 +15,6 @@ from .util.sanitizer import sanitize_log
 dc_lookup_table = DiagnosticCodeLookupTable()
 dropdown_lookup_table = ConditionDropdownLookupTable()
 dropdown_values = build_logging_table()
-DATADOG_RESPONSE_TIME_METRIC = "contention_classification.response_time"
-ENV = os.environ.get("ENV") or "local"
 
 app = FastAPI(
     title="Contention Classification",
@@ -57,11 +53,7 @@ async def save_process_time_as_metric(request: Request, call_next):
             "url": request.url.path,
         }
     )
-    if request.url.path != "/classifier":
-        return response
-    if ENV == "local":
-        return response
-    submit_duration_metric(DATADOG_RESPONSE_TIME_METRIC, process_time)
+    log_as_json({"process_time": process_time, "url": request.url.path})
 
     return response
 
