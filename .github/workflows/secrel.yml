@@ -210,11 +210,11 @@ jobs:
           fi
 
           # Throw an error if the IMAGE_LIST variable is an empty array
-          if [ ${{ IMAGE_LIST }} == "[]"]; then
+          if [ "${{ IMAGE_LIST }}" == "[]" ]; then
             exit 1
           fi
 
-          echo "image_list=IMAGE_LIST" >> "$GITHUB_OUTPUT"
+          echo "image_list=${IMAGE_LIST}" >> "$GITHUB_OUTPUT"
 
   secrel:
     name: SecRel Pipeline
