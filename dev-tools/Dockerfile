@@ -5,7 +5,7 @@ RUN apt-get update && \
     install_packages curl redis sudo && \
     install_packages postgresql-client
 
-RUN adduser --no-create-home --disabled-password tron
+RUN adduser --disabled-password tron
 
 USER tron
 

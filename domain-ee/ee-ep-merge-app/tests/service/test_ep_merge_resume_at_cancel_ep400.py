@@ -10,6 +10,8 @@ from conftest import (
     add_claim_note_req,
     cancel_claim_200,
     cancel_ep400_claim_req,
+    get_ep400_claim_200,
+    get_ep400_claim_req,
     get_ep400_contentions_200,
     get_ep400_contentions_req,
     get_pending_claim_200,
@@ -166,15 +168,18 @@ class TestUpToCancelClaim:
         ],
     )
     def test_invalid_request_at_cancel_claim_due_to_exception(self, machine, mock_hoppy_async_client, invalid_request, original_tsoj):
-        get_pending_claim_200.claim.temp_station_of_jurisdiction = original_tsoj
+        get_ep400_claim_200.claim.temp_station_of_jurisdiction = original_tsoj
         revert_temporary_station_of_jurisdiction_req['tempStationOfJurisdiction'] = original_tsoj
 
-        mock_async_responses(mock_hoppy_async_client, [get_pending_claim_200, invalid_request, revert_temporary_station_of_jurisdiction_200])
+        mock_async_responses(
+            mock_hoppy_async_client, [get_pending_claim_200, get_ep400_claim_200, invalid_request, revert_temporary_station_of_jurisdiction_200]
+        )
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.CANCEL_EP400_CLAIM, 1)
         assert_hoppy_requests(
             mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
+                call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, cancel_ep400_claim_req),
                 # calls below are to attempt revert tsoj due to fail to cancel
                 call(machine.job.job_id, revert_temporary_station_of_jurisdiction_req),
@@ -191,12 +196,13 @@ class TestUpToCancelClaim:
         ],
     )
     def test_invalid_request_at_revert_tsoj_due_to_failure_to_cancel_claim(self, machine, mock_hoppy_async_client, invalid_request):
-        mock_async_responses(mock_hoppy_async_client, [get_pending_claim_200, ResponseException("Oops"), invalid_request])
+        mock_async_responses(mock_hoppy_async_client, [get_pending_claim_200, get_ep400_claim_200, ResponseException("Oops"), invalid_request])
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION, 3)
         assert_hoppy_requests(
             mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
+                call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, cancel_ep400_claim_req),
                 # calls below are to attempt revert tsoj due to fail to cancel which fails
                 call(machine.job.job_id, revert_temporary_station_of_jurisdiction_req),
@@ -215,12 +221,13 @@ class TestUpToAddClaimNote:
         ],
     )
     def test_invalid_request_at_add_claim_note_due_to_exception(self, machine, mock_hoppy_async_client, invalid_request):
-        mock_async_responses(mock_hoppy_async_client, [get_pending_claim_200, cancel_claim_200, invalid_request])
+        mock_async_responses(mock_hoppy_async_client, [get_pending_claim_200, get_ep400_claim_200, cancel_claim_200, invalid_request])
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.ADD_CLAIM_NOTE_TO_EP400, 1)
         assert_hoppy_requests(
             mock_hoppy_async_client,
             [
                 call(machine.job.job_id, get_pending_claim_req),
+                call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, cancel_ep400_claim_req),
                 # call below is attempt to add note, which fails
                 call(machine.job.job_id, add_claim_note_req),
@@ -231,9 +238,14 @@ class TestUpToAddClaimNote:
 class TestSuccess:
 
     def test_process_succeeds_with_different_contention(self, machine, mock_hoppy_async_client):
-        mock_async_responses(mock_hoppy_async_client, [get_pending_claim_200, cancel_claim_200, add_claim_note_200])
+        mock_async_responses(mock_hoppy_async_client, [get_pending_claim_200, get_ep400_claim_200, cancel_claim_200, add_claim_note_200])
         process_and_assert(machine, JobState.COMPLETED_SUCCESS)
         assert_hoppy_requests(
             mock_hoppy_async_client,
-            [call(machine.job.job_id, get_pending_claim_req), call(machine.job.job_id, cancel_ep400_claim_req), call(machine.job.job_id, add_claim_note_req)],
+            [
+                call(machine.job.job_id, get_pending_claim_req),
+                call(machine.job.job_id, get_ep400_claim_req),
+                call(machine.job.job_id, cancel_ep400_claim_req),
+                call(machine.job.job_id, add_claim_note_req),
+            ],
         )

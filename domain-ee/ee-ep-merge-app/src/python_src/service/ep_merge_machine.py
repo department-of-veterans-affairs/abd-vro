@@ -136,10 +136,13 @@ class EpMergeMachine(StateMachine):
     )
     resume_restart = process
     resume_processing_from_running_cancel_ep400_claim = (
-        pending.to(running_get_pending_claim)
-        | running_get_pending_claim.to(running_cancel_ep400_claim, unless="has_error")
+        pending.to(running_get_pending_claim)  # pending claim needed to populate cancellation reason
+        | running_get_pending_claim.to(running_get_ep400_claim, unless="has_error")
         | running_get_pending_claim.to(running_get_pending_claim_failed_remove_special_issue, cond="has_error")
         | running_get_pending_claim_failed_remove_special_issue.to(completed_error)
+        | running_get_ep400_claim.to(running_cancel_ep400_claim, unless="has_error")  # ep400 claim needed for original tsoj
+        | running_get_ep400_claim.to(running_get_ep400_claim_failed_remove_special_issue, cond="has_error")
+        | running_get_ep400_claim_failed_remove_special_issue.to(completed_error)
         | running_cancel_ep400_claim.to(running_add_claim_note_to_ep400, unless="has_error")
         | running_cancel_ep400_claim.to(running_cancel_claim_failed_revert_temp_station_of_jurisdiction, cond="has_error")
         | running_cancel_claim_failed_revert_temp_station_of_jurisdiction.to(completed_error)
@@ -147,7 +150,7 @@ class EpMergeMachine(StateMachine):
         | running_add_claim_note_to_ep400.to(completed_error, cond="has_error")
     )
     resume_processing_from_running_add_note_to_ep400_claim = (
-        pending.to(running_get_pending_claim)
+        pending.to(running_get_pending_claim)  # pending claim needed to populate cancellation reason
         | running_get_pending_claim.to(running_add_claim_note_to_ep400, unless="has_error")
         | running_get_pending_claim.to(running_get_pending_claim_failed_remove_special_issue, cond="has_error")
         | running_get_pending_claim_failed_remove_special_issue.to(completed_error)
@@ -190,7 +193,6 @@ class EpMergeMachine(StateMachine):
                 )
             else:
                 self.cancellation_reason = CANCELLATION_REASON_FORMAT.format(ep_code=response.claim.end_product_code, claim_id=self.job.pending_claim_id)
-            self.original_tsoj = response.claim.temp_station_of_jurisdiction
 
         self.send(event=event)
 
@@ -209,6 +211,8 @@ class EpMergeMachine(StateMachine):
                 self.add_job_error(f"EP400 claim #{self.job.ep400_claim_id} does not have a benefit claim type code")
             elif claim.benefit_claim_type.code not in EP400_BENEFIT_CLAIM_TYPE_CODES:
                 self.add_job_error(f"EP400 claim #{self.job.ep400_claim_id} benefit claim type code of '{claim.benefit_claim_type.code}' is not supported")
+            else:
+                self.original_tsoj = response.claim.temp_station_of_jurisdiction
 
         self.send(event=event)
 
