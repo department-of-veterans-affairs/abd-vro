@@ -6,7 +6,7 @@ source scripts/image_vars.src
 IMAGE_LIST="[]"
 
 # This case captures manual dispatches where publishing is disabled
-if [ "${{needs.publish-to-ghcr.result}}" == 'skipped' ]; then
+if [ "${{ needs.publish-to-ghcr.result }}" == 'skipped' ]; then
 
   IMAGE_LIST="["
 
