@@ -166,9 +166,14 @@ jobs:
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
           slack-text: ":panda_builder: Images published!"
 
+  secrel-gate:
+    if: ${{ !failure() }}
+    needs: publish-to-ghcr
+    runs-on: ubuntu-latest
+
   secrel-inputs:
-    if: ${{ !failure() && needs.gate-check.outputs.run-secrel }}
-    needs: [publish-to-ghcr, gate-check]
+    if: ${{ needs.gate-check.outputs.run-secrel }}
+    needs: [secrel-gate, gate-check]
     outputs:
       vro-images: ${{ steps.vro-images.outputs.image_list }}
     runs-on: ubuntu-latest
