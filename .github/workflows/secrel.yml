@@ -224,7 +224,7 @@ jobs:
 
   secrel:
     name: SecRel Pipeline
-    if: needs.gate-check.outputs.run-secrel == 'true'
+    if: needs.gate-check.outputs.run-secrel == true
     needs: [secrel-inputs, gate-check]
     secrets: inherit
     uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v5
