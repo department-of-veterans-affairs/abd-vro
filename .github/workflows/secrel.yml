@@ -166,14 +166,9 @@ jobs:
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
           slack-text: ":panda_builder: Images published!"
 
-  secrel-gate:
-    if: ${{ !failure() }}
-    needs: publish-to-ghcr
-    runs-on: ubuntu-latest
-
   secrel-inputs:
-    if: ${{ needs.gate-check.outputs.run-secrel }}
-    needs: [secrel-gate, gate-check]
+    if: ${{ !failure() }}
+    needs: [publish-to-ghcr, gate-check]
     outputs:
       vro-images: ${{ steps.vro-images.outputs.image_list }}
     runs-on: ubuntu-latest
@@ -213,7 +208,7 @@ jobs:
           IMAGE_LIST+="]"
 
           # This case captures when the workflow is run automatically on PR merge along
-          # with manual dispatches where publishing is disabled
+          # with manual dispatches where publishing is enabled
           elif [ "${{needs.publish-to-ghcr.result}}" == 'success' ]; then
           IMAGE_LIST=${{needs.publish-to-ghcr.outputs.vro-images}}
           fi
@@ -227,7 +222,8 @@ jobs:
 
   secrel:
     name: SecRel Pipeline
-    needs: secrel-inputs
+    if: ${{ needs.gate-check.outputs.run-secrel }}
+    needs: [secrel-inputs, gate-check]
     secrets: inherit
     uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v5
     with:
