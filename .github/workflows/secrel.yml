@@ -171,6 +171,7 @@ jobs:
     needs: [publish-to-ghcr, gate-check]
     outputs:
       vro-images: ${{ steps.vro-images.outputs.image_list }}
+      run-secrel: ${{ steps.vro-images.outputs.run_secrel }}
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout source code"
@@ -220,12 +221,15 @@ jobs:
 
           echo "${{needs.gate-check.outputs.run-secrel}}"
 
-          echo "image_list=${IMAGE_LIST}" >> "$GITHUB_OUTPUT"
+          {
+            echo "image_list=${IMAGE_LIST}"
+            echo "run_secrel=${{needs.gate-check.outputs.run-secrel}}"
+          } >> "$GITHUB_OUTPUT"
 
   secrel:
     name: SecRel Pipeline
-    if: ${{ needs.gate-check.outputs.run-secrel == 'true' }}
-    needs: [secrel-inputs, gate-check]
+    if: needs.secrel-inputs.outputs.run-secrel == 'true'
+    needs: [secrel-inputs]
     secrets: inherit
     uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v5
     with:
