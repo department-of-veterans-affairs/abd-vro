@@ -234,7 +234,7 @@ jobs:
     steps:
       - name: "debug"
         run: |
-          echo "${{ needs.secrel-inputs.outputs.run-secrel }}
+          echo "${{ needs.secrel-inputs.outputs.run-secrel }}"
 
   secrel:
     name: SecRel Pipeline
