@@ -33,7 +33,7 @@ spring:
 
 ## Specify bie properties
 bie:
-  kakfa-topic-prefix: "TST_"
+  kafka-topic-infix: "TST"
 
 ## Actuator for health check, liveness, and readiness
 management:

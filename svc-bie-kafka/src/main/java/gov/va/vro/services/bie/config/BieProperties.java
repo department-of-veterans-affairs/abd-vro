@@ -13,11 +13,15 @@ import java.util.Arrays;
 @Setter
 public class BieProperties {
 
-  @Getter String kakfaTopicPrefix;
+  @Getter String kafkaTopicInfix;
 
   public String[] topicNames() {
     return Arrays.stream(ContentionEvent.values())
-        .map(contention -> kakfaTopicPrefix + contention.getTopicName())
+        .map(
+            contention -> {
+              String subString = "CATALOG_" + kafkaTopicInfix + "_CONTENTION";
+              return contention.getTopicName().replaceAll("CATALOG_CONTENTION", subString);
+            })
         .toArray(String[]::new);
   }
 }
