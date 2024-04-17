@@ -58,6 +58,26 @@ Run the tests
 pytest
 ```
 
+## Database Migrations
+This application uses alembic to perform any database migrations or updates.  To perform migrations follow the below steps:
+```
+# Run vro application from abd-vro directory
+./gradlew :dockerComposeUp
+
+# Navigate to cc-app directory
+cd domain-cc/cc-app
+
+# Apply database migrations
+alembic upgrade head
+```
+
+If there are any updates needed for the database (new tables, remove tables, add fields, etc.) you can use alembic to generate the revision file and apply the migrations following the below steps.
+
+1. Update the data models in `abd-vro/domain-cc/cc-app/alembic/db_models.py`
+2. From `cc-app` directory run `alembic revision --autogenerate -m <add note about changes>`
+3. Run `alembic upgrade head` to apply migrations
+
+These migrations will only be applied to the domain-cc schema.
 
 ## Contributing
 ### Install dev dependencies
