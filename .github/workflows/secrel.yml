@@ -223,7 +223,7 @@ jobs:
 
           {
             echo "image_list=${IMAGE_LIST}"
-            echo "run_secrel=${{needs.gate-check.outputs.run-secrel}}"
+            echo "run_secrel="${{needs.gate-check.outputs.run-secrel}}""
           } >> "$GITHUB_OUTPUT"
 
   secrel:
