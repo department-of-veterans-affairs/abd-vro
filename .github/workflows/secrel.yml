@@ -227,6 +227,15 @@ jobs:
             echo "run_secrel=true"
           } >> "$GITHUB_OUTPUT"
 
+  secrel-test:
+    name: SecRel Pipeline
+    needs: secrel-inputs
+    runs-on: ubuntu-latest
+    steps:
+      - name: "debug"
+        run: |
+          echo "${{ needs.secrel-inputs.outputs.run-secrel }}
+
   secrel:
     name: SecRel Pipeline
     needs: secrel-inputs
