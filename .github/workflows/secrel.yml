@@ -232,20 +232,3 @@ jobs:
     with:
       config-file: .github/secrel/config.yml
       images: ${{ needs.secrel-inputs.outputs.vro-images }}
-
-  notify-secrel-error:
-    needs: secrel
-    if: always() && needs.secrel.result == 'failure'
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Slack: SecRel Failure"
-        uses: archive/github-actions-slack@v2.9.0
-        # only run for the internal repo
-        if: ${{ github.repository == 'department-of-veterans-affairs/abd-vro-internal' }}
-        with:
-          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
-          slack-channel: ${{ env.SLACK_CHANNEL }}
-          slack-text: ":redlight: <${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|\
-              SecRel scan (#${{ github.run_number }}) failed>! \n\
-              ${{github.ref_type}} `${{github.ref_name}}` (`${{github.sha}}`), \n\
-              caused by `${{github.event_name}}` triggered by `${{github.triggering_actor}}` ..."
