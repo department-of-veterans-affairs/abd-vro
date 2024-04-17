@@ -221,7 +221,7 @@ jobs:
 
           echo "${{needs.gate-check.outputs.run-secrel}}"
 
-          RUN_SECREL="${{needs.gate-check.outputs.run-secrel}}"
+          RUN_SECREL="true"
           {
             echo "image_list=${IMAGE_LIST}"
             echo "run_secrel=${RUN_SECREL}"
