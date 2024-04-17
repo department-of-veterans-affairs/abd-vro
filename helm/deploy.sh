@@ -34,7 +34,7 @@ if [ "${ROLLBACK}" == "true" ] || [ "${TARGET_ENV}" == "prod" ]; then
   HELM_ARGS="$HELM_ARGS --atomic"
 fi
 
-HELM_ARGS="$HELM_ARGS --wait --timeout 15"
+HELM_ARGS="$HELM_ARGS --wait --timeout 15m"
 
 # Load values from files first; command-line parameters can override these values
 # Order of these files matter; contents of latter files will override earlier files
