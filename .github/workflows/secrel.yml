@@ -221,25 +221,12 @@ jobs:
 
           echo "${{needs.gate-check.outputs.run-secrel}}"
 
-          RUN_SECREL="true"
-          {
-            echo "image_list=${IMAGE_LIST}"
-            echo "run_secrel=true"
-          } >> "$GITHUB_OUTPUT"
-
-  secrel-test:
-    name: SecRel Pipeline
-    needs: secrel-inputs
-    runs-on: ubuntu-latest
-    steps:
-      - name: "debug"
-        run: |
-          echo "${{ needs.secrel-inputs.outputs.run-secrel }}"
+          echo "image_list=${IMAGE_LIST}" >> "$GITHUB_OUTPUT"
 
   secrel:
     name: SecRel Pipeline
-    needs: secrel-inputs
-    if: needs.secrel-inputs.outputs.run-secrel == 'true'
+    needs: [secrel-inputs, gate-check]
+    if: ${{always() && needs.secrel-inputs.outputs.run-secrel == 'true'}}
     secrets: inherit
     uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v5
     with:
