@@ -4,7 +4,7 @@ imagePullSecrets:
 {{- end }}
 
 {{- define "vro.imageRegistryPath" -}}
-ghcr.io/department-of-veterans-affairs/abd-vro-internal/
+ghcr.io/department-of-veterans-affairs/{{ .Values.global.images.repo }}/
 {{- end }}
 
 {{- define "vro.containerSuffix" -}}
