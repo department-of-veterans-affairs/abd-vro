@@ -24,7 +24,6 @@ NAMESPACE=va-abd-rrd-${TARGET_ENV}
 : ${TRIGGERING_ACTOR:=$USER}
 
 if [ "${SHUTDOWN_FIRST}" == "true" ]; then
-  echo "deleting $RELEASE_NAME"
   helm del "$RELEASE_NAME" --wait -n "$NAMESPACE" || exit 5
 fi
 
@@ -34,7 +33,9 @@ if [ "${ROLLBACK}" == "true" ] || [ "${TARGET_ENV}" == "prod" ]; then
   HELM_ARGS="$HELM_ARGS --atomic"
 fi
 
-HELM_ARGS="$HELM_ARGS --wait --timeout 15m"
+if [ "${WAIT_TIMEOUT}" ]; then
+  HELM_ARGS="$HELM_ARGS --wait --timeout ${WAIT_TIMEOUT}"
+fi
 
 # Load values from files first; command-line parameters can override these values
 # Order of these files matter; contents of latter files will override earlier files
@@ -97,15 +98,6 @@ helm upgrade "$RELEASE_NAME" "helm/$HELM_CHART" -n "${NAMESPACE}" \
   --set-string "global.imageTag=${IMAGE_TAG}" \
   --set-string "global.commitSha=${GITHUB_SHA}" \
   --set-string "global.triggeringActor=${TRIGGERING_ACTOR}" \
-  --debug --dry-run \
-  ${HELM_ARGS}
-
-helm upgrade "$RELEASE_NAME" "helm/$HELM_CHART" -n "${NAMESPACE}" \
-  --install --reset-values \
-  --set-string "global.imageTag=${IMAGE_TAG}" \
-  --set-string "global.commitSha=${GITHUB_SHA}" \
-  --set-string "global.triggeringActor=${TRIGGERING_ACTOR}" \
-  --debug \
   ${HELM_ARGS}
 set +x
 
