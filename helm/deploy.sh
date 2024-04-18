@@ -105,7 +105,7 @@ helm upgrade "$RELEASE_NAME" "helm/$HELM_CHART" -n "${NAMESPACE}" \
   --set-string "global.imageTag=${IMAGE_TAG}" \
   --set-string "global.commitSha=${GITHUB_SHA}" \
   --set-string "global.triggeringActor=${TRIGGERING_ACTOR}" \
-  --debug
+  --debug \
   ${HELM_ARGS}
 set +x
 
