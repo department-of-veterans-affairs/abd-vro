@@ -210,7 +210,7 @@ jobs:
           # This case captures when the workflow is run automatically on PR merge along
           # with manual dispatches where publishing is enabled
           elif [ "${{needs.publish-to-ghcr.result}}" == 'success' ]; then
-            IMAGE_LIST=${needs.publish-to-ghcr.outputs.vro-images}
+            IMAGE_LIST="${{needs.publish-to-ghcr.outputs.vro-images}}"
           fi
 
           # Throw an error if the IMAGE_LIST variable is an empty array
