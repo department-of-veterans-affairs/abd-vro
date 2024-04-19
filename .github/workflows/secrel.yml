@@ -180,6 +180,8 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN_PUSH_TO_DEVELOP }}
       - name: "Determine VRO image inputs"
         id: vro-images
+        env:
+          IMAGE_ARR: ${{needs.publish-to-ghcr.outputs.vro-images}}
         run: |
           source scripts/image_vars.src
           IMAGE_LIST="[]"
@@ -207,18 +209,14 @@ jobs:
 
             IMAGE_LIST+="]"
 
+            echo "image_list=${IMAGE_LIST}" >> "$GITHUB_OUTPUT"
+
           # This case captures when the workflow is run automatically on PR merge along
           # with manual dispatches where publishing is enabled
           elif [ "${{needs.publish-to-ghcr.result}}" == 'success' ]; then
-            IMAGE_LIST="${{needs.publish-to-ghcr.outputs.vro-images}}"
+            echo "image_list=$IMAGE_ARR" >> "$GITHUB_OUTPUT"
           fi
 
-          # Throw an error if the IMAGE_LIST variable is an empty array
-          if [ "${IMAGE_LIST}" == "[]" ]; then
-            exit 1
-          fi
-
-          echo "image_list=${IMAGE_LIST}" >> "$GITHUB_OUTPUT"
 
   secrel:
     name: SecRel Pipeline
