@@ -24,12 +24,12 @@ on:
         type: boolean
         default: true
       publish_images:
-        description: "Publish images from the head of the selected branch?"
+        description: "Publish all images from the head of the selected branch?"
         required: true
         type: boolean
         default: false
       image_name:
-        description: "Which images do you want to run SecRel on?"
+        description: "Which images do you want to run SecRel on? This does not affect image publishing. "
         required: true
         type: choice
         default: all
@@ -50,7 +50,7 @@ on:
           - redis
           - rabbitmq
       image_tag:
-        description: "Image tag to run SecRel on. If 'all' is selected, then 'latest' will always be used"
+        description: "Image tag to run SecRel on. If 'all' is selected, then 'latest' will always be used. This does not define the image tag during publishing"
         required: true
         type: string
         default: latest
