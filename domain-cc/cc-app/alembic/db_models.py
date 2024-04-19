@@ -11,6 +11,7 @@ class Claims(Base):
     __tablename__ = "claims"
 
     vbms_claim_id = Column(Integer, primary_key=True)
+    va_gov_claim_id = Column(Integer, primary_key=True)
 
 
 class Contentions(Base):
