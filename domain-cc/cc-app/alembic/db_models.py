@@ -1,3 +1,8 @@
+"""Contains the SQLAlchemy models for the domain-cc schema in the database.
+Changes made to the models followed by the migration commands will create a new
+migration file in the versions folder.
+"""
+
 from database_config import CC_SCHEMA
 from sqlalchemy import Column, Integer
 from sqlalchemy.ext.declarative import declarative_base
