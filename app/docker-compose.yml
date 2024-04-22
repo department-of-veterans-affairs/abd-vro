@@ -72,18 +72,6 @@ services:
     networks:
       - vro_intranet
 
-  svc-lighthouse-api:
-    profiles: ["all","svc","lh"]
-    image: va/abd_vro-svc-lighthouse-api:latest
-    <<: [*common-sde-security, *common-security-opt]
-    environment:
-      # ENV=local causes application-local.properties to be used, in addition to the default application.properties
-      <<: [*rabbitmq-placeholder-vars, *common-vars]
-      LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
-      LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
-    networks:
-      - vro_intranet
-
   svc-bip-api:
     profiles: ["all", "svc", "bip"]
     image: va/abd_vro-svc-bip-api:latest
