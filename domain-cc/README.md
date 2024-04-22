@@ -77,7 +77,7 @@ If there are any updates needed for the database (new tables, remove tables, add
 2. From `cc-app` directory run `alembic revision --autogenerate -m <add note about changes>`
 3. Run `alembic upgrade head` to apply migrations
 
-If migration commands are run without updating the data models, an empty migrations file will be created in the `alembic/versions` directory.  These migrations will only be applied to the domain-cc schema.
+ These migrations will only be applied to the domain-cc schema.
 
 ## Contributing
 ### Install dev dependencies

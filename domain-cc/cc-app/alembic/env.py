@@ -1,6 +1,7 @@
 from logging.config import fileConfig
 
 from alembic import context
+from alembic.environment import MigrationContext
 from database_config import alembic_user
 from db_models import Base
 from sqlalchemy import engine_from_config, pool
@@ -63,6 +64,21 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
+
+    def process_revision_directives(
+        context: MigrationContext, revision: str, directives: list
+    ):
+        """
+        Function detects if there are updates to the db_models and if there are
+        no updates, it will not create a revision file.
+        """
+        assert config.cmd_opts is not None
+        if getattr(config.cmd_opts, "autogenerate", False):
+            script = directives[0]
+            assert script.upgrade_ops is not None
+            if script.upgrade_ops.is_empty():
+                directives[:] = []
+
     connectable = engine_from_config(
         config.get_section(config.config_ini_section, {}),
         prefix="sqlalchemy.",
@@ -70,7 +86,11 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
+        context.configure(
+            connection=connection,
+            target_metadata=target_metadata,
+            process_revision_directives=process_revision_directives,
+        )
 
         with context.begin_transaction():
             context.run_migrations()
