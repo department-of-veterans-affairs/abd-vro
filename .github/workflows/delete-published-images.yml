@@ -72,7 +72,6 @@ jobs:
         - vro-app
         - vro-db-init
         - vro-svc-bgs-api
-        - vro-svc-lighthouse-api
         - vro-svc-bie-kafka
         - vro-xample-workflows
         - vro-cc-app

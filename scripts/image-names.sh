@@ -28,7 +28,7 @@ IMAGES=( postgres \
   api-gateway app db-init \
   dev-tools \
   svc-bgs-api \
-  svc-lighthouse-api svc-bie-kafka svc-bip-api \
+  svc-bie-kafka svc-bip-api \
   xample-workflows \
   cc-app \
   ee-max-cfi-app \
