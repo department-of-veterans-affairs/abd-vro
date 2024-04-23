@@ -80,8 +80,6 @@ case "$HELM_CHART" in
     ;;
   svc-bgs-api)
     HELM_ARGS="$HELM_ARGS --set-string imageTag=$svcbgsapi_VER ";;
-  svc-lighthouse-api)
-    HELM_ARGS="$HELM_ARGS --set-string imageTag=$svclighthouseapi_VER ";;
   svc-bip-api)
     HELM_ARGS="$HELM_ARGS --set-string imageTag=$svcbipapi_VER";;
   postgres)

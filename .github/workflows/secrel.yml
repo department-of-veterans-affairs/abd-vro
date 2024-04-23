@@ -40,7 +40,6 @@ on:
           - svc-bgs-api
           - svc-bie-kafka
           - svc-bip-api
-          - svc-lighthouse-api
           - api-gateway
           - ee-max-cfi-app
           - ee-ep-merge-app
