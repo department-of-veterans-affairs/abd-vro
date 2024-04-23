@@ -7,9 +7,6 @@ vro:
   openapi:
     servers:
       - url: ${STARTER_OPENAPI_SERVERURL:/}
-      # In case this API is being accessed via the API Gateway:
-      - description: "via API Gateway"
-        url: /vro-app
 
 logging:
   level:

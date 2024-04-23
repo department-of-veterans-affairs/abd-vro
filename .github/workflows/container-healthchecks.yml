@@ -31,11 +31,11 @@ jobs:
       - name: "Docker build"
         uses: ./.github/actions/build-images
 
-      - name: "Start containers: platform and api-gateway"
+      - name: "Start containers: platform"
         run: |
           source scripts/setenv.sh
           export -p | sed 's/declare -x //'
-          COMPOSE_PROFILES="gateway" ./gradlew :dockerComposeUp
+          COMPOSE_PROFILES="platform" ./gradlew :dockerComposeUp
 
       - name: "Start containers: app and svc-*"
         shell: bash
