@@ -1,13 +1,13 @@
 spring:
   kafka:
-    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:bip-kafka.qa.bip.va.gov:443}"
+    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:bip-kafka.stage.bip.va.gov:443}"
     properties:
       basic.auth.credentials.source: USER_INFO
       basic.auth.user.info: "${BIE_KAFKA_RBAC_USERNAME}:${BIE_KAFKA_RBAC_PASSWORD}"
       schema.registry:
         basic.auth.credentials.source: USER_INFO
         basic.auth.user.info: "${BIE_KAFKA_RBAC_USERNAME}:${BIE_KAFKA_RBAC_PASSWORD}"
-        url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://bip-schemaregistry.dev.bip.va.gov}"
+        url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://bip-schemaregistry.stage.bip.va.gov}"
         ssl:
           truststore.location: "${TRUSTSTORE_FILE}"
           truststore.password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
@@ -18,7 +18,7 @@ spring:
         jaas:
           config: "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"${BIE_KAFKA_RBAC_USERNAME}\" password=\"${BIE_KAFKA_RBAC_PASSWORD}\";"
     consumer:
-      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:EXT_VRO_QA}"
+      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:EXT_VRO_UAT}"
       key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
       value-deserializer: "io.confluent.kafka.serializers.KafkaAvroDeserializer"
       security:
