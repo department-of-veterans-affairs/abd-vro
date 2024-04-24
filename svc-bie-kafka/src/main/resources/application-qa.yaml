@@ -1,6 +1,6 @@
 spring:
   kafka:
-    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://bip-kafka.stage.bip.va.gov:443}"
+    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:bip-kafka.stage.bip.va.gov:443}"
     properties:
       basic.auth.credentials.source: USER_INFO
       basic.auth.user.info: "${BIE_KAFKA_RBAC_USERNAME}:${BIE_KAFKA_RBAC_PASSWORD}"
