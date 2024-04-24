@@ -29,4 +29,4 @@ spring:
         trust-store-type: "PKCS12"
 
 bie:
-  kafka-topic-infix: "QA"
+  kafka-topic-infix: "UAT"
