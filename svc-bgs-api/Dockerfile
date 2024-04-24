@@ -4,7 +4,7 @@ FROM ruby:3.3.0-alpine3.19
  # https://www.cloudbees.com/blog/build-minimal-docker-container-ruby-apps
 
 # hadolint ignore=DL3018
-RUN apk update && apk upgrade && apk --no-cache add git ruby-dev=3.2.2-r1 curl-dev build-base=0.5-r3 openssl && rm -rf /var/cache/apk/*
+RUN apk update && apk upgrade && apk --no-cache add git ruby-dev=3.2.4-r0 curl-dev build-base=0.5-r3 openssl && rm -rf /var/cache/apk/*
 
 WORKDIR /app
 
@@ -36,7 +36,7 @@ COPY healthcheck/readiness_script.rb /app/healthcheck/readiness_script.rb
 COPY healthcheck/startup_script.rb /app/healthcheck/startup_script.rb
 
 # Make scripts executable
-RUN chmod +x /app/healthcheck/liveness_script.rb \ 
+RUN chmod +x /app/healthcheck/liveness_script.rb \
     && chmod +x /app/healthcheck/readiness_script.rb \
     && chmod +x /app/healthcheck/startup_script.rb
 

@@ -26,7 +26,6 @@ on:
         - svc-bgs-api
         - svc-bie-kafka
         - svc-bip-api
-        - api-gateway
         - domain-ee-max-cfi-app
         - domain-ee-ep-merge-app
         - dev-tools

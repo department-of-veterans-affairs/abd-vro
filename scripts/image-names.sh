@@ -25,7 +25,7 @@ prodImageName() {
 IMAGES=( postgres \
   redis \
   rabbitmq \
-  api-gateway app db-init \
+  app db-init \
   dev-tools \
   svc-bgs-api \
   svc-bie-kafka svc-bip-api \
