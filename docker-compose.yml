@@ -74,7 +74,7 @@ services:
   # Containers with the `mock-` prefix are used for development and testing.
 
   rabbitmq-service:
-    profiles: ["platform"]
+    profiles: [ "platform", "all" ]
     image: va/abd_vro-rabbitmq
     <<: *image-platform
     healthcheck:
@@ -96,7 +96,7 @@ services:
       RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS: "true"
 
   redis-service:
-    profiles: [ "platform" ]
+    profiles: [ "platform", "all" ]
     image: va/abd_vro-redis
     <<: *image-platform
     volumes:
