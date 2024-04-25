@@ -31,7 +31,6 @@ rootProject.name = 'abd_vro'
 
 include ':scripts'
 
-include ':api-gateway'
 include ':app'
 include ':db-init'
 include ':dev-tools'

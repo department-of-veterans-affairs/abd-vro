@@ -1,6 +1,0 @@
-
-
-springdoc:
-  swagger-ui:
-    configUrl: /abd-vro/v3/api-docs/swagger-config
-    url: /abd-vro/v3/api-docs

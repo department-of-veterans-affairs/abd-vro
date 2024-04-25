@@ -143,19 +143,3 @@ services:
       FLYWAY_PLACEHOLDERS_DB_NAME: ${POSTGRES_DB}
       FLYWAY_PLACEHOLDERS_SCHEMA_NAME: ${POSTGRES_SCHEMA}
       FLYWAY_PLACEHOLDERS_USER_PASSWORD: ${POSTGRES_PASSWORD}
-
-  api-gateway:
-    profiles: ["all","gateway"]
-    image: va/abd_vro-api-gateway:latest
-    <<: [*common-sde-security, *common-security-opt]
-    ports:
-      - "8060:8060"
-      - "8061:8061"
-    environment:
-      <<: *common-vars
-      VRO_APP_HOSTNAME: app
-      VRO_CC_HOSTNAME: cc-app
-      VRO_MAX_CFI_APP_HOSTNAME: ee-max-cfi-app
-      VRO_EP_MERGE_APP_HOSTNAME: ee-ep-merge-app
-    networks:
-      - intranet
