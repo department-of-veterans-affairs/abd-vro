@@ -5,9 +5,3 @@ spring:
     port: 5672
     username: "${RABBITMQ_USERNAME:guest}"
     password: "${RABBITMQ_PASSWORD:guest}"
-
-mas:
-  processing:
-    initial-delay: "${MAS_PROCESSING_INITIAL_DELAY:20000}"
-    subsequent-delay: "${MAS_PROCESSING_SUBSEQUENT_DELAY:10000}"
-    retry-count: "${MAS_PROCESSING_RETRY_COUNT:5}"

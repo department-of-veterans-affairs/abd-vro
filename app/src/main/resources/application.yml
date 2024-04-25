@@ -140,33 +140,11 @@ spring:
     hibernate:
       ddl-auto: none
 
-  security:
-    oauth2:
-      client:
-        provider:
-          mas:
-            uri: "${MAS_API_AUTH_TOKEN_URI:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev/token}"
-        registration:
-          mas:
-            client-id: "${MAS_API_AUTH_CLIENTID:placeholderId}"
-            client-secret: "${MAS_API_AUTH_CLIENT_SECRET:placeholderClientSecret}"
-            scope: "${MAS_API_AUTH_SCOPE:openid}"
-            grant-type: client_credentials
-
-masAPIProvider:
-  baseURL: "${MAS_API_BASE_URL:https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev}"
-  collectionAnnotsPath: "${MAS_COLLECTION_ANNOTS_PATH:/pcQueryCollectionAnnots}"
-  collectionStatusPath: "${MAS_COLLECTION_STATUS_PATH:/pcCheckCollectionStatus}"
-  createExamOrderPath: "${MAS_CREATE_EXAM_ORDER_PATH:/pcOrderExam}"
-
 lhAPIProvider:
   tokenValidatorURL: "${LH_API_AUTH_URL:placeholderUrl}"
   vroAudURL: "${VRO_AUD_URL:placeholderUrl}"
   apiKey: "${LH_VRO_API_KEY:placeholderKey}"
   validateToken: "NO"
-
-masVeteranFlashIds:
-  agentOrange: "${MAS_FLASH_IDS_AGENT_ORANGE:Agent Orange Exposure Verified,266}"
 
 springdoc:
   writer-with-default-pretty-printer: true
