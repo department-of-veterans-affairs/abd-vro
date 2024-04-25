@@ -59,9 +59,7 @@ helmArgsForSubchart(){
 }
 platformChartArgs(){
   HELM_ARGS="$HELM_ARGS \
-    $(helmArgsForSubchart rabbitmq "$RABBITMQ_VER") \
-    $(helmArgsForSubchart redis "$REDIS_VER") \
-  "
+    $(helmArgsForSubchart rabbitmq "$RABBITMQ_VER")"
   echo "Platform HELM_ARGS: $HELM_ARGS"
 }
 

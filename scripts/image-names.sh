@@ -23,7 +23,6 @@ prodImageName() {
 # These names should match directory names.
 # Also add image to .github/workflows/delete-published-*images.yml
 IMAGES=( postgres \
-  redis \
   rabbitmq \
   app db-init \
   dev-tools \

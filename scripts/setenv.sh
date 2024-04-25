@@ -151,13 +151,6 @@ export POSTGRES_DOMAIN_CC_PW=domain_cc_password
 export RABBITMQ_USERNAME=user
 export RABBITMQ_PASSWORD=bitnami
 
-# Credentials for Redis
-# Redis assumes that the implicit username is "default" -- https://redis.io/commands/auth/
-export REDIS_PASSWORD=vro_redis_password
-
-# For local testing of dev and qa environments
-# export PERSIST_TRACKING_FOLDER=/tmp/persist/tracking
-
 ###
 ### Slack notifications ###
 

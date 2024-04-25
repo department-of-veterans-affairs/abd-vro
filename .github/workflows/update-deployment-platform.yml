@@ -32,11 +32,6 @@ on:
         required: true
         default: 'latest'
         type: string
-      redis:
-        description: 'Redis image tag'
-        required: true
-        default: 'latest'
-        type: string
 
   # Allow other workflows to call this one
   workflow_call:
@@ -57,10 +52,6 @@ on:
         required: false
         type: string
         default: "latest"
-      redis:
-        required: false
-        type: string
-        default: "latest"
 
 jobs:
   update-deployment-platform:
@@ -73,4 +64,3 @@ jobs:
       shutdown: ${{ inputs.shutdown }}
       deploy_prep_script: |
         export RABBITMQ_VER=${{ inputs.rabbitmq }}
-        export REDIS_VER=${{ inputs.redis }}

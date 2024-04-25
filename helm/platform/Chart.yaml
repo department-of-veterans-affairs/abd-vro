@@ -22,5 +22,3 @@ dependencies:
   # name must match the subchart's Chart.yaml's name
   - name: rabbitmq-chart
     condition: rabbitmq.enabled
-  - name: redis-chart
-    condition: redis.enabled
