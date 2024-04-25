@@ -7,7 +7,7 @@ spring:
       schema.registry:
         basic.auth.credentials.source: USER_INFO
         basic.auth.user.info: "${BIE_KAFKA_RBAC_USERNAME}:${BIE_KAFKA_RBAC_PASSWORD}"
-        url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:bip-schemaregistry.stage.bip.va.go}"
+        url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://bip-schemaregistry.stage.bip.va.go}"
         ssl:
           truststore.location: "${TRUSTSTORE_FILE}"
           truststore.password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
@@ -30,5 +30,4 @@ spring:
 
 bie:
   kafka-topic-infix: "IVV"
-
-#This branch is for testing purposes in Sandbox and no changes have been made to this file.
+  
