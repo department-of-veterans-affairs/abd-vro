@@ -14,7 +14,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
   implementation 'org.springframework.boot:spring-boot-starter-security'
-  implementation 'org.springframework:spring-web:5.3.23'
+  implementation 'org.springframework:spring-web:5.3.34'
 
   implementation "org.springdoc:springdoc-openapi-starter-webmvc-api:${spring_doc_version}"
 
