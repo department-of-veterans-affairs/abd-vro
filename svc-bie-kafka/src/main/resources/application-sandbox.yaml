@@ -21,12 +21,12 @@ spring:
       group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:EXT_VRO_IVV}"
       key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
       value-deserializer: "io.confluent.kafka.serializers.KafkaAvroDeserializer"
-    security:
-      protocol: SASL_SSL
-    ssl:
-      trust-store-location: "file:${TRUSTSTORE_FILE}"
-      trust-store-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
-      trust-store-type: "PKCS12"
+      security:
+        protocol: SASL_SSL
+      ssl:
+        trust-store-location: "file:${TRUSTSTORE_FILE}"
+        trust-store-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
+        trust-store-type: "PKCS12"
 
 bie:
   kafka-topic-infix: "IVV"
