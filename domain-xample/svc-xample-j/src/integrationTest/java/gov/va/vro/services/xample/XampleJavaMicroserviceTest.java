@@ -34,9 +34,9 @@ public class XampleJavaMicroserviceTest {
 
   @BeforeEach
   private void setUp() {
-    rabbitAdmin.purgeQueue(queueName, true);
+    rabbitAdmin.purgeQueue(queueName, false);
   }
-  
+
   private final SomeDtoModel request =
       SomeDtoModel.builder().resourceId("320").diagnosticCode("B").build();
 
