@@ -143,6 +143,10 @@ export POSTGRES_SCHEMA=claims
 export POSTGRES_FLYWAY_USER=vro_admin_user
 export POSTGRES_FLYWAY_PASSWORD=vro_admin_user_pw
 
+# Credentials used by Alembic to initialize domain-cc database schema
+export POSTGRES_DOMAIN_CC_USER=domain_cc_user
+export POSTGRES_DOMAIN_CC_PW=domain_cc_password
+
 # Credentials for RabbitMQ and shared across containers
 export RABBITMQ_USERNAME=user
 export RABBITMQ_PASSWORD=bitnami

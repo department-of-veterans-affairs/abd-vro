@@ -60,3 +60,34 @@
       name: vro-db
       key: DB_CLIENTUSER_PASS
 {{- end }}
+
+{{- define "domainCc.alembic.envVars" -}}
+- name: DOMAIN_CC_ALEMBIC_URL
+  {{ include "vro.postgresUrl" . }}
+- name: DOMAIN_CC_USER
+  valueFrom:
+    secretKeyRef:
+      name: domain-cc-db
+      key: DOMAIN_CC_USER
+- name: DOMAIN_CC_DB
+  value: {{ .Values.global.service.db.databaseName }}
+- name: DOMAIN_CC_SCHEMA
+  value: {{ .Values.serviceNameSuffix }}
+- name: DOMAIN_CC_PW
+  valueFrom:
+    secretKeyRef:
+      name: domain-cc-db
+      key: DOMAIN_CC_PW
+- name: FLYWAY_PLACEHOLDERS_ALEMBIC_USERNAME
+  valueFrom:
+    secretKeyRef:
+      name: domain-cc-db
+      key: DOMAIN_CC_USER
+- name: FLYWAY_PLACEHOLDERS_ALEMBIC_SCHEMA
+  value: {{ .Values.serviceNameSuffix }}
+- name: FLYWAY_PLACEHOLDERS_ALEMBIC_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: domain-cc-db
+      key: DOMAIN_CC_PW
+{{- end }}
