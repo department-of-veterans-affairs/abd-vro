@@ -46,7 +46,6 @@ spec:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
             {{- include "vro.dbClient.envVars" . | nindent 12 }}
             {{- include "vro.mqClient.envVars" . | nindent 12 }}
-            {{- include "vro.redisClient.envVars" . | nindent 12 }}
 
             - name: JAVA_OPTS
               value: -Xmx512m

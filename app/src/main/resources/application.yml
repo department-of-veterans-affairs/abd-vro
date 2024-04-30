@@ -172,13 +172,6 @@ vro:
     servers:
       - url: ${STARTER_OPENAPI_SERVERURL:/}
 
-spring.redis:
-  # database index used by the connection factory
-  database: 0
-  host: ${REDIS_PLACEHOLDERS_HOST}
-  port: 6379
-  password: ${REDIS_PASSWORD}
-
 claim:
   special_issue_1: "RDR1"
   special_issue_2: "RRD"
