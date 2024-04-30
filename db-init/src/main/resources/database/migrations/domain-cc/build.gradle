@@ -1,0 +1,72 @@
+buildscript {
+    dependencies {
+        classpath 'org.postgresql:postgresql:42.6.0'
+        classpath 'org.flywaydb:flyway-database-postgresql:10.0.1'
+    }
+}
+
+plugins {
+    id 'java'
+    id "org.flywaydb.flyway" version "10.0.1"
+}
+
+ext {
+    dbCfg = [:]
+}
+
+init {
+    setDidWork(loadEnvFile())
+    println dbCfg
+
+}
+
+tasks.register('debugCfg') {}
+
+flyway {
+    defaultSchema = dbCfg.db_schema
+    driver = 'org.postgresql.Driver'
+    url = "jdbc:postgresql://${dbCfg.db_host}:${dbCfg.db_port}/postgres"
+    user = dbCfg.db_owner_username
+    password = dbCfg.db_owner_password
+    connectRetries = 10
+    initSql = "SET ROLE '${dbCfg.db_owner_username}'"
+    schemas = [dbCfg.db_schema]
+    cleanDisabled = false
+    placeholders = [
+            db_name          : dbCfg.db_name,
+            db_schema:       : 'web'
+            db_owner_username: dbCfg.db_owner_username,
+            db_rw_username   : dbCfg.db_rw_username,
+            db_rw_password   : dbCfg.db_rw_password,
+            db_ro_username   : dbCfg.db_ro_username,
+            db_ro_password   : dbCfg.db_ro_password
+    ]
+}
+
+boolean loadEnvFile() {
+    println("In loadEnvFile...")
+    try {
+        String fileName = "./do_not_commit/env/.env.${environment}"
+        File file = new File(fileName)
+        if (file.exists()) {
+            new FileReader(file).readLines().stream()
+                    .filter { it.contains('=') }
+                    .map { it.trim().split('=') }
+                    .map {fixup(it) }
+                    .forEach { dbCfg[it[0]] = it[1] }
+
+            return true
+        } else {
+            println "${fileName} doesn't exist"
+        }
+    } catch (MissingPropertyException e) {
+        println("error: ${e.class.name} - ${e.message}")
+        println "usage: ./gradlew -Penvironment=[local | dev | test | prod]> -q loadEnvFile"
+    }
+
+    return false
+}
+
+String[] fixup(String[] original) {
+    [original[0].trim().toLowerCase(), original[1].trim().replaceAll('"', '')]
+}
