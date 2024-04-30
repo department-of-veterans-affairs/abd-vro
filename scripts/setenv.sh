@@ -143,6 +143,10 @@ export POSTGRES_SCHEMA=claims
 export POSTGRES_FLYWAY_USER=vro_admin_user
 export POSTGRES_FLYWAY_PASSWORD=vro_admin_user_pw
 
+# Credentials used by Alembic to initialize domain-cc database schema
+export POSTGRES_DOMAIN_CC_USER=domain_cc_user
+export POSTGRES_DOMAIN_CC_PW=domain_cc_password
+
 # Credentials for RabbitMQ and shared across containers
 export RABBITMQ_USERNAME=user
 export RABBITMQ_PASSWORD=bitnami
@@ -166,20 +170,6 @@ exportSecretIfUnset SLACK_EXCEPTION_WEBHOOK
 # Credentials for connecting to Lighthouse API
 exportSecretIfUnset LH_ACCESS_CLIENT_ID
 exportSecretIfUnset LH_PRIVATE_KEY
-
-###
-### Integration with MAS/IBM ###
-
-export MAS_API_AUTH_CLIENTID=vro_dev
-exportSecretIfUnset MAS_API_AUTH_CLIENT_SECRET
-
-# TODO: Move these to application*.yml
-export MAS_API_AUTH_TOKEN_URI=https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev/token
-#export MAS_API_AUTH_SCOPE=openid
-export MAS_API_BASE_URL=https://viccs-api-dev.ibm-intelligent-automation.com/pca/api/dev
-#export MAS_COLLECTION_ANNOTS_PATH=/pcQueryCollectionAnnots
-#export MAS_COLLECTION_STATUS_PATH=/pcCheckCollectionStatus
-#export MAS_CREATE_EXAM_ORDER_PATH=/pcOrderExam
 
 ###
 ### Integration with BIP ###

@@ -31,7 +31,6 @@ rootProject.name = 'abd_vro'
 
 include ':scripts'
 
-include ':api-gateway'
 include ':app'
 include ':db-init'
 include ':dev-tools'
@@ -41,7 +40,6 @@ include ':shared:lib-bie-kafka'
 include ':shared:lib-camel-connector'
 include ':svc-bgs-api'
 include ':svc-bip-api'
-include ':svc-lighthouse-api'
 include ':svc-bie-kafka'
 
 include ':domain-xample:xample-api-controller'

@@ -134,7 +134,7 @@ def get_v1_lookup_table(filepath: str, input_key: str, output_key: str) -> dict:
                 try:
                     text_to_convert = int(csv_line[input_key])
                 except ValueError:
-                    text_to_convert = csv_line[input_key].lower()
+                    text_to_convert = csv_line[input_key].strip().lower()
                 classification_code = int(csv_line[output_key])
                 classification_code_mappings[text_to_convert] = classification_code
             except KeyError:
@@ -193,7 +193,7 @@ def get_lookup_table(
                 for row in csv_reader:
                     for k in v2_input_key:
                         if row[k] and row[v2_output_key]:
-                            classification_code_mappings[row[k].lower()] = int(
+                            classification_code_mappings[row[k].strip().lower()] = int(
                                 row[v2_output_key]
                             )
         # raises exception if dropdown_v2_filepath is None (only create DC LUT)

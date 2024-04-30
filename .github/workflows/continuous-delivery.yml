@@ -43,13 +43,6 @@ jobs:
       target_env: ${{ inputs.target_env || 'dev' }}
       helm_chart: svc-bgs-api
       image_tag: ${{ inputs.image_tag || 'latest' }}
-  deploy-vro-svc-lighthouse-api:
-    uses: ./.github/workflows/update-deployment.yml
-    secrets: inherit
-    with:
-      target_env: ${{ inputs.target_env || 'dev' }}
-      helm_chart: svc-lighthouse-api
-      image_tag: ${{ inputs.image_tag || 'latest' }}
   deploy-domain-cc:
     uses: ./.github/workflows/update-deployment.yml
     secrets: inherit

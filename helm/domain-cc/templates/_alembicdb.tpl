@@ -14,3 +14,4 @@
       key: DOMAIN_CC_PW
 - name: ALEMBIC_SCHEMA
   value: {{ .Values.global.service.db.domainCcSchemaName }}
+{{- end }}
