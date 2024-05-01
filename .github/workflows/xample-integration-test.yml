@@ -41,12 +41,23 @@ jobs:
         run: sleep 60s
         shell: bash
 
-
-
       - name: 'Check for RabbitMQ to be ready'
         uses: department-of-veterans-affairs/curl-action@v1.0.0
         with:
           url: 'http://localhost:15672/api/vhosts'
+          method: 'GET'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          accept: 200
+          # Retry every 2 seconds
+          timeout: 2000
+          # Quit after 60 seconds
+          retries: 30
+          log-response: true
+
+      - name: 'Check queues of RabbitMQ'
+        uses: department-of-veterans-affairs/curl-action@v1.0.0
+        with:
+          url: 'http://localhost:15672/api/queues'
           method: 'GET'
           basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
           accept: 200
@@ -82,7 +93,7 @@ jobs:
             exit 10
           fi
 
-          ./gradlew -p domain-xample integrationTest
+          ./gradlew -i -p domain-xample integrationTest
       - name: "Collect docker logs"
         if: always()
         uses: jwalton/gh-docker-logs@v2
@@ -107,6 +118,32 @@ jobs:
             echo "Unexpected ERROR logs in svc-xample-j container"
             exit 12
           fi
+
+      - name: 'Check (again) status of RabbitMQ'
+        uses: department-of-veterans-affairs/curl-action@v1.0.0
+        with:
+          url: 'http://localhost:15672/api/vhosts'
+          method: 'GET'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          accept: 200
+          # Retry every 2 seconds
+          timeout: 2000
+          # Quit after 60 seconds
+          retries: 30
+          log-response: true
+
+      - name: 'Check (again) queues of RabbitMQ'
+        uses: department-of-veterans-affairs/curl-action@v1.0.0
+        with:
+          url: 'http://localhost:15672/api/queues'
+          method: 'GET'
+          basic-auth-token: '${{env.RABBITMQ_BASIC_AUTH}}'
+          accept: 200
+          # Retry every 2 seconds
+          timeout: 2000
+          # Quit after 60 seconds
+          retries: 30
+          log-response: true
 
       - name: "Clean shutdown of all containers"
         if: always()
