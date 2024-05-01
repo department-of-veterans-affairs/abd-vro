@@ -63,7 +63,7 @@ public class XampleJavaMicroserviceTest {
   }
 
   @Test
-  void purgeQueue() throws IOException{
+  void purgeQueue() throws IOException {
     rabbitAdmin.purgeQueue(queueName);
     assertNotNull(rabbitAdmin.getQueueInfo(queueName));
     assertEquals(0, rabbitAdmin.getQueueInfo(queueName).getMessageCount());
