@@ -114,7 +114,7 @@ jobs:
             echo "Unexpected ERROR logs in xample-workflows container"
             exit 11
           fi
-          if docker logs vro_svc-xample-j_1 | grep -B 25 'ERROR\|WARN' | grep -v 'Simulated error'; then
+          if docker logs vro_svc-xample-j_1 | grep -B 25 -A 4 'ERROR\|WARN' | grep -v 'Simulated error'; then
             echo "Unexpected ERROR logs in svc-xample-j container"
             exit 12
           fi
