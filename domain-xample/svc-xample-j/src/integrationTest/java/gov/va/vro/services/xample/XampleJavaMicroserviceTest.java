@@ -1,8 +1,7 @@
 package gov.va.vro.services.xample;
 
 import static gov.va.vro.services.xample.JavaMicroserviceApplication.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.xample.SomeDtoModel;
@@ -30,11 +29,6 @@ public class XampleJavaMicroserviceTest {
   @Autowired private RabbitTemplate rabbitTemplate;
 
   @Autowired private RabbitAdmin rabbitAdmin;
-
-  @BeforeEach
-  private void setUp() {
-    rabbitAdmin.purgeQueue(queueName, false);
-  }
 
   private final SomeDtoModel request =
       SomeDtoModel.builder().resourceId("320").diagnosticCode("B").build();
@@ -67,6 +61,13 @@ public class XampleJavaMicroserviceTest {
     assertEquals(StatusValue.DONE.toString(), response.getStatus());
     assertEquals(200, response.getHeader().getStatusCode());
     assertNull(response.getHeader().getStatusMessage());
+  }
+
+  @Test
+  void purgeQueue() throws IOException{
+    rabbitAdmin.purgeQueue(queueName);
+    assertNotNull(rabbitAdmin.getQueueInfo(queueName));
+    assertEquals(0, rabbitAdmin.getQueueInfo(queueName).getMessageCount());
   }
 
   @Test
