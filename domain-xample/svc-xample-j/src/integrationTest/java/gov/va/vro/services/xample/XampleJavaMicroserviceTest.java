@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.xample.SomeDtoModel;
 import gov.va.vro.model.xample.StatusValue;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
