@@ -49,6 +49,7 @@ public class XampleJavaMicroserviceTest {
   @BeforeEach
   private void setUp() {
     rabbitTemplate.setRetryTemplate(retryTemplate);
+    rabbitAdmin.purgeQueue(queueName);
   }
 
   private final SomeDtoModel request =
@@ -82,13 +83,6 @@ public class XampleJavaMicroserviceTest {
     assertEquals(StatusValue.DONE.toString(), response.getStatus());
     assertEquals(200, response.getHeader().getStatusCode());
     assertNull(response.getHeader().getStatusMessage());
-  }
-
-  @Test
-  void purgeQueue() throws IOException {
-    rabbitAdmin.purgeQueue(queueName);
-    assertNotNull(rabbitAdmin.getQueueInfo(queueName));
-    assertEquals(0, rabbitAdmin.getQueueInfo(queueName).getMessageCount());
   }
 
   @Test
