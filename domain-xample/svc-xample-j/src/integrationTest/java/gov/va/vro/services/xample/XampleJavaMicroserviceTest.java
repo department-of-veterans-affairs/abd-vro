@@ -36,7 +36,7 @@ public class XampleJavaMicroserviceTest {
 
   private final RetryTemplate retryTemplate = createRetryTemplate();
 
-  private static RetryTemplate createRetryTemplate(){
+  private static RetryTemplate createRetryTemplate() {
     ExponentialBackOffPolicy backOffPolicy = new ExponentialRandomBackOffPolicy();
     backOffPolicy.setInitialInterval(2000);
 
@@ -47,7 +47,7 @@ public class XampleJavaMicroserviceTest {
   }
 
   @BeforeEach
-  private void setUp(){
+  private void setUp() {
     rabbitTemplate.setRetryTemplate(retryTemplate);
   }
 
