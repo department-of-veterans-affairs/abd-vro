@@ -7,13 +7,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.xample.SomeDtoModel;
 import gov.va.vro.model.xample.StatusValue;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.retry.backoff.ExponentialBackOffPolicy;
+import org.springframework.retry.backoff.ExponentialRandomBackOffPolicy;
+import org.springframework.retry.policy.MaxAttemptsRetryPolicy;
+import org.springframework.retry.support.RetryTemplate;
 
 import java.io.IOException;
 
@@ -29,6 +33,23 @@ public class XampleJavaMicroserviceTest {
   @Autowired private RabbitTemplate rabbitTemplate;
 
   @Autowired private RabbitAdmin rabbitAdmin;
+
+  private final RetryTemplate retryTemplate = createRetryTemplate();
+
+  private static RetryTemplate createRetryTemplate(){
+    ExponentialBackOffPolicy backOffPolicy = new ExponentialRandomBackOffPolicy();
+    backOffPolicy.setInitialInterval(2000);
+
+    RetryTemplate retryTemplate = RetryTemplate.defaultInstance();
+    retryTemplate.setBackOffPolicy(backOffPolicy);
+    retryTemplate.setRetryPolicy(new MaxAttemptsRetryPolicy(5));
+    return retryTemplate;
+  }
+
+  @BeforeEach
+  private void setUp(){
+    rabbitTemplate.setRetryTemplate(retryTemplate);
+  }
 
   private final SomeDtoModel request =
       SomeDtoModel.builder().resourceId("320").diagnosticCode("B").build();
@@ -64,7 +85,6 @@ public class XampleJavaMicroserviceTest {
   }
 
   @Test
-  @Disabled
   void purgeQueue() throws IOException {
     rabbitAdmin.purgeQueue(queueName);
     assertNotNull(rabbitAdmin.getQueueInfo(queueName));
