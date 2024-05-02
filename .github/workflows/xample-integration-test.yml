@@ -119,7 +119,10 @@ jobs:
             echo "test failures in svc-xample-j"
             exit 12
           fi
-
+          if docker logs vro_svc-xample-j_1 | grep 'ERROR\|WARN' | grep -v 'Simulated error' | grep -v SimpleMessageListenerContainer ; then
+            echo "Unexpected ERROR logs in svc-xample-j container"
+            exit 13
+          fi
       - name: 'Check (again) status of RabbitMQ'
         if: always()
         uses: department-of-veterans-affairs/curl-action@v1.0.0
