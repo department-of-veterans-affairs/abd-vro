@@ -116,6 +116,7 @@ jobs:
             exit 11
           fi
           if docker logs vro_svc-xample-j_1 | grep -B 25 -A 4 'ERROR\|WARN' | grep -v 'Simulated error'; then
+            echo $(docker logs vro_svc-xample-j_1 | grep -A 5 "Failed tests:")
             echo "Unexpected ERROR logs in svc-xample-j container"
             exit 12
           fi
