@@ -65,6 +65,7 @@ public class XampleJavaMicroserviceTest {
     assertEquals(StatusValue.DONE.toString(), response.getStatus());
     assertEquals(200, response.getHeader().getStatusCode());
     assertNull(response.getHeader().getStatusMessage());
+    assertEquals(0,1);
   }
 
   @Autowired private ObjectMapper objectMapper;
