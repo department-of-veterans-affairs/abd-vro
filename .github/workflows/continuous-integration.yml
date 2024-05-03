@@ -1,7 +1,6 @@
 name: "CI"
 # Runs Continuous Integration tests and checks 
 # See https://github.com/department-of-veterans-affairs/abd-vro/wiki/CI-CD-Workflows
-# howdy here donuts
 on:
   pull_request:
     branches: [main, develop, domain-*]
