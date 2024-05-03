@@ -103,8 +103,8 @@ jobs:
           responseCode: 200
           # Retry every 2 seconds
           interval: 2000
-          # Quit after 60 seconds
-          timeout: 60000
+          # Quit after 90 seconds
+          timeout: 90000
 
       - name: 'Create Kafka topic and send message'
         run: |
