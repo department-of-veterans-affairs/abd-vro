@@ -62,7 +62,6 @@ x-image-platform: &image-platform
   platform: ${VRO_DOCKER_IMAGE_PLATFORM}
 
 services:
-  # Containers with the `-service` suffix are need by the VRO app.
   # Containers with the `svc-` prefix are microservices to support domain workflows.
   # Containers with the `mock-` prefix are used for development and testing.
 
