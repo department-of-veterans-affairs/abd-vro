@@ -1,35 +1,32 @@
 spring:
   kafka:
-    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:kafka.preprod.bip.va.gov:443}"
+    bootstrap-servers: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:bip-kafka.preprod.bip.va.gov:443}"
     properties:
-      schema:
-        registry:
-          url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://schemaregistry.preprod.bip.va.gov:443}"
-          ssl:
-            protocol: SSL
-            keystore:
-              type: PKCS12
-              location: "${KEYSTORE_FILE}"
-              password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
-            truststore:
-              type: PKCS12
-              location: "${TRUSTSTORE_FILE}"
-              password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
+      basic.auth.credentials.source: USER_INFO
+      basic.auth.user.info: "${BIE_KAFKA_RBAC_USERNAME}:${BIE_KAFKA_RBAC_PASSWORD}"
+      schema.registry:
+        basic.auth.credentials.source: USER_INFO
+        basic.auth.user.info: "${BIE_KAFKA_RBAC_USERNAME}:${BIE_KAFKA_RBAC_PASSWORD}"
+        url: "${BIE_KAFKA_PLACEHOLDERS_BROKERS:https://bip-schemaregistry.preprod.bip.va.gov}"
+        ssl:
+          truststore.location: "${TRUSTSTORE_FILE}"
+          truststore.password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
+          truststore.type: "PKCS12"
+      security.protocol: SASL_SSL
+      sasl:
+        mechanism: PLAIN
+        jaas:
+          config: "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"${BIE_KAFKA_RBAC_USERNAME}\" password=\"${BIE_KAFKA_RBAC_PASSWORD}\";"
     consumer:
-      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:vro-bie-pre-vro}"
+      group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:EXT_VRO_PRE}"
       key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
       value-deserializer: "io.confluent.kafka.serializers.KafkaAvroDeserializer"
-      properties:
-        security.protocol: SSL
-        ssl:
-          keystore:
-            type: PKCS12
-            location: "${KEYSTORE_FILE}"
-            password: "${BIE_KAFKA_KEYSTORE_PASSWORD}"
-          truststore:
-            type: PKCS12
-            location: "${TRUSTSTORE_FILE}"
-            password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
-
+      security
+        protocol: SASL_SSL
+      ssl:
+        trust-store-location: "file:${TRUSTSTORE_FILE}"
+        trust-store-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
+        trust-store-type: "PKCS12"
+        
 bie:
-  kakfa-topic-prefix: "PRE_"
+  kakfa-topic-prefix: "PRE"
