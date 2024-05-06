@@ -1,0 +1,7 @@
+labels:
+  app: vro-db-init
+
+dbInit:
+  imageTag: latest
+
+replicaCount: 1
