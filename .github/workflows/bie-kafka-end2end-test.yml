@@ -103,8 +103,8 @@ jobs:
           responseCode: 200
           # Retry every 2 seconds
           interval: 2000
-          # Quit after 60 seconds
-          timeout: 60000
+          # Quit after 90 seconds
+          timeout: 90000
 
       - name: 'Create Kafka topic and send message'
         run: |
@@ -122,8 +122,8 @@ jobs:
         run: |
           source scripts/setenv.sh
 
-          # Retry to 5 times to allow time for message to travel from kafka to database
-          for i in {1..5}; do
+          # Retry to 10 times to allow time for message to travel from kafka to database
+          for i in {1..10}; do
             sleep 10
             echo "Attempt $i"
             # For debugging
