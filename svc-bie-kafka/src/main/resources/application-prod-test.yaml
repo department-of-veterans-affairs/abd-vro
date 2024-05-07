@@ -21,7 +21,7 @@ spring:
       group-id: "${BIE_KAFKA_PLACEHOLDERS_GROUP_ID:EXT_VRO_PRE}"
       key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
       value-deserializer: "io.confluent.kafka.serializers.KafkaAvroDeserializer"
-      security
+      security:
         protocol: SASL_SSL
       ssl:
         trust-store-location: "file:${TRUSTSTORE_FILE}"
@@ -29,4 +29,4 @@ spring:
         trust-store-type: "PKCS12"
         
 bie:
-  kakfa-topic-prefix: "PRE"
+  kakfa-topic-infix: "PRE"
