@@ -30,3 +30,4 @@ spec:
             limits:
               cpu: 1000m
               memory: 1024Mi
+      restartPolicy: OnFailure
