@@ -74,6 +74,8 @@ case "$HELM_CHART" in
     HELM_ARGS="$HELM_ARGS --set-string imageTag=$app_VER \
       --set-string dbInit.imageTag=$dbinit_VER "
     ;;
+  db-init)
+    HELM_ARGS="$HELM_ARGS --set-string dbInit.imageTag=$dbinit_VER ";;
   svc-bgs-api)
     HELM_ARGS="$HELM_ARGS --set-string imageTag=$svcbgsapi_VER ";;
   svc-bip-api)

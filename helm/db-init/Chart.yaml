@@ -5,7 +5,7 @@ type: application
 
 # numbers, lowercase, and dashes only
 # https://helm.sh/docs/chart_best_practices/conventions/#chart-names
-name: vro-app-chart
+name: vro-db-init-chart
 description: ABD VRO (Automated Benefits Delivery - Virtual Regional Office)
 
 # This is the chart version. This version number should be incremented each time you make changes
