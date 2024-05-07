@@ -29,4 +29,4 @@ spring:
         trust-store-type: "PKCS12"
         
 bie:
-  kakfa-topic-prefix: "PRE"
+  kakfa-topic-infix: "PRE"
