@@ -2,7 +2,7 @@ version: '3.9'
 
 networks:
   # Creates `vro_intranet` network if env variable COMPOSE_PROJECT_NAME=vro
-  intranet:
+  vro_intranet:
 
 volumes:
   # Volumes to simulate persistent volumes in LHDI deployment environments
@@ -61,7 +61,7 @@ services:
     volumes:
       - var_rabbitmq:/var/lib/rabbitmq/mnesia
     networks:
-      - intranet
+      - vro_intranet
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -89,7 +89,7 @@ services:
       - pgdata:/persist/postgres
       - var_pgdata:/var/lib/postgresql/data
     networks:
-      - intranet
+      - vro_intranet
     ports:
       - "5432:5432"
 
@@ -99,7 +99,7 @@ services:
       postgres-service:
         condition: service_healthy
     networks:
-      - intranet
+      - vro_intranet
     environment:
       POSTGRES_URL: postgresql://postgres-service:5432/${POSTGRES_DB}
       FLYWAY_USER: ${POSTGRES_FLYWAY_USER}
