@@ -1,4 +1,4 @@
-apiVersion: apps/v1
+apiVersion: batch/v1
 kind: Job
 metadata:
   # Also used as the pod's prefix
@@ -30,3 +30,4 @@ spec:
             limits:
               cpu: 1000m
               memory: 1024Mi
+      restartPolicy: OnFailure
