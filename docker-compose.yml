@@ -21,21 +21,6 @@ x-common-vars: &common-vars
   # ENV determines which configuration settings to use.
   ENV: ${ENV:-local}
 
-x-api-vars: &api-vars
-  SLACK_EXCEPTION_WEBHOOK: ${SLACK_EXCEPTION_WEBHOOK}
-  LH_API_AUTH_URL: ${LH_API_AUTH_URL}
-  VRO_AUD_URL: ${VRO_AUD_URL}
-  LH_VRO_API_KEY: ${LH_VRO_API_KEY}
-
-x-postgres-vars: &postgres-vars
-  POSTGRES_HOST: postgres-service
-  POSTGRES_URL: postgresql://postgres-service:5432/vro
-  POSTGRES_DB: ${POSTGRES_DB}
-  POSTGRES_USER: ${POSTGRES_USER}
-  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-  POSTGRES_PORT: 5432
-  POSTGRES_SCHEMA: claims
-
 x-rabbitmq-placeholder-vars: &rabbitmq-placeholder-vars
   RABBITMQ_PLACEHOLDERS_HOST: rabbitmq-service
   RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
@@ -127,3 +112,50 @@ services:
       FLYWAY_PLACEHOLDERS_ALEMBIC_USERNAME: ${POSTGRES_DOMAIN_CC_USER}
       FLYWAY_PLACEHOLDERS_ALEMBIC_SCHEMA: domain_cc
       FLYWAY_PLACEHOLDERS_ALEMBIC_PASSWORD: ${POSTGRES_DOMAIN_CC_PW}
+
+  svc-bip-api:
+    profiles: ["all", "svc", "bip"]
+    image: va/abd_vro-svc-bip-api:latest
+    environment:
+      <<: [ *rabbitmq-placeholder-vars ]
+      BIP_CLAIM_USERID: ${BIP_CLAIM_USERID}
+      BIP_CLAIM_SECRET: ${BIP_CLAIM_SECRET}
+      BIP_EVIDENCE_USERID: ${BIP_EVIDENCE_USERID}
+      BIP_EVIDENCE_SECRET: ${BIP_EVIDENCE_SECRET}
+      BIP_TRUSTSTORE: ${BIP_TRUSTSTORE}
+      BIP_PASSWORD: ${BIP_PASSWORD}
+      BIP_KEYSTORE: ${BIP_KEYSTORE}
+      BIP_CLAIM_URL: ${BIP_CLAIM_URL}
+      BIP_EVIDENCE_URL: ${BIP_EVIDENCE_URL}
+    ports:
+      - "10401:10401"
+    networks:
+      - vro_intranet
+
+  svc-bgs-api:
+    profiles: ["all","svc","bgs"]
+    image: va/abd_vro-svc-bgs-api:latest
+    <<: [*common-sde-security, *common-security-opt]
+    environment:
+      <<: [*rabbitmq-placeholder-vars, *common-vars]
+      DOCKER_LOGS: "1"
+    networks:
+      - vro_intranet
+
+  svc-bie-kafka:
+    # Expose healthcheck port for end2end test
+    ports:
+      - "10301:10301"
+    profiles: [ "all","svc","kafka" ]
+    image: va/abd_vro-svc-bie-kafka:latest
+    <<: [ *common-sde-security, *common-security-opt ]
+    environment:
+      <<: [*rabbitmq-placeholder-vars, *common-vars]
+      BIE_KAFKA_PLACEHOLDERS_BROKERS: mock-bie-kafka:9092
+      BIE_KAFKA_PLACEHOLDERS_SCHEMA_REGISTRY: mock-bie-schema-registry:8081
+      BIE_KAFKA_KEYSTORE_INBASE64: ${BIE_KAFKA_KEYSTORE_INBASE64}
+      BIE_KAFKA_KEYSTORE_PASSWORD: ${BIE_KAFKA_KEYSTORE_PASSWORD}
+      BIE_KAFKA_TRUSTSTORE_INBASE64: ${BIE_KAFKA_TRUSTSTORE_INBASE64}
+      BIE_KAFKA_TRUSTSTORE_PASSWORD: ${BIE_KAFKA_TRUSTSTORE_PASSWORD}
+    networks:
+      - vro_intranet
