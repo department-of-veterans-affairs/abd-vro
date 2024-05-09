@@ -2,8 +2,7 @@ version: '3.9'
 
 networks:
   # Creates `vro_intranet` network if env variable COMPOSE_PROJECT_NAME=vro
-  intranet:
-    name: vro_intranet
+  vrp_intranet:
 
 volumes:
   # Volumes to simulate persistent volumes in LHDI deployment environments
