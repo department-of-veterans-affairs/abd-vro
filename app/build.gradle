@@ -1,5 +1,4 @@
 plugins {
-  id 'local.std.java.application-conventions'
   id 'local.docker-compose-convention'
 }
 
@@ -34,48 +33,8 @@ dependencies {
   testRuntimeOnly "com.h2database:h2:${h2_version}"
 }
 
-openApi {
-  // Generates build/springdoc/openapi.json
-  customBootRun {
-    getClasspath().setFrom(sourceSets.test.runtimeClasspath)
-    args = [
-      "--spring.profiles.active=test"
-    ]
-  }
-}
-
-tasks.named('jacocoTestReport').configure {
-  dependsOn 'processResources'
-  dependsOn 'compileJava'
-}
-
 afterEvaluate {
-  // Disable https://github.com/springdoc/springdoc-openapi-gradle-plugin
-  // Not particularly useful
-  //  generateOpenApiDocs.enabled = false
-  //  forkedSpringBootRun.enabled = false
-
   tasks.named('forkedSpringBootRun').configure {
-    dependsOn 'bootStartScripts'
-    dependsOn 'checkstyleIntegrationTest'
-    dependsOn 'checkstyleMain'
-    dependsOn 'checkstyleTest'
-    dependsOn 'compileIntegrationTestJava'
-    dependsOn 'dockerfileZip'
-    dependsOn 'integrationTest'
-    dependsOn 'jar'
-    dependsOn 'spotlessJava'
-    dependsOn 'startScripts'
-    dependsOn 'test'
-    // dependsOn ':service-python:pytest' // slows down `:app:build` task
-
-    dependsOn 'jacocoTestReport'
-    dependsOn 'jacocoTestCoverageVerification'
-
     dependsOn 'dockerPrepare'
   }
-  //
-  //    tasks.named('spectralLint').configure {
-  //      dependsOn 'forkedSpringBootStop'
-  //    }
 }
