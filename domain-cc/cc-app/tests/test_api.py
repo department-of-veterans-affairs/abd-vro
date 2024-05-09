@@ -3,6 +3,7 @@ from fastapi.testclient import TestClient
 from .conftest import (
     BENIGN_GROWTH_BRAIN_CLASSIFICATION,
     DRUG_INDUCED_PULMONARY_PNEMONIA_CLASSIFICATION,
+    IMPAIRMENT_OF_FEMUR_CLASSIFICATION,
     TUBERCULOSIS_CLASSIFICATION,
 )
 
@@ -47,6 +48,26 @@ def test_unmapped_diagnostic_code(client: TestClient):
     response = client.post("/classifier", json=json_post_dict)
     assert response.status_code == 200
     assert response.json() is None
+
+
+def test_v5_diagnostic_code(client: TestClient):
+    json_post_dict = {
+        "diagnostic_code": 5255,
+        "claim_id": 100,
+        "form526_submission_id": 500,
+        "contention_text": "uncovered",
+        "claim_type": "claim_for_increase"
+    }
+    response = client.post("/classifier", json=json_post_dict)
+    assert response.status_code == 200
+    assert (
+            response.json()["classification_code"]
+            == IMPAIRMENT_OF_FEMUR_CLASSIFICATION["classification_code"]
+    )
+    assert (
+            response.json()["classification_name"]
+            == IMPAIRMENT_OF_FEMUR_CLASSIFICATION["classification_name"]
+    )
 
 
 def test_unprocessable_content(client: TestClient):
