@@ -24,7 +24,7 @@ prodImageName() {
 # Also add image to .github/workflows/delete-published-*images.yml
 IMAGES=( postgres \
   rabbitmq \
-  app db-init \
+  db-init \
   dev-tools \
   svc-bgs-api \
   svc-bie-kafka svc-bip-api \

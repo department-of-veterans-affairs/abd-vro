@@ -70,10 +70,6 @@ case "$HELM_CHART" in
     fi
     platformChartArgs
     ;;
-  vro-app)
-    HELM_ARGS="$HELM_ARGS --set-string imageTag=$app_VER \
-      --set-string dbInit.imageTag=$dbinit_VER "
-    ;;
   db-init)
     HELM_ARGS="$HELM_ARGS --set-string dbInit.imageTag=$dbinit_VER ";;
   svc-bgs-api)
