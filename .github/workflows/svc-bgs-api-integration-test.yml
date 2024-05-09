@@ -40,7 +40,6 @@ jobs:
           export -p | sed 's/declare -x //'
 
           ./gradlew :dockerComposeUp
-          ./gradlew :app:dockerComposeUp
 
       - name: 'Wait for containers to start'
         run: sleep 60s
