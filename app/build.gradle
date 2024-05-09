@@ -6,12 +6,3 @@ ext {
   // TODO: improve test code coverage so that the following can be removed
   jacoco_minimum_coverage = 0.5
 }
-
-dependencies {
-}
-
-afterEvaluate {
-  tasks.named('forkedSpringBootRun').configure {
-    dependsOn 'dockerPrepare'
-  }
-}
