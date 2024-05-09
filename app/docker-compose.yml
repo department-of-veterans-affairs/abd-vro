@@ -51,23 +51,6 @@ services:
   # Containers with the `svc-` prefix are microservices to support domain workflows.
   # Containers with the `mock-` prefix are used for development and testing.
 
-  app:
-    image: va/abd_vro-app:latest
-    <<: [*common-sde-security, *common-security-opt]
-    ports:
-      - "8110:8110"
-      - "8111:8111"
-    environment:
-      # ENV=local causes application-local.yml (and application-nonprod.yml) to be used, in addition to the default application.yml
-      # PERSIST_TRACKING_FOLDER is necessary for local testing when ENV=dev or qa
-      <<: [*api-vars, *postgres-vars, *rabbitmq-placeholder-vars, *common-vars]
-      PERSIST_TRACKING_FOLDER: /persist/tracking
-    volumes:
-      # path needs to be consistent with PERSIST_TRACKING_FOLDER value above
-      - tracking:/persist/tracking
-    networks:
-      - vro_intranet
-
   svc-bip-api:
     profiles: ["all", "svc", "bip"]
     image: va/abd_vro-svc-bip-api:latest
