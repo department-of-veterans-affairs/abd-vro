@@ -1,7 +1,7 @@
 version: '3.9'
 
 networks:
-  # Put these services on the same `vro_intranet` network as VRO
+  # Put these services on the same `vro_intranet` network as VRO -- see app/src/docker/docker-compose.yml
   vro_intranet:
     # https://docs.docker.com/compose/networking/#use-a-pre-existing-network
     # Change this to true if running with app/src/docker/docker-compose.yml

@@ -35,7 +35,7 @@ See [Local Setup](https://github.com/department-of-veterans-affairs/abd-vro/wiki
 
 Run the Python webserver (uvicorn command above)
 
-After you have run the db-init container container and FastAPI running...
+After you have the vro-app-1 container and FastAPI running...
 In another terminal, run the RabbitMQ client
 ```
 # source ~/.virtualenvs/domain-cc/bin/activate
