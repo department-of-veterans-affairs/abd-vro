@@ -44,7 +44,7 @@ jobs:
 
           export -p | sed 's/declare -x //'
 
-          ./gradlew :dockerComposeUp
+          COMPOSE_PROFILES="platform" ./gradlew :dockerComposeUp
 
       - name: 'Wait for containers to start'
         run: sleep 60s
@@ -76,6 +76,7 @@ jobs:
 
           export -p | sed 's/declare -x //'
 
+          ./gradlew :dockerComposeUp
           ./gradlew -p mocks docker
           ./gradlew -p mocks :dockerComposeUp
 

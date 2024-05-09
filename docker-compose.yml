@@ -2,7 +2,7 @@ version: '3.9'
 
 networks:
   # Creates `vro_intranet` network if env variable COMPOSE_PROJECT_NAME=vro
-  vro_intranet:
+  intranet:
 
 volumes:
   # Volumes to simulate persistent volumes in LHDI deployment environments
@@ -59,7 +59,8 @@ services:
     volumes:
       - var_rabbitmq:/var/lib/rabbitmq/mnesia
     networks:
-      - vro_intranet
+      - intranet
+    profiles: [ "all", "platform" ]
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -87,7 +88,8 @@ services:
       - pgdata:/persist/postgres
       - var_pgdata:/var/lib/postgresql/data
     networks:
-      - vro_intranet
+      - intranet
+    profiles: [ "all", "platform" ]
     ports:
       - "5432:5432"
 
@@ -97,7 +99,8 @@ services:
       postgres-service:
         condition: service_healthy
     networks:
-      - vro_intranet
+      - intranet
+    profiles: [ "all", "platform"]
     environment:
       POSTGRES_URL: postgresql://postgres-service:5432/${POSTGRES_DB}
       FLYWAY_USER: ${POSTGRES_FLYWAY_USER}
@@ -128,7 +131,7 @@ services:
     ports:
       - "10401:10401"
     networks:
-      - vro_intranet
+      - intranet
     depends_on:
       <<: [ *svc-depends-on ]
 
@@ -140,7 +143,7 @@ services:
       <<: [*rabbitmq-placeholder-vars, *common-vars]
       DOCKER_LOGS: "1"
     networks:
-      - vro_intranet
+      - intranet
     depends_on:
       <<: [ *svc-depends-on ]
 
@@ -160,6 +163,6 @@ services:
       BIE_KAFKA_TRUSTSTORE_INBASE64: ${BIE_KAFKA_TRUSTSTORE_INBASE64}
       BIE_KAFKA_TRUSTSTORE_PASSWORD: ${BIE_KAFKA_TRUSTSTORE_PASSWORD}
     networks:
-      - vro_intranet
+      - intranet
     depends_on:
       <<: [ *svc-depends-on ]
