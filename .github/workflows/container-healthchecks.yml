@@ -37,7 +37,7 @@ jobs:
           export -p | sed 's/declare -x //'
           ./gradlew :dockerComposeUp
 
-      - name: "Start containers: app and svc-*"
+      - name: "Start containers: svc-*"
         shell: bash
         run: |
           source scripts/setenv.sh
