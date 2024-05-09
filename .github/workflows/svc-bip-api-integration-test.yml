@@ -51,7 +51,6 @@ jobs:
           ./gradlew :dockerComposeUp
           ./gradlew -p mocks docker
           ./gradlew -p mocks :dockerComposeUp
-          COMPOSE_PROFILES="bip" ./gradlew :dockerComposeUp
 
       - name: 'Check disk space (Post-Build)'
         uses: ./.github/actions/check-disk-space

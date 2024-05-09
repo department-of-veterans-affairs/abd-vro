@@ -48,7 +48,6 @@ jobs:
           ./gradlew -p mocks :dockerComposeUp
 
           ./gradlew :domain-xample:dockerComposeUp
-          ./gradlew :app:dockerComposeUp
 
       - name: 'Check disk space (Post-Build)'
         uses: ./.github/actions/check-disk-space
