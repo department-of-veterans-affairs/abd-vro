@@ -68,7 +68,6 @@ jobs:
         repo:
         - abd-vro-internal
         package:
-        - vro-app
         - vro-db-init
         - vro-svc-bgs-api
         - vro-svc-bie-kafka

@@ -167,7 +167,7 @@ exportSecretIfUnset LH_PRIVATE_KEY
 ###
 ### Integration with BIP ###
 ##
-## Shared by app and mock-bip containers.
+## Used by mock-bip containers.
 ## I tried to move these to app/application-local (still there) but
 ## Gradle appears to have problems with it since these are used as a Spring
 ## artifact (@Value) in a different module service/provider.
