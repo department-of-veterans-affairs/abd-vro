@@ -35,7 +35,6 @@ jobs:
 
           ./gradlew :dockerComposeUp
           ./gradlew :domain-xample:dockerComposeUp
-          COMPOSE_PROFILES="" ./gradlew :app:dockerComposeUp
 
       - name: 'Wait for containers to start'
         run: sleep 60s

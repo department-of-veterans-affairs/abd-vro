@@ -8,7 +8,7 @@ on:
   workflow_call:
 
 env:
-  COMPOSE_PROFILES: 'kafka'
+  COMPOSE_PROFILES: 'kafka,platform'
   VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"
 jobs:
   integration-test:
@@ -42,13 +42,14 @@ jobs:
 
           export -p | sed 's/declare -x //'
 
-          ./gradlew :dockerComposeUp
+          # Override and only startup platform containers first
+          COMPOSE_PROFILES="platform" ./gradlew :dockerComposeUp
 
           ./gradlew -p mocks docker
           ./gradlew -p mocks :dockerComposeUp
 
           ./gradlew :domain-xample:dockerComposeUp
-          ./gradlew :app:dockerComposeUp
+          ./gradlew :dockerComposeUp
 
       - name: 'Check disk space (Post-Build)'
         uses: ./.github/actions/check-disk-space
