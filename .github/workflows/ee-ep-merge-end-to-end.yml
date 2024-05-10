@@ -44,7 +44,7 @@ jobs:
 
           export -p | sed 's/declare -x //'
 
-          # Override
+          # Override env variable and only startup platform containers at first
           COMPOSE_PROFILES="platform" ./gradlew :dockerComposeUp
 
       - name: 'Wait for containers to start'
