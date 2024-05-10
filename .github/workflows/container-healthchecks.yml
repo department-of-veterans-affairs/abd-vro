@@ -31,24 +31,20 @@ jobs:
       - name: "Docker build"
         uses: ./.github/actions/build-images
 
-      - name: "Start containers: platform, db-init and svc-*"
+      - name: "Start containers: platform, db-init"
         run: |
           source scripts/setenv.sh
           export -p | sed 's/declare -x //'
-          ./gradlew :dockerComposeUp
+          COMPOSE_PROFILES="platform" ./gradlew :dockerComposeUp
 
-      - name: "Start containers: mocks"
+      - name: "Start containers: mocks and svc-*"
         shell: bash
         run: |
           source scripts/setenv.sh
           # Build and start Kafka mock required for svc-bie-kafka
           ./gradlew -p mocks :mock-bie-kafka:docker
           COMPOSE_PROFILES="kafka" ./gradlew -p mocks :dockerComposeUp
-
-      - name: "Start containers: platform, db-init and svc-*"
-        run: |
-          source scripts/setenv.sh
-          COMPOSE_PROFILES="svc" ./gradlew :dockerComposeUp
+          COMPOSE_PROFILES="platform,svc" ./gradlew :dockerComposeUp
 
       - name: "Start containers: domain-cc"
         shell: bash
