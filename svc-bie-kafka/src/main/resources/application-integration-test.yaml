@@ -1,4 +1,3 @@
-
 spring:
   kafka:
     # To prevent java.net.UnknownHostException mock-bie-kafka, use mock Kafka's 'EXTERNAL' port 9094

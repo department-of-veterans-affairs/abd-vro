@@ -5,12 +5,16 @@ plugins {
 group = 'gov.va.vro'
 version = '3.5.4-SNAPSHOT'
 
+docker {
+  copySpec.from("src/main/resources").into(".")
+}
+
 repositories {
   mavenCentral()
 }
 
 dependencies {
-  testImplementation platform('org.junit:junit-bom:5.10.1')
+  testImplementation platform('org.junit:junit-bom:5.10.2')
   testImplementation 'org.junit.jupiter:junit-jupiter'
 }
 

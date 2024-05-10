@@ -2,14 +2,12 @@
 # It acts as the default Dockerfile for Java-based containers, i.e., those created by build.gradle
 # that use the local.java.docker.container-conventions plugin (directly or indirectly).
 # To override this file, create a Dockerfile file in your Gradle module.
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:17.0.10_7-jre-alpine
 
 # curl is needed for HEALTHCHECK
 # hadolint ignore=DL3018
-RUN apk update && \
-    apk --no-cache add curl redis sudo && \
-    apk upgrade openssl libssl3 libcrypto3 && \
-    rm -rf /var/cache/apk/*
+RUN apk add --no-cache curl sudo gcompat libxml2 && \
+    apk upgrade --available
 
 WORKDIR /app
 

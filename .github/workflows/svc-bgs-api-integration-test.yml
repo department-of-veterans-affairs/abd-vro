@@ -15,12 +15,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Setup Ruby'
-        uses: ruby/setup-ruby@v1.161.0
+        uses: ruby/setup-ruby@v1.165.1
         with:
-          ruby-version: '3.2.2'
+          ruby-version: '3.3.0'
 
       - name: 'Checkout source code'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 'Build the images'
         uses: ./.github/actions/build-images
@@ -50,7 +50,7 @@ jobs:
         uses: ./.github/actions/check-disk-space
 
       - name: 'Check for RabbitMQ to be ready'
-        uses: indiesdev/curl@v1.1
+        uses: department-of-veterans-affairs/curl-action@v1.0.0
         with:
           url: 'http://localhost:15672/api/vhosts'
           method: 'GET'

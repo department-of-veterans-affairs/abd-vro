@@ -110,7 +110,7 @@ setK8Secret(){
 }
 
 # Corresponds to subfolder of the paths to Vault secrets
-SERVICE_NAMES="db mq redis"
+SERVICE_NAMES="db mq"
 # For each SERVICE_NAMES, set a vro-$VAULT_SECRET_SUFFIX K8s secret, where
 # each key-value pair has a single value (a normal secret).
 # These secrets are used for third-party containers that expect environment variables to be set.

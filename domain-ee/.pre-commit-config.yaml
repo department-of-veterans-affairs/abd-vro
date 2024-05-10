@@ -25,22 +25,17 @@ repos:
       - id: trailing-whitespace
 
   - repo: https://github.com/psf/black
-    rev: 23.1.0
+    rev: 24.1.1
     hooks:
       - id: black
-        args: [--check]
+        args: [--line-length=160, --skip-string-normalization]
 
   # https://flake8.pycqa.org/en/latest/user/using-hooks.html#usage-with-the-pre-commit-git-hooks-framework
   - repo: https://github.com/PyCQA/flake8
     rev: 5.0.4
     hooks:
       - id: flake8
-        args: [--max-line-length=255]
-
-  - repo: https://github.com/pycqa/isort
-    rev: 5.12.0
-    hooks:
-      - id: isort
+        args: [--max-line-length=160, --extend-ignore=E203, --extend-ignore=E704]
 
   - repo: https://github.com/zricethezav/gitleaks
     rev: v8.15.0

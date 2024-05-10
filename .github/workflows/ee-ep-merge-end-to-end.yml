@@ -17,10 +17,10 @@ jobs:
     steps:
 
       - name: 'Checkout source code'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: "Checkout abd-vro-dev-secrets repo"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Checkout using a PAT so that we can access the internal repo
           token: ${{ secrets.ACCESS_TOKEN_CHECKOUT_INTERNAL_REPO }}
@@ -51,7 +51,7 @@ jobs:
         shell: bash
 
       - name: 'Wait for RabbitMQ to be ready'
-        uses: indiesdev/curl@v1.1
+        uses: department-of-veterans-affairs/curl-action@v1.0.0
         with:
           url: 'http://localhost:15672/api/vhosts'
           method: 'GET'
@@ -65,6 +65,7 @@ jobs:
       - name: "Run Employee Experience Integration Tests"
         run: |
           ./gradlew :domain-ee:ee-ep-merge-app:integrationTest
+        timeout-minutes: 15
 
       - name: "Start svc-bip-api and mock-bip-claims-api"
         run: |
@@ -78,7 +79,6 @@ jobs:
           ./gradlew :app:dockerComposeUp
           ./gradlew -p mocks docker
           ./gradlew -p mocks :dockerComposeUp
-          ./gradlew :domain-ee:dockerComposeUp
 
       - name: 'Wait for other containers to start'
         run: sleep 60s
@@ -87,47 +87,11 @@ jobs:
       - name: 'Check disk space (Post-Build)'
         uses: ./.github/actions/check-disk-space
 
-      - name: 'Send Merge Request'
-        uses: indiesdev/curl@v1.1
-        id: merge_request
-        with:
-          url: 'http://localhost:8140/merge'
-          method: 'POST'
-          body: '{"pending_claim_id":1001,"ep400_claim_id":1000}'
-          accept: 202
-          retries: 3
-          log-response: true
-
-      - name: 'Get Job ID'
-        shell: bash
-        id: get_job_id
-        run: |
-          job_id="${{ fromJSON(steps.merge_request.outputs.response).data.job.job_id }}"
-          echo "job_id=$job_id" >> "$GITHUB_OUTPUT"
-
-          # Allow time to finish processing
-          sleep 5s
-
-      - name: 'Get Merge Request Status'
-        uses: indiesdev/curl@v1.1
-        id: merge_status
-        with:
-          url: 'http://localhost:8140/merge/${{steps.get_job_id.outputs.job_id}}'
-          method: 'GET'
-          accept: 200
-          retries: 3
-          log-response: true
-
-      - name: 'Verify Merge Complete'
+      - name: 'Run End 2 End Tests'
         shell: bash
         run: |
-          state="${{ fromJSON(steps.merge_status.outputs.response).data.job.state }}"
-          if [ "$state" != "COMPLETED_SUCCESS" ]; then
-            echo "Merge Request completed with error"
-            echo ${{ steps.merge_status.outputs.response }}
-            exit 10
-          fi
-
+          ./gradlew :domain-ee:ee-ep-merge-app:endToEndTest
+        timeout-minutes: 15
 
       - name: 'Clean shutdown of all containers'
         if: always()

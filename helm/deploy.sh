@@ -23,9 +23,6 @@ NAMESPACE=va-abd-rrd-${TARGET_ENV}
 : ${GITHUB_SHA:=$(git rev-parse HEAD)}
 : ${TRIGGERING_ACTOR:=$USER}
 
-#echo -e "TARGET_ENV=$TARGET_ENV \t HELM_CHART=HELM_CHART \t IMAGE_TAG=$IMAGE_TAG"
-#echo -e "RELEASE_NAME=$RELEASE_NAME \t NAMESPACE=$NAMESPACE \t GITHUB_SHA=$GITHUB_SHA"
-
 if [ "${SHUTDOWN_FIRST}" == "true" ]; then
   helm del "$RELEASE_NAME" --wait -n "$NAMESPACE" || exit 5
 fi
@@ -62,9 +59,7 @@ helmArgsForSubchart(){
 }
 platformChartArgs(){
   HELM_ARGS="$HELM_ARGS \
-    $(helmArgsForSubchart rabbitmq "$RABBITMQ_VER") \
-    $(helmArgsForSubchart redis "$REDIS_VER") \
-  "
+    $(helmArgsForSubchart rabbitmq "$RABBITMQ_VER")"
   echo "Platform HELM_ARGS: $HELM_ARGS"
 }
 
@@ -75,21 +70,18 @@ case "$HELM_CHART" in
     fi
     platformChartArgs
     ;;
-  api-gateway)
-    HELM_ARGS="$HELM_ARGS --set-string imageTag=$apigateway_VER ";;
-  vro-app)
-    HELM_ARGS="$HELM_ARGS --set-string imageTag=$app_VER \
-      --set-string dbInit.imageTag=$dbinit_VER "
-    ;;
+  db-init)
+    HELM_ARGS="$HELM_ARGS --set-string dbInit.imageTag=$dbinit_VER ";;
   svc-bgs-api)
     HELM_ARGS="$HELM_ARGS --set-string imageTag=$svcbgsapi_VER ";;
-  svc-lighthouse-api)
-    HELM_ARGS="$HELM_ARGS --set-string imageTag=$svclighthouseapi_VER ";;
   svc-bip-api)
-    HELM_ARGS="$HELM_ARGS --set-string imageTag=$svcbipapi_VER"
+    HELM_ARGS="$HELM_ARGS --set-string imageTag=$svcbipapi_VER";;
+  postgres)
+    HELM_ARGS="$HELM_ARGS --set-string imageTag=$postgres_VER";;
+  dev-tools)
+    HELM_ARGS="$HELM_ARGS --set-string imageTag=$devtools_VER";;
 esac
 
-#echo "HELM_ARGS: $HELM_ARGS"
 set -x
 # Exit with error code when command fails so that GH Action fails
 set -e

@@ -21,10 +21,6 @@ x-postgres-vars: &postgres-vars
   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
   POSTGRES_SCHEMA: claims
 
-x-redis-placeholder-vars: &redis-placeholder-vars
-  REDIS_PLACEHOLDERS_HOST: redis-service
-  REDIS_PASSWORD: ${REDIS_PASSWORD}
-
 x-rabbitmq-placeholder-vars: &rabbitmq-placeholder-vars
   RABBITMQ_PLACEHOLDERS_HOST: rabbitmq-service
   RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
@@ -50,7 +46,7 @@ services:
     image: va/abd_vro-xample-workflows:latest
     <<: [*common-sde-security, *common-security-opt]
     environment:
-      <<: [*postgres-vars, *rabbitmq-placeholder-vars, *redis-placeholder-vars]
+      <<: [*postgres-vars, *rabbitmq-placeholder-vars]
     networks:
       - vro_intranet
     # Expose healthcheck port for end2end test

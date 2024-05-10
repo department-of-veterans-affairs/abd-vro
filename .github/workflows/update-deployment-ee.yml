@@ -18,7 +18,7 @@ on:
         - prod-test
 
       image_tag:
-        description: 'Image tag: first 7 of commit hash, "latest", "v1.2.3", or "release-1.2.3"'
+        description: 'Image tag: first 7 of commit hash or "latest"'
         required: true
         default: 'latest'
         type: string
@@ -55,12 +55,21 @@ on:
         default: false
 
 jobs:
-  update-ee-deployment:
+  update-ee-max-cfi-app-deployment:
     uses: ./.github/workflows/update-deployment.yml
     secrets: inherit
     with:
       target_env: ${{ inputs.target_env }}
-      helm_chart: domain-ee
+      helm_chart: domain-ee-max-cfi-app
+      image_tag: ${{ inputs.image_tag }}
+      rollback: ${{ inputs.rollback }}
+      shutdown: ${{ inputs.shutdown }}
+  update-ee-ep-merge-app-deployment:
+    uses: ./.github/workflows/update-deployment.yml
+    secrets: inherit
+    with:
+      target_env: ${{ inputs.target_env }}
+      helm_chart: domain-ee-ep-merge-app
       image_tag: ${{ inputs.image_tag }}
       rollback: ${{ inputs.rollback }}
       shutdown: ${{ inputs.shutdown }}

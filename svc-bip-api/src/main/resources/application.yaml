@@ -9,13 +9,14 @@ logging:
 
 bip:
   claimClientId: ${BIP_CLAIM_USERID:VRO_USER}
+  claimBaseUrl: ${BIP_CLAIM_URL:localhost:20300}
+  claimIssuer: ${BIP_CLAIM_ISSUER:virtual_regional_office}
   claimSecret: ${BIP_CLAIM_SECRET:7zEJ+xepTPakl7KfX58bVR+t0zQGpsElg9bDdKmoVJM=}
   evidenceClientId: ${BIP_EVIDENCE_USERID:VRO_USER}
   evidenceSecret: ${BIP_EVIDENCE_SECRET:daSecret}
   applicationId: ${BIP_APPLICATION_ID:VRO}
   stationId: ${BIP_STATION_ID:456}
   env: local
-  claimBaseUrl: ${BIP_CLAIM_URL:localhost:20300}
 
 spring:
   profiles:
@@ -24,8 +25,8 @@ spring:
   rabbitmq:
     host: ${RABBITMQ_PLACEHOLDERS_HOST:localhost}
     port: 5672
-    username: ${RABBITMQ_USERNAME:guest}
-    password: ${RABBITMQ_PASSWORD:guest}
+    username: ${RABBITMQ_USERNAME:user}
+    password: ${RABBITMQ_PASSWORD:bitnami}
 
 getClaimDetailsQueue: getClaimDetailsQueue
 putClaimLifecycleStatusQueue: putClaimLifecycleStatusQueue
@@ -36,13 +37,19 @@ updateClaimContentionsQueue: updateClaimContentionsQueue
 putTempStationOfJurisdictionQueue: putTempStationOfJurisdictionQueue
 exchangeName: bipApiExchange
 
+# Actuator for health check, liveness, and readiness
 management:
-  server.port: 10401
+  server:
+    port: 10401
   endpoint:
     health:
       show-details: always
       enabled: true
-      probes.enabled: true
+      probes:
+        enabled: true
+      group:
+        liveness.include: livenessState
+        readiness.include: readinessState
 
 truststore: ${BIP_TRUSTSTORE}
 keystore: ${BIP_KEYSTORE}

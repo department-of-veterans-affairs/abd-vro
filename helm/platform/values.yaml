@@ -2,8 +2,6 @@
 
 rabbitmq:
   enabled: true
-redis:
-  enabled: true
 
 global:
   # Persistent Volumes

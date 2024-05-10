@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout source code"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: "Build the images"
         uses: ./.github/actions/build-images
@@ -41,10 +41,8 @@ jobs:
         run: sleep 60s
         shell: bash
 
-
-
       - name: 'Check for RabbitMQ to be ready'
-        uses: indiesdev/curl@v1.1
+        uses: department-of-veterans-affairs/curl-action@v1.0.0
         with:
           url: 'http://localhost:15672/api/vhosts'
           method: 'GET'
@@ -82,6 +80,7 @@ jobs:
           fi
 
           ./gradlew -p domain-xample integrationTest
+
       - name: "Collect docker logs"
         if: always()
         uses: jwalton/gh-docker-logs@v2
@@ -90,7 +89,7 @@ jobs:
 
       - name: "Upload artifact"
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: xample-itest-container-logs
           path: ./xample-itest-container-logs/**
@@ -102,7 +101,7 @@ jobs:
             echo "Unexpected ERROR logs in xample-workflows container"
             exit 11
           fi
-          if docker logs vro_svc-xample-j_1 | grep 'ERROR\|WARN' | grep -v 'Simulated error'; then
+          if docker logs vro_svc-xample-j_1 | grep 'ERROR\|WARN' | grep -v 'Simulated error' | grep -v SimpleMessageListenerContainer ; then
             echo "Unexpected ERROR logs in svc-xample-j container"
             exit 12
           fi

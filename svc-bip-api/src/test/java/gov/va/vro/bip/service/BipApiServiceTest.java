@@ -13,13 +13,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.bip.config.JacksonConfig;
 import gov.va.vro.bip.model.BipMessage;
 import gov.va.vro.bip.model.BipPayloadResponse;
-import gov.va.vro.bip.model.Contention;
-import gov.va.vro.bip.model.ExistingContention;
 import gov.va.vro.bip.model.cancel.CancelClaimRequest;
 import gov.va.vro.bip.model.cancel.CancelClaimResponse;
 import gov.va.vro.bip.model.claim.GetClaimResponse;
+import gov.va.vro.bip.model.contentions.Contention;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
+import gov.va.vro.bip.model.contentions.ExistingContention;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsResponse;
@@ -31,10 +31,13 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -52,7 +55,7 @@ import org.springframework.web.client.RestTemplate;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -61,12 +64,13 @@ import java.util.Objects;
 public class BipApiServiceTest {
   private static final ObjectMapper MAPPER = new ObjectMapper();
   private static final long GOOD_CLAIM_ID = 9666959L;
-  private static final long BAD_CLAIM_ID = 9666958L;
   private static final long NOT_FOUND_CLAIM_ID = 9234567L;
   private static final long INTERNAL_SERVER_ERROR_CLAIM_ID = 9345678L;
   private static final String RESPONSE_500 = "bip-test-data/response_500.json";
   private static final String CONTENTION_RESPONSE_200 =
       "bip-test-data/contention_response_200.json";
+  private static final String CONTENTION_RESPONSE_201 =
+      "bip-test-data/contention_response_201.json";
   private static final String CLAIM_RESPONSE_404 = "bip-test-data/claim_response_404.json";
   private static final String CLAIM_RESPONSE_200 = "bip-test-data/claim_response_200.json";
   private static final String CLAIM_DETAILS = "/claims/%s";
@@ -88,6 +92,8 @@ public class BipApiServiceTest {
 
   private BipApiService service;
 
+  private final ObjectMapper mapper = new JacksonConfig().objectMapper();
+
   @Mock private RestTemplate restTemplate;
 
   @BeforeEach
@@ -100,7 +106,7 @@ public class BipApiServiceTest {
     bipApiProps.setStationId(STATION_ID);
     bipApiProps.setClaimClientId(CLAIM_USERID);
 
-    service = new BipApiService(restTemplate, bipApiProps, new JacksonConfig().objectMapper());
+    service = new BipApiService(restTemplate, bipApiProps, mapper);
   }
 
   private String formatClaimUrl(String format, Long claimId) {
@@ -116,470 +122,354 @@ public class BipApiServiceTest {
     return Files.readString(filePath);
   }
 
-  private void mockResponseForUrl(Stubber response, String claimUrl, HttpMethod httpMethod) {
+  private void mockResponseForUrl(
+      Stubber response,
+      String claimUrl,
+      HttpMethod httpMethod,
+      Class<? extends BipPayloadResponse> clazz) {
     response
         .when(restTemplate)
         .exchange(
             ArgumentMatchers.eq(claimUrl),
             ArgumentMatchers.eq(httpMethod),
             ArgumentMatchers.any(HttpEntity.class),
+            ArgumentMatchers.eq(clazz));
+  }
+
+  private void mockResponseForUrl(Stubber response, String claimUrl) {
+    response
+        .when(restTemplate)
+        .exchange(
+            ArgumentMatchers.eq(claimUrl),
+            ArgumentMatchers.eq(HttpMethod.GET),
+            ArgumentMatchers.any(HttpEntity.class),
             ArgumentMatchers.eq(String.class));
   }
 
-  @Test
-  public void testGetClaimDetails_200() throws Exception {
-    String resp200Body = getTestData(CLAIM_RESPONSE_200);
-
-    ResponseEntity<String> resp200 = ResponseEntity.ok(resp200Body);
+  private <T extends BipPayloadResponse> void mock2xxResponse(
+      HttpMethod httpMethod,
+      String urlFormat,
+      HttpStatus httpStatus,
+      Class<T> responseType,
+      String responseFile)
+      throws Exception {
+    ResponseEntity<T> responseEntity;
+    if (Objects.isNull(responseFile)) {
+      responseEntity = new ResponseEntity<>(httpStatus);
+    } else {
+      T body = mapper.readValue(getTestData(responseFile), responseType);
+      responseEntity = new ResponseEntity<>(body, httpStatus);
+    }
     mockResponseForUrl(
-        Mockito.doReturn(resp200), formatClaimUrl(CLAIM_DETAILS, GOOD_CLAIM_ID), HttpMethod.GET);
-
-    GetClaimResponse result = service.getClaimDetails(GOOD_CLAIM_ID);
-    assertResponseIsSuccess(result, HttpStatus.OK);
+        Mockito.doReturn(responseEntity),
+        formatClaimUrl(urlFormat, BipApiServiceTest.GOOD_CLAIM_ID),
+        httpMethod,
+        responseType);
   }
 
-  @Test
-  public void testGetClaimDetails_404() throws Exception {
-    String resp404Body = getTestData(CLAIM_RESPONSE_404);
-    mockResponseForUrl(
-        Mockito.doThrow(
-            new HttpClientErrorException(
-                HttpStatus.NOT_FOUND,
-                HttpStatus.NOT_FOUND.name(),
-                resp404Body.getBytes(),
-                Charset.defaultCharset())),
-        formatClaimUrl(CLAIM_DETAILS, NOT_FOUND_CLAIM_ID),
-        HttpMethod.GET);
-
-    HttpStatusCodeException ex =
-        Assertions.assertThrows(
-            HttpStatusCodeException.class, () -> service.getClaimDetails(NOT_FOUND_CLAIM_ID));
-    assertResponseHasMessageWithStatus(ex.getResponseBodyAsString(), HttpStatus.NOT_FOUND);
+  private <T extends BipPayloadResponse> void mockExceptionResponse(
+      Exception exception, String url, HttpMethod httpMethod, Class<T> responseType) {
+    mockResponseForUrl(Mockito.doThrow(exception), url, httpMethod, responseType);
   }
 
-  @Test
-  public void testGetClaimDetailsDownstreamServerError_500() throws Exception {
-    String resp500Body = getTestData(RESPONSE_500);
-    mockResponseForUrl(
-        Mockito.doThrow(
-            new HttpServerErrorException(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                HttpStatus.INTERNAL_SERVER_ERROR.name(),
-                resp500Body.getBytes(),
-                Charset.defaultCharset())),
-        formatClaimUrl(CLAIM_DETAILS, INTERNAL_SERVER_ERROR_CLAIM_ID),
-        HttpMethod.GET);
+  @Nested
+  public class GetClaimDetails {
+    @Test
+    public void testGetClaimDetails_200() throws Exception {
+      mock2xxResponse(
+          HttpMethod.GET, CLAIM_DETAILS, HttpStatus.OK, GetClaimResponse.class, CLAIM_RESPONSE_200);
 
-    HttpStatusCodeException ex =
-        Assertions.assertThrows(
-            HttpStatusCodeException.class,
-            () -> service.getClaimDetails(INTERNAL_SERVER_ERROR_CLAIM_ID));
-    assertResponseHasMessageWithStatus(
-        ex.getResponseBodyAsString(), HttpStatus.INTERNAL_SERVER_ERROR);
+      GetClaimResponse result = service.getClaimDetails(GOOD_CLAIM_ID);
+      assertResponseIsSuccess(result, HttpStatus.OK);
+    }
+
+    @ParameterizedTest(name = "testGetClaimDetails_{0}")
+    @EnumSource(TestCase.class)
+    public void testGetClaimDetails_non2xx(TestCase test) throws Exception {
+      mockExceptionResponse(
+          test.ex,
+          formatClaimUrl(CLAIM_DETAILS, test.claimId),
+          HttpMethod.GET,
+          GetClaimResponse.class);
+
+      Exception ex =
+          Assertions.assertThrows(test.ex.getClass(), () -> service.getClaimDetails(test.claimId));
+      assertResponseExceptionWithStatus(ex, test.status);
+    }
   }
 
-  @Test
-  public void testGetClaimDetailsInternalServerError_500() {
-    mockResponseForUrl(
-        Mockito.doThrow(new RuntimeException("nope")),
-        formatClaimUrl(CLAIM_DETAILS, INTERNAL_SERVER_ERROR_CLAIM_ID),
-        HttpMethod.GET);
+  @Nested
+  public class GetClaimContentions {
+    @Test
+    public void testGetClaimContention_200() throws Exception {
+      mock2xxResponse(
+          HttpMethod.GET,
+          CONTENTION,
+          HttpStatus.OK,
+          GetClaimContentionsResponse.class,
+          CONTENTION_RESPONSE_200);
 
-    BipException ex =
-        Assertions.assertThrows(
-            BipException.class, () -> service.getClaimDetails(INTERNAL_SERVER_ERROR_CLAIM_ID));
-    assertSame(HttpStatus.INTERNAL_SERVER_ERROR, ex.getStatus());
+      GetClaimContentionsResponse result = service.getClaimContentions(GOOD_CLAIM_ID);
+      assertResponseIsSuccess(result, HttpStatus.OK);
+      assertEquals(1, result.getContentions().size());
+    }
+
+    @Test
+    public void testGetClaimContention_204() throws Exception {
+      mock2xxResponse(
+          HttpMethod.GET,
+          CONTENTION,
+          HttpStatus.NO_CONTENT,
+          GetClaimContentionsResponse.class,
+          null);
+
+      GetClaimContentionsResponse result = service.getClaimContentions(GOOD_CLAIM_ID);
+      assertResponseIsSuccess(result, HttpStatus.NO_CONTENT);
+      assertNull(result.getContentions());
+    }
+
+    @ParameterizedTest(name = "testGetClaimContentions_{0}")
+    @EnumSource(TestCase.class)
+    public void testGetClaimContentions_Non2xx(TestCase test) throws Exception {
+      mockExceptionResponse(
+          test.ex,
+          formatClaimUrl(CONTENTION, test.claimId),
+          HttpMethod.GET,
+          GetClaimContentionsResponse.class);
+
+      Exception ex =
+          Assertions.assertThrows(
+              test.ex.getClass(), () -> service.getClaimContentions(test.claimId));
+      assertResponseExceptionWithStatus(ex, test.status);
+    }
   }
 
-  @Test
-  public void testGetClaimContention_200() throws Exception {
-    String resp200Body = getTestData(CONTENTION_RESPONSE_200);
-    ResponseEntity<String> resp200 = ResponseEntity.ok(resp200Body);
+  @Nested
+  public class CreateClaimContentions {
+    @Test
+    public void testCreateClaimContentions_201() throws Exception {
+      mock2xxResponse(
+          HttpMethod.POST,
+          CONTENTION,
+          HttpStatus.CREATED,
+          CreateClaimContentionsResponse.class,
+          CONTENTION_RESPONSE_201);
+      CreateClaimContentionsRequest request =
+          CreateClaimContentionsRequest.builder()
+              .claimId(GOOD_CLAIM_ID)
+              .createContentions(
+                  List.of(
+                      Contention.builder()
+                          .medicalInd(true)
+                          .beginDate(OffsetDateTime.parse("2023-09-27T00:00:00-06:00"))
+                          .contentionTypeCode("NEW")
+                          .claimantText("tendinitis/bilateral")
+                          .build()))
+              .build();
+      CreateClaimContentionsResponse response = service.createClaimContentions(request);
+      assertResponseIsSuccess(response, HttpStatus.CREATED);
+      assertNotNull(response.getContentionIds());
+      assertEquals(1, response.getContentionIds().size());
+      assertEquals(1, response.getContentionIds().get(0));
+    }
 
-    mockResponseForUrl(
-        Mockito.doReturn(resp200), formatClaimUrl(CONTENTION, GOOD_CLAIM_ID), HttpMethod.GET);
-
-    GetClaimContentionsResponse result = service.getClaimContentions(GOOD_CLAIM_ID);
-    assertResponseIsSuccess(result, HttpStatus.OK);
-    assertEquals(1, result.getContentions().size());
+    @ParameterizedTest(name = "testCreateClaimContentions_{0}")
+    @EnumSource(TestCase.class)
+    public void testCreateClaimContentions_Non2xx(TestCase test) throws Exception {
+      mockExceptionResponse(
+          test.ex,
+          formatClaimUrl(CONTENTION, test.claimId),
+          HttpMethod.POST,
+          CreateClaimContentionsResponse.class);
+      CreateClaimContentionsRequest request =
+          CreateClaimContentionsRequest.builder()
+              .claimId(test.claimId)
+              .createContentions(
+                  List.of(
+                      Contention.builder()
+                          .medicalInd(true)
+                          .beginDate(OffsetDateTime.parse("2023-09-27T00:00:00-06:00"))
+                          .contentionTypeCode("NEW")
+                          .claimantText("tendinitis/bilateral")
+                          .build()))
+              .build();
+      Exception ex =
+          Assertions.assertThrows(
+              test.ex.getClass(), () -> service.createClaimContentions(request));
+      assertResponseExceptionWithStatus(ex, test.status);
+    }
   }
 
-  @Test
-  public void testGetClaimContentions_404() throws Exception {
-    String resp404Body = getTestData(CLAIM_RESPONSE_404);
+  @Nested
+  public class UpdateClaimContentions {
+    @Test
+    public void testUpdateClaimContentions_200() throws Exception {
+      mock2xxResponse(
+          HttpMethod.PUT,
+          CONTENTION,
+          HttpStatus.OK,
+          UpdateClaimContentionsResponse.class,
+          CONTENTION_RESPONSE_200);
+      UpdateClaimContentionsRequest request =
+          UpdateClaimContentionsRequest.builder()
+              .claimId(GOOD_CLAIM_ID)
+              .updateContentions(
+                  List.of(
+                      ExistingContention.builder()
+                          .medicalInd(true)
+                          .beginDate(OffsetDateTime.parse("2023-09-27T00:00:00-06:00"))
+                          .contentionTypeCode("NEW")
+                          .claimantText("tendinitis/bilateral")
+                          .build()))
+              .build();
 
-    mockResponseForUrl(
-        Mockito.doThrow(
-            new HttpClientErrorException(
-                HttpStatus.NOT_FOUND,
-                HttpStatus.NOT_FOUND.name(),
-                resp404Body.getBytes(),
-                Charset.defaultCharset())),
-        formatClaimUrl(CONTENTION, BAD_CLAIM_ID),
-        HttpMethod.GET);
+      UpdateClaimContentionsResponse response = service.updateClaimContentions(request);
+      assertResponseIsSuccess(response, HttpStatus.OK);
+    }
 
-    HttpStatusCodeException ex =
-        Assertions.assertThrows(
-            HttpStatusCodeException.class, () -> service.getClaimContentions(BAD_CLAIM_ID));
-    assertResponseHasMessageWithStatus(ex.getResponseBodyAsString(), HttpStatus.NOT_FOUND);
+    @ParameterizedTest(name = "testUpdateClaimContentions_{0}")
+    @EnumSource(TestCase.class)
+    public void testUpdateClaimContentions_Non2xx(TestCase test) throws Exception {
+      mockExceptionResponse(
+          test.ex,
+          formatClaimUrl(CONTENTION, test.claimId),
+          HttpMethod.PUT,
+          UpdateClaimContentionsResponse.class);
+      UpdateClaimContentionsRequest request =
+          UpdateClaimContentionsRequest.builder()
+              .claimId(test.claimId)
+              .updateContentions(
+                  List.of(
+                      ExistingContention.builder()
+                          .medicalInd(true)
+                          .beginDate(OffsetDateTime.parse("2023-09-27T00:00:00-06:00"))
+                          .contentionTypeCode("NEW")
+                          .claimantText("tendinitis/bilateral")
+                          .build()))
+              .build();
+      Exception ex =
+          Assertions.assertThrows(
+              test.ex.getClass(), () -> service.updateClaimContentions(request));
+      assertResponseExceptionWithStatus(ex, test.status);
+    }
   }
 
-  @Test
-  public void testGetClaimContentionsDownstreamServerError_500() throws Exception {
-    String resp500Body = getTestData(RESPONSE_500);
-    mockResponseForUrl(
-        Mockito.doThrow(
-            new HttpServerErrorException(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                HttpStatus.INTERNAL_SERVER_ERROR.name(),
-                resp500Body.getBytes(),
-                Charset.defaultCharset())),
-        formatClaimUrl(CONTENTION, INTERNAL_SERVER_ERROR_CLAIM_ID),
-        HttpMethod.GET);
+  @Nested
+  public class CancelClaim {
+    @Test
+    public void testCancelClaim_200() throws Exception {
+      mock2xxResponse(HttpMethod.PUT, CANCEL_CLAIM, HttpStatus.OK, CancelClaimResponse.class, null);
+      CancelClaimRequest request =
+          CancelClaimRequest.builder()
+              .claimId(GOOD_CLAIM_ID)
+              .closeReasonText("because we are testing")
+              .lifecycleStatusReasonCode("60")
+              .build();
+      CancelClaimResponse response = service.cancelClaim(request);
+      assertResponseIsSuccess(response, HttpStatus.OK);
+    }
 
-    HttpStatusCodeException ex =
-        Assertions.assertThrows(
-            HttpStatusCodeException.class,
-            () -> service.getClaimContentions(INTERNAL_SERVER_ERROR_CLAIM_ID));
-    assertResponseHasMessageWithStatus(
-        ex.getResponseBodyAsString(), HttpStatus.INTERNAL_SERVER_ERROR);
+    @ParameterizedTest(name = "testCancelClaim_{0}")
+    @EnumSource(TestCase.class)
+    public void testCancelClaim_Non2xx(TestCase test) throws Exception {
+      mockExceptionResponse(
+          test.ex,
+          formatClaimUrl(CANCEL_CLAIM, test.claimId),
+          HttpMethod.PUT,
+          CancelClaimResponse.class);
+      CancelClaimRequest request =
+          CancelClaimRequest.builder()
+              .claimId(test.claimId)
+              .closeReasonText("because we are testing")
+              .lifecycleStatusReasonCode("60")
+              .build();
+      Exception ex =
+          Assertions.assertThrows(test.ex.getClass(), () -> service.cancelClaim(request));
+      assertResponseExceptionWithStatus(ex, test.status);
+    }
   }
 
-  @Test
-  public void testGetClaimContentionsInternalServerError_500() {
-    mockResponseForUrl(
-        Mockito.doThrow(new RuntimeException("nope")),
-        formatClaimUrl(CONTENTION, INTERNAL_SERVER_ERROR_CLAIM_ID),
-        HttpMethod.GET);
+  @Nested
+  public class PutLifecycleStatus {
+    @Test
+    public void testPutLifecycleStatus_200() throws Exception {
+      mock2xxResponse(
+          HttpMethod.PUT,
+          CLAIM_LIFECYCLE_STATUS,
+          HttpStatus.OK,
+          PutClaimLifecycleResponse.class,
+          null);
 
-    BipException ex =
-        Assertions.assertThrows(
-            BipException.class, () -> service.getClaimContentions(INTERNAL_SERVER_ERROR_CLAIM_ID));
-    assertSame(HttpStatus.INTERNAL_SERVER_ERROR, ex.getStatus());
+      PutClaimLifecycleRequest request =
+          PutClaimLifecycleRequest.builder()
+              .claimId(GOOD_CLAIM_ID)
+              .claimLifecycleStatus("Just a test")
+              .build();
+      PutClaimLifecycleResponse response = service.putClaimLifecycleStatus(request);
+      assertResponseIsSuccess(response, HttpStatus.OK);
+    }
+
+    @ParameterizedTest(name = "testPutLifecycleStatus_{0}")
+    @EnumSource(TestCase.class)
+    public void testPutLifecycleStatus_Non2xx(TestCase test) throws Exception {
+      mockExceptionResponse(
+          test.ex,
+          formatClaimUrl(CLAIM_LIFECYCLE_STATUS, test.claimId),
+          HttpMethod.PUT,
+          PutClaimLifecycleResponse.class);
+      PutClaimLifecycleRequest request =
+          PutClaimLifecycleRequest.builder()
+              .claimId(test.claimId)
+              .claimLifecycleStatus("Just a test")
+              .build();
+      Exception ex =
+          Assertions.assertThrows(
+              test.ex.getClass(), () -> service.putClaimLifecycleStatus(request));
+      assertResponseExceptionWithStatus(ex, test.status);
+    }
   }
 
-  @Test
-  public void testCreateClaimContentions_201() {
-    String resp200Body = "{\"contentionIds\":[1]}";
-    ResponseEntity<String> resp200 = new ResponseEntity<>(resp200Body, HttpStatus.CREATED);
-    mockResponseForUrl(
-        Mockito.doReturn(resp200), formatClaimUrl(CONTENTION, GOOD_CLAIM_ID), HttpMethod.POST);
-    CreateClaimContentionsRequest request =
-        CreateClaimContentionsRequest.builder()
-            .claimId(GOOD_CLAIM_ID)
-            .createContentions(
-                List.of(
-                    Contention.builder()
-                        .medicalInd(true)
-                        .beginDate(Instant.parse("2023-09-27T00:00:00-06:00"))
-                        .contentionTypeCode("NEW")
-                        .claimantText("tendinitis/bilateral")
-                        .build()))
-            .build();
-    CreateClaimContentionsResponse response = service.createClaimContentions(request);
-    assertResponseIsSuccess(response, HttpStatus.CREATED);
-    assertNotNull(response.getContentionIds());
-    assertEquals(1, response.getContentionIds().size());
-    assertEquals(1, response.getContentionIds().get(0));
-  }
+  @Nested
+  public class PutTemporaryStationOfJursidiction {
+    @ParameterizedTest
+    @NullAndEmptySource
+    @CsvSource(value = {"398"})
+    public void testPutTemporaryStationOfJurisdiction_200(String tsoj) throws Exception {
+      mock2xxResponse(
+          HttpMethod.PUT,
+          TEMP_STATION_OF_JURISDICTION,
+          HttpStatus.OK,
+          PutTempStationOfJurisdictionResponse.class,
+          null);
 
-  @ParameterizedTest(name = "testCreateClaimContentions_{0}")
-  @EnumSource(TestCase.class)
-  public void testCreateClaimContentions_Non2xx(TestCase test) throws JsonProcessingException {
-    mockResponseForUrl(
-        Mockito.doThrow(test.ex), formatClaimUrl(CONTENTION, test.claimId), HttpMethod.POST);
-    CreateClaimContentionsRequest request =
-        CreateClaimContentionsRequest.builder()
-            .claimId(test.claimId)
-            .createContentions(
-                List.of(
-                    Contention.builder()
-                        .medicalInd(true)
-                        .beginDate(Instant.parse("2023-09-27T00:00:00-06:00"))
-                        .contentionTypeCode("NEW")
-                        .claimantText("tendinitis/bilateral")
-                        .build()))
-            .build();
-    HttpStatusCodeException ex =
-        Assertions.assertThrows(test.ex.getClass(), () -> service.createClaimContentions(request));
-    assertResponseHasMessageWithStatus(ex.getResponseBodyAsString(), test.status);
-  }
+      PutTempStationOfJurisdictionRequest request =
+          PutTempStationOfJurisdictionRequest.builder()
+              .claimId(GOOD_CLAIM_ID)
+              .tempStationOfJurisdiction(tsoj)
+              .build();
+      PutTempStationOfJurisdictionResponse result = service.putTempStationOfJurisdiction(request);
+      assertResponseIsSuccess(result, HttpStatus.OK);
+    }
 
-  @Test
-  public void testCreateClaimContentionsInternalServerError_500() {
-    mockResponseForUrl(
-        Mockito.doThrow(new RuntimeException("nope")),
-        formatClaimUrl(CONTENTION, INTERNAL_SERVER_ERROR_CLAIM_ID),
-        HttpMethod.POST);
-    CreateClaimContentionsRequest request =
-        CreateClaimContentionsRequest.builder()
-            .claimId(INTERNAL_SERVER_ERROR_CLAIM_ID)
-            .createContentions(
-                List.of(
-                    Contention.builder()
-                        .medicalInd(true)
-                        .beginDate(Instant.parse("2023-09-27T00:00:00-06:00"))
-                        .contentionTypeCode("NEW")
-                        .claimantText("tendinitis/bilateral")
-                        .build()))
-            .build();
-    BipException ex =
-        Assertions.assertThrows(BipException.class, () -> service.createClaimContentions(request));
-    assertSame(HttpStatus.INTERNAL_SERVER_ERROR, ex.getStatus());
-  }
+    @ParameterizedTest(name = "testPutTemporaryStationOfJurisdiction_{0}")
+    @EnumSource(TestCase.class)
+    public void testPutTemporaryStationOfJurisdiction_Non2xx(TestCase test) throws Exception {
+      mockExceptionResponse(
+          test.ex,
+          formatClaimUrl(TEMP_STATION_OF_JURISDICTION, test.claimId),
+          HttpMethod.PUT,
+          PutTempStationOfJurisdictionResponse.class);
 
-  @Test
-  public void testUpdateClaimContentions_200() throws Exception {
-    String resp200Body = getTestData(CONTENTION_RESPONSE_200);
-    ResponseEntity<String> resp200 = ResponseEntity.ok(resp200Body);
-    mockResponseForUrl(
-        Mockito.doReturn(resp200), formatClaimUrl(CONTENTION, GOOD_CLAIM_ID), HttpMethod.PUT);
-
-    UpdateClaimContentionsRequest request =
-        UpdateClaimContentionsRequest.builder()
-            .claimId(GOOD_CLAIM_ID)
-            .updateContentions(
-                List.of(
-                    ExistingContention.builder()
-                        .medicalInd(true)
-                        .beginDate(Instant.parse("2023-09-27T00:00:00-06:00"))
-                        .contentionTypeCode("NEW")
-                        .claimantText("tendinitis/bilateral")
-                        .build()))
-            .build();
-
-    UpdateClaimContentionsResponse response = service.updateClaimContentions(request);
-    assertResponseIsSuccess(response, HttpStatus.OK);
-  }
-
-  @ParameterizedTest(name = "testUpdateClaimContentions_{0}")
-  @EnumSource(TestCase.class)
-  public void testUpdateClaimContentions_Non2xx(TestCase test) throws JsonProcessingException {
-    mockResponseForUrl(
-        Mockito.doThrow(test.ex), formatClaimUrl(CONTENTION, test.claimId), HttpMethod.PUT);
-    UpdateClaimContentionsRequest request =
-        UpdateClaimContentionsRequest.builder()
-            .claimId(test.claimId)
-            .updateContentions(
-                List.of(
-                    ExistingContention.builder()
-                        .medicalInd(true)
-                        .beginDate(Instant.parse("2023-09-27T00:00:00-06:00"))
-                        .contentionTypeCode("NEW")
-                        .claimantText("tendinitis/bilateral")
-                        .build()))
-            .build();
-    HttpStatusCodeException ex =
-        Assertions.assertThrows(test.ex.getClass(), () -> service.updateClaimContentions(request));
-    assertResponseHasMessageWithStatus(ex.getResponseBodyAsString(), test.status);
-  }
-
-  @Test
-  public void testUpdateClaimContentionsInternalServerError_500() {
-    mockResponseForUrl(
-        Mockito.doThrow(new RuntimeException("nope")),
-        formatClaimUrl(CONTENTION, INTERNAL_SERVER_ERROR_CLAIM_ID),
-        HttpMethod.PUT);
-    UpdateClaimContentionsRequest request =
-        UpdateClaimContentionsRequest.builder()
-            .claimId(INTERNAL_SERVER_ERROR_CLAIM_ID)
-            .updateContentions(
-                List.of(
-                    ExistingContention.builder()
-                        .medicalInd(true)
-                        .beginDate(Instant.parse("2023-09-27T00:00:00-06:00"))
-                        .contentionTypeCode("NEW")
-                        .claimantText("tendinitis/bilateral")
-                        .build()))
-            .build();
-    BipException ex =
-        Assertions.assertThrows(BipException.class, () -> service.updateClaimContentions(request));
-    assertSame(HttpStatus.INTERNAL_SERVER_ERROR, ex.getStatus());
-  }
-
-  @Test
-  public void testCancelClaim_200() {
-    ResponseEntity<String> resp200 = ResponseEntity.ok("{}");
-    mockResponseForUrl(
-        Mockito.doReturn(resp200), formatClaimUrl(CANCEL_CLAIM, GOOD_CLAIM_ID), HttpMethod.PUT);
-    CancelClaimRequest request =
-        CancelClaimRequest.builder()
-            .claimId(GOOD_CLAIM_ID)
-            .closeReasonText("because we are testing")
-            .lifecycleStatusReasonCode("60")
-            .build();
-    CancelClaimResponse response = service.cancelClaim(request);
-    assertResponseIsSuccess(response, HttpStatus.OK);
-  }
-
-  @ParameterizedTest(name = "testCancelClaim_{0}")
-  @EnumSource(TestCase.class)
-  public void testCancelClaim_Non2xx(TestCase test) throws JsonProcessingException {
-    mockResponseForUrl(
-        Mockito.doThrow(test.ex), formatClaimUrl(CANCEL_CLAIM, test.claimId), HttpMethod.PUT);
-    CancelClaimRequest request =
-        CancelClaimRequest.builder()
-            .claimId(test.claimId)
-            .closeReasonText("because we are testing")
-            .lifecycleStatusReasonCode("60")
-            .build();
-    HttpStatusCodeException ex =
-        Assertions.assertThrows(test.ex.getClass(), () -> service.cancelClaim(request));
-    assertResponseHasMessageWithStatus(ex.getResponseBodyAsString(), test.status);
-  }
-
-  @Test
-  public void testCancelClaimInternalServerError_500() {
-    mockResponseForUrl(
-        Mockito.doThrow(new RuntimeException("nope")),
-        formatClaimUrl(CANCEL_CLAIM, INTERNAL_SERVER_ERROR_CLAIM_ID),
-        HttpMethod.PUT);
-
-    CancelClaimRequest request =
-        CancelClaimRequest.builder()
-            .claimId(INTERNAL_SERVER_ERROR_CLAIM_ID)
-            .closeReasonText("because we are testing")
-            .lifecycleStatusReasonCode("60")
-            .build();
-    BipException ex =
-        Assertions.assertThrows(BipException.class, () -> service.cancelClaim(request));
-    assertSame(HttpStatus.INTERNAL_SERVER_ERROR, ex.getStatus());
-  }
-
-  @Test
-  public void testPutLifecycleStatus_200() {
-    ResponseEntity<String> resp200 = ResponseEntity.ok("{}");
-    mockResponseForUrl(
-        Mockito.doReturn(resp200),
-        formatClaimUrl(CLAIM_LIFECYCLE_STATUS, GOOD_CLAIM_ID),
-        HttpMethod.PUT);
-    PutClaimLifecycleRequest request =
-        PutClaimLifecycleRequest.builder()
-            .claimId(GOOD_CLAIM_ID)
-            .claimLifecycleStatus("Just a test")
-            .build();
-    PutClaimLifecycleResponse response = service.putClaimLifecycleStatus(request);
-    assertResponseIsSuccess(response, HttpStatus.OK);
-  }
-
-  @ParameterizedTest(name = "testPutLifecycleStatus_{0}")
-  @EnumSource(TestCase.class)
-  public void testPutLifecycleStatus_Non2xx(TestCase test) throws JsonProcessingException {
-    mockResponseForUrl(
-        Mockito.doThrow(test.ex),
-        formatClaimUrl(CLAIM_LIFECYCLE_STATUS, test.claimId),
-        HttpMethod.PUT);
-    PutClaimLifecycleRequest request =
-        PutClaimLifecycleRequest.builder()
-            .claimId(test.claimId)
-            .claimLifecycleStatus("Just a test")
-            .build();
-    HttpStatusCodeException ex =
-        Assertions.assertThrows(test.ex.getClass(), () -> service.putClaimLifecycleStatus(request));
-    assertResponseHasMessageWithStatus(ex.getResponseBodyAsString(), test.status);
-  }
-
-  @Test
-  public void testPutLifecycleStatusInternalServerError_500() {
-    mockResponseForUrl(
-        Mockito.doThrow(new RuntimeException("nope")),
-        formatClaimUrl(CLAIM_LIFECYCLE_STATUS, INTERNAL_SERVER_ERROR_CLAIM_ID),
-        HttpMethod.PUT);
-
-    PutClaimLifecycleRequest request =
-        PutClaimLifecycleRequest.builder()
-            .claimId(INTERNAL_SERVER_ERROR_CLAIM_ID)
-            .claimLifecycleStatus("Just a test")
-            .build();
-    BipException ex =
-        Assertions.assertThrows(BipException.class, () -> service.putClaimLifecycleStatus(request));
-    assertSame(HttpStatus.INTERNAL_SERVER_ERROR, ex.getStatus());
-  }
-
-  @Test
-  public void testPutTemporaryStationOfJurisdiction_200() {
-    ResponseEntity<String> resp200 = ResponseEntity.ok("{}");
-
-    mockResponseForUrl(
-        Mockito.doReturn(resp200),
-        formatClaimUrl(TEMP_STATION_OF_JURISDICTION, GOOD_CLAIM_ID),
-        HttpMethod.PUT);
-
-    PutTempStationOfJurisdictionRequest request =
-        PutTempStationOfJurisdictionRequest.builder()
-            .claimId(GOOD_CLAIM_ID)
-            .tempStationOfJurisdiction("398")
-            .build();
-    PutTempStationOfJurisdictionResponse result = service.putTempStationOfJurisdiction(request);
-    assertResponseIsSuccess(result, HttpStatus.OK);
-  }
-
-  @Test
-  public void testPutTemporaryStationOfJurisdiction_404() throws Exception {
-    String resp404Body = getTestData(CLAIM_RESPONSE_404);
-
-    mockResponseForUrl(
-        Mockito.doThrow(
-            new HttpClientErrorException(
-                HttpStatus.NOT_FOUND,
-                HttpStatus.NOT_FOUND.name(),
-                resp404Body.getBytes(),
-                Charset.defaultCharset())),
-        formatClaimUrl(TEMP_STATION_OF_JURISDICTION, BAD_CLAIM_ID),
-        HttpMethod.PUT);
-
-    PutTempStationOfJurisdictionRequest request =
-        PutTempStationOfJurisdictionRequest.builder()
-            .claimId(BAD_CLAIM_ID)
-            .tempStationOfJurisdiction("398")
-            .build();
-    HttpStatusCodeException ex =
-        Assertions.assertThrows(
-            HttpStatusCodeException.class, () -> service.putTempStationOfJurisdiction(request));
-    assertResponseHasMessageWithStatus(ex.getResponseBodyAsString(), HttpStatus.NOT_FOUND);
-  }
-
-  @Test
-  public void testPutTemporaryStationOfJurisdictionDownstreamServerError_500() throws Exception {
-    String resp500Body = getTestData(RESPONSE_500);
-    mockResponseForUrl(
-        Mockito.doThrow(
-            new HttpServerErrorException(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                HttpStatus.INTERNAL_SERVER_ERROR.name(),
-                resp500Body.getBytes(),
-                Charset.defaultCharset())),
-        formatClaimUrl(TEMP_STATION_OF_JURISDICTION, INTERNAL_SERVER_ERROR_CLAIM_ID),
-        HttpMethod.PUT);
-
-    PutTempStationOfJurisdictionRequest request =
-        PutTempStationOfJurisdictionRequest.builder()
-            .claimId(INTERNAL_SERVER_ERROR_CLAIM_ID)
-            .tempStationOfJurisdiction("398")
-            .build();
-    HttpStatusCodeException ex =
-        Assertions.assertThrows(
-            HttpStatusCodeException.class, () -> service.putTempStationOfJurisdiction(request));
-    assertResponseHasMessageWithStatus(
-        ex.getResponseBodyAsString(), HttpStatus.INTERNAL_SERVER_ERROR);
-  }
-
-  @Test
-  public void testPutTemporaryStationOfJurisdictionInternalServerError_500() {
-    mockResponseForUrl(
-        Mockito.doThrow(new RuntimeException("nope")),
-        formatClaimUrl(TEMP_STATION_OF_JURISDICTION, INTERNAL_SERVER_ERROR_CLAIM_ID),
-        HttpMethod.PUT);
-
-    PutTempStationOfJurisdictionRequest request =
-        PutTempStationOfJurisdictionRequest.builder()
-            .claimId(INTERNAL_SERVER_ERROR_CLAIM_ID)
-            .tempStationOfJurisdiction("398")
-            .build();
-    BipException ex =
-        Assertions.assertThrows(
-            BipException.class, () -> service.putTempStationOfJurisdiction(request));
-    assertSame(HttpStatus.INTERNAL_SERVER_ERROR, ex.getStatus());
+      PutTempStationOfJurisdictionRequest request =
+          PutTempStationOfJurisdictionRequest.builder()
+              .claimId(test.claimId)
+              .tempStationOfJurisdiction("398")
+              .build();
+      Exception ex =
+          Assertions.assertThrows(
+              test.ex.getClass(), () -> service.putTempStationOfJurisdiction(request));
+      assertResponseExceptionWithStatus(ex, test.status);
+    }
   }
 
   @Test
@@ -588,7 +478,7 @@ public class BipApiServiceTest {
 
     String goodUrl = HTTPS + CLAIM_URL + SPECIAL_ISSUE_TYPES;
 
-    mockResponseForUrl(Mockito.doReturn(resp200), goodUrl, HttpMethod.GET);
+    mockResponseForUrl(Mockito.doReturn(resp200), goodUrl);
     try {
       assertTrue(service.isApiFunctioning());
     } catch (BipException e) {
@@ -597,7 +487,7 @@ public class BipApiServiceTest {
     }
     ResponseEntity<String> respEmpty = ResponseEntity.ok("");
 
-    mockResponseForUrl(Mockito.doReturn(respEmpty), goodUrl, HttpMethod.GET);
+    mockResponseForUrl(Mockito.doReturn(respEmpty), goodUrl);
     try {
       assertFalse(service.isApiFunctioning());
     } catch (BipException e) {
@@ -605,9 +495,7 @@ public class BipApiServiceTest {
       fail();
     }
     mockResponseForUrl(
-        Mockito.doThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)),
-        goodUrl,
-        HttpMethod.GET);
+        Mockito.doThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)), goodUrl);
     try {
       assertFalse(service.isApiFunctioning());
     } catch (BipException e) {
@@ -623,6 +511,18 @@ public class BipApiServiceTest {
     assertNull(response.getMessages());
   }
 
+  private void assertResponseExceptionWithStatus(Exception ex, HttpStatus expected)
+      throws JsonProcessingException {
+    if (ex instanceof HttpStatusCodeException httpStatusCodeException) {
+      assertResponseHasMessageWithStatus(
+          httpStatusCodeException.getResponseBodyAsString(), expected);
+    } else if (ex instanceof BipException bipException) {
+      assertSame(expected, bipException.getStatus());
+    } else {
+      fail("Unsupported Error Type");
+    }
+  }
+
   private void assertResponseHasMessageWithStatus(String response, HttpStatus expected)
       throws JsonProcessingException {
     BipPayloadResponse bipResponse = MAPPER.readValue(response, BipPayloadResponse.class);
@@ -634,28 +534,41 @@ public class BipApiServiceTest {
     assertEquals(expected.name(), message.getHttpStatus());
   }
 
+  private enum ErrType {
+    CLIENT,
+    SERVER,
+    INTERNAL
+  }
+
   public enum TestCase {
-    NOT_FOUND(NOT_FOUND_CLAIM_ID, HttpStatus.NOT_FOUND, CLAIM_RESPONSE_404),
+    NOT_FOUND(ErrType.CLIENT, NOT_FOUND_CLAIM_ID, HttpStatus.NOT_FOUND, CLAIM_RESPONSE_404),
     DOWNSTREAM_ERROR(
-        INTERNAL_SERVER_ERROR_CLAIM_ID, HttpStatus.INTERNAL_SERVER_ERROR, RESPONSE_500);
+        ErrType.SERVER,
+        INTERNAL_SERVER_ERROR_CLAIM_ID,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        RESPONSE_500),
+    BIP_INTERNAL(
+        ErrType.INTERNAL,
+        INTERNAL_SERVER_ERROR_CLAIM_ID,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        RESPONSE_500);
 
     final long claimId;
     final HttpStatus status;
-    final HttpStatusCodeException ex;
+    final Exception ex;
 
     @SneakyThrows
-    TestCase(long claimId, HttpStatus status, String dataFile) {
+    TestCase(ErrType type, long claimId, HttpStatus status, String dataFile) {
       this.claimId = claimId;
       this.status = status;
       this.ex =
-          status == HttpStatus.INTERNAL_SERVER_ERROR
-              ? new HttpServerErrorException(
-                  status, status.name(), getTestData(dataFile).getBytes(), Charset.defaultCharset())
-              : new HttpClientErrorException(
-                  status,
-                  status.name(),
-                  getTestData(dataFile).getBytes(),
-                  Charset.defaultCharset());
+          switch (type) {
+            case CLIENT -> new HttpClientErrorException(
+                status, status.name(), getTestData(dataFile).getBytes(), Charset.defaultCharset());
+            case SERVER -> new HttpServerErrorException(
+                status, status.name(), getTestData(dataFile).getBytes(), Charset.defaultCharset());
+            case INTERNAL -> new RuntimeException("nope");
+          };
     }
   }
 }

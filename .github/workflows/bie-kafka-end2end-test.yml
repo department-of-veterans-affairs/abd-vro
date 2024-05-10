@@ -15,10 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout source code'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: "Checkout abd-vro-dev-secrets repo"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Checkout using a PAT so that we can access the internal repo
           token: ${{ secrets.ACCESS_TOKEN_CHECKOUT_INTERNAL_REPO }}
@@ -54,7 +54,7 @@ jobs:
         uses: ./.github/actions/check-disk-space
 
       - name: 'Wait for RabbitMQ to be ready'
-        uses: indiesdev/curl@v1.1
+        uses: department-of-veterans-affairs/curl-action@v1.0.0
         with:
           url: 'http://localhost:15672/api/vhosts'
           method: 'GET'
@@ -89,7 +89,7 @@ jobs:
       - name: 'Wait for xample-workflow to be ready'
         uses: nev7n/wait_for_response@v1
         with:
-          url: 'http://localhost:10021/actuator/health'
+          url: 'http://localhost:10021/actuator/health/readiness'
           responseCode: 200
           # Retry every 2 seconds
           interval: 2000
@@ -99,12 +99,12 @@ jobs:
       - name: 'Wait for svc-bie-kafka to be ready'
         uses: nev7n/wait_for_response@v1
         with:
-          url: 'http://localhost:10301/actuator/health'
+          url: 'http://localhost:10301/actuator/health/readiness'
           responseCode: 200
           # Retry every 2 seconds
           interval: 2000
-          # Quit after 60 seconds
-          timeout: 60000
+          # Quit after 90 seconds
+          timeout: 90000
 
       - name: 'Create Kafka topic and send message'
         run: |
@@ -122,8 +122,8 @@ jobs:
         run: |
           source scripts/setenv.sh
 
-          # Retry to 5 times to allow time for message to travel from kafka to database
-          for i in {1..5}; do
+          # Retry to 10 times to allow time for message to travel from kafka to database
+          for i in {1..10}; do
             sleep 10
             echo "Attempt $i"
             # For debugging
@@ -154,7 +154,7 @@ jobs:
 
       - name: "Upload artifact"
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: bie-kafka-end2end-test-with-mock-container-logs
           path: ./bie-kafka-end2end-test-with-mock-container-logs/**

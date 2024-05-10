@@ -3,13 +3,13 @@ package gov.va.vro.bip;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import gov.va.vro.bip.model.Contention;
+import gov.va.vro.bip.model.contentions.Contention;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 public class CreateClaimContentionsTest extends BaseIntegrationTest {
@@ -71,7 +71,7 @@ public class CreateClaimContentionsTest extends BaseIntegrationTest {
   private static Contention getNewContention() {
     return Contention.builder()
         .medicalInd(true)
-        .beginDate(Instant.parse("2023-02-01T00:00:00Z"))
+        .beginDate(OffsetDateTime.parse("2023-02-01T00:00:00Z"))
         .contentionTypeCode("NEW")
         .classificationType(1250)
         .diagnosticTypeCode("6260")

@@ -11,6 +11,39 @@ resources:
 
 replicaCount: 1
 
+startupProbe:
+  exec:
+    command:
+    - /bin/sh
+    - -c
+    - bundle exec ruby /app/healthcheck/startup_script.rb  
+  initialDelaySeconds: 120  
+  periodSeconds: 10
+  timeoutSeconds: 10
+  failureThreshold: 25 
+
+livenessProbe:
+  exec:
+    command:
+    - /bin/sh
+    - -c
+    - bundle exec ruby /app/healthcheck/liveness_script.rb
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  timeoutSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  exec:
+    command:
+    - /bin/sh
+    - -c
+    - bundle exec ruby /app/healthcheck/readiness_script.rb
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  timeoutSeconds: 10
+  failureThreshold: 3
+
 # autoscaling:
 #   enabled: false
 #   minReplicas: 1

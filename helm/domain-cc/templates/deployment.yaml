@@ -27,8 +27,9 @@ spec:
               name: http
           env:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
+            {{- include "vro.dbClient.envVars" . | nindent 12 }}
             {{- include "vro.mqClient.envVars" . | nindent 12 }}
-            {{- include "vro.redisClient.envVars" . | nindent 12 }}
+            {{- include "domainCc.alembic.envVars" . | nindent 12 }}
           resources:
             requests:
               cpu: 150m

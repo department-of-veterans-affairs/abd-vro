@@ -26,12 +26,13 @@ on:
         - svc-bgs-api
         - svc-bie-kafka
         - svc-bip-api
-        - svc-lighthouse-api
-        - api-gateway
-        - domain-ee
+        - domain-ee-max-cfi-app
+        - domain-ee-ep-merge-app
+        - dev-tools
+        - db-init
 
       image_tag:
-        description: 'Image tag: first 7 of commit hash, "latest", "v1.2.3", or "release-1.2.3"'
+        description: 'Image tag: first 7 of commit hash or "latest"'
         required: true
         default: 'latest'
         type: string
@@ -93,7 +94,7 @@ jobs:
     - id: checkUserMember
       # Only check for manual runs against prod
       if: github.event_name == 'workflow_dispatch' && inputs.target_env == 'prod'
-      uses: tspascoal/get-user-teams-membership@v2
+      uses: tspascoal/get-user-teams-membership@v3.0.0
       with:
         username: ${{ github.actor }}
         team: 'vro-restricted'
@@ -116,7 +117,7 @@ jobs:
     steps:
       - name: "Slack: workflow triggered"
         id: notify-slack
-        uses: archive/github-actions-slack@v2.6.0
+        uses: archive/github-actions-slack@v2.9.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
@@ -155,11 +156,11 @@ jobs:
           fi
 
       - name: "Checkout source code"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: "Slack thread: Post deploying message"
         # Post in thread to reduce clutter in Slack
-        uses: archive/github-actions-slack@v2.6.0
+        uses: archive/github-actions-slack@v2.9.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
@@ -177,17 +178,8 @@ jobs:
           export WAIT_TIMEOUT=10m
           export TRIGGERING_ACTOR="${{github.triggering_actor}}"
 
-          # Load default values for *_VER environment variables, which pin image versions
           source scripts/image_vars.src
 
-          {
-            echo '## Default image versions'
-            echo '```'
-            imageVersions | sort
-            echo '```'
-          } | tee -a "$GITHUB_STEP_SUMMARY"
-
-          # To override pinned image version default, export env variable, e.g., 'apigateway_VER' for Helm chart 'api-gateway'
           VAR_PREFIX=$(bashVarPrefix "${{inputs.helm_chart}}")
           eval export "${VAR_PREFIX}_VER=${{inputs.image_tag}}"
 
@@ -217,7 +209,7 @@ jobs:
 
       - name: "Slack thread: Post failed status message"
         if: failure()
-        uses: archive/github-actions-slack@v2.6.0
+        uses: archive/github-actions-slack@v2.9.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
@@ -225,7 +217,7 @@ jobs:
           slack-text: ":panda_cry: Failed *${{ inputs.helm_chart }}* deployment to *${{ inputs.target_env }}*"
       - name: "Slack emoji: React failure on top-level Slack notification"
         if: failure()
-        uses: archive/github-actions-slack@v2.6.0
+        uses: archive/github-actions-slack@v2.9.0
         with:
           slack-function: send-reaction
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
@@ -234,14 +226,14 @@ jobs:
           slack-emoji-name: 'x'
 
       - name: "Slack thread: Post success status message"
-        uses: archive/github-actions-slack@v2.6.0
+        uses: archive/github-actions-slack@v2.9.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
           slack-optional-thread_ts: ${{ fromJson(steps.notify-slack.outputs.slack-result).response.message.ts }}
           slack-text: ":panda_duck_yay: Completed *${{ inputs.helm_chart }}* deployment to *${{ inputs.target_env }}*"
       - name: "Slack emoji: React success on top-level Slack notification"
-        uses: archive/github-actions-slack@v2.6.0
+        uses: archive/github-actions-slack@v2.9.0
         with:
           slack-function: send-reaction
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}

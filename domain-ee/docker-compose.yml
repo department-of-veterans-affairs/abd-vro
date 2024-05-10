@@ -28,6 +28,19 @@ x-rabbitmq-placeholder-vars: &rabbitmq-placeholder-vars
   RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
   RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
 
+x-postgres-vars: &postgres-vars
+  POSTGRES_URL: postgresql://postgres-service:5432/vro
+  POSTGRES_HOST: postgres-service
+  POSTGRES_PORT: 5432
+  POSTGRES_DB: ${POSTGRES_DB}
+  POSTGRES_USER: ${POSTGRES_USER}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  POSTGRES_SCHEMA: ${POSTGRES_SCHEMA}
+
+x-datadog-vars: &datadog-vars
+  DD_SITE: ${DD_SITE}
+  DD_API_KEY: ${DD_API_KEY}
+
 services:
   # Containers with the `svc-` prefix are microservices to support domain workflows.
 
@@ -47,7 +60,7 @@ services:
     image: va/abd_vro-ee-ep-merge-app:latest
     <<: [*common-sde-security, *common-security-opt]
     environment:
-      <<: [ *rabbitmq-placeholder-vars, *common-vars ]
+      <<: [ *rabbitmq-placeholder-vars, *postgres-vars, *datadog-vars, *common-vars ]
     ports:
       - "8140:8140"
     networks:

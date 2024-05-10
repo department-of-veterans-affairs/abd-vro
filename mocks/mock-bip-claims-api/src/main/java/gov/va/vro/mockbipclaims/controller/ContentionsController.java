@@ -1,5 +1,11 @@
 package gov.va.vro.mockbipclaims.controller;
 
+import static gov.va.vro.mockbipclaims.config.ClaimIdConstants.CLAIM_ID_ALL_ENDPOINTS_YIELDS_500;
+import static gov.va.vro.mockbipclaims.config.ClaimIdConstants.CLAIM_ID_CREATE_CONTENTIONS_YIELDS_500;
+import static gov.va.vro.mockbipclaims.config.ClaimIdConstants.CLAIM_ID_GET_PENDING_EP_CONTENTIONS_YIELDS_500;
+import static gov.va.vro.mockbipclaims.config.ClaimIdConstants.CLAIM_ID_GET_SUPP_EP_CONTENTIONS_YIELDS_500;
+import static gov.va.vro.mockbipclaims.config.ClaimIdConstants.CLAIM_ID_UPDATE_CONTENTIONS_YIELDS_500;
+
 import gov.va.vro.mockbipclaims.api.ContentionsApi;
 import gov.va.vro.mockbipclaims.mapper.ContentionMapper;
 import gov.va.vro.mockbipclaims.model.bip.ContentionSummary;
@@ -43,7 +49,8 @@ public class ContentionsController extends BaseController implements Contentions
     if (item == null) {
       return createClaim400(response, claimId);
     }
-    if (claimId == 500) {
+    if (claimId == CLAIM_ID_ALL_ENDPOINTS_YIELDS_500
+        || claimId == CLAIM_ID_CREATE_CONTENTIONS_YIELDS_500) {
       return create500(response);
     }
 
@@ -72,11 +79,16 @@ public class ContentionsController extends BaseController implements Contentions
     if (item == null) {
       return createClaim404(response, claimId);
     }
-    if (claimId == 500) {
+    if (claimId == CLAIM_ID_ALL_ENDPOINTS_YIELDS_500
+        || claimId == CLAIM_ID_GET_PENDING_EP_CONTENTIONS_YIELDS_500
+        || claimId == CLAIM_ID_GET_SUPP_EP_CONTENTIONS_YIELDS_500) {
       return create500(response);
     }
 
     List<ContentionSummary> contentions = item.getContentions();
+    if (contentions.isEmpty()) {
+      return create204();
+    }
 
     response.setContentions(contentions);
 
@@ -104,7 +116,8 @@ public class ContentionsController extends BaseController implements Contentions
       // Non-existent claim id yields 400, not 404
       return createClaim400(response, claimId);
     }
-    if (claimId == 500) {
+    if (claimId == CLAIM_ID_ALL_ENDPOINTS_YIELDS_500
+        || claimId == CLAIM_ID_UPDATE_CONTENTIONS_YIELDS_500) {
       return create500(response);
     }
 

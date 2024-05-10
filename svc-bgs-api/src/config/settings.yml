@@ -16,7 +16,7 @@ dev:
     client_station_id: 281
     client_username: VROSYSACCT
     log: true
-    base_url: http://beplinktest.vba.va.gov
+    base_url: http://bepdev.vba.va.gov
 
 qa:
   bgs:
@@ -24,7 +24,7 @@ qa:
     client_station_id: 281
     client_username: VROSYSACCT
     log: true
-    base_url: http://beplinktest.vba.va.gov
+    base_url: http://bepwebtest.vba.va.gov
 
 sandbox:
   bgs:

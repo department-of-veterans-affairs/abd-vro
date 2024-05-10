@@ -16,10 +16,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout source code'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: "Checkout abd-vro-dev-secrets repo"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Checkout using a PAT so that we can access the internal repo
           token: ${{ secrets.ACCESS_TOKEN_CHECKOUT_INTERNAL_REPO }}
@@ -56,7 +56,7 @@ jobs:
         uses: ./.github/actions/check-disk-space
 
       - name: 'Wait for RabbitMQ to be ready'
-        uses: indiesdev/curl@v1.1
+        uses: department-of-veterans-affairs/curl-action@v1.0.0
         with:
           url: 'http://localhost:15672/api/vhosts'
           method: 'GET'
@@ -86,7 +86,7 @@ jobs:
 
       - name: "Upload artifact"
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: svc-bip-api-container-logs
           path: ./svc-bip-api-container-logs/**

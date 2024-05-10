@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: "Login to GitHub Container Registry"
-      uses: docker/login-action@v2.1.0
+      uses: docker/login-action@v3.0.0
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
@@ -64,7 +64,6 @@ jobs:
   secrel:
     name: SecRel Pipeline
     needs: publish-image
-    # https://psychic-disco-c1251ea1.pages.github.io/pipeline/release_notes/v4.1.0/
     uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v4
     with:
       config-file: .github/secrel/config.yml
@@ -76,7 +75,7 @@ jobs:
     steps:
       - name: "Notify Slack"
         id: notify-slack
-        uses: archive/github-actions-slack@v2.6.0
+        uses: archive/github-actions-slack@v2.9.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}
@@ -86,7 +85,7 @@ jobs:
 
       - name: "Slack thread: Post follow-on TODO actions"
         # Post in thread to reduce clutter in Slack
-        uses: archive/github-actions-slack@v2.6.0
+        uses: archive/github-actions-slack@v2.9.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: ${{ env.SLACK_CHANNEL }}

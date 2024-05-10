@@ -33,10 +33,6 @@ x-postgres-vars: &postgres-vars
   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
   POSTGRES_SCHEMA: claims
 
-x-redis-placeholder-vars: &redis-placeholder-vars
-  REDIS_PLACEHOLDERS_HOST: redis-service
-  REDIS_PASSWORD: ${REDIS_PASSWORD}
-
 x-rabbitmq-placeholder-vars: &rabbitmq-placeholder-vars
   RABBITMQ_PLACEHOLDERS_HOST: rabbitmq-service
   RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
@@ -54,35 +50,6 @@ services:
   # Containers with the `-service` suffix are need by the VRO app.
   # Containers with the `svc-` prefix are microservices to support domain workflows.
   # Containers with the `mock-` prefix are used for development and testing.
-
-  app:
-    image: va/abd_vro-app:latest
-    <<: [*common-sde-security, *common-security-opt]
-    ports:
-      - "8110:8110"
-      - "8111:8111"
-    environment:
-      # ENV=local causes application-local.yml (and application-nonprod.yml) to be used, in addition to the default application.yml
-      # PERSIST_TRACKING_FOLDER is necessary for local testing when ENV=dev or qa
-      <<: [*api-vars, *postgres-vars, *redis-placeholder-vars, *rabbitmq-placeholder-vars, *common-vars]
-      PERSIST_TRACKING_FOLDER: /persist/tracking
-    volumes:
-      # path needs to be consistent with PERSIST_TRACKING_FOLDER value above
-      - tracking:/persist/tracking
-    networks:
-      - vro_intranet
-
-  svc-lighthouse-api:
-    profiles: ["all","svc","lh"]
-    image: va/abd_vro-svc-lighthouse-api:latest
-    <<: [*common-sde-security, *common-security-opt]
-    environment:
-      # ENV=local causes application-local.properties to be used, in addition to the default application.properties
-      <<: [*rabbitmq-placeholder-vars, *common-vars]
-      LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
-      LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
-    networks:
-      - vro_intranet
 
   svc-bip-api:
     profiles: ["all", "svc", "bip"]

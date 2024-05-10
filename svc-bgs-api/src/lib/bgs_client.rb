@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'active_support/time'
+require 'active_support/core_ext/object/blank'
 require 'bgs'
 
 # patch bgs_ext with a createNote implementation that follows our spec better

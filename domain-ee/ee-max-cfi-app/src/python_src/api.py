@@ -1,9 +1,9 @@
 import logging
 import sys
 
+import uvicorn
 from fastapi import FastAPI, HTTPException
-from pydantic_models import (MaxRatingsForClaimForIncreaseRequest,
-                             MaxRatingsForClaimForIncreaseResponse)
+from pydantic_models import MaxRatingsForClaimForIncreaseRequest, MaxRatingsForClaimForIncreaseResponse
 from util.lookup_table import MAX_RATINGS_BY_CODE, get_max_rating
 from util.sanitizer import sanitize
 
@@ -12,16 +12,13 @@ app = FastAPI(
     description="Maps a list of disabilities to their max rating.",
     contact={},
     version="v0.1",
-    license={
-        "name": "CCO 1.0",
-        "url": "https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md"
-    },
+    license={"name": "CCO 1.0", "url": "https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md"},
     servers=[
         {
             "url": "/cfi",
             "description": "Max Ratings for CFI",
         },
-    ]
+    ],
 )
 
 logging.basicConfig(
@@ -42,21 +39,20 @@ def get_health_status():
 
 @app.post("/max-ratings")
 def get_max_ratings(
-        claim_for_increase: MaxRatingsForClaimForIncreaseRequest, ) -> MaxRatingsForClaimForIncreaseResponse:
+    claim_for_increase: MaxRatingsForClaimForIncreaseRequest,
+) -> MaxRatingsForClaimForIncreaseResponse:
     ratings = []
     for dc in set(claim_for_increase.diagnostic_codes):
         validate_diagnostic_code(dc)
         max_rating = get_max_rating(dc)
-        if max_rating:
+        if max_rating is not None:
             rating = {
                 "diagnostic_code": sanitize(dc),
                 "max_rating": max_rating,
             }
             ratings.append(rating)
 
-    response = {
-        "ratings": ratings
-    }
+    response = MaxRatingsForClaimForIncreaseResponse(ratings=ratings)
 
     logging.info(f"event=getMaxRating ratings={ratings}")
     return response
@@ -68,3 +64,7 @@ def get_max_ratings(
 def validate_diagnostic_code(dc: int):
     if dc < 5000 or dc > 10000:
         raise HTTPException(status_code=400, detail=f"The diagnostic code received is invalid: dc={dc}")
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="localhost", port=8130)
