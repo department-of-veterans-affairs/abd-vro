@@ -8,7 +8,7 @@ on:
   workflow_call:
 
 env:
-  COMPOSE_PROFILES: 'bip'
+  COMPOSE_PROFILES: 'bip,platform'
   VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"
 
 jobs:
@@ -48,7 +48,7 @@ jobs:
           } >> "$GITHUB_ENV"
 
           export -p | sed 's/declare -x //'
-          ./gradlew :dockerComposeUp
+          COMPOSE_PROFILES="platform" ./gradlew :dockerComposeUp
           ./gradlew -p mocks docker
           ./gradlew -p mocks :dockerComposeUp
 
