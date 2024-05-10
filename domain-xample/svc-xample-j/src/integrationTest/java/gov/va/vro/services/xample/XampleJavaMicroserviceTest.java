@@ -1,14 +1,12 @@
 package gov.va.vro.services.xample;
 
 import static gov.va.vro.services.xample.JavaMicroserviceApplication.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.xample.SomeDtoModel;
 import gov.va.vro.model.xample.StatusValue;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.core.Message;
@@ -16,6 +14,10 @@ import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.retry.backoff.ExponentialBackOffPolicy;
+import org.springframework.retry.backoff.ExponentialRandomBackOffPolicy;
+import org.springframework.retry.policy.MaxAttemptsRetryPolicy;
+import org.springframework.retry.support.RetryTemplate;
 
 import java.io.IOException;
 
@@ -32,14 +34,22 @@ public class XampleJavaMicroserviceTest {
 
   @Autowired private RabbitAdmin rabbitAdmin;
 
-  @BeforeEach
-  private void setUp() {
-    rabbitAdmin.purgeQueue(queueName, true);
+  private final RetryTemplate retryTemplate = createRetryTemplate();
+
+  private static RetryTemplate createRetryTemplate() {
+    ExponentialBackOffPolicy backOffPolicy = new ExponentialRandomBackOffPolicy();
+    backOffPolicy.setInitialInterval(2000);
+
+    RetryTemplate retryTemplate = RetryTemplate.defaultInstance();
+    retryTemplate.setBackOffPolicy(backOffPolicy);
+    retryTemplate.setRetryPolicy(new MaxAttemptsRetryPolicy(5));
+    return retryTemplate;
   }
 
-  @AfterEach
-  private void tearDown() {
-    rabbitAdmin.purgeQueue(queueName, true);
+  @BeforeEach
+  private void setUp() {
+    rabbitTemplate.setRetryTemplate(retryTemplate);
+    rabbitAdmin.purgeQueue(queueName);
   }
 
   private final SomeDtoModel request =

@@ -4,7 +4,7 @@ import sys
 import time
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 
 from .pydantic_models import Claim, ClaimLinkInfo, PredictedClassification
 from .util.brd_classification_codes import get_classification_name
@@ -39,6 +39,17 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
     stream=sys.stdout,
 )
+
+
+@app.middleware("http")
+async def save_process_time_as_metric(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    process_time = time.time() - start_time
+    response.headers["X-Process-Time"] = str(process_time)
+    log_as_json({"process_time": process_time, "url": request.url.path})
+
+    return response
 
 
 @app.get("/health")

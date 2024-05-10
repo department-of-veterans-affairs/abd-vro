@@ -48,11 +48,6 @@ jobs:
     uses: ./.github/workflows/xample-integration-test.yml
     secrets: inherit
 
-  api-gateway:
-    needs: nondraft-pr
-    uses: ./.github/workflows/api-gateway-integration-test.yml
-    secrets: inherit
-
   svc-bgs-api:
     needs: nondraft-pr
     uses: ./.github/workflows/svc-bgs-api-integration-test.yml

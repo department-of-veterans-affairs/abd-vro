@@ -13,11 +13,11 @@ public class ContentionEventTest {
 
   @ParameterizedTest
   @CsvSource({
-    "TST_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02, CONTENTION_ASSOCIATED_TO_CLAIM",
-    "TST_CONTENTION_BIE_CONTENTION_UPDATED_V02, CONTENTION_UPDATED",
-    "TST_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02, CONTENTION_CLASSIFIED",
-    "TST_CONTENTION_BIE_CONTENTION_COMPLETED_V02, CONTENTION_COMPLETED",
-    "TST_CONTENTION_BIE_CONTENTION_DELETED_V02, CONTENTION_DELETED"
+    "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_ASSOCIATED_TO_CLAIM_V02, CONTENTION_ASSOCIATED_TO_CLAIM",
+    "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_UPDATED_V02, CONTENTION_UPDATED",
+    "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_CLASSIFIED_V02, CONTENTION_CLASSIFIED",
+    "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_COMPLETED_V02, CONTENTION_COMPLETED",
+    "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_DELETED_V02, CONTENTION_DELETED"
   })
   public void testMapTopicToEvent_validTopics(String inputTopic, ContentionEvent expectedEvent) {
     assertEquals(expectedEvent, mapTopicToEvent(inputTopic));
@@ -35,11 +35,11 @@ public class ContentionEventTest {
 
   @ParameterizedTest
   @CsvSource({
-    "TST_CONTENTION_BIE_CONTENTION_ASSOCIATED_TO_CLAIM_V02, bie-events-contention-associated-to-claim",
-    "TST_CONTENTION_BIE_CONTENTION_UPDATED_V02, bie-events-contention-updated",
-    "TST_CONTENTION_BIE_CONTENTION_CLASSIFIED_V02, bie-events-contention-classified",
-    "TST_CONTENTION_BIE_CONTENTION_COMPLETED_V02, bie-events-contention-completed",
-    "TST_CONTENTION_BIE_CONTENTION_DELETED_V02, bie-events-contention-deleted"
+    "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_ASSOCIATED_TO_CLAIM_V02, bie-events-contention-associated-to-claim",
+    "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_UPDATED_V02, bie-events-contention-updated",
+    "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_CLASSIFIED_V02, bie-events-contention-classified",
+    "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_COMPLETED_V02, bie-events-contention-completed",
+    "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_DELETED_V02, bie-events-contention-deleted"
   })
   public void testGenerateRabbitMQChannelName_channelNames(String inputTopic, String bieChannel) {
     assertEquals(bieChannel, ContentionEvent.rabbitMqExchangeName(inputTopic));
