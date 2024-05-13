@@ -6,13 +6,13 @@ from pydantic import BaseModel, model_validator
 class Claim(BaseModel):
     claim_id: int
     form526_submission_id: int
-    diagnostic_code: Optional[
-        int
-    ] = None  # only required for claim_type: "claim_for_increase"
+    diagnostic_code: Optional[int] = (
+        None  # only required for claim_type: "claim_for_increase"
+    )
     claim_type: str = "claim_for_increase"
-    contention_text: Optional[
-        str
-    ] = None  # marked optional to retain compatibility with v1
+    contention_text: Optional[str] = (
+        None  # marked optional to retain compatibility with v1
+    )
 
     @model_validator(mode="before")
     @classmethod
