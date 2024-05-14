@@ -5,17 +5,9 @@ addopts = "-ra --cov=./src --cov-fail-under=80 --no-cov-on-fail --cov-report=ter
 testpaths = [
     "tests"
 ]
-env = [
-    "REQUEST_TIMEOUT = 1",
-    "REQUEST_RETRIES = 1",
-    "EP_MERGE_SPECIAL_ISSUE_CODE = TEST",
-    "EP400_CONTENTION_RETRIES = 2",
-    "EP400_CONTENTION_RETRY_RATE = 1"
-]
 
 [tool.coverage.run]
 # The following files are for development purposes and are not part of the coverage report
 omit = [
-    "src/python_src/graph_export.py",
     "src/python_src/pull_api_documentation.py",
 ]
