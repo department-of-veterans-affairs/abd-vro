@@ -30,7 +30,13 @@ public enum ContentionEvent {
   }
 
   public static String rabbitMqExchangeName(String topic) {
-    return String.format(
-        "bie-events-%s", mapTopicToEvent(topic).toString().toLowerCase().replace("_", "-"));
+    String exchangeName = String.format("bie-events-%s", mapTopicToEvent(topic).toString().toLowerCase().replace("_", "-"));
+    String suffix = "-to-claim";
+
+    if(exchangeName.endsWith(suffix))
+      return topic.substring(0, topic.length() - suffix.length());
+    else
+      return exchangeName;
+
   }
 }
