@@ -45,12 +45,13 @@ public class BieMessagePayloadFactory {
 
   public static BieMessagePayload create() {
     // generate a random contention classification event type
-    ContentionEvent eventType = faker.options().option(ContentionEvent.values());
+//    ContentionEvent eventType = faker.options().option(ContentionEvent.values());
+    ContentionEvent eventType = ContentionEvent.CONTENTION_ASSOCIATED;
 
     BieMessagePayload payload = createPayload(eventType);
 
     switch (eventType) {
-      case CONTENTION_ASSOCIATED_TO_CLAIM:
+      case CONTENTION_ASSOCIATED:
       case CONTENTION_CLASSIFIED:
         setCommonPayloadValues(payload);
         break;

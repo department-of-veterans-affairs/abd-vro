@@ -3,7 +3,7 @@ package gov.va.vro.model.biekafka;
 import java.util.Arrays;
 
 public enum ContentionEvent {
-  CONTENTION_ASSOCIATED_TO_CLAIM("BIA_SERVICES_BIE_CATALOG_CONTENTION_ASSOCIATED_TO_CLAIM_V02"),
+  CONTENTION_ASSOCIATED("BIA_SERVICES_BIE_CATALOG_CONTENTION_ASSOCIATED_TO_CLAIM_V02"),
   CONTENTION_UPDATED("BIA_SERVICES_BIE_CATALOG_CONTENTION_UPDATED_V02"),
   CONTENTION_CLASSIFIED("BIA_SERVICES_BIE_CATALOG_CONTENTION_CLASSIFIED_V02"),
   CONTENTION_COMPLETED("BIA_SERVICES_BIE_CATALOG_CONTENTION_COMPLETED_V02"),
@@ -30,13 +30,7 @@ public enum ContentionEvent {
   }
 
   public static String rabbitMqExchangeName(String topic) {
-    String exchangeName = String.format("bie-events-%s", mapTopicToEvent(topic).toString().toLowerCase().replace("_", "-"));
-    String suffix = "-to-claim";
-
-    if(exchangeName.endsWith(suffix))
-      return topic.substring(0, topic.length() - suffix.length());
-    else
-      return exchangeName;
-
+    return String.format(
+            "bie-events-%s", mapTopicToEvent(topic).toString().toLowerCase().replace("_", "-"));
   }
 }

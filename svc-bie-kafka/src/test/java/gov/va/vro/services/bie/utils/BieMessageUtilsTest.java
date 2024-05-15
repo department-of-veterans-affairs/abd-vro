@@ -68,7 +68,7 @@ class BieMessageUtilsTest {
   void testContentionAssociatedToClaimEvent() {
     BieMessagePayload actualPayload =
         BieMessageUtils.processBieMessagePayloadFields(
-            ContentionEvent.CONTENTION_ASSOCIATED_TO_CLAIM, genericRecord);
+            ContentionEvent.CONTENTION_ASSOCIATED, genericRecord);
     testCommonFields(actualPayload);
     assertEquals("TypeCode123", actualPayload.getBenefitClaimTypeCode());
     assertEquals("Station456", actualPayload.getActorStation());
@@ -77,7 +77,7 @@ class BieMessageUtilsTest {
     assertEquals("ClassificationName", actualPayload.getContentionClassificationName());
     assertEquals("DiagnosticCode", actualPayload.getDiagnosticTypeCode());
     assertEquals(Long.valueOf(1616161616L), actualPayload.getDateAdded());
-    assertEquals(ContentionEvent.CONTENTION_ASSOCIATED_TO_CLAIM, actualPayload.getEventType());
+    assertEquals(ContentionEvent.CONTENTION_ASSOCIATED, actualPayload.getEventType());
   }
 
   @Test
