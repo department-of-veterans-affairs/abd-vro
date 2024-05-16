@@ -79,4 +79,7 @@ public class ContentionEventEntity extends BaseEntity {
 
   @Column(name = "action_result_name")
   private String actionResultName;
+
+  @Column(name = "description")
+  private String description;
 }

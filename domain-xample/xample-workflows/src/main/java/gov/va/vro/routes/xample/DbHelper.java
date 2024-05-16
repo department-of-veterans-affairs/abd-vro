@@ -79,6 +79,12 @@ public class DbHelper {
     contentionEventEntity.setActionName(bieMessagePayload.getActionName());
     contentionEventEntity.setActionResultName(bieMessagePayload.getActionResultName());
 
+    String description = bieMessagePayload.getDescription();
+
+    if(description != null && !description.isEmpty()) {
+      contentionEventEntity.setDescription(description);
+    }
+
     return contentionEventRepository.save(contentionEventEntity);
   }
 
