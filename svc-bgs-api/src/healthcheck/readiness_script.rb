@@ -1,6 +1,5 @@
-# This script is used by the K8S Readiness probe to check the availability of the BGS-api service. Specifically, it checks
-# the configuration of bgs-api environment and application as well as confirms the service is ready. It also checks the status 
-# of RabbitMQ thereby verifying that the BGS-api application is ready to perform its basic functions. 
+# This script is used by the K8S Readiness probe to check the availability of the BIS-api service. Specifically, it checks
+# both RabbitMQ connectivity and fetches specific data (vro_participant_id) to confirm the BIS-Api service is ready to perform its basic functions. 
 
 require 'logger'
 require_relative '../lib/rabbit_subscriber'

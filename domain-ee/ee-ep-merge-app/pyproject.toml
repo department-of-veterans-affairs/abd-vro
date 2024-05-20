@@ -1,7 +1,7 @@
 # pyproject.toml
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "-rfesp"
+addopts = "-ra --cov=./src --cov-fail-under=80 --no-cov-on-fail --cov-report=term:skip-covered --cov-report=html:build/reports/coverage --cov-branch"
 testpaths = [
     "tests"
 ]
@@ -11,4 +11,11 @@ env = [
     "EP_MERGE_SPECIAL_ISSUE_CODE = TEST",
     "EP400_CONTENTION_RETRIES = 2",
     "EP400_CONTENTION_RETRY_RATE = 1"
+]
+
+[tool.coverage.run]
+# The following files are for development purposes and are not part of the coverage report
+omit = [
+    "src/python_src/graph_export.py",
+    "src/python_src/pull_api_documentation.py",
 ]

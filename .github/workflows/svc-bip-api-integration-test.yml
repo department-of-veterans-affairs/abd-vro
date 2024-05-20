@@ -8,7 +8,7 @@ on:
   workflow_call:
 
 env:
-  COMPOSE_PROFILES: 'bip'
+  COMPOSE_PROFILES: 'bip,platform'
   VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"
 
 jobs:
@@ -48,7 +48,7 @@ jobs:
           } >> "$GITHUB_ENV"
 
           export -p | sed 's/declare -x //'
-          ./gradlew :dockerComposeUp
+          COMPOSE_PROFILES="platform" ./gradlew :dockerComposeUp
           ./gradlew -p mocks docker
           ./gradlew -p mocks :dockerComposeUp
 
@@ -56,7 +56,7 @@ jobs:
         uses: ./.github/actions/check-disk-space
 
       - name: 'Wait for RabbitMQ to be ready'
-        uses: indiesdev/curl@v1.1
+        uses: department-of-veterans-affairs/curl-action@v1.0.0
         with:
           url: 'http://localhost:15672/api/vhosts'
           method: 'GET'

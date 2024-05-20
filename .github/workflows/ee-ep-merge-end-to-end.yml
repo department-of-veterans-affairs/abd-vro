@@ -8,7 +8,7 @@ on:
   workflow_call:
 
 env:
-  COMPOSE_PROFILES: 'bip,bgs'
+  COMPOSE_PROFILES: 'bip,bgs,platform'
   VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"
 
 jobs:
@@ -44,14 +44,15 @@ jobs:
 
           export -p | sed 's/declare -x //'
 
-          ./gradlew :dockerComposeUp
+          # Override env variable and only startup platform containers at first
+          COMPOSE_PROFILES="platform" ./gradlew :dockerComposeUp
 
       - name: 'Wait for containers to start'
         run: sleep 60s
         shell: bash
 
       - name: 'Wait for RabbitMQ to be ready'
-        uses: indiesdev/curl@v1.1
+        uses: department-of-veterans-affairs/curl-action@v1.0.0
         with:
           url: 'http://localhost:15672/api/vhosts'
           method: 'GET'
@@ -76,7 +77,7 @@ jobs:
 
           export -p | sed 's/declare -x //'
 
-          ./gradlew :app:dockerComposeUp
+          ./gradlew :dockerComposeUp
           ./gradlew -p mocks docker
           ./gradlew -p mocks :dockerComposeUp
 

@@ -8,7 +8,7 @@ on:
   workflow_call:
 
 env:
-  COMPOSE_PROFILES: 'kafka'
+  COMPOSE_PROFILES: 'kafka,platform'
   VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"
 jobs:
   integration-test:
@@ -42,19 +42,20 @@ jobs:
 
           export -p | sed 's/declare -x //'
 
-          ./gradlew :dockerComposeUp
+          # Override and only startup platform containers first
+          COMPOSE_PROFILES="platform" ./gradlew :dockerComposeUp
 
           ./gradlew -p mocks docker
           ./gradlew -p mocks :dockerComposeUp
 
           ./gradlew :domain-xample:dockerComposeUp
-          ./gradlew :app:dockerComposeUp
+          ./gradlew :dockerComposeUp
 
       - name: 'Check disk space (Post-Build)'
         uses: ./.github/actions/check-disk-space
 
       - name: 'Wait for RabbitMQ to be ready'
-        uses: indiesdev/curl@v1.1
+        uses: department-of-veterans-affairs/curl-action@v1.0.0
         with:
           url: 'http://localhost:15672/api/vhosts'
           method: 'GET'
@@ -103,8 +104,8 @@ jobs:
           responseCode: 200
           # Retry every 2 seconds
           interval: 2000
-          # Quit after 60 seconds
-          timeout: 60000
+          # Quit after 90 seconds
+          timeout: 90000
 
       - name: 'Create Kafka topic and send message'
         run: |
@@ -122,8 +123,8 @@ jobs:
         run: |
           source scripts/setenv.sh
 
-          # Retry to 5 times to allow time for message to travel from kafka to database
-          for i in {1..5}; do
+          # Retry to 10 times to allow time for message to travel from kafka to database
+          for i in {1..10}; do
             sleep 10
             echo "Attempt $i"
             # For debugging

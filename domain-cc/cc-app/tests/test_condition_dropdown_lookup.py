@@ -119,3 +119,17 @@ def test_new_dropdown_list(client: TestClient):
     assert response.status_code == 200
     assert response.json()["classification_code"] == 9007
     assert response.json()["classification_name"] == "Neurological other System"
+
+
+def test_whitespace_removal(client: TestClient):
+    json_post_dict = {
+        "diagnostic_code": 7,
+        "claim_id": 700,
+        "form526_submission_id": 777,
+        "claim_type": "new",
+        "contention_text": "pharyngeal cancer (throat cancer) ",
+    }
+    response = client.post("/classifier", json=json_post_dict)
+    assert response.status_code == 200
+    assert response.json()["classification_code"] == 1230
+    assert response.json()["classification_name"] == "Cancer - Respiratory"

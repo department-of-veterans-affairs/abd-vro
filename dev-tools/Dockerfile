@@ -2,10 +2,10 @@ FROM bitnami/minideb:bookworm
 
 # hadolint ignore=DL3018,DL3009
 RUN apt-get update && \
-    install_packages curl redis sudo && \
+    install_packages curl sudo && \
     install_packages postgresql-client
 
-RUN adduser --no-create-home --disabled-password tron
+RUN adduser --disabled-password tron
 
 USER tron
 

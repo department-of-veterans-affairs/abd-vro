@@ -19,6 +19,11 @@ DRUG_INDUCED_PULMONARY_PNEMONIA_CLASSIFICATION = {
     "classification_code": 9012,
     "classification_name": "Respiratory",
 }
+IMPAIRMENT_OF_FEMUR_CLASSIFICATION = {
+    "diagnostic_code": 5255,
+    "classification_code": 8996,
+    "classification_name": "Musculoskeletal - Hip",
+}
 
 
 @pytest.fixture
