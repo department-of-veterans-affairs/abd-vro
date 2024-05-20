@@ -23,7 +23,6 @@ public class BieMessagePayload {
   @Ignore private ContentionEvent eventType;
   @Ignore private Long notifiedAt;
 
-
   // Fields without the @TargetEvents annotation are included in all five Kafka topics
   private Long claimId;
   private Long contentionId;
