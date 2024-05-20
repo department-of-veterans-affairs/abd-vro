@@ -47,7 +47,7 @@ public class BieMessagePayload {
   })
   private String actorStation;
 
-@TargetEvents({
+  @TargetEvents({
     "BIA_SERVICES_BIE_CATALOG_CONTENTION_ASSOCIATED_TO_CLAIM_V02",
     "BIA_SERVICES_BIE_CATALOG_CONTENTION_COMPLETED_V02",
     "BIA_SERVICES_BIE_CATALOG_CONTENTION_CLASSIFIED_V02",
