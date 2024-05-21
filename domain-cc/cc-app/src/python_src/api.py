@@ -6,7 +6,15 @@ from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Request
 
-from .pydantic_models import Claim, ClaimLinkInfo, PredictedClassification
+from .pydantic_models import (
+    Claim,
+    ClaimLinkInfo,
+    ClassifiedContention,
+    ClassifierResponse,
+    Contention,
+    PredictedClassification,
+    VaGovClaim,
+)
 from .util.brd_classification_codes import get_classification_name
 from .util.logging_dropdown_selections import build_logging_table
 from .util.lookup_table import ConditionDropdownLookupTable, DiagnosticCodeLookupTable
@@ -123,8 +131,9 @@ def log_claim_stats(claim: Claim, classification: Optional[PredictedClassificati
     )
 
 
-@app.post("/classifier")
+@app.post("/classifier", deprecated=True)
 def get_classification(claim: Claim) -> Optional[PredictedClassification]:
+    """[DEPRECATED] Use /va-gov-claim-classifier instead"""
     log_as_json(
         {
             "claim_id": sanitize_log(claim.claim_id),
@@ -171,3 +180,53 @@ def link_vbms_claim_id(claim_link_info: ClaimLinkInfo):
     return {
         "success": True,
     }
+
+
+def call_logging_functions(contention: Contention):
+    """make necessary logging calls to preserve compatibility w/ existing LHDI datadog dashboards"""
+    pass
+
+
+def get_classification_code(contention: Contention) -> Optional[int]:
+    """check contention type and match contention to appropriate table's classification code (if available)"""
+    classification_code = None
+    if contention.contention_type == "claim_for_increase":
+        classification_code = dc_lookup_table.get(contention.diagnostic_code, None)
+
+    if contention.contention_text and not classification_code:
+        classification_code = dropdown_lookup_table.get(
+            contention.contention_text, None
+        )
+
+    return classification_code
+
+
+def classify_contention(contention: Contention) -> ClassifiedContention:
+    call_logging_functions(contention)
+    classification_code = get_classification_code(contention)
+    if classification_code:
+        classification_name = get_classification_name(classification_code)
+    else:
+        classification_name = None
+
+    return ClassifiedContention(
+        classification_code=classification_code,
+        classification_name=classification_name,
+        diagnostic_code=contention.diagnostic_code,
+        contention_text=contention.contention_type,
+    )
+
+
+@app.post("/va-gov-claim-classifier")
+def va_gov_claim_classifier(claim: VaGovClaim) -> ClassifierResponse:
+    classified_contentions = []
+    for contention in claim.contentions:
+        classified_contentions.append(classify_contention(contention))
+
+    response = ClassifierResponse(
+        contentions=classified_contentions,
+        claim_id=claim.claim_id,
+        form526_submission_id=claim.form526_submission_id,
+    )
+    log_as_json(response)  # move to decorator or middleware
+    return response

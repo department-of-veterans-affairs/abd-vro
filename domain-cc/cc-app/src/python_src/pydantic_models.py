@@ -55,7 +55,8 @@ class Contention(BaseModel):
 
         if contention_type == "claim_for_increase" and not diagnostic_code:
             raise HTTPException(
-                422, "diagnostic_code is required for contention_type claim_for_increase"
+                422,
+                "diagnostic_code is required for contention_type claim_for_increase",
             )
 
 
