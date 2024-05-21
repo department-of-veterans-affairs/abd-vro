@@ -63,7 +63,7 @@ class Contention(BaseModel):
 class VaGovClaim(BaseModel):
     claim_id: int
     form526_submission_id: int
-    contentions: conlist(Contention, min_items=1)
+    contentions: conlist(Contention, min_length=1)
 
 
 class ClassifiedContention(BaseModel):
@@ -74,7 +74,7 @@ class ClassifiedContention(BaseModel):
 
 
 class ClassifierResponse(BaseModel):
-    contentions: conlist(ClassifiedContention, min_items=1)
+    contentions: conlist(ClassifiedContention, min_length=1)
     claim_id: int
     form526_submission_id: int
     is_fully_classified: bool
