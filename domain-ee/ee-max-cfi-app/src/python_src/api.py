@@ -8,36 +8,36 @@ from util.lookup_table import MAX_RATINGS_BY_CODE, get_max_rating
 from util.sanitizer import sanitize
 
 app = FastAPI(
-    title="Max Ratings for CFI",
-    description="Maps a list of disabilities to their max rating.",
+    title='Max Ratings for CFI',
+    description='Maps a list of disabilities to their max rating.',
     contact={},
-    version="v0.1",
-    license={"name": "CCO 1.0", "url": "https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md"},
+    version='v0.1',
+    license={'name': 'CCO 1.0', 'url': 'https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md'},
     servers=[
         {
-            "url": "/cfi",
-            "description": "Max Ratings for CFI",
+            'url': '/cfi',
+            'description': 'Max Ratings for CFI',
         },
     ],
 )
 
 logging.basicConfig(
-    format="[%(asctime)s] %(levelname)-8s %(message)s",
+    format='[%(asctime)s] %(levelname)-8s %(message)s',
     level=logging.INFO,
-    datefmt="%Y-%m-%d %H:%M:%S",
+    datefmt='%Y-%m-%d %H:%M:%S',
     stream=sys.stdout,
 )
 
 
-@app.get("/health")
+@app.get('/health')
 def get_health_status():
     if not MAX_RATINGS_BY_CODE:
-        raise HTTPException(status_code=500, detail="Max Rating by Diagnostic Code Lookup table is empty.")
+        raise HTTPException(status_code=500, detail='Max Rating by Diagnostic Code Lookup table is empty.')
 
-    return {"status": "ok"}
+    return {'status': 'ok'}
 
 
-@app.post("/max-ratings")
+@app.post('/max-ratings')
 def get_max_ratings(
     claim_for_increase: MaxRatingsForClaimForIncreaseRequest,
 ) -> MaxRatingsForClaimForIncreaseResponse:
@@ -47,14 +47,14 @@ def get_max_ratings(
         max_rating = get_max_rating(dc)
         if max_rating is not None:
             rating = {
-                "diagnostic_code": sanitize(dc),
-                "max_rating": max_rating,
+                'diagnostic_code': sanitize(dc),
+                'max_rating': max_rating,
             }
             ratings.append(rating)
 
     response = MaxRatingsForClaimForIncreaseResponse(ratings=ratings)
 
-    logging.info(f"event=getMaxRating ratings={ratings}")
+    logging.info(f'event=getMaxRating ratings={ratings}')
     return response
 
 
@@ -63,8 +63,8 @@ def get_max_ratings(
 # TODO should be replaced with map of valid diagnostic codes and checked to see if the dc is in map.
 def validate_diagnostic_code(dc: int):
     if dc < 5000 or dc > 10000:
-        raise HTTPException(status_code=400, detail=f"The diagnostic code received is invalid: dc={dc}")
+        raise HTTPException(status_code=400, detail=f'The diagnostic code received is invalid: dc={dc}')
 
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="localhost", port=8130)
+if __name__ == '__main__':
+    uvicorn.run(app, host='localhost', port=8130)

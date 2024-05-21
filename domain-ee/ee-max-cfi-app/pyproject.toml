@@ -11,3 +11,15 @@ testpaths = [
 omit = [
     "src/python_src/pull_api_documentation.py",
 ]
+
+[tool.ruff]
+line-length = 160
+
+[tool.ruff.lint]
+# Add the `line-too-long` rule to the enforced rule set.
+extend-select = ["E501"]
+
+[tool.ruff.format]
+quote-style = "single"
+# Use `\n` line endings for all files
+line-ending = "lf"
