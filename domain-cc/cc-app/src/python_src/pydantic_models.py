@@ -66,7 +66,8 @@ class VaGovClaim(BaseModel):
 
 
 class ClassifiedContention(BaseModel):
-    classification: Optional[PredictedClassification]
+    classification_code: Optional[int]
+    classification_name: Optional[str]
     diagnostic_code: Optional[int]  # only required for contention_type: "claim_for_increase"
     contention_type: str  # "disabilityActionType" in the VA.gov API
 
