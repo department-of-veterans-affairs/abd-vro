@@ -10,7 +10,6 @@ RESUME_IN_PROGRESS_JOBS_RETRY_RATE = 5
 
 
 class JobRunner:
-
     async def start(self):
         """
         Resume any in-progress jobs that are in the database upon application startup, and after JOB_STORE and HOPPY
@@ -21,7 +20,7 @@ class JobRunner:
             await asyncio.sleep(RESUME_IN_PROGRESS_JOBS_RETRY_RATE)
 
         jobs_to_resume = JOB_STORE.get_all_incomplete_jobs()
-        logging.info(f"event=resumeJobsInProgress status=started total={len(jobs_to_resume)}")
+        logging.info(f'event=resumeJobsInProgress status=started total={len(jobs_to_resume)}')
         for in_progress_job in jobs_to_resume:
             asyncio.get_event_loop().run_in_executor(None, self.resume_job, in_progress_job)
 
@@ -30,7 +29,7 @@ class JobRunner:
         try:
             machine.start()
         except Exception as e:
-            logging.error(f"event=jobInterrupted trigger={machine.main_event} job_id={machine.job.job_id} state={machine.job.state} error={e}")
+            logging.error(f'event=jobInterrupted trigger={machine.main_event} job_id={machine.job.job_id} state={machine.job.state} error={e}')
 
     def start_job(self, merge_job: MergeJob):
         machine = EpMergeMachine(merge_job)

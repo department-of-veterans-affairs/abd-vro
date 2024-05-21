@@ -11,7 +11,6 @@ class MqEndpointConsumerException(Exception):
 
 
 class MqEndpoint:
-
     def __init__(self, name, exchange, req_queue, response_queue):
         self.name = name
         self.index = 0
@@ -38,7 +37,7 @@ class MqEndpoint:
                 attempt += 1
             await asyncio.sleep(1)
         if not cons_connection.is_open or not pub_connection.is_open:
-            raise Exception(f"Could not connect to MqEndpoint={self.name}")
+            raise Exception(f'Could not connect to MqEndpoint={self.name}')
 
     def stop(self):
         self.consumer.stop()
@@ -50,14 +49,14 @@ class MqEndpoint:
         self.consumer.acknowledge_message(properties, delivery_tag)
 
         if not self.auto_response_files:
-            raise MqEndpointConsumerException(f"{self.name}: Auto-responses is empty")
+            raise MqEndpointConsumerException(f'{self.name}: Auto-responses is empty')
 
         if self.index == len(self.auto_response_files):
-            raise MqEndpointConsumerException(f"{self.name}: There are not enough auto-responses defined")
+            raise MqEndpointConsumerException(f'{self.name}: There are not enough auto-responses defined')
 
         with open(self.auto_response_files[self.index]) as f:
             body = json.load(f)
-            self.publisher.publish_message(body, BasicProperties(app_id="Integration Test", content_type="application/json", correlation_id=correlation_id))
+            self.publisher.publish_message(body, BasicProperties(app_id='Integration Test', content_type='application/json', correlation_id=correlation_id))
         self.index += 1
 
     def set_responses(self, auto_response_files=None):

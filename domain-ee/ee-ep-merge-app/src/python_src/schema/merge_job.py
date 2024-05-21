@@ -41,7 +41,6 @@ class JobState(StrEnum):
 
 
 class MergeJob(BaseModel):
-
     job_id: UUID
     pending_claim_id: conint(strict=True)
     ep400_claim_id: conint(strict=True)

@@ -5,7 +5,6 @@ from schema import merge_job as schema
 
 
 class JobStore:
-
     def __init__(self, db: Database):
         self.db = db
 

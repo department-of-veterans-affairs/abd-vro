@@ -12,42 +12,42 @@ def pytest_collection_modifyitems(items):
     1. All test from modules not specified in the `module_order` below
     2. Test from each module in module_order (in order)
     """
-    module_order = {"integration.test_get_endpoints": 1, "integration.test_merge_request": 2}
+    module_order = {'integration.test_get_endpoints': 1, 'integration.test_merge_request': 2}
     item_order = {item: module_order.get(item.module.__name__, 0) for item in items}
     items.sort(key=item_order.get)
 
 
-@pytest.fixture(autouse=True, scope="session")
+@pytest.fixture(autouse=True, scope='session')
 def get_claim_endpoint():
     return create_mq_endpoint(ClientName.GET_CLAIM)
 
 
-@pytest.fixture(autouse=True, scope="session")
+@pytest.fixture(autouse=True, scope='session')
 def get_claim_contentions_endpoint():
     return create_mq_endpoint(ClientName.GET_CLAIM_CONTENTIONS)
 
 
-@pytest.fixture(autouse=True, scope="session")
+@pytest.fixture(autouse=True, scope='session')
 def put_tsoj_endpoint():
     return create_mq_endpoint(ClientName.PUT_TSOJ)
 
 
-@pytest.fixture(autouse=True, scope="session")
+@pytest.fixture(autouse=True, scope='session')
 def create_claim_contentions_endpoint():
     return create_mq_endpoint(ClientName.CREATE_CLAIM_CONTENTIONS)
 
 
-@pytest.fixture(autouse=True, scope="session")
+@pytest.fixture(autouse=True, scope='session')
 def update_claim_contentions_endpoint():
     return create_mq_endpoint(ClientName.UPDATE_CLAIM_CONTENTIONS)
 
 
-@pytest.fixture(autouse=True, scope="session")
+@pytest.fixture(autouse=True, scope='session')
 def cancel_claim_endpoint():
     return create_mq_endpoint(ClientName.CANCEL_CLAIM)
 
 
-@pytest.fixture(autouse=True, scope="session")
+@pytest.fixture(autouse=True, scope='session')
 def add_claim_note_endpoint():
     return create_mq_endpoint(ClientName.BGS_ADD_CLAIM_NOTE)
 
@@ -56,7 +56,7 @@ def create_mq_endpoint(name):
     return MqEndpoint(name, EXCHANGES[name], QUEUES[name], REPLY_QUEUES[name])
 
 
-@pytest_asyncio.fixture(autouse=True, scope="session")
+@pytest_asyncio.fixture(autouse=True, scope='session')
 async def endpoint_lifecycle(
     get_claim_endpoint: MqEndpoint,
     get_claim_contentions_endpoint: MqEndpoint,

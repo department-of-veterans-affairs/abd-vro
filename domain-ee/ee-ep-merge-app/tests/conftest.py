@@ -1,4 +1,4 @@
-""" Pytest configuration. This file is automatically loaded by pytest before any tests. """
+"""Pytest configuration. This file is automatically loaded by pytest before any tests."""
 
 import uuid
 from unittest.mock import MagicMock
@@ -22,4 +22,4 @@ def db():
 
 @pytest.fixture
 def merge_job():
-    return schema.MergeJob(job_id=uuid.uuid4(), pending_claim_id=1, ep400_claim_id=2, state="PENDING")
+    return schema.MergeJob(job_id=uuid.uuid4(), pending_claim_id=1, ep400_claim_id=2, state='PENDING')
