@@ -3,7 +3,7 @@ import sys
 
 import uvicorn
 from fastapi import FastAPI, HTTPException
-from pydantic_models import MaxRatingsForClaimForIncreaseRequest, MaxRatingsForClaimForIncreaseResponse
+from pydantic_models import MaxRatingsForClaimForIncreaseRequest, MaxRatingsForClaimForIncreaseResponse, Rating
 from util.lookup_table import MAX_RATINGS_BY_CODE, get_max_rating
 from util.sanitizer import sanitize
 
@@ -30,7 +30,7 @@ logging.basicConfig(
 
 
 @app.get('/health')
-def get_health_status():
+def get_health_status() -> dict[str, str]:
     if not MAX_RATINGS_BY_CODE:
         raise HTTPException(status_code=500, detail='Max Rating by Diagnostic Code Lookup table is empty.')
 
@@ -46,10 +46,7 @@ def get_max_ratings(
         validate_diagnostic_code(dc)
         max_rating = get_max_rating(dc)
         if max_rating is not None:
-            rating = {
-                'diagnostic_code': sanitize(dc),
-                'max_rating': max_rating,
-            }
+            rating = Rating(diagnostic_code=int(sanitize(dc)), max_rating=max_rating)
             ratings.append(rating)
 
     response = MaxRatingsForClaimForIncreaseResponse(ratings=ratings)
@@ -61,7 +58,7 @@ def get_max_ratings(
 # Rough boundaries of diagnostic codes as shown by document at
 # (https://www.ecfr.gov/current/title-38/part-4/appendix-Appendix B to Part 4)
 # TODO should be replaced with map of valid diagnostic codes and checked to see if the dc is in map.
-def validate_diagnostic_code(dc: int):
+def validate_diagnostic_code(dc: int) -> None:
     if dc < 5000 or dc > 10000:
         raise HTTPException(status_code=400, detail=f'The diagnostic code received is invalid: dc={dc}')
 

@@ -3,10 +3,16 @@ plugins {
   id 'local.python.container-service-conventions'
 }
 
+tasks.register('mypy', PythonTask) {
+  module = 'mypy'
+  command = 'src'
+  dependsOn 'requirements'
+}
+
 tasks.register('ruff', PythonTask) {
   module = 'ruff'
   command = 'check'
-  dependsOn 'requirements'
+  dependsOn 'mypy'
 }
 
 // Override the pytest task in local.python.app-conventions to remove dependency on pyflake8
