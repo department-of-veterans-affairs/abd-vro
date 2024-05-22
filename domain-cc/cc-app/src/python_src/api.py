@@ -227,6 +227,9 @@ def va_gov_claim_classifier(claim: VaGovClaim) -> ClassifierResponse:
         contentions=classified_contentions,
         claim_id=claim.claim_id,
         form526_submission_id=claim.form526_submission_id,
+        is_fully_classified=False,
+        num_processed_contentions=len(classified_contentions),
+        num_classified_contentions=0,
     )
-    log_as_json(response)  # move to decorator or middleware
+    log_as_json(response.dict())  # move to decorator or middleware
     return response
