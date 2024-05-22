@@ -213,7 +213,7 @@ def classify_contention(contention: Contention) -> ClassifiedContention:
         classification_code=classification_code,
         classification_name=classification_name,
         diagnostic_code=contention.diagnostic_code,
-        contention_text=contention.contention_type,
+        contention_type=contention.contention_type,
     )
 
 
