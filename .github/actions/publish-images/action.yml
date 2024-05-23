@@ -55,31 +55,35 @@ runs:
         echo -n "[" >> "$GITHUB_OUTPUT"
         source scripts/image_vars.src
         for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
-          # This IMG_TAG value will cause a new image to be publish (and scanned by SecRel)
-          IMG_TAG="${{ inputs.image_tag }}"
+          # Postgres is only used locally so doesn't need to be published
+          if [ "${{PREFIX}}" != 'postgres' ]; then
 
-          IMG_NAME="$(getVarValue "${PREFIX}" _IMG)"
-          echo "::group::Push image $IMG_NAME $IMG_TAG"
-          GHCR_PATH="ghcr.io/${{ github.repository }}/${IMG_NAME}"
-          if [ "$(imageTagExists "$IMG_NAME" "$IMG_TAG")" == "200" ]; then
-            echo "Image already exists: $IMG_NAME:$IMG_TAG -- not overwriting"
-            echo "* ($IMG_NAME:$IMG_TAG -- already exists, not overwriting)" >> "$GITHUB_STEP_SUMMARY"
-          else
-            GRADLE_IMG_NAME=$(getVarValue "${PREFIX}" _GRADLE_IMG)
+            # This IMG_TAG value will cause a new image to be publish (and scanned by SecRel)
+            IMG_TAG="${{ inputs.image_tag }}"
 
-            echo "Tagging '$GRADLE_IMG_NAME' as '$IMG_NAME:$IMG_TAG' and '$IMG_NAME:latest'"
-            docker tag "$GRADLE_IMG_NAME" "${GHCR_PATH}:$IMG_TAG"
-            docker push "${GHCR_PATH}:$IMG_TAG"
+            IMG_NAME="$(getVarValue "${PREFIX}" _IMG)"
+            echo "::group::Push image $IMG_NAME $IMG_TAG"
+            GHCR_PATH="ghcr.io/${{ github.repository }}/${IMG_NAME}"
+            if [ "$(imageTagExists "$IMG_NAME" "$IMG_TAG")" == "200" ]; then
+              echo "Image already exists: $IMG_NAME:$IMG_TAG -- not overwriting"
+              echo "* ($IMG_NAME:$IMG_TAG -- already exists, not overwriting)" >> "$GITHUB_STEP_SUMMARY"
+            else
+              GRADLE_IMG_NAME=$(getVarValue "${PREFIX}" _GRADLE_IMG)
 
-            docker tag "$GRADLE_IMG_NAME" "${GHCR_PATH}:latest"
-            docker push "${GHCR_PATH}:latest"
+              echo "Tagging '$GRADLE_IMG_NAME' as '$IMG_NAME:$IMG_TAG' and '$IMG_NAME:latest'"
+              docker tag "$GRADLE_IMG_NAME" "${GHCR_PATH}:$IMG_TAG"
+              docker push "${GHCR_PATH}:$IMG_TAG"
 
-            echo "* $IMG_NAME:$IMG_TAG" >> "$GITHUB_STEP_SUMMARY"
-            echo -n "\"${GHCR_PATH}:$IMG_TAG\"" >> "$GITHUB_OUTPUT"
+              docker tag "$GRADLE_IMG_NAME" "${GHCR_PATH}:latest"
+              docker push "${GHCR_PATH}:latest"
 
-            # For all but the last image include a comma
-            if [ ${PREFIX} != ${VAR_PREFIXES_ARR[-1]} ]; then
-              echo -n "," >> "$GITHUB_OUTPUT"
+              echo "* $IMG_NAME:$IMG_TAG" >> "$GITHUB_STEP_SUMMARY"
+              echo -n "\"${GHCR_PATH}:$IMG_TAG\"" >> "$GITHUB_OUTPUT"
+
+              # For all but the last image include a comma
+              if [ ${PREFIX} != ${VAR_PREFIXES_ARR[-1]} ]; then
+                echo -n "," >> "$GITHUB_OUTPUT"
+              fi
             fi
           fi
           echo "::endgroup::"

@@ -189,19 +189,22 @@ jobs:
             IMAGE_LIST="["
 
             if [ "${{inputs.image_name}}" == 'all' ]; then
-            for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
-            IMG_NAME="$(getVarValue "${PREFIX}" _IMG)"
-            GHCR_PATH="ghcr.io/${{github.repository}}/${IMG_NAME}"
-            IMAGE_LIST+="\"${GHCR_PATH}:latest\","
-            done
+              for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
+                # postgres container is only used locally
+                if [ "${{PREFIX}}" != 'postgres' ]; then
+                  IMG_NAME="$(getVarValue "${PREFIX}" _IMG)"
+                  GHCR_PATH="ghcr.io/${{github.repository}}/${IMG_NAME}"
+                  IMAGE_LIST+="\"${GHCR_PATH}:latest\","
+                fi
+              done
 
-            # Remove the trailing comma
-            IMAGE_LIST=${IMAGE_LIST%?}
+              # Remove the trailing comma
+              IMAGE_LIST=${IMAGE_LIST%?}
             else
-            IMG_TAG="${{inputs.image_tag}}"
-            IMG_NAME="$(getVarValue "$(bashVarPrefix "${{inputs.image_name}}")" _IMG)"
-            GHCR_PATH="ghcr.io/${{github.repository}}/${IMG_NAME}"
-            IMAGE_LIST+="\"${GHCR_PATH}:${IMG_TAG}\""
+              IMG_TAG="${{inputs.image_tag}}"
+              IMG_NAME="$(getVarValue "$(bashVarPrefix "${{inputs.image_name}}")" _IMG)"
+              GHCR_PATH="ghcr.io/${{github.repository}}/${IMG_NAME}"
+              IMAGE_LIST+="\"${GHCR_PATH}:${IMG_TAG}\""
             fi
 
             IMAGE_LIST+="]"
