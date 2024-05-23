@@ -107,6 +107,7 @@ def log_contention_stats(
     contention: Contention,
     classified_contention: ClassifiedContention,
 ):
+    """make necessary logging calls to preserve compatibility w/ existing LHDI datadog dashboards"""
     # if classification:
     #     classification_code = classification.classification_code
     #     classification_name = classification.classification_name
@@ -267,11 +268,6 @@ def link_vbms_claim_id(claim_link_info: ClaimLinkInfo):
     return {
         "success": True,
     }
-
-
-def call_logging_functions(contention: Contention):
-    """make necessary logging calls to preserve compatibility w/ existing LHDI datadog dashboards"""
-    pass
 
 
 def get_classification_code(contention: Contention) -> Optional[int]:
