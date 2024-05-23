@@ -191,7 +191,7 @@ jobs:
             if [ "${{inputs.image_name}}" == 'all' ]; then
               for PREFIX in "${VAR_PREFIXES_ARR[@]}"; do
                 # postgres container is only used locally
-                if [ "${{PREFIX}}" != 'postgres' ]; then
+                if [ "${PREFIX}" != 'postgres' ]; then
                   IMG_NAME="$(getVarValue "${PREFIX}" _IMG)"
                   GHCR_PATH="ghcr.io/${{github.repository}}/${IMG_NAME}"
                   IMAGE_LIST+="\"${GHCR_PATH}:latest\","
