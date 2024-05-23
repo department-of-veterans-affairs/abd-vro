@@ -2,6 +2,7 @@ import json
 import logging
 import sys
 import time
+from functools import wraps
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Request
@@ -101,15 +102,21 @@ def log_as_json(log: dict):
     logging.info(json.dumps(log))
 
 
-def log_claim_stats(claim: Claim, classification: Optional[PredictedClassification]):
-    if classification:
-        classification_code = classification.classification_code
-        classification_name = classification.classification_name
-    else:
-        classification_code = None
-        classification_name = None
+def log_contention_stats(
+    # claim: VaGovClaim,
+    contention: Contention,
+    classified_contention: ClassifiedContention,
+):
+    # if classification:
+    #     classification_code = classification.classification_code
+    #     classification_name = classification.classification_name
+    # else:
+    #     classification_code = None
+    #     classification_name = None
+    classification_code = classified_contention.classification_code or None
+    classification_name = classified_contention.classification_name or None
 
-    contention_text = claim.contention_text or ""
+    contention_text = contention.contention_text or ""
     is_in_dropdown = contention_text.strip().lower() in dropdown_values
     is_mapped_text = dropdown_lookup_table.get(contention_text, None) is not None
     log_contention_text = (
@@ -118,17 +125,97 @@ def log_claim_stats(claim: Claim, classification: Optional[PredictedClassificati
 
     log_as_json(
         {
-            "claim_id": sanitize_log(claim.claim_id),
-            "claim_type": sanitize_log(claim.claim_type),
+            # "claim_id": sanitize_log(claim.claim_id),
+            "claim_type": sanitize_log(contention.contention_type),
             "classification_code": classification_code,
             "classification_name": classification_name,
             "contention_text": log_contention_text,
-            "diagnostic_code": sanitize_log(claim.diagnostic_code),
-            "form526_submission_id": sanitize_log(claim.form526_submission_id),
+            "diagnostic_code": sanitize_log(contention.diagnostic_code),
+            # "form526_submission_id": sanitize_log(claim.form526_submission_id),
             "is_in_dropdown": is_in_dropdown,
             "is_lookup_table_match": classification_code is not None,
         }
     )
+
+
+def log_claim_stats(claim: VaGovClaim, response: ClassifierResponse):
+    log_as_json(
+        {
+            "claim_id": sanitize_log(claim.claim_id),
+            "form526_submission_id": sanitize_log(claim.form526_submission_id),
+            "is_fully_classified": response.is_fully_classified,
+            "percent_clasified": response.num_classified_contentions
+            / response.num_processed_contentions,
+            "num_processed_contentions": response.num_processed_contentions,
+            "num_classified_contentions": response.num_classified_contentions,
+        }
+    )
+
+
+def log_claim_stats_decorator(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        # Call the original function
+        result = func(*args, **kwargs)
+        # Call log_claim_stats with the claim and response
+        if kwargs.get("claim"):
+            claim = kwargs["claim"]
+            log_claim_stats(claim, result)
+
+        return result
+
+    return wrapper
+
+
+def log_contention_stats_decorator(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        # Call the original function
+        result = func(*args, **kwargs)
+        # Call log_claim_stats with the claim and response
+        if kwargs.get("contention"):
+            contention = kwargs["contention"]
+            log_contention_stats(contention, result)
+
+        return result
+
+    return wrapper
+
+
+# def log_contention_stats_decorator(func):
+#     @wraps(func)
+#     def wrapper(*args, **kwargs):
+#         result = func(*args, **kwargs)
+
+
+# def log_claim_stats(claim: Claim, classification: Optional[PredictedClassification]):
+#     if classification:
+#         classification_code = classification.classification_code
+#         classification_name = classification.classification_name
+#     else:
+#         classification_code = None
+#         classification_name = None
+
+#     contention_text = claim.contention_text or ""
+#     is_in_dropdown = contention_text.strip().lower() in dropdown_values
+#     is_mapped_text = dropdown_lookup_table.get(contention_text, None) is not None
+#     log_contention_text = (
+#         contention_text if is_mapped_text else "unmapped contention text"
+#     )
+
+#     log_as_json(
+#         {
+#             "claim_id": sanitize_log(claim.claim_id),
+#             "claim_type": sanitize_log(claim.claim_type),
+#             "classification_code": classification_code,
+#             "classification_name": classification_name,
+#             "contention_text": log_contention_text,
+#             "diagnostic_code": sanitize_log(claim.diagnostic_code),
+#             "form526_submission_id": sanitize_log(claim.form526_submission_id),
+#             "is_in_dropdown": is_in_dropdown,
+#             "is_lookup_table_match": classification_code is not None,
+#         }
+#     )
 
 
 @app.post("/classifier", deprecated=True)
@@ -201,35 +288,44 @@ def get_classification_code(contention: Contention) -> Optional[int]:
     return classification_code
 
 
+@log_contention_stats_decorator
 def classify_contention(contention: Contention) -> ClassifiedContention:
-    call_logging_functions(contention)
     classification_code = get_classification_code(contention)
     if classification_code:
         classification_name = get_classification_name(classification_code)
     else:
         classification_name = None
 
-    return ClassifiedContention(
+    response = ClassifiedContention(
         classification_code=classification_code,
         classification_name=classification_name,
         diagnostic_code=contention.diagnostic_code,
         contention_type=contention.contention_type,
     )
+    log_contention_stats(contention, response)
+    return response
 
 
 @app.post("/va-gov-claim-classifier")
+@log_claim_stats_decorator
 def va_gov_claim_classifier(claim: VaGovClaim) -> ClassifierResponse:
     classified_contentions = []
     for contention in claim.contentions:
-        classified_contentions.append(classify_contention(contention))
+        classification = classify_contention(contention)
+        classified_contentions.append(classification)
+        # log_contention_stats(claim, contention, classification)
+        # log_contention_stats(contention, classification)
+
+    num_classified = len([c for c in classified_contentions if c.classification_code])
 
     response = ClassifierResponse(
         contentions=classified_contentions,
         claim_id=claim.claim_id,
         form526_submission_id=claim.form526_submission_id,
-        is_fully_classified=False,
+        is_fully_classified=num_classified == len(classified_contentions),
         num_processed_contentions=len(classified_contentions),
-        num_classified_contentions=0,
+        num_classified_contentions=num_classified,
     )
-    log_as_json(response.dict())  # move to decorator or middleware
+    # log_as_json(response.dict())  # move to decorator or middleware
+    # log_claim_stats(claim, response)
     return response
