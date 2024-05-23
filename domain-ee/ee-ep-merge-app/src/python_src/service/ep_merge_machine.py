@@ -2,13 +2,13 @@ import asyncio
 import logging
 import os
 from enum import Enum
-from typing import Type, Callable
+from typing import Callable, Type
 
+from config import EP_MERGE_SPECIAL_ISSUE_CODE
 from fastapi.encoders import jsonable_encoder
 from hoppy.async_hoppy_client import AsyncHoppyClient
 from hoppy.exception import ResponseException
 from pydantic import ValidationError
-from config import EP_MERGE_SPECIAL_ISSUE_CODE
 from schema import (
     add_claim_note,
     cancel_claim,
@@ -17,8 +17,8 @@ from schema import (
     get_contentions,
     update_contentions,
 )
-from schema.claim import ClaimDetail
 from schema import update_temp_station_of_jurisdiction as tsoj
+from schema.claim import ClaimDetail
 from schema.merge_job import JobState, MergeJob
 from schema.request import GeneralRequest
 from schema.response import GeneralResponse

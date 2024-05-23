@@ -2,6 +2,7 @@ import asyncio
 
 import pytest
 import pytest_asyncio
+
 from integration.mq_endpoint import MqEndpoint
 from src.python_src.api import on_shut_down, start_hoppy
 from src.python_src.config import EXCHANGES, QUEUES, REPLY_QUEUES, ClientName

@@ -4,7 +4,7 @@ from typing import Any
 from uuid import UUID
 
 import model.merge_job
-from pydantic import BaseModel, ConfigDict, conint, Field
+from pydantic import BaseModel, ConfigDict, Field, conint
 from util.custom_enum import StrEnum
 
 

@@ -2,6 +2,7 @@ import asyncio
 
 import pytest
 from httpx import AsyncClient
+
 from src.python_src.api import app
 from src.python_src.schema.merge_job import JobState
 from src.python_src.service.job_store import JOB_STORE

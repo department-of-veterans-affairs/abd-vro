@@ -5,6 +5,7 @@ from unittest.mock import MagicMock
 
 import pytest
 from fastapi.testclient import TestClient
+
 from src.python_src.api import app
 from src.python_src.db.database import Database
 from src.python_src.schema import merge_job as schema

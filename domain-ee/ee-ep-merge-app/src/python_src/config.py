@@ -2,7 +2,6 @@ import os
 from enum import Enum
 from urllib.parse import quote, urlparse
 
-
 config = {
     'app_id': os.environ.get('APP_ID') or 'EP_MERGE',
     'request_timeout': int(os.getenv('REQUEST_TIMEOUT') or 30),

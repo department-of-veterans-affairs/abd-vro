@@ -4,7 +4,7 @@ import uuid
 from unittest.mock import ANY, AsyncMock, call
 
 import pytest
-from src.python_src.config import EP_MERGE_SPECIAL_ISSUE_CODE
+from config import EP_MERGE_SPECIAL_ISSUE_CODE
 from schema import (
     add_claim_note,
     cancel_claim,

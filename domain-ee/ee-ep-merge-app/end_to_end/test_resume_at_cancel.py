@@ -3,6 +3,7 @@ from datetime import datetime
 from uuid import uuid4
 
 import pytest
+
 from src.python_src.schema.merge_job import JobState, MergeJob
 from src.python_src.service.job_runner import JOB_RUNNER
 from src.python_src.service.job_store import JOB_STORE

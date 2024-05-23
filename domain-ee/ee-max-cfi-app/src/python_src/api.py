@@ -3,7 +3,10 @@ import sys
 
 import uvicorn
 from fastapi import FastAPI, HTTPException
-from pydantic_models import MaxRatingsForClaimForIncreaseRequest, MaxRatingsForClaimForIncreaseResponse
+from pydantic_models import (
+    MaxRatingsForClaimForIncreaseRequest,
+    MaxRatingsForClaimForIncreaseResponse,
+)
 from util.lookup_table import MAX_RATINGS_BY_CODE, get_max_rating
 from util.sanitizer import sanitize
 

@@ -1,5 +1,6 @@
 import pytest
 from httpx import AsyncClient
+
 from integration.mq_endpoint import MqEndpoint
 from src.python_src.api import app
 from src.python_src.schema.merge_job import JobState
