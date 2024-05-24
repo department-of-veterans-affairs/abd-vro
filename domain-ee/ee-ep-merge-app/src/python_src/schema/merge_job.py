@@ -4,7 +4,7 @@ from typing import Any
 from uuid import UUID
 
 import model.merge_job
-from pydantic import BaseModel, ConfigDict, conint, Field
+from pydantic import BaseModel, ConfigDict, Field, conint
 from util.custom_enum import StrEnum
 
 
@@ -41,7 +41,6 @@ class JobState(StrEnum):
 
 
 class MergeJob(BaseModel):
-
     job_id: UUID
     pending_claim_id: conint(strict=True)
     ep400_claim_id: conint(strict=True)

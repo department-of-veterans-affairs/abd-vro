@@ -6,8 +6,8 @@ from sqlalchemy.ext.mutable import MutableDict
 
 
 class MergeJob(Base):
-    __tablename__ = "merge_jobs"
-    __table_args__ = {"schema": POSTGRES_SCHEMA}
+    __tablename__ = 'merge_jobs'
+    __table_args__ = {'schema': POSTGRES_SCHEMA}
 
     job_id = Column(UUID(as_uuid=True), primary_key=True, index=True)
     pending_claim_id = Column(Integer, index=True)

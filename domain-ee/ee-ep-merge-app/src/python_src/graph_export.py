@@ -9,10 +9,9 @@ SUCCESS = '#0ac28a'
 
 
 class DotGraphMachine:
-
-    font_name = "Arial"
-    state_font_size = "14pt"
-    transition_font_size = "12pt"
+    font_name = 'Arial'
+    state_font_size = '14pt'
+    transition_font_size = '12pt'
 
     def __init__(self, machine):
         self.machine = machine
@@ -20,32 +19,32 @@ class DotGraphMachine:
     def _get_graph(self):
         machine = self.machine
         return pydot.Dot(
-            "list",
-            graph_type="digraph",
-            label=f"{machine.name} {machine.main_event}",
+            'list',
+            graph_type='digraph',
+            label=f'{machine.name} {machine.main_event}',
             fontname=self.font_name,
             fontsize=self.state_font_size,
-            rankdir="TB",
+            rankdir='TB',
         )
 
     def _initial_node(self):
         node = pydot.Node(
-            "i",
-            shape="circle",
-            style="filled",
-            fontsize="1pt",
-            fixedsize="true",
+            'i',
+            shape='circle',
+            style='filled',
+            fontsize='1pt',
+            fixedsize='true',
             width=0.2,
             height=0.2,
         )
-        node.set_fillcolor("black")
+        node.set_fillcolor('black')
         return node
 
     def _initial_edge(self):
         return pydot.Edge(
-            "i",
+            'i',
             self.machine.initial_state.id,
-            label="",
+            label='',
             color=SUCCESS,
             fontname=self.font_name,
             fontsize=self.transition_font_size,
@@ -59,13 +58,13 @@ class DotGraphMachine:
 
         node = pydot.Node(
             state.id,
-            label=f"{state.name}",
-            shape="rectangle",
-            style="rounded, filled",
+            label=f'{state.name}',
+            shape='rectangle',
+            style='rounded, filled',
             fontname=self.font_name,
             fontsize=self.state_font_size,
             peripheries=2 if state.final else 1,
-            fillcolor="white",
+            fillcolor='white',
             color=color,
         )
 
@@ -127,7 +126,7 @@ def generate_graph(main_event):
     dot.write_png(f"EP_{main_event.replace('processing_from_running_','')}.png")
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     events = [
         'process',
         'resume_processing_from_running_cancel_ep400_claim',

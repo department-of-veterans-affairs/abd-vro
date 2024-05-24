@@ -9,7 +9,6 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 class Database:
-
     def with_connection(func):
         def wrapper(self, *args, **kwargs):
             with SessionLocal() as db:
