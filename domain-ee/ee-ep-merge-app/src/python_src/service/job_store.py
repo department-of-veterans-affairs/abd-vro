@@ -1,3 +1,8 @@
+# mypy: ignore-errors
+# TODO: refactor to add type hints
+
+from uuid import UUID
+
 from db.database import Database, database
 from fastapi.encoders import jsonable_encoder
 from model.merge_job import MergeJob
@@ -23,14 +28,14 @@ class JobStore:
     def get_merge_jobs_in_progress(self) -> list[MergeJob]:
         return self.db.query_all(MergeJob, MergeJob.state.in_((schema.JobState.incomplete_states())))
 
-    def get_merge_job(self, job_id) -> MergeJob:
+    def get_merge_job(self, job_id: UUID) -> MergeJob:
         return self.db.query_first(MergeJob, MergeJob.job_id == job_id)
 
-    def submit_merge_job(self, merge_job: schema.MergeJob):
+    def submit_merge_job(self, merge_job: schema.MergeJob) -> None:
         job = MergeJob(**jsonable_encoder(dict(merge_job)))
         self.db.add(job)
 
-    def update_merge_job(self, merge_job: schema.MergeJob):
+    def update_merge_job(self, merge_job: schema.MergeJob) -> None:
         self.db.update(merge_job)
 
 

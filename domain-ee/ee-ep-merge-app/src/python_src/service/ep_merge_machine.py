@@ -2,7 +2,8 @@ import asyncio
 import logging
 import os
 from enum import Enum
-from typing import Callable, Type
+from typing import Any, Callable, Type
+from uuid import UUID
 
 from config import EP_MERGE_SPECIAL_ISSUE_CODE
 from fastapi.encoders import jsonable_encoder
@@ -19,6 +20,7 @@ from schema import (
 )
 from schema import update_temp_station_of_jurisdiction as tsoj
 from schema.claim import ClaimDetail
+from schema.contention import ContentionSummary
 from schema.merge_job import JobState, MergeJob
 from schema.request import GeneralRequest
 from schema.response import GeneralResponse
@@ -53,11 +55,11 @@ EP400_CONTENTION_RETRIES = int(os.getenv('EP400_CONTENTION_RETRIES') or 30)
 EP400_CONTENTION_RETRY_WAIT_TIME = int(os.getenv('EP400_CONTENTION_RETRY_WAIT_TIME') or 2)
 
 
-def ep400_has_no_contentions(response: get_contentions.Response):
+def ep400_has_no_contentions(response: get_contentions.Response) -> bool:
     return not response.contentions
 
 
-def is_claim_open(claim: ClaimDetail):
+def is_claim_open(claim: ClaimDetail) -> bool:
     """
     Check if the claim's lifecycle status is in the list of ELIGIBLE_CLAIM_LIFECYCLE_STATUSES
     """
@@ -72,7 +74,9 @@ class Workflow(str, Enum):
     RESUME_ADD_NOTE = 'resume_processing_from_running_add_note_to_ep400_claim'
 
 
-class EpMergeMachine(StateMachine):
+class EpMergeMachine(StateMachine):  # type: ignore[misc]
+    """State machine for the EP merge process. Type hint is ignored because mypy incorrectly assesses StateMachine as a subclasses of Any."""
+
     job: MergeJob | None = None
     cancellation_reason: str | None = None
     original_tsoj: str | None = None
@@ -364,7 +368,7 @@ class EpMergeMachine(StateMachine):
                 f'state={self.job.state}'
             )
 
-    def log_metrics(self, job_duration):
+    def log_metrics(self, job_duration: float) -> None:
         distribution(JOB_DURATION_METRIC, job_duration)
 
         if self.job.state == JobState.COMPLETED_SUCCESS:
@@ -382,15 +386,15 @@ class EpMergeMachine(StateMachine):
 
     async def make_hoppy_request(
         self,
-        hoppy_client,
-        request_id,
-        request_body,
+        hoppy_client: AsyncHoppyClient,
+        request_id: UUID,
+        request_body: dict[str, Any],
         response_type: Type[GeneralResponse],
-        expected_statuses,
-        max_retries,
-        retry_wait_time,
-        will_retry_condition,
-    ):
+        expected_statuses: list[int],
+        max_retries: int,
+        retry_wait_time: int,
+        will_retry_condition: Callable[[Type[GeneralResponse]], bool],
+    ) -> GeneralResponse:
         attempts = 0
         while True:
             response = await hoppy_client.make_request(request_id, request_body)
@@ -416,7 +420,7 @@ class EpMergeMachine(StateMachine):
         max_retries: int = 1,
         retry_wait_time: int = 2,
         will_retry_condition: Callable[[Type[GeneralResponse]], bool] = lambda x: False,
-    ):
+    ) -> GeneralResponse | None:
         if not isinstance(expected_statuses, list):
             expected_statuses = [expected_statuses]
         try:
@@ -440,23 +444,25 @@ class EpMergeMachine(StateMachine):
             self.add_client_error(hoppy_client.name, f'Unknown Exception Caught {e}')
         return None
 
-    def has_error(self):
-        return self.job.state == JobState.COMPLETED_ERROR
+    def has_error(self) -> bool:
+        return self.job.state == JobState.COMPLETED_ERROR  # type: ignore[no-any-return]
 
-    def has_new_contentions(self, pending_contentions_response: get_contentions.Response, ep400_contentions_response: get_contentions.Response):
+    def has_new_contentions(
+        self, pending_contentions_response: get_contentions.Response, ep400_contentions_response: get_contentions.Response
+    ) -> list[ContentionSummary]:
         contentions = ContentionsUtil.new_contentions(pending_contentions_response.contentions, ep400_contentions_response.contentions)
         self.num_new_contentions = len(contentions)
-        return contentions
+        return contentions  # type: ignore[no-any-return]
 
-    def add_job_error(self, message):
+    def add_job_error(self, message: str) -> None:
         errors = {'state': self.job.state, 'error': message}
         logging.warning(f'event=jobError job_id={self.job.job_id} error={jsonable_encoder(errors)}')
         self.job.error(errors)
 
-    def add_client_error(self, client_name, message):
+    def add_client_error(self, client_name: str, message: Any) -> None:
         errors = {'state': self.job.state, 'client': client_name, 'error': message}
         logging.warning(f'event=jobError job_id={self.job.job_id} error={jsonable_encoder(errors)}')
         self.job.error(errors)
 
-    def add_warning_message(self, message):
+    def add_warning_message(self, message: str) -> None:
         self.job.add_message({'warning': message})
