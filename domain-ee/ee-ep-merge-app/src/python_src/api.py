@@ -2,7 +2,7 @@ import asyncio
 import logging
 import sys
 from contextlib import asynccontextmanager
-from typing import Annotated
+from typing import Annotated, AsyncIterator
 from uuid import UUID, uuid4
 
 import uvicorn
@@ -29,27 +29,27 @@ CONNECT_TO_RABBIT_MQ_FAILURE = 'Cannot connect to RabbitMQ.'
 
 
 @asynccontextmanager
-async def lifespan(api: FastAPI):
+async def lifespan(api: FastAPI) -> AsyncIterator[None]:
     on_start_up()
     yield
     await on_shut_down()
 
 
-def on_start_up():
+def on_start_up() -> None:
     loop = asyncio.get_event_loop()
     loop.create_task(start_job_runner())
     loop.create_task(start_hoppy())
 
 
-async def start_job_runner():
+async def start_job_runner() -> None:
     await JOB_RUNNER.start()
 
 
-async def start_hoppy():
+async def start_hoppy() -> None:
     await HOPPY.start_hoppy_clients()
 
 
-async def on_shut_down():
+async def on_shut_down() -> None:
     await HOPPY.stop_hoppy_clients()
 
 
@@ -85,7 +85,7 @@ def get_health_status():
         return {'status': 'healthy'}
 
 
-def health_check_errors():
+def health_check_errors() -> list[str]:
     errors = []
     if not HOPPY.is_ready():
         errors.append(CONNECT_TO_RABBIT_MQ_FAILURE)
@@ -95,7 +95,7 @@ def health_check_errors():
 
 
 @app.post('/merge', status_code=status.HTTP_202_ACCEPTED, response_model=MergeJobResponse, response_model_exclude_none=True)
-async def merge_claims(request: Request, merge_request: MergeEndProductsRequest, background_tasks: BackgroundTasks):
+async def merge_claims(request: Request, merge_request: MergeEndProductsRequest, background_tasks: BackgroundTasks) -> MergeJobResponse | JSONResponse:
     validate_merge_request(merge_request)
 
     errors = health_check_errors()
@@ -117,10 +117,10 @@ async def merge_claims(request: Request, merge_request: MergeEndProductsRequest,
 
     background_tasks.add_task(JOB_RUNNER.start_job, merge_job)
 
-    return {'job': merge_job}
+    return MergeJobResponse(job=merge_job)
 
 
-def validate_merge_request(merge_request: MergeEndProductsRequest):
+def validate_merge_request(merge_request: MergeEndProductsRequest) -> None:
     if merge_request.pending_claim_id == merge_request.ep400_claim_id:
         raise HTTPException(status_code=400, detail='Claim IDs must be different.')
 
@@ -138,11 +138,11 @@ def start_job_state_machine(merge_job):
     },
     response_model_exclude_none=True,
 )
-async def get_merge_request_by_job_id(job_id: UUID):
+async def get_merge_request_by_job_id(job_id: UUID) -> MergeJobResponse | JSONResponse:
     job = JOB_STORE.get_merge_job(job_id)
     if job:
         logging.info(f'event=getMergeJobByJobId job={jsonable_encoder(job)}')
-        return {'job': job}
+        return MergeJobResponse(job=job)
     else:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=jsonable_encoder({'job_id': job_id, 'message': 'Could not find job'}))
 
@@ -152,7 +152,7 @@ async def get_merge_jobs(
     state: Annotated[list[JobState], Query()] = JobState.incomplete_states(),
     page: Annotated[int, Query(title='the page of results to return', ge=1)] = 1,
     size: Annotated[int, Query(title='the number of results per page', ge=1)] = 10,
-):
+) -> MergeJobsResponse:
     jobs, total = JOB_STORE.query(states=state, offset=page, limit=size)
     logging.info(f'event=getMergeJobs ' f'total={total} ' f'page={sanitize(page)} ' f'size={sanitize(size)} ' f'states={sanitize(state)}')
 
@@ -160,7 +160,7 @@ async def get_merge_jobs(
 
 
 @app.exception_handler(SQLAlchemyError)
-async def sqlalchemy_exception_handler(request: Request, err: SQLAlchemyError):
+async def sqlalchemy_exception_handler(request: Request, err: SQLAlchemyError) -> JSONResponse:
     msg = str(err).replace('\n', ' ')
     logging.error(f"event=requestFailed method={request.method} url={request.url} resource={'Database'} error={msg}")
     return JSONResponse(status_code=500, content=jsonable_encoder({'method': request.method, 'url': str(request.url), 'errors': [CONNECT_TO_DATABASE_FAILURE]}))

@@ -4,11 +4,13 @@ from typing import Any
 from uuid import UUID
 
 import model.merge_job
-from pydantic import BaseModel, ConfigDict, Field, conint
+from pydantic import BaseModel, ConfigDict, Field, StrictInt
 from util.custom_enum import StrEnum
 
 
-class JobState(StrEnum):
+class JobState(StrEnum):  # type: ignore[misc]
+    """Enum representing the state of a merge job. Type hint is ignored because StrEnum subclasses Any."""
+
     PENDING = auto()
     GET_PENDING_CLAIM = auto()
     GET_PENDING_CLAIM_CONTENTIONS = auto()
@@ -34,7 +36,7 @@ class JobState(StrEnum):
 
     @classmethod
     def incomplete_states(cls) -> list[str]:
-        return [state.name for state in cls if state != JobState.COMPLETED_SUCCESS and state != JobState.COMPLETED_ERROR]
+        return [state.name for state in cls if state != JobState.COMPLETED_SUCCESS and state != JobState.COMPLETED_ERROR]  # type: ignore
 
     def __str__(self):
         return self.value
@@ -42,15 +44,15 @@ class JobState(StrEnum):
 
 class MergeJob(BaseModel):
     job_id: UUID
-    pending_claim_id: conint(strict=True)
-    ep400_claim_id: conint(strict=True)
-    state: JobState = JobState.PENDING
+    pending_claim_id: StrictInt
+    ep400_claim_id: StrictInt
+    state: JobState = JobState.PENDING  # type: ignore
     error_state: JobState | None = None
     messages: list[Any] | None = None
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = None
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if not self.updated_at:
             self.updated_at = self.created_at
@@ -60,17 +62,17 @@ class MergeJob(BaseModel):
     class Meta:
         orm_model = model.merge_job.MergeJob
 
-    def error(self, message: dict[Any, Any]):
+    def error(self, message: dict[Any, Any]) -> None:
         self.error_state = self.state
-        self.state = JobState.COMPLETED_ERROR
+        self.state = JobState.COMPLETED_ERROR  # type: ignore
         self.add_message(message)
 
-    def add_message(self, message: dict[Any, Any]):
+    def add_message(self, message: dict[Any, Any]) -> None:
         if message:
             if self.messages is None:
                 self.messages = []
             self.messages.append(message)
 
-    def update(self, new_state: JobState):
+    def update(self, new_state: JobState) -> None:
         self.state = new_state
         self.updated_at = datetime.now()
