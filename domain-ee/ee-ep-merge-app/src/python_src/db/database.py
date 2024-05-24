@@ -1,3 +1,6 @@
+# mypy: ignore-errors
+# TODO: refactor to add type hints
+
 from config import SQLALCHEMY_DATABASE_URI
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import create_engine, desc, inspect

@@ -3,10 +3,16 @@ plugins {
   id 'local.python.container-service-conventions'
 }
 
+tasks.register('mypy', PythonTask) {
+  module = 'mypy'
+  command = 'src'
+  dependsOn 'requirements'
+}
+
 tasks.register('isort', PythonTask) {
   module = 'isort'
   command = '.'
-  dependsOn 'requirements'
+  dependsOn 'mypy'
 }
 
 tasks.register('ruff', PythonTask) {

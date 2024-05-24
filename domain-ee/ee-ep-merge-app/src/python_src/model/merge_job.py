@@ -1,3 +1,6 @@
+# mypy: ignore-errors
+# TODO: refactor to add type hints
+
 from config import POSTGRES_SCHEMA
 from db.base_class import Base
 from sqlalchemy import Column, DateTime, Integer, String

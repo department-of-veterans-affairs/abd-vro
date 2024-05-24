@@ -29,3 +29,8 @@ extend-select = [
 quote-style = "single"
 # Use `\n` line endings for all files
 line-ending = "lf"
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+ignore_missing_imports = true

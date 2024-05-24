@@ -56,7 +56,7 @@ REPLY_QUEUES = {
 EP_MERGE_SPECIAL_ISSUE_CODE = os.environ.get('EP_MERGE_SPECIAL_ISSUE_CODE') or 'EMP'
 
 
-def create_sqlalchemy_db_uri():
+def create_sqlalchemy_db_uri() -> str:
     user = quote(os.environ.get('POSTGRES_USER') or 'vro_user')
     password = quote(os.environ.get('POSTGRES_PASSWORD') or 'vro_user_pw')
     host = os.environ.get('POSTGRES_HOST') or 'localhost'

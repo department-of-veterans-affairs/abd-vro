@@ -6,6 +6,12 @@ plugins {
 tasks.register('isort', PythonTask) {
   module = 'isort'
   command = '.'
+  dependsOn 'mypy'
+}
+
+tasks.register('mypy', PythonTask) {
+  module = 'mypy'
+  command = 'src'
   dependsOn 'requirements'
 }
 

@@ -31,7 +31,7 @@ count_metrics_api = metrics_v2.MetricsApi(api_client)
 distribution_metrics_api = metrics_v1.MetricsApi(api_client)  # Metrics API does not have an endpoint for distribution metrics
 
 
-def increment(metric: str, value: float = 1):
+def increment(metric: str, value: float = 1) -> None:
     """
     Increments a count metric with by the name 'APP_PREFIX.{metric}'
     :param metric: string containing the metric name
@@ -63,7 +63,7 @@ def increment(metric: str, value: float = 1):
         logging.warning(f'event=logMetricFailed metric={full_metric} type=count value={value} type={type(e)} error="{e}"')
 
 
-def distribution(metric: str, value: float):
+def distribution(metric: str, value: float) -> None:
     """
     Adds value to a distribution metric with by the name '{APP_PREFIX}.{metric}'
     :param metric: string containing the metric name
