@@ -3,9 +3,27 @@ plugins {
   id 'local.python.container-service-conventions'
 }
 
+tasks.register('isort', PythonTask) {
+  module = 'isort'
+  command = '.'
+  dependsOn 'requirements'
+}
+
+tasks.register('ruff', PythonTask) {
+  module = 'ruff'
+  command = 'check'
+  dependsOn 'isort'
+}
+
+// Override the pytest task in local.python.app-conventions to remove dependency on pyflake8
+tasks.getByPath('pytest').configure {
+  dependsOn.clear()
+  dependsOn 'ruff'
+}
+
 // Runs pytest integration tests when './gradlew integration-test' is run
 tasks.register('integrationPytest', PythonTask) {
-  dependsOn 'pyflake8'
+  dependsOn 'ruff'
   module = 'pytest'
   command = './integration'
 }
@@ -17,7 +35,7 @@ tasks.register('integrationTest', Test) {
 
 // Runs pytest end-to-end tests when './gradlew integration-test' is run
 tasks.register('endToEndPytest', PythonTask) {
-  dependsOn 'pyflake8'
+  dependsOn 'ruff'
   module = 'pytest'
   command = './end_to_end'
 }

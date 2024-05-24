@@ -2,7 +2,6 @@ from schema.contention import ContentionSummary, ExistingContention
 
 
 class ContentionsUtil:
-
     @staticmethod
     def new_contentions(pending_contentions: list[ContentionSummary] = None, ep400_contentions: list[ContentionSummary] = None):
         if not pending_contentions and not ep400_contentions:
