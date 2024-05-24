@@ -37,3 +37,20 @@ extend-select = [
 quote-style = "single"
 # Use `\n` line endings for all files
 line-ending = "lf"
+
+[tool.mypy]
+plugins = [
+    "pydantic.mypy"
+]
+python_version = "3.10"
+strict = true
+ignore_missing_imports = true
+disallow_untyped_defs = false  # End goal here is to make this true
+disallow_incomplete_defs = true
+strict_optional = false
+exclude = [
+    'graph_export\.py$',
+    'pull_api_documentation\.py$'
+]
+# Ignore calls from third party libraries that are not typed
+untyped_calls_exclude = "datadog_api_client"
