@@ -15,6 +15,6 @@ COPY flyway.conf /flyway/conf
 
 RUN adduser --no-create-home --disabled-password tron
 USER tron
-CMD [ "migrate", "-X" ]
+CMD [ "repair" ]
 
 HEALTHCHECK NONE
