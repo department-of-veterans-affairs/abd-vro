@@ -119,10 +119,14 @@ def log_contention_stats(
     log_contention_text = (
         contention_text if is_mapped_text else "unmapped contention text"
     )
+    if contention.contention_type == "INCREASE":
+        log_contention_type = "claim_for_increase"
+    else:
+        log_contention_type = contention.contention_type.lower()
 
     log_as_json(
         {
-            "claim_type": sanitize_log(contention.contention_type.lower()),
+            "claim_type": sanitize_log(log_contention_type),
             "classification_code": classification_code,
             "classification_name": classification_name,
             "contention_text": log_contention_text,
@@ -269,7 +273,7 @@ def get_classification_code(contention: Contention) -> Optional[int]:
     classification code (if available)
     """
     classification_code = None
-    if contention.contention_type == "claim_for_increase":
+    if contention.contention_type == "INCREASE":
         classification_code = dc_lookup_table.get(contention.diagnostic_code, None)
 
     if contention.contention_text and not classification_code:
