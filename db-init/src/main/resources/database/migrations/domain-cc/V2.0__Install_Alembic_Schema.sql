@@ -1,5 +1,11 @@
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = '#[alembic_username]') THEN
+        CREATE ROLE #[alembic_username] LOGIN PASSWORD '#[alembic_password]';
+    END IF;
+END
+$$;
 
-CREATE ROLE #[alembic_username] LOGIN PASSWORD '#[alembic_password]';
 GRANT CONNECT ON DATABASE #[dbname] TO #[alembic_username];
 
 GRANT ALL PRIVILEGES ON SCHEMA #[alembic_schemaname] TO #[alembic_username];
