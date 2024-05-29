@@ -1,4 +1,4 @@
-Diagnostic Code,Rated Issue Name,Max Rating(%),Body System, Category, Subcategory, CFR_Ref
+Diagnostic Code,Rated Issue Name,Max Rating (%),Body System,Category,Subcategory,CFR_Ref
 5000,"Osteomyelitis, acute, subacute, or chronic.",100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
 5001,"Bones and joints, tuberculosis of, active or inactive.",100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
 5002,"Multi-joint arthritis (except post-traumatic and gout), 2 or more joints, as an active process.",100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a

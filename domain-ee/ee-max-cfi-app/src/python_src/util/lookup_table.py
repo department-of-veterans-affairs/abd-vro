@@ -1,13 +1,49 @@
 import csv
 import os
 
-from .table_version import TABLE_VERSION
-
-TABLE_NAME = f'Max Ratings DC Lookup Table {TABLE_VERSION}.csv'
+from .logger import logger
 
 
 def get_max_ratings_by_code() -> dict[int, int]:
-    filename = os.path.join(os.path.dirname(__file__), 'data', TABLE_NAME)
+    """
+    This function reads all CSV files in the 'data' directory that start with 'Max Ratings DC Lookup Table' followed by a version number. These files are
+    sorted for consistency before importing them. Each CSV file is expected to have the following columns:
+    - Diagnostic Code*
+    - Rated Issue Name
+    - Max Rating*
+    - Body System
+    - Category
+    - Subcategory
+    - CFR Reference
+    * If the Diagnostic Code or Max Rating columns are empty, the row is skipped.
+
+    As files are uploaded, if the diagnostic code is not in the dictionary, it will be added with its associated maximum rating. Any diagnostic codes that
+    are already present will be updated with the new max rating.
+
+    Returns:
+        dict[int, int]: A dictionary where the keys are diagnostic codes and the values are the maximum ratings.
+    """
+    diagnostic_code_to_max_rating: dict[int, int] = {}
+
+    data_files = sorted(os.listdir(os.path.join(os.path.dirname(__file__), 'data')))
+    for file in data_files:
+        if file.startswith('Max Ratings DC Lookup Table') and file.endswith('.csv'):
+            ratings = import_ratings(file)
+            msg = f'Loading {len(ratings)} ratings from "{file}"'
+            updates = ratings & diagnostic_code_to_max_rating.keys()
+            adds = updates ^ ratings.keys()
+            if len(adds) > 0:
+                msg += f' | Adds {len(adds)}'
+            if len(updates) > 0:
+                msg += f' | Updates {len(updates)}'
+            logger.info(msg)
+            diagnostic_code_to_max_rating.update(ratings)
+    logger.info(f'Loaded {len(diagnostic_code_to_max_rating)} ratings from {len(data_files)} files')
+    return diagnostic_code_to_max_rating
+
+
+def import_ratings(filename: str) -> dict[int, int]:
+    filename = os.path.join(os.path.dirname(__file__), 'data', filename)
     diagnostic_code_to_max_rating: dict[int, int] = {}
     with open(filename, 'r') as file:
         csv_reader = csv.reader(file)

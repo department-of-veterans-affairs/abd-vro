@@ -1,0 +1,60 @@
+Diagnostic Code,Rated Issue Name,Max Rating (%),Body System,Category,Subcategory,CFR_Ref
+7200,"Soft tissue injury of the mouth, other than tongue or lips:",90,The Digestive System,,,38 CFR 4.114
+7201,"Lips, injuries of.",90,The Digestive System,,,38 CFR 4.114
+7202,"Tongue, loss of whole or part.",100,The Digestive System,,,38 CFR 4.114
+7203,"Esophagus, stricture of.",80,The Digestive System,,,38 CFR 4.114
+7204,Esophageal motility disorder:,80,The Digestive System,,,38 CFR 4.114
+7205,"Esophagus, diverticulum of, acquired.",80,The Digestive System,,,38 CFR 4.114
+7206,"Gastroesophageal reflux disease:	",80,The Digestive System,,,38 CFR 4.114
+7207,Barrett’s esophagus:,80,The Digestive System,,,38 CFR 4.114
+7301,"Peritoneum, adhesions of, due to surgery, trauma, disease, or infection:",80,The Digestive System,,,38 CFR 4.114
+7303,"Chronic complications of upper gastrointestinal surgery:	",80,The Digestive System,,,38 CFR 4.114
+7304,Peptic ulcer disease:,100,The Digestive System,,,38 CFR 4.114
+7305,[Removed],,The Digestive System,,,38 CFR 4.114
+7306,[Removed],,The Digestive System,,,38 CFR 4.114
+7307,"Gastritis, chronic:",100,The Digestive System,,,38 CFR 4.114
+7308,Postgastrectomy syndromes.,80,The Digestive System,,,38 CFR 4.114
+7309,"Stomach, stenosis of.",100,The Digestive System,,,38 CFR 4.114
+7310,"Stomach, injury of, residuals.",80,The Digestive System,,,38 CFR 4.114
+7311,Residuals of injury of the liver.,100,The Digestive System,,,38 CFR 4.114
+7312,"Cirrhosis of the liver, primary biliary cirrhosis, or cirrhotic phase of sclerosing cholangitis.",100,The Digestive System,,,38 CFR 4.114
+7314,Chronic biliary tract disease:,30,The Digestive System,,,38 CFR 4.114
+7315,"Cholelithiasis, chronic.",30,The Digestive System,,,38 CFR 4.114
+7316,[Removed],,The Digestive System,,,38 CFR 4.114
+7317,"Gall bladder, injury of.",80,The Digestive System,,,38 CFR 4.114
+7318,"Cholecystectomy (gallbladder removal), complications of (such as strictures and biliary leaks):",30,The Digestive System,,,38 CFR 4.114
+7319,Irritable bowel syndrome (IBS).,30,The Digestive System,,,38 CFR 4.114
+7321,[Removed],,The Digestive System,,,38 CFR 4.114
+7322,[Removed],,The Digestive System,,,38 CFR 4.114
+7323,"Colitis, ulcerative.",100,The Digestive System,,,38 CFR 4.114
+7324,[Removed],,The Digestive System,,,38 CFR 4.114
+7325,"Enteritis, chronic.",100,The Digestive System,,,38 CFR 4.114
+7326,"Crohn’s disease or undifferentiated form of inflammatory bowel disease:	",100,The Digestive System,,,38 CFR 4.114
+7327,Diverticulitis and diverticulosis:,100,The Digestive System,,,38 CFR 4.114
+7328,"Intestine, small, resection of.",100,The Digestive System,,,38 CFR 4.114
+7329,"Intestine, large, resection of.",100,The Digestive System,,,38 CFR 4.114
+7330,"Intestinal fistulous disease, external:	",100,The Digestive System,,,38 CFR 4.114
+7331,[Removed],,The Digestive System,,,38 CFR 4.114
+7332,"Rectum and anus, impairment of sphincter control.",100,The Digestive System,,,38 CFR 4.114
+7333,"Rectum and anus, stricture of.",100,The Digestive System,,,38 CFR 4.114
+7334,"Rectum, prolapse of.",100,The Digestive System,,,38 CFR 4.114
+7335,"Ano, fistula in, including anorectal fistula and anorectal abscess:",60,The Digestive System,,,38 CFR 4.114
+7336,"Hemorrhoids, external or internal.",20,The Digestive System,,,38 CFR 4.114
+7337,Pruritus ani.,10,The Digestive System,,,38 CFR 4.114
+7338,"Hernia, including femoral, inguinal, umbilical, ventral, incisional, and other (but not including hiatal):",100,The Digestive System,,,38 CFR 4.114
+7339,[Removed],,The Digestive System,,,38 CFR 4.114
+7340,[Removed],,The Digestive System,,,38 CFR 4.114
+7342,[Removed],,The Digestive System,,,38 CFR 4.114
+7343,[Removed],,The Digestive System,,,38 CFR 4.114
+7344,"Benign neoplasms, exclusive of skin growths.",,The Digestive System,,,38 CFR 4.114
+7345,"Chronic liver disease without cirrhosis (including hepatitis B, chronic active hepatitis, autoimmune hepatitis, hemochromatosis, drug-induced hepatitis, etc., but excluding bile duct disorders and hepatitis C).",100,The Digestive System,,,38 CFR 4.114
+7346,Hiatal hernia and paraesophageal hernia:,80,The Digestive System,,,38 CFR 4.114
+7347,"Pancreatitis, chronic:",100,The Digestive System,,,38 CFR 4.114
+7348,Vagotomy with pyloroplasty or gastroenterostomy.,40,The Digestive System,,,38 CFR 4.114
+7350,Liver abscess:,100,The Digestive System,,,38 CFR 4.114
+7351,Liver transplant.,100,The Digestive System,,,38 CFR 4.114
+7352,Pancreas transplant:,100,The Digestive System,,,38 CFR 4.114
+7354,"Hepatitis C (or non-A, non-B hepatitis).",100,The Digestive System,,,38 CFR 4.114
+7355,Celiac disease:,100,The Digestive System,,,38 CFR 4.114
+7356,Gastrointestinal dysmotility syndrome:,80,The Digestive System,,,38 CFR 4.114
+7357,Post pancreatectomy syndrome:,100,The Digestive System,,,38 CFR 4.114
