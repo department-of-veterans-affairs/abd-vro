@@ -1,3 +1,6 @@
+# mypy: ignore-errors
+# TODO: refactor to add type hints
+
 from config import SQLALCHEMY_DATABASE_URI
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import create_engine, desc, inspect
@@ -9,7 +12,6 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 class Database:
-
     def with_connection(func):
         def wrapper(self, *args, **kwargs):
             with SessionLocal() as db:

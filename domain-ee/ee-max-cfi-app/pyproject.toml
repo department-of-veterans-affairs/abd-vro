@@ -11,3 +11,26 @@ testpaths = [
 omit = [
     "src/python_src/pull_api_documentation.py",
 ]
+
+[tool.isort]
+profile = "black"
+
+[tool.ruff]
+line-length = 160
+
+[tool.ruff.lint]
+# Ruff enables Flake8's F rules, along with a subset of the E rules, omitting any stylistic rules that overlap with the use of Ruff formatter
+extend-select = [
+    # Add the `line-too-long` rule to the enforced rule set.
+    "E501"
+]
+
+[tool.ruff.format]
+quote-style = "single"
+# Use `\n` line endings for all files
+line-ending = "lf"
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+ignore_missing_imports = true

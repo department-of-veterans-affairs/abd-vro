@@ -4,7 +4,7 @@ import uuid
 from unittest.mock import ANY, AsyncMock, call
 
 import pytest
-from src.python_src.config import EP_MERGE_SPECIAL_ISSUE_CODE
+from config import EP_MERGE_SPECIAL_ISSUE_CODE
 from schema import (
     add_claim_note,
     cancel_claim,
@@ -30,7 +30,7 @@ from util.contentions_util import ContentionsUtil
 
 JOB_ID = uuid.uuid4()
 PENDING_CLAIM_ID = 1
-PENDING_CLAIM_EP_CODE = "010"
+PENDING_CLAIM_EP_CODE = '010'
 EP400_CLAIM_ID = 2
 cancel_reason = CANCELLATION_REASON_FORMAT.format(ep_code=PENDING_CLAIM_EP_CODE, claim_id=PENDING_CLAIM_ID)
 
@@ -72,8 +72,8 @@ get_ep400_contentions_200 = load_response(ep400_contentions_increase_tinnitus_20
 get_ep400_contentions_200.contentions[0].special_issue_codes.append(EP_MERGE_SPECIAL_ISSUE_CODE)
 get_ep400_contentions_204 = load_response(response_204, get_contentions.Response)
 get_ep400_contentions_without_special_issues_200 = load_response(ep400_contentions_increase_tinnitus_200, get_contentions.Response)
-update_temporary_station_of_jurisdiction_req = tsoj.Request(claim_id=EP400_CLAIM_ID, temp_station_of_jurisdiction="398").model_dump(by_alias=True)
-revert_temporary_station_of_jurisdiction_req = tsoj.Request(claim_id=EP400_CLAIM_ID, temp_station_of_jurisdiction="111").model_dump(by_alias=True)
+update_temporary_station_of_jurisdiction_req = tsoj.Request(claim_id=EP400_CLAIM_ID, temp_station_of_jurisdiction='398').model_dump(by_alias=True)
+revert_temporary_station_of_jurisdiction_req = tsoj.Request(claim_id=EP400_CLAIM_ID, temp_station_of_jurisdiction='111').model_dump(by_alias=True)
 update_temporary_station_of_jurisdiction_200 = load_response(response_200, tsoj.Response)
 revert_temporary_station_of_jurisdiction_200 = load_response(response_200, tsoj.Response)
 create_contentions_on_pending_claim_req = create_contentions.Request(
@@ -155,7 +155,6 @@ def assert_metrics_called(
     expected_new_contentions: int | None = None,
     expected_merge_skip: bool = True,
 ):
-
     increment_calls = []
     distribution_calls = [call(JOB_DURATION_METRIC, ANY)]
     if expected_completed_state == JobState.COMPLETED_SUCCESS:
