@@ -11,6 +11,9 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     sudo ./aws/install && \
     rm -rf awscliv2.zip aws
 
+# Add aws-cli to PATH for all users
+RUN echo 'export PATH=$PATH:/usr/local/bin' >> /etc/profile.d/aws-cli.sh
+
 RUN adduser --disabled-password tron
 
 USER tron
