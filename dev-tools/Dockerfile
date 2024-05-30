@@ -18,6 +18,11 @@ RUN /usr/local/bin/aws --version
 RUN adduser --disabled-password --gecos "" tron && \
     echo 'export PATH=$PATH:/usr/local/bin' >> /home/tron/.profile
 
+# Ensure .profile file is present and sourced in .bashrc
+RUN touch /home/tron/.profile && \
+    chown tron:tron /home/tron/.profile && \
+    echo 'if [ -f ~/.profile ]; then . ~/.profile; fi' >> /home/tron/.bashrc
+    
 USER tron
 
 # This will cause the container to sleep for 10 hours before automatically terminating.
