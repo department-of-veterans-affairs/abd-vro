@@ -5,6 +5,12 @@ RUN apt-get update && \
     install_packages curl sudo && \
     install_packages postgresql-client
 
+# Install AWS CLI v2
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    sudo ./aws/install && \
+    rm -rf awscliv2.zip aws
+
 RUN adduser --disabled-password tron
 
 USER tron
