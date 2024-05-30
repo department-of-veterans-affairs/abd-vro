@@ -11,10 +11,12 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     sudo ./aws/install && \
     rm -rf awscliv2.zip aws
 
-# Add aws-cli to PATH for all users
-RUN echo 'export PATH=$PATH:/usr/local/bin' >> /etc/profile.d/aws-cli.sh
+# Verify AWS CLI installation
+RUN /usr/local/bin/aws --version
 
-RUN adduser --disabled-password tron
+# Create a non-root user named tron
+RUN adduser --disabled-password --gecos "" tron && \
+    echo 'export PATH=$PATH:/usr/local/bin' >> /home/tron/.profile
 
 USER tron
 
