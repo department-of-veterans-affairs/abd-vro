@@ -1,18 +1,18 @@
 import csv
+import sys
 from typing import Any
 
 DATA_FILE = '../src/python_src/util/data/Diagnostic Code Lookup Table.csv'
-NEW_DATA_FILE = 'Max Ratings DC Lookup Table v2.csv'
 
 
-def consolidate_data_files() -> dict[int, tuple[Any, Any, Any, Any, Any, Any]] | None:
+def consolidate_data_files(new_data_file: str) -> dict[int, tuple[Any, Any, Any, Any, Any, Any]] | None:
     original_data = import_file(DATA_FILE)
     data_map: dict[int, tuple[Any, int, Any, Any, Any, Any]] = original_data.copy()
 
-    imported_data = import_file(NEW_DATA_FILE)
+    imported_data = import_file(new_data_file)
     updates = imported_data & data_map.keys()
     adds = updates ^ imported_data.keys()
-    msg = f'Loading {len(imported_data)} ratings from "{NEW_DATA_FILE}" | Adds {len(adds)} | Potential Updates {len(updates)}'
+    msg = f'Loading {len(imported_data)} ratings from "{new_data_file}" | Adds {len(adds)} | Potential Updates {len(updates)}'
     print(msg)
 
     data_map.update(imported_data)
@@ -65,7 +65,9 @@ def increment_table_version():
 
 
 if __name__ == '__main__':
-    data = consolidate_data_files()
+    new_data_file = sys.argv[1]
+    print(new_data_file)
+    data = consolidate_data_files(new_data_file)
     if data:
         export_data(data)
         print('Data exported')
