@@ -2,8 +2,9 @@ import csv
 import os
 
 from .data.table_version import TABLE_VERSION
+from .logger import logger
 
-TABLE_NAME = f'Max Ratings DC Lookup Table {TABLE_VERSION}.csv'
+TABLE_NAME = 'Diagnostic Code Lookup Table.csv'
 
 
 def get_max_ratings_by_code() -> dict[int, int]:
@@ -29,6 +30,8 @@ def get_max_ratings_by_code() -> dict[int, int]:
                 raise ValueError(f'Invalid diagnostic code or max rating at index {index}: \n{csv_line}')
 
             diagnostic_code_to_max_rating[diagnostic_code] = max_rating
+
+    logger.info(f'Loaded Max Ratings from Diagnostic Code Lookup Table v{TABLE_VERSION}')
     return diagnostic_code_to_max_rating
 
 
