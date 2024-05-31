@@ -1,7 +1,7 @@
 import csv
 import os
 
-from src.python_src.util.table_version import TABLE_VERSION
+from .data.table_version import TABLE_VERSION
 
 TABLE_NAME = f'Max Ratings DC Lookup Table {TABLE_VERSION}.csv'
 
