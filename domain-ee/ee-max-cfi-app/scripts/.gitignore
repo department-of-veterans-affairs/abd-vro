@@ -1,5 +1,5 @@
 # Ignore everything in the directory
-/ee-max-cfi-app/scripts/*
+*
 
 # But don't ignore data_consolidator
-!/ee-max-cfi-app/scripts/dc_lookup_table_updater.py
+!dc_lookup_table_updater.py
