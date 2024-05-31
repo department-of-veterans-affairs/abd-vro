@@ -9,6 +9,7 @@ from conftest import (
     add_claim_note_req,
     assert_hoppy_requests,
     assert_metrics_called,
+    assert_requests_and_metrics_for_success,
     cancel_claim_200,
     cancel_ep400_claim_req,
     create_contentions_on_pending_claim_201,
@@ -54,7 +55,6 @@ from schema import update_temp_station_of_jurisdiction as tsoj
 from schema.claim import BenefitClaimType, ClaimDetail
 from schema.merge_job import JobState, MergeJob
 from service.ep_merge_machine import EpMergeMachine
-from util.contentions_util import ContentionsUtil
 
 
 @pytest.fixture
@@ -1016,17 +1016,14 @@ class TestSuccess:
     def test_process_succeeds_with_different_contention(
         self, machine, mock_hoppy_async_client, metric_logger_distribution, metric_logger_increment, get_contentions_res
     ):
-        pending_contentions, ep400_contentions = get_contentions_res
-        create_pending_claim_req = create_contentions.Request(
-            claim_id=PENDING_CLAIM_ID, create_contentions=ContentionsUtil.new_contentions(pending_contentions.contentions, ep400_contentions.contentions)
-        ).model_dump(by_alias=True)
+        pending_contentions_response, ep400_contentions_response = get_contentions_res
         mock_async_responses(
             mock_hoppy_async_client,
             [
                 get_pending_claim_200,
                 get_ep400_claim_200,
-                pending_contentions,
-                ep400_contentions,
+                pending_contentions_response,
+                ep400_contentions_response,
                 get_pending_claim_200,
                 update_temporary_station_of_jurisdiction_200,
                 create_contentions_on_pending_claim_201,
@@ -1035,21 +1032,9 @@ class TestSuccess:
             ],
         )
         process_and_assert(machine, JobState.COMPLETED_SUCCESS)
-        assert_hoppy_requests(
-            mock_hoppy_async_client,
-            [
-                call(machine.job.job_id, get_pending_claim_req),
-                call(machine.job.job_id, get_ep400_claim_req),
-                call(machine.job.job_id, get_pending_contentions_req),
-                call(machine.job.job_id, get_ep400_contentions_req),
-                call(machine.job.job_id, get_pending_claim_req),
-                call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
-                call(machine.job.job_id, create_pending_claim_req),
-                call(machine.job.job_id, cancel_ep400_claim_req),
-                call(machine.job.job_id, add_claim_note_req),
-            ],
+        assert_requests_and_metrics_for_success(
+            machine, metric_logger_distribution, metric_logger_increment, mock_hoppy_async_client, pending_contentions_response, ep400_contentions_response
         )
-        assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_SUCCESS, None, 1, False)
 
     def test_process_succeeds_with_duplicate_contention(self, machine, mock_hoppy_async_client, metric_logger_distribution, metric_logger_increment):
         mock_async_responses(
@@ -1066,17 +1051,66 @@ class TestSuccess:
             ],
         )
         process_and_assert(machine, JobState.COMPLETED_SUCCESS)
-        assert_hoppy_requests(
+        assert_requests_and_metrics_for_success(
+            machine,
+            metric_logger_distribution,
+            metric_logger_increment,
             mock_hoppy_async_client,
+            get_pending_contentions_increase_tinnitus_200,
+            get_ep400_contentions_200,
+        )
+
+    @pytest.mark.parametrize(
+        'pending_contentions_response',
+        [
+            pytest.param(get_contentions.Response(status_code=204, status_message='NO_CONTENT'), id='pending contentions NO_CONTENT'),
+            pytest.param(get_contentions.Response(status_code=200, status_message='OK'), id='pending contentions OK, implicit none'),
+            pytest.param(get_contentions.Response(status_code=200, status_message='OK', contentions=None), id='pending contentions OK, explicit none'),
+            pytest.param(get_contentions.Response(status_code=200, status_message='OK', contentions=[]), id='pending contentions OK, explicit empty list'),
+        ],
+    )
+    class TestNoPendingClaimContentions:
+        @pytest.mark.parametrize(
+            'ep400_contentions_response',
             [
-                call(machine.job.job_id, get_pending_claim_req),
-                call(machine.job.job_id, get_ep400_claim_req),
-                call(machine.job.job_id, get_pending_contentions_req),
-                call(machine.job.job_id, get_ep400_contentions_req),
-                call(machine.job.job_id, get_pending_claim_req),
-                call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
-                call(machine.job.job_id, cancel_ep400_claim_req),
-                call(machine.job.job_id, add_claim_note_req),
+                pytest.param(
+                    load_response(ep400_contentions_new_tinnitus_200, get_contentions.Response),
+                    id='with single new contention from ep400',
+                ),
+                pytest.param(
+                    load_response(ep400_contentions_increase_tinnitus_200, get_contentions.Response),
+                    id='with single contention CFI from ep400',
+                ),
+                pytest.param(
+                    load_response(ep400_contentions_increase_multicontention_200, get_contentions.Response),
+                    id='with multiple contentions from ep400',
+                ),
             ],
         )
-        assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_SUCCESS, None, 0, True)
+        def test_process_succeeds_when_pending_claim_has_no_contentions(
+            self,
+            machine,
+            mock_hoppy_async_client,
+            metric_logger_distribution,
+            metric_logger_increment,
+            pending_contentions_response,
+            ep400_contentions_response,
+        ):
+            mock_async_responses(
+                mock_hoppy_async_client,
+                [
+                    get_pending_claim_200,
+                    get_ep400_claim_200,
+                    pending_contentions_response,
+                    ep400_contentions_response,
+                    get_pending_claim_200,
+                    update_temporary_station_of_jurisdiction_200,
+                    create_contentions_on_pending_claim_201,
+                    cancel_claim_200,
+                    add_claim_note_200,
+                ],
+            )
+            process_and_assert(machine, JobState.COMPLETED_SUCCESS)
+            assert_requests_and_metrics_for_success(
+                machine, metric_logger_distribution, metric_logger_increment, mock_hoppy_async_client, pending_contentions_response, ep400_contentions_response
+            )
