@@ -2,3 +2,27 @@ plugins {
   id 'local.python.app-conventions'
   id 'local.python.container-service-conventions'
 }
+
+tasks.register('mypy', PythonTask) {
+  module = 'mypy'
+  command = 'src'
+  dependsOn 'requirements'
+}
+
+tasks.register('isort', PythonTask) {
+  module = 'isort'
+  command = '.'
+  dependsOn 'mypy'
+}
+
+tasks.register('ruff', PythonTask) {
+  module = 'ruff'
+  command = 'check'
+  dependsOn 'isort'
+}
+
+// Override the pytest task in local.python.app-conventions to remove dependency on pyflake8
+tasks.getByPath('pytest').configure {
+  dependsOn.clear()
+  dependsOn 'ruff'
+}

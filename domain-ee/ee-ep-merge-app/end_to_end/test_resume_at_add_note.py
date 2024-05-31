@@ -3,6 +3,7 @@ from datetime import datetime
 from uuid import uuid4
 
 import pytest
+
 from src.python_src.api import JOB_RUNNER
 from src.python_src.schema.merge_job import JobState, MergeJob
 from src.python_src.service.job_store import JOB_STORE
@@ -35,16 +36,15 @@ def assert_job(job_id, pending_claim_id, ep400_claim_id, expected_state: JobStat
 
 
 class TestSuccess:
-
-    @pytest.mark.asyncio(scope="session")
+    @pytest.mark.asyncio(scope='session')
     @pytest.mark.parametrize(
-        "pending_claim_id,ep400_claim_id",
+        'pending_claim_id,ep400_claim_id',
         [
-            pytest.param(PENDING_CLAIM_ID, EP400_WITH_DUPLICATE, id="with duplicate contention"),
-            pytest.param(PENDING_CLAIM_ID, EP400_WITH_DIFFERENT_CONTENTION_TYPE_CODE, id="with different contention type code"),
-            pytest.param(PENDING_CLAIM_ID, EP400_WITH_DIFFERENT_CLAIMANT_TEXT, id="with different claimant text"),
-            pytest.param(PENDING_CLAIM_ID, EP400_WITH_MULTI_CONTENTION_ONE_DUPLICATE, id="with one duplicate, one not"),
-            pytest.param(PENDING_CLAIM_ID, EP400_WITH_MULTI_CONTENTION_NO_DUPLICATES, id="with with no duplicates"),
+            pytest.param(PENDING_CLAIM_ID, EP400_WITH_DUPLICATE, id='with duplicate contention'),
+            pytest.param(PENDING_CLAIM_ID, EP400_WITH_DIFFERENT_CONTENTION_TYPE_CODE, id='with different contention type code'),
+            pytest.param(PENDING_CLAIM_ID, EP400_WITH_DIFFERENT_CLAIMANT_TEXT, id='with different claimant text'),
+            pytest.param(PENDING_CLAIM_ID, EP400_WITH_MULTI_CONTENTION_ONE_DUPLICATE, id='with one duplicate, one not'),
+            pytest.param(PENDING_CLAIM_ID, EP400_WITH_MULTI_CONTENTION_NO_DUPLICATES, id='with with no duplicates'),
         ],
     )
     async def test(self, pending_claim_id, ep400_claim_id):
@@ -64,23 +64,23 @@ class TestSuccess:
 
 
 class TestError:
-    @pytest.mark.asyncio(scope="session")
+    @pytest.mark.asyncio(scope='session')
     @pytest.mark.parametrize(
-        "pending_claim_id,ep400_claim_id,expected_error_state,expected_num_errors",
+        'pending_claim_id,ep400_claim_id,expected_error_state,expected_num_errors',
         [
             pytest.param(
                 CLAIM_ID_ERROR_AT_GET_CLAIM_DETAILS,
                 EP400_WITH_MULTI_CONTENTION_NO_DUPLICATES,
                 JobState.GET_PENDING_CLAIM,
                 1,
-                id="fail to get pending claim details",
+                id='fail to get pending claim details',
             ),
             pytest.param(
                 CLAIM_ID_ERROR_AT_GET_CLAIM_DETAILS,
                 CLAIM_ID_ERROR_AT_UPDATE_CONTENTIONS,
                 JobState.GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE,
                 2,
-                id="fail to remove special issues from ep400 claim after failing to get pending claim",
+                id='fail to remove special issues from ep400 claim after failing to get pending claim',
             ),
         ],
     )

@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, field_serializer
 from pydantic.alias_generators import to_camel
@@ -29,7 +30,7 @@ class Contention(BaseModel):
     associated_tracked_items: list[TrackedItemAssociation] | None = None
 
     @field_serializer('begin_date', 'create_date', 'completed_date', 'notification_date')
-    def serialize_datetime(self, dt: datetime, _info):
+    def serialize_datetime(self, dt: datetime, _info: Any) -> str | None:
         return None if dt is None else dt.isoformat()
 
 
@@ -43,7 +44,7 @@ class ExistingContention(Contention):
     automation_indicator: bool | None = None
 
     @field_serializer('begin_date', 'create_date', 'completed_date', 'notification_date', 'last_modified')
-    def serialize_datetime(self, dt: datetime, _info):
+    def serialize_datetime(self, dt: datetime, _info: Any) -> str | None:
         return None if dt is None else dt.isoformat()
 
 
@@ -53,5 +54,5 @@ class ContentionSummary(ExistingContention):
     summary_date_time: datetime | None = None
 
     @field_serializer('begin_date', 'create_date', 'completed_date', 'notification_date', 'last_modified')
-    def serialize_datetime(self, dt: datetime, _info):
+    def serialize_datetime(self, dt: datetime, _info: Any) -> str | None:
         return None if dt is None else dt.isoformat()
