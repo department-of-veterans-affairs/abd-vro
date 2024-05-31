@@ -223,7 +223,13 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
     @running_get_pending_contentions.enter
     def on_get_pending_contentions(self, event):
         request = get_contentions.Request(claim_id=self.job.pending_claim_id)
-        response = self.make_request(request=request, hoppy_client=HOPPY.get_client(ClientName.GET_CLAIM_CONTENTIONS), response_type=get_contentions.Response)
+        expected_statuses = [200, 204]
+        response = self.make_request(
+            request=request,
+            hoppy_client=HOPPY.get_client(ClientName.GET_CLAIM_CONTENTIONS),
+            response_type=get_contentions.Response,
+            expected_statuses=expected_statuses,
+        )
         self.send(event=event, pending_contentions_response=response)
 
     @running_get_ep400_contentions.enter
