@@ -1,6 +1,3 @@
-import logging
-import sys
-
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from pydantic_models import (
@@ -8,6 +5,7 @@ from pydantic_models import (
     MaxRatingsForClaimForIncreaseResponse,
     Rating,
 )
+from util.logger import logger
 from util.lookup_table import MAX_RATINGS_BY_CODE, get_max_rating
 from util.sanitizer import sanitize
 
@@ -23,13 +21,6 @@ app = FastAPI(
             'description': 'Max Ratings for CFI',
         },
     ],
-)
-
-logging.basicConfig(
-    format='[%(asctime)s] %(levelname)-8s %(message)s',
-    level=logging.INFO,
-    datefmt='%Y-%m-%d %H:%M:%S',
-    stream=sys.stdout,
 )
 
 
@@ -55,7 +46,7 @@ def get_max_ratings(
 
     response = MaxRatingsForClaimForIncreaseResponse(ratings=ratings)
 
-    logging.info(f'event=getMaxRating ratings={ratings}')
+    logger.info(f'event=getMaxRating response={response.model_dump_json()}')
     return response
 
 

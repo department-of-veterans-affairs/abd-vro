@@ -1,12 +1,15 @@
 import csv
 import os
 
-from .table_version import TABLE_VERSION
+from .data.table_version import TABLE_VERSION
+from .logger import logger
 
-TABLE_NAME = f'Max Ratings DC Lookup Table {TABLE_VERSION}.csv'
+TABLE_NAME = 'Diagnostic Code Lookup Table.csv'
 
 
 def get_max_ratings_by_code() -> dict[int, int]:
+    logger.info(f'Loading Max Ratings from Diagnostic Code Lookup Table v{TABLE_VERSION}')
+
     filename = os.path.join(os.path.dirname(__file__), 'data', TABLE_NAME)
     diagnostic_code_to_max_rating: dict[int, int] = {}
     with open(filename, 'r') as file:
@@ -19,7 +22,8 @@ def get_max_ratings_by_code() -> dict[int, int]:
                 raise ValueError(f'Invalid CSV line at index {index}')
 
             diagnostic_code_str, rated_issue_name, max_rating_str, body_system, category, subcategory, cfr_ref = csv_line
-            if not diagnostic_code_str or not max_rating_str:
+            if not max_rating_str:
+                logger.warning(f'Skipping import with no max rating: {csv_line}')
                 continue
 
             try:
@@ -29,6 +33,8 @@ def get_max_ratings_by_code() -> dict[int, int]:
                 raise ValueError(f'Invalid diagnostic code or max rating at index {index}: \n{csv_line}')
 
             diagnostic_code_to_max_rating[diagnostic_code] = max_rating
+
+    logger.info(f'Loaded Max Ratings from Diagnostic Code Lookup Table v{TABLE_VERSION}')
     return diagnostic_code_to_max_rating
 
 

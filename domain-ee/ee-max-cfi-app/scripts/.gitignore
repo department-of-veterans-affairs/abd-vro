@@ -1,0 +1,6 @@
+# Ignore everything in the directory
+*
+
+# But don't ignore data_consolidator
+!dc_lookup_table_updater.py
+!README.md
