@@ -46,7 +46,7 @@ def get_max_ratings(
 
     response = MaxRatingsForClaimForIncreaseResponse(ratings=ratings)
 
-    logger.info(f'event=getMaxRating ratings={response.model_dump_json()}')
+    logger.info(f'event=getMaxRating response={response.model_dump_json()}')
     return response
 
 
