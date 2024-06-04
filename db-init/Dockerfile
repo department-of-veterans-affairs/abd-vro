@@ -1,4 +1,4 @@
-FROM flyway/flyway:10.13-alpine
+FROM flyway/flyway:10.14-alpine
 
 # hadolint ignore=DL3018
 RUN <<EOR
