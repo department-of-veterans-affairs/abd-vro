@@ -62,6 +62,8 @@ public class BipApiService implements IBipApiService {
 
   final ObjectMapper mapper;
 
+  final MetricLoggerService metricLogger = new MetricLoggerService();
+
   @Override
   public GetClaimResponse getClaimDetails(long claimId) {
     String url = bipApiProps.getClaimRequestUrl(String.format(CLAIM_DETAILS, claimId));
@@ -135,16 +137,28 @@ public class BipApiService implements IBipApiService {
   @SuppressWarnings("unchecked")
   private <T extends BipPayloadResponse> T makeRequest(
       String url, HttpMethod method, Object requestBody, Class<T> expectedResponse) {
+
+    metricLogger.submitCount(MetricLoggerService.METRIC.REQUEST,
+            new String[]{method.name(), expectedResponse.getSimpleName()});
+
     try {
+
       HttpEntity<Object> httpEntity = new HttpEntity<>(requestBody, getBipHeader());
       log.info("event=requestSent url={} method={}", url, method);
+
+      long requestStartTime = System.nanoTime();
       ResponseEntity<T> bipResponse =
           restTemplate.exchange(url, method, httpEntity, expectedResponse);
+      long elapsedTime = System.nanoTime() - requestStartTime;
+
       log.info(
           "event=responseReceived url={} method={} status={}",
           url,
           method,
           bipResponse.getStatusCode().value());
+
+      metricLogger.submitDistribution(MetricLoggerService.METRIC.REQUEST_DURATION, elapsedTime,
+              new String[]{bipResponse.getStatusCode().toString(), method.name(), expectedResponse.getSimpleName()});
 
       BipPayloadResponse.BipPayloadResponseBuilder<?, ?> responseBuilder;
       if (bipResponse.hasBody()) {
@@ -152,6 +166,10 @@ public class BipApiService implements IBipApiService {
       } else {
         responseBuilder = mapper.readValue("{}", expectedResponse).toBuilder();
       }
+
+      metricLogger.submitCount(MetricLoggerService.METRIC.RESPONSE_COMPLETE,
+              new String[]{method.name(), expectedResponse.getSimpleName()});
+
       return (T)
           responseBuilder
               .statusCode(bipResponse.getStatusCode().value())
@@ -172,6 +190,10 @@ public class BipApiService implements IBipApiService {
           method,
           HttpStatus.INTERNAL_SERVER_ERROR.value(),
           e.getMessage());
+
+      metricLogger.submitCount(MetricLoggerService.METRIC.RESPONSE_ERROR,
+              new String[]{method.name(), expectedResponse.getSimpleName(), e.getMessage()});
+
       throw new BipException(e.getMessage(), e);
     }
   }
