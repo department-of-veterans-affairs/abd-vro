@@ -1,8 +1,10 @@
 package gov.va.vro.bip.service;
 
 import com.datadog.api.client.ApiClient;
+import com.datadog.api.client.RetryConfig;
 import com.datadog.api.client.v1.api.MetricsApi;
 import com.datadog.api.client.v1.model.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -29,20 +31,26 @@ public class MetricLoggerService {
   private final MetricsApi metricsApi;
 
   public MetricLoggerService() {
-    metricsApi = new MetricsApi(ApiClient.getDefaultApiClient());
+    this(ApiClient.getDefaultApiClient());
+    metricsApi.getApiClient().setRetry(new RetryConfig(true, 2, 2, 3));
   }
 
-  private static String getFullMetricString(METRIC metric) {
+  public MetricLoggerService(ApiClient apiClient) {
+    metricsApi = new MetricsApi(apiClient);
+    log.info("initialized Datadog API client");
+  }
+
+  protected void setApiClient(ApiClient apiClient) {
+    metricsApi.setApiClient(apiClient);
+  }
+
+  public static String getFullMetricString(@NotNull METRIC metric) {
     return String.format("%s.%s", APP_PREFIX, metric.name().toLowerCase());
   }
 
-  public void submitCount(METRIC metric, String[] tags) {
-    submitCount(metric, 1.0, tags);
-  }
-
-  private ArrayList<String> getTagsForSubmission(String[] customTags) {
+  public ArrayList<String> getTagsForSubmission(String[] customTags) {
     ArrayList<String> tags = new ArrayList<>();
-    tags.add(ENV_VALUE);
+    tags.add(String.format("environment:%s", ENV_VALUE));
     tags.add(SERVICE_TAG);
     if (customTags != null) {
       tags.addAll(Arrays.asList(customTags));
@@ -50,7 +58,7 @@ public class MetricLoggerService {
     return tags;
   }
 
-  public void submitCount(METRIC metric, double value, String[] tags) {
+  public MetricsPayload createMetricsPayload(@NotNull METRIC metric, double value, String[] tags) {
     Series dataPointSeries =
         new Series(
             getFullMetricString(metric),
@@ -59,43 +67,56 @@ public class MetricLoggerService {
 
     dataPointSeries.setTags(getTagsForSubmission(tags));
 
-    MetricsPayload metricsPayload =
-        new MetricsPayload().series(Collections.singletonList(dataPointSeries));
+    return new MetricsPayload().series(Collections.singletonList(dataPointSeries));
+  }
+
+  public void submitCount(@NotNull METRIC metric, String[] tags) {
+    submitCount(metric, 1.0, tags);
+  }
+
+  public void submitCount(@NotNull METRIC metric, double value, String[] tags) {
+    MetricsPayload payload = createMetricsPayload(metric, value, tags);
 
     try {
-      IntakePayloadAccepted payloadResult = metricsApi.submitMetrics(metricsPayload);
+      IntakePayloadAccepted payloadResult = metricsApi.submitMetrics(payload);
       log.info(
           String.format(
-              "submitted %s: %s", dataPointSeries.getMetric(), payloadResult.getStatus()));
+              "submitted %s: %s",
+              payload.getSeries().get(0).getMetric(), payloadResult.getStatus()));
     } catch (Exception e) {
       log.error(
           String.format(
-              "exception submitting %s: %s", dataPointSeries.getMetric(), e.getMessage()));
+              "exception submitting %s: %s",
+              payload.getSeries().get(0).getMetric(), e.getMessage()));
     }
   }
 
-  public void submitDistribution(METRIC metric, double value, String[] tags) {
+  public DistributionPointsPayload createDistributionPointsPayload(
+      @NotNull METRIC metric, double value, String[] tags) {
     DistributionPointItem distributionPointItem = new DistributionPointItem(value);
     DistributionPointsSeries dataPointSeries =
         new DistributionPointsSeries(
             getFullMetricString(metric),
             Collections.singletonList(Collections.singletonList(distributionPointItem)));
     dataPointSeries.setType(DistributionPointsType.DISTRIBUTION);
-
     dataPointSeries.setTags(getTagsForSubmission(tags));
 
+    return new DistributionPointsPayload().series(Collections.singletonList(dataPointSeries));
+  }
+
+  public void submitDistribution(@NotNull METRIC metric, double value, String[] tags) {
+    DistributionPointsPayload payload = createDistributionPointsPayload(metric, value, tags);
     try {
-      DistributionPointsPayload distributionPointsPayload =
-          new DistributionPointsPayload().series(Collections.singletonList(dataPointSeries));
-      IntakePayloadAccepted payloadResult =
-          metricsApi.submitDistributionPoints(distributionPointsPayload);
+      IntakePayloadAccepted payloadResult = metricsApi.submitDistributionPoints(payload);
       log.info(
           String.format(
-              "submitted %s: %s", dataPointSeries.getMetric(), payloadResult.getStatus()));
+              "submitted %s: %s",
+              payload.getSeries().get(0).getMetric(), payloadResult.getStatus()));
     } catch (Exception e) {
       log.error(
           String.format(
-              "exception submitting %s: %s", dataPointSeries.getMetric(), e.getMessage()));
+              "exception submitting %s: %s",
+              payload.getSeries().get(0).getMetric(), e.getMessage()));
     }
   }
 }
