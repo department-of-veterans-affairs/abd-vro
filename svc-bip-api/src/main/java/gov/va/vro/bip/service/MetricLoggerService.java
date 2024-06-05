@@ -39,16 +39,22 @@ public class MetricLoggerService {
         submitCount(metric, 1.0, tags);
     }
 
+    private ArrayList<String> getTagsForSubmission(String[] customTags){
+        ArrayList<String> tags = new ArrayList<>();
+        tags.add(ENV_VALUE);
+        tags.add(SERVICE_TAG);
+        if(customTags != null){
+            tags.addAll(Arrays.asList(customTags));
+        }
+        return tags;
+    }
+
     public void submitCount(METRIC metric, double value, String[] tags){
         Series dataPointSeries = new Series(getFullMetricString(metric),
                 Collections.singletonList(Collections.singletonList(value)));
         dataPointSeries.setType("count");
 
-        List<String> tagList = Arrays.asList(ENV_VALUE, SERVICE_TAG);
-        if(tags != null){
-            tagList.addAll(Arrays.asList(tags));
-        }
-        dataPointSeries.setTags(tagList);
+        dataPointSeries.setTags(getTagsForSubmission(tags));
 
         MetricsPayload metricsPayload = new MetricsPayload()
                 .series(Collections.singletonList(dataPointSeries));
@@ -63,15 +69,11 @@ public class MetricLoggerService {
 
     public void submitDistribution(METRIC metric, double value, String[] tags){
         DistributionPointItem distributionPointItem = new DistributionPointItem(value);
-        DistributionPointsSeries dataPointSeries = new DistributionPointsSeries(getFullMetricString(metric, true),
+        DistributionPointsSeries dataPointSeries = new DistributionPointsSeries(getFullMetricString(metric),
                 Collections.singletonList(Collections.singletonList(distributionPointItem)));
         dataPointSeries.setType(DistributionPointsType.DISTRIBUTION);
 
-        List<String> tagList = Arrays.asList(ENV_VALUE, SERVICE_TAG);
-        if(tags != null){
-            tagList.addAll(Arrays.asList(tags));
-        }
-        dataPointSeries.setTags(tagList);
+        dataPointSeries.setTags(getTagsForSubmission(tags));
 
         try {
             DistributionPointsPayload distributionPointsPayload =
