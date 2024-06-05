@@ -7,16 +7,28 @@ import com.datadog.api.client.v1.model.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.OffsetDateTime;
 import java.util.*;
 
 @Configuration
 @Slf4j
+@ConfigurationProperties
 public class MetricLoggerService {
 
-  @Value("${env:dev}")
+  @Value("${bip.env:dev}")
   private String ENV_VALUE;
+
+  @Value("${spring.datadog.site}")
+  private String DD_SITE;
+
+  @Value("${spring.datadog.api_key}")
+  private String DD_API_KEY;
+
+  @Value("${spring.datadog.app_key}")
+  private String DD_APP_KEY;
 
   private static final String APP_PREFIX = "vro_bip";
   private static final String SERVICE_TAG = "service:vro-svc-bip-api";
@@ -28,20 +40,30 @@ public class MetricLoggerService {
     RESPONSE_ERROR
   }
 
-  private final MetricsApi metricsApi;
+  private MetricsApi metricsApi;
 
   public MetricLoggerService() {
-    this(ApiClient.getDefaultApiClient());
-    metricsApi.getApiClient().setRetry(new RetryConfig(true, 2, 2, 3));
-  }
+    try {
+      ApiClient apiClient = new ApiClient();
+      HashMap<String, String> serverVariables = new HashMap<String, String>();
+      serverVariables.put("site", DD_SITE);
+      apiClient.setServerVariables(serverVariables);
 
-  public MetricLoggerService(ApiClient apiClient) {
-    metricsApi = new MetricsApi(apiClient);
-    log.info("initialized Datadog API client");
-  }
+      HashMap<String, String> secrets = new HashMap<String, String>();
+      if (DD_API_KEY != null) {
+        secrets.put("apiKeyAuth", DD_API_KEY);
+      }
+      if (DD_APP_KEY != null) {
+        secrets.put("appKeyAuth", DD_APP_KEY);
+      }
+      apiClient.configureApiKeys(secrets);
+      apiClient.setRetry(new RetryConfig(true, 2, 2, 3));
 
-  protected void setApiClient(ApiClient apiClient) {
-    metricsApi.setApiClient(apiClient);
+      metricsApi = new MetricsApi(ApiClient.getDefaultApiClient());
+      log.info("initialized Datadog API client");
+    } catch (Exception e) {
+      log.error(String.format("exception initializing Datadog API client: %s", e.getMessage()));
+    }
   }
 
   public static String getFullMetricString(@NotNull METRIC metric) {
@@ -58,14 +80,16 @@ public class MetricLoggerService {
     return tags;
   }
 
-  public MetricsPayload createMetricsPayload(@NotNull METRIC metric, double value, String[] tags) {
-    Series dataPointSeries =
-        new Series(
-            getFullMetricString(metric),
-            Collections.singletonList(Collections.singletonList(value)));
-    dataPointSeries.setType("count");
+  private static double getTimestamp() {
+    return Long.valueOf(OffsetDateTime.now().toInstant().getEpochSecond()).doubleValue();
+  }
 
+  public MetricsPayload createMetricsPayload(@NotNull METRIC metric, double value, String[] tags) {
+    Series dataPointSeries = new Series();
+    dataPointSeries.setMetric(getFullMetricString(metric));
+    dataPointSeries.setType("count");
     dataPointSeries.setTags(getTagsForSubmission(tags));
+    dataPointSeries.setPoints(Collections.singletonList(Arrays.asList(getTimestamp(), value)));
 
     return new MetricsPayload().series(Collections.singletonList(dataPointSeries));
   }
@@ -92,12 +116,15 @@ public class MetricLoggerService {
   }
 
   public DistributionPointsPayload createDistributionPointsPayload(
-      @NotNull METRIC metric, double value, String[] tags) {
-    DistributionPointItem distributionPointItem = new DistributionPointItem(value);
-    DistributionPointsSeries dataPointSeries =
-        new DistributionPointsSeries(
-            getFullMetricString(metric),
-            Collections.singletonList(Collections.singletonList(distributionPointItem)));
+      @NotNull METRIC metric, double timestamp, double value, String[] tags) {
+
+    DistributionPointsSeries dataPointSeries = new DistributionPointsSeries();
+    dataPointSeries.setMetric(getFullMetricString(metric));
+    dataPointSeries.setPoints(
+        List.of(
+            Arrays.asList(
+                new DistributionPointItem(getTimestamp()),
+                new DistributionPointItem(List.of(value)))));
     dataPointSeries.setType(DistributionPointsType.DISTRIBUTION);
     dataPointSeries.setTags(getTagsForSubmission(tags));
 
@@ -105,7 +132,14 @@ public class MetricLoggerService {
   }
 
   public void submitDistribution(@NotNull METRIC metric, double value, String[] tags) {
-    DistributionPointsPayload payload = createDistributionPointsPayload(metric, value, tags);
+    submitDistribution(metric, getTimestamp(), value, tags);
+  }
+
+  public void submitDistribution(
+      @NotNull METRIC metric, double timestamp, double value, String[] tags) {
+    DistributionPointsPayload payload =
+        createDistributionPointsPayload(metric, timestamp, value, tags);
+
     try {
       IntakePayloadAccepted payloadResult = metricsApi.submitDistributionPoints(payload);
       log.info(

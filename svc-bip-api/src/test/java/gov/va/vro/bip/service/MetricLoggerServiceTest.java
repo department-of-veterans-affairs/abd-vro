@@ -3,11 +3,13 @@ package gov.va.vro.bip.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.datadog.api.client.v1.model.DistributionPointItem;
 import com.datadog.api.client.v1.model.DistributionPointsPayload;
 import com.datadog.api.client.v1.model.MetricsPayload;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -56,21 +58,33 @@ public class MetricLoggerServiceTest {
     MetricsPayload mp =
         mls.createMetricsPayload(
             MetricLoggerService.METRIC.RESPONSE_COMPLETE, 14.0, new String[] {"zone:purple"});
+    assertEquals("count", mp.getSeries().get(0).getType());
     assertEquals(1, mp.getSeries().size());
     assertEquals("vro_bip.response_complete", mp.getSeries().get(0).getMetric());
-    assertEquals(14.0, mp.getSeries().get(0).getPoints().get(0).get(0));
+    assertEquals(14.0, mp.getSeries().get(0).getPoints().get(0).get(1));
     assertTrue(Objects.requireNonNull(mp.getSeries().get(0).getTags()).contains("zone:purple"));
   }
 
   @Test
   void testCreateDistributionPointsPayload() {
+    double timestamp =
+        Long.valueOf(OffsetDateTime.now().toInstant().getEpochSecond()).doubleValue();
     DistributionPointsPayload dpl =
         mls.createDistributionPointsPayload(
-            MetricLoggerService.METRIC.REQUEST_DURATION, 1523, new String[] {"food:pizza"});
+            MetricLoggerService.METRIC.REQUEST_DURATION,
+            timestamp,
+            1523,
+            new String[] {"food:pizza"});
     assertEquals(1, dpl.getSeries().size());
     assertEquals("vro_bip.request_duration", dpl.getSeries().get(0).getMetric());
     assertEquals(
-        Double.valueOf(1523), dpl.getSeries().get(0).getPoints().get(0).get(0).getDouble());
+        new DistributionPointItem(timestamp), dpl.getSeries().get(0).getPoints().get(0).get(0));
+    assertEquals(
+        new DistributionPointItem(List.of(1523.0)),
+        dpl.getSeries().get(0).getPoints().get(0).get(1));
     assertTrue(Objects.requireNonNull(dpl.getSeries().get(0).getTags()).contains("food:pizza"));
+    mls.submitCount(
+        MetricLoggerService.METRIC.RESPONSE_COMPLETE,
+        new String[] {"isTest:true", "source:ci-test"});
   }
 }
