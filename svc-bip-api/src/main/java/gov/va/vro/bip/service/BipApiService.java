@@ -138,8 +138,9 @@ public class BipApiService implements IBipApiService {
   private <T extends BipPayloadResponse> T makeRequest(
       String url, HttpMethod method, Object requestBody, Class<T> expectedResponse) {
 
-    metricLogger.submitCount(MetricLoggerService.METRIC.REQUEST,
-            new String[]{method.name(), expectedResponse.getSimpleName()});
+    metricLogger.submitCount(
+        MetricLoggerService.METRIC.REQUEST,
+        new String[] {method.name(), expectedResponse.getSimpleName()});
 
     try {
 
@@ -157,8 +158,12 @@ public class BipApiService implements IBipApiService {
           method,
           bipResponse.getStatusCode().value());
 
-      metricLogger.submitDistribution(MetricLoggerService.METRIC.REQUEST_DURATION, elapsedTime,
-              new String[]{bipResponse.getStatusCode().toString(), method.name(), expectedResponse.getSimpleName()});
+      metricLogger.submitDistribution(
+          MetricLoggerService.METRIC.REQUEST_DURATION,
+          elapsedTime,
+          new String[] {
+            bipResponse.getStatusCode().toString(), method.name(), expectedResponse.getSimpleName()
+          });
 
       BipPayloadResponse.BipPayloadResponseBuilder<?, ?> responseBuilder;
       if (bipResponse.hasBody()) {
@@ -167,8 +172,9 @@ public class BipApiService implements IBipApiService {
         responseBuilder = mapper.readValue("{}", expectedResponse).toBuilder();
       }
 
-      metricLogger.submitCount(MetricLoggerService.METRIC.RESPONSE_COMPLETE,
-              new String[]{method.name(), expectedResponse.getSimpleName()});
+      metricLogger.submitCount(
+          MetricLoggerService.METRIC.RESPONSE_COMPLETE,
+          new String[] {method.name(), expectedResponse.getSimpleName()});
 
       return (T)
           responseBuilder
@@ -191,8 +197,9 @@ public class BipApiService implements IBipApiService {
           HttpStatus.INTERNAL_SERVER_ERROR.value(),
           e.getMessage());
 
-      metricLogger.submitCount(MetricLoggerService.METRIC.RESPONSE_ERROR,
-              new String[]{method.name(), expectedResponse.getSimpleName(), e.getMessage()});
+      metricLogger.submitCount(
+          MetricLoggerService.METRIC.RESPONSE_ERROR,
+          new String[] {method.name(), expectedResponse.getSimpleName(), e.getMessage()});
 
       throw new BipException(e.getMessage(), e);
     }
