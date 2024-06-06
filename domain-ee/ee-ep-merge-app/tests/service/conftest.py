@@ -173,3 +173,34 @@ def assert_metrics_called(
 
     metric_logger_increment.assert_has_calls(increment_calls)
     metric_logger_distribution.assert_has_calls(distribution_calls)
+
+
+def assert_requests_and_metrics_for_success(
+    machine, metric_logger_distribution, metric_logger_increment, mock_hoppy_async_client, pending_contentions_response, ep400_contentions_response
+):
+    new_contentions = ContentionsUtil.new_contentions(pending_contentions_response.contentions, ep400_contentions_response.contentions)
+    merge_skipped = not new_contentions
+
+    requests = [
+        call(machine.job.job_id, get_pending_claim_req),
+        call(machine.job.job_id, get_ep400_claim_req),
+        call(machine.job.job_id, get_pending_contentions_req),
+        call(machine.job.job_id, get_ep400_contentions_req),
+        call(machine.job.job_id, get_pending_claim_req),
+        call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
+    ]
+    if not merge_skipped:
+        create_pending_claim_req = create_contentions.Request(claim_id=PENDING_CLAIM_ID, create_contentions=new_contentions).model_dump(by_alias=True)
+        requests.append(call(machine.job.job_id, create_pending_claim_req))
+    requests.extend(
+        [
+            call(machine.job.job_id, cancel_ep400_claim_req),
+            call(machine.job.job_id, add_claim_note_req),
+        ]
+    )
+
+    assert_hoppy_requests(
+        mock_hoppy_async_client,
+        requests,
+    )
+    assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_SUCCESS, None, len(new_contentions), not new_contentions)
