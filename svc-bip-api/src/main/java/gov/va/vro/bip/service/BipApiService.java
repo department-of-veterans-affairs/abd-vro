@@ -140,7 +140,10 @@ public class BipApiService implements IBipApiService {
 
     metricLogger.submitCount(
         MetricLoggerService.METRIC.REQUEST,
-        new String[] {method.name(), expectedResponse.getSimpleName()});
+        new String[] {
+          String.format("expectedResponse:%s", expectedResponse.getSimpleName()),
+          "source:bipApiService"
+        });
 
     try {
 
@@ -162,7 +165,8 @@ public class BipApiService implements IBipApiService {
           MetricLoggerService.METRIC.REQUEST_DURATION,
           elapsedTime,
           new String[] {
-            bipResponse.getStatusCode().toString(), method.name(), expectedResponse.getSimpleName()
+            String.format("expectedResponse:%s", expectedResponse.getSimpleName()),
+            "source:bipApiService"
           });
 
       BipPayloadResponse.BipPayloadResponseBuilder<?, ?> responseBuilder;
@@ -174,7 +178,10 @@ public class BipApiService implements IBipApiService {
 
       metricLogger.submitCount(
           MetricLoggerService.METRIC.RESPONSE_COMPLETE,
-          new String[] {method.name(), expectedResponse.getSimpleName()});
+          new String[] {
+            String.format("expectedResponse:%s", expectedResponse.getSimpleName()),
+            "source:bipApiService"
+          });
 
       return (T)
           responseBuilder
@@ -199,7 +206,11 @@ public class BipApiService implements IBipApiService {
 
       metricLogger.submitCount(
           MetricLoggerService.METRIC.RESPONSE_ERROR,
-          new String[] {method.name(), expectedResponse.getSimpleName(), e.getMessage()});
+          new String[] {
+            String.format("expectedResponse:%s", expectedResponse.getSimpleName()),
+            "source:bipApiService",
+            String.format("error:%s", e.getMessage())
+          });
 
       throw new BipException(e.getMessage(), e);
     }
