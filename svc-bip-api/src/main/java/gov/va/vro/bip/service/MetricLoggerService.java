@@ -4,31 +4,19 @@ import com.datadog.api.client.ApiClient;
 import com.datadog.api.client.RetryConfig;
 import com.datadog.api.client.v1.api.MetricsApi;
 import com.datadog.api.client.v1.model.*;
+import gov.va.vro.bip.config.DatadogConfigProperties;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 import java.time.OffsetDateTime;
 import java.util.*;
 
-@Configuration
 @Slf4j
-@ConfigurationProperties
+@ConfigurationProperties(prefix = "bip")
 public class MetricLoggerService {
 
-  @Value("${bip.env:dev}")
-  private String ENV_VALUE;
-
-  @Value("${spring.datadog.site}")
-  private String DD_SITE;
-
-  @Value("${spring.datadog.api_key}")
-  private String DD_API_KEY;
-
-  @Value("${spring.datadog.app_key}")
-  private String DD_APP_KEY;
+  public String env;
 
   private static final String APP_PREFIX = "vro_bip";
   private static final String SERVICE_TAG = "service:vro-svc-bip-api";
@@ -46,15 +34,17 @@ public class MetricLoggerService {
     try {
       ApiClient apiClient = new ApiClient();
       HashMap<String, String> serverVariables = new HashMap<String, String>();
-      serverVariables.put("site", DD_SITE);
+      serverVariables.put("site", DatadogConfigProperties.site);
       apiClient.setServerVariables(serverVariables);
 
       HashMap<String, String> secrets = new HashMap<String, String>();
-      if (DD_API_KEY != null) {
-        secrets.put("apiKeyAuth", DD_API_KEY);
+      if (DatadogConfigProperties.api_key != null) {
+        secrets.put("apiKeyAuth", DatadogConfigProperties.api_key);
+      }else{
+        log.warn("datadog api key not set");
       }
-      if (DD_APP_KEY != null) {
-        secrets.put("appKeyAuth", DD_APP_KEY);
+      if (DatadogConfigProperties.app_key != null) {
+        secrets.put("appKeyAuth", DatadogConfigProperties.app_key);
       }
       apiClient.configureApiKeys(secrets);
       apiClient.setRetry(new RetryConfig(true, 2, 2, 3));
@@ -72,7 +62,7 @@ public class MetricLoggerService {
 
   public ArrayList<String> getTagsForSubmission(String[] customTags) {
     ArrayList<String> tags = new ArrayList<>();
-    tags.add(String.format("environment:%s", ENV_VALUE));
+    tags.add(String.format("environment:%s", env));
     tags.add(SERVICE_TAG);
     if (customTags != null) {
       tags.addAll(Arrays.asList(customTags));
