@@ -40,7 +40,7 @@ public class MetricLoggerService {
       HashMap<String, String> secrets = new HashMap<String, String>();
       if (DatadogConfigProperties.api_key != null) {
         secrets.put("apiKeyAuth", DatadogConfigProperties.api_key);
-      }else{
+      } else {
         log.warn("datadog api key not set");
       }
       if (DatadogConfigProperties.app_key != null) {
