@@ -31,6 +31,6 @@ public enum ContentionEvent {
 
   public static String rabbitMqExchangeName(String topic) {
     return String.format(
-            "bie-events-%s", mapTopicToEvent(topic).toString().toLowerCase().replace("_", "-"));
+        "bie-events-%s", mapTopicToEvent(topic).toString().toLowerCase().replace("_", "-"));
   }
 }
