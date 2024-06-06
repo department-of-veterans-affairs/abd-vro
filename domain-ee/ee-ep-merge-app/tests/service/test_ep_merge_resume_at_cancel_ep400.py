@@ -5,9 +5,9 @@ from conftest import (
     EP400_CLAIM_ID,
     JOB_ID,
     PENDING_CLAIM_ID,
-    assert_hoppy_requests,
     add_claim_note_200,
     add_claim_note_req,
+    assert_hoppy_requests,
     cancel_claim_200,
     cancel_ep400_claim_req,
     get_ep400_claim_200,
@@ -51,15 +51,15 @@ def machine():
 
 class TestUpToGetPendingClaim:
     @pytest.mark.parametrize(
-        "invalid_request",
+        'invalid_request',
         [
-            pytest.param(ResponseException("Oops"), id="Caught Exception"),
-            pytest.param(load_response(response_400, get_claim.Response), id="400"),
-            pytest.param(load_response(response_404, get_claim.Response), id="404"),
-            pytest.param(load_response(response_500, get_claim.Response), id="500"),
+            pytest.param(ResponseException('Oops'), id='Caught Exception'),
+            pytest.param(load_response(response_400, get_claim.Response), id='400'),
+            pytest.param(load_response(response_404, get_claim.Response), id='404'),
+            pytest.param(load_response(response_500, get_claim.Response), id='500'),
             pytest.param(
-                get_claim.Response(statusCode=200, statusMessage="OK", claim=ClaimDetail(claimId=3, claimLifecycleStatus="Open")).model_dump(),
-                id="claim has no endProductCode",
+                get_claim.Response(statusCode=200, statusMessage='OK', claim=ClaimDetail(claimId=3, claimLifecycleStatus='Open')).model_dump(),
+                id='claim has no endProductCode',
             ),
         ],
     )
@@ -77,15 +77,15 @@ class TestUpToGetPendingClaim:
         )
 
     @pytest.mark.parametrize(
-        "no_contentions_response",
+        'no_contentions_response',
         [
-            pytest.param(get_contentions.Response(status_code=200, status_message="OK"), id="Implicit None"),
-            pytest.param(get_contentions.Response(status_code=200, status_message="OK", contentions=None), id="Explicit None"),
-            pytest.param(get_contentions.Response(status_code=200, status_message="OK", contentions=[]), id="Empty"),
+            pytest.param(get_contentions.Response(status_code=200, status_message='OK'), id='Implicit None'),
+            pytest.param(get_contentions.Response(status_code=200, status_message='OK', contentions=None), id='Explicit None'),
+            pytest.param(get_contentions.Response(status_code=200, status_message='OK', contentions=[]), id='Empty'),
         ],
     )
     def test_no_contentions_on_ep400_after_get_pending_claim_failure(self, machine, mock_hoppy_async_client, no_contentions_response):
-        mock_async_responses(mock_hoppy_async_client, [ResponseException("Oops"), no_contentions_response])
+        mock_async_responses(mock_hoppy_async_client, [ResponseException('Oops'), no_contentions_response])
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_PENDING_CLAIM, 2)
         assert_hoppy_requests(
             mock_hoppy_async_client,
@@ -97,19 +97,19 @@ class TestUpToGetPendingClaim:
         )
 
     @pytest.mark.parametrize(
-        "invalid_request",
+        'invalid_request',
         [
-            pytest.param(ResponseException("Oops"), id="Caught Exception"),
-            pytest.param(load_response(response_400, get_contentions.Response), id="400"),
-            pytest.param(load_response(response_404, get_contentions.Response), id="404"),
-            pytest.param(load_response(response_500, get_contentions.Response), id="500"),
+            pytest.param(ResponseException('Oops'), id='Caught Exception'),
+            pytest.param(load_response(response_400, get_contentions.Response), id='400'),
+            pytest.param(load_response(response_404, get_contentions.Response), id='404'),
+            pytest.param(load_response(response_500, get_contentions.Response), id='500'),
         ],
     )
     def test_invalid_request_at_get_ep400_contentions_after_get_pending_claim_failure(self, machine, mock_hoppy_async_client, invalid_request):
         mock_async_responses(
             mock_hoppy_async_client,
             [
-                ResponseException("Oops"),
+                ResponseException('Oops'),
                 invalid_request,
             ],
         )
@@ -124,19 +124,19 @@ class TestUpToGetPendingClaim:
         )
 
     @pytest.mark.parametrize(
-        "invalid_request",
+        'invalid_request',
         [
-            pytest.param(ResponseException("Oops"), id="Caught Exception"),
-            pytest.param(load_response(response_400, update_contentions.Response), id="400"),
-            pytest.param(load_response(response_404, update_contentions.Response), id="404"),
-            pytest.param(load_response(response_500, update_contentions.Response), id="500"),
+            pytest.param(ResponseException('Oops'), id='Caught Exception'),
+            pytest.param(load_response(response_400, update_contentions.Response), id='400'),
+            pytest.param(load_response(response_404, update_contentions.Response), id='404'),
+            pytest.param(load_response(response_500, update_contentions.Response), id='500'),
         ],
     )
     def test_invalid_request_at_update_ep400_contentions_after_get_pending_claim_failure(self, machine, mock_hoppy_async_client, invalid_request):
         mock_async_responses(
             mock_hoppy_async_client,
             [
-                ResponseException("Oops"),
+                ResponseException('Oops'),
                 get_ep400_contentions_200,
                 invalid_request,
             ],
@@ -155,16 +155,16 @@ class TestUpToGetPendingClaim:
 
 class TestUpToCancelClaim:
     @pytest.mark.parametrize(
-        "invalid_request,original_tsoj",
+        'invalid_request,original_tsoj',
         [
-            pytest.param(ResponseException("Oops"), "111", id="Caught Exception"),
-            pytest.param(load_response(response_400, cancel_claim.Response), "111", id="400"),
-            pytest.param(load_response(response_404, cancel_claim.Response), "111", id="404"),
-            pytest.param(load_response(response_500, cancel_claim.Response), "111", id="500"),
-            pytest.param(ResponseException("Oops"), None, id="Caught Exception, no original_tsoj"),
-            pytest.param(load_response(response_400, cancel_claim.Response), None, id="400, no original_tsoj"),
-            pytest.param(load_response(response_404, cancel_claim.Response), None, id="404, no original_tsoj"),
-            pytest.param(load_response(response_500, cancel_claim.Response), None, id="500, no original_tsoj"),
+            pytest.param(ResponseException('Oops'), '111', id='Caught Exception'),
+            pytest.param(load_response(response_400, cancel_claim.Response), '111', id='400'),
+            pytest.param(load_response(response_404, cancel_claim.Response), '111', id='404'),
+            pytest.param(load_response(response_500, cancel_claim.Response), '111', id='500'),
+            pytest.param(ResponseException('Oops'), None, id='Caught Exception, no original_tsoj'),
+            pytest.param(load_response(response_400, cancel_claim.Response), None, id='400, no original_tsoj'),
+            pytest.param(load_response(response_404, cancel_claim.Response), None, id='404, no original_tsoj'),
+            pytest.param(load_response(response_500, cancel_claim.Response), None, id='500, no original_tsoj'),
         ],
     )
     def test_invalid_request_at_cancel_claim_due_to_exception(self, machine, mock_hoppy_async_client, invalid_request, original_tsoj):
@@ -187,16 +187,16 @@ class TestUpToCancelClaim:
         )
 
     @pytest.mark.parametrize(
-        "invalid_request",
+        'invalid_request',
         [
-            pytest.param(ResponseException("Oops"), id="Caught Exception"),
-            pytest.param(load_response(response_400, tsoj.Response), id="400"),
-            pytest.param(load_response(response_404, tsoj.Response), id="404"),
-            pytest.param(load_response(response_500, tsoj.Response), id="500"),
+            pytest.param(ResponseException('Oops'), id='Caught Exception'),
+            pytest.param(load_response(response_400, tsoj.Response), id='400'),
+            pytest.param(load_response(response_404, tsoj.Response), id='404'),
+            pytest.param(load_response(response_500, tsoj.Response), id='500'),
         ],
     )
     def test_invalid_request_at_revert_tsoj_due_to_failure_to_cancel_claim(self, machine, mock_hoppy_async_client, invalid_request):
-        mock_async_responses(mock_hoppy_async_client, [get_pending_claim_200, get_ep400_claim_200, ResponseException("Oops"), invalid_request])
+        mock_async_responses(mock_hoppy_async_client, [get_pending_claim_200, get_ep400_claim_200, ResponseException('Oops'), invalid_request])
         process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION, 3)
         assert_hoppy_requests(
             mock_hoppy_async_client,
@@ -211,13 +211,12 @@ class TestUpToCancelClaim:
 
 
 class TestUpToAddClaimNote:
-
     @pytest.mark.parametrize(
-        "invalid_request",
+        'invalid_request',
         [
-            pytest.param(ResponseException("Oops"), id="Caught Exception"),
-            pytest.param(load_response(response_400, add_claim_note.Response), id="400"),
-            pytest.param(load_response(response_500, add_claim_note.Response), id="500"),
+            pytest.param(ResponseException('Oops'), id='Caught Exception'),
+            pytest.param(load_response(response_400, add_claim_note.Response), id='400'),
+            pytest.param(load_response(response_500, add_claim_note.Response), id='500'),
         ],
     )
     def test_invalid_request_at_add_claim_note_due_to_exception(self, machine, mock_hoppy_async_client, invalid_request):
@@ -236,7 +235,6 @@ class TestUpToAddClaimNote:
 
 
 class TestSuccess:
-
     def test_process_succeeds_with_different_contention(self, machine, mock_hoppy_async_client):
         mock_async_responses(mock_hoppy_async_client, [get_pending_claim_200, get_ep400_claim_200, cancel_claim_200, add_claim_note_200])
         process_and_assert(machine, JobState.COMPLETED_SUCCESS)

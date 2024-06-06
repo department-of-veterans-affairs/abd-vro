@@ -8,7 +8,7 @@ on:
   workflow_call:
 
 env:
-  COMPOSE_PROFILES: ""
+  COMPOSE_PROFILES: "platform"
 
 jobs:
   integration-test:
@@ -52,32 +52,9 @@ jobs:
           # Quit after 60 seconds
           retries: 30
 
-      - name: "Wait for VRO to be ready"
-        uses: nev7n/wait_for_response@v1
-        with:
-          url: 'http://localhost:8111/actuator/health'
-          responseCode: 200
-          # Retry every 2 seconds
-          interval: 2000
-          # Quit after 60 seconds
-          timeout: 60000
-
       - name: "Run the integration test"
         run: |
           source scripts/setenv.sh
-
-          # https://superuser.com/a/442395
-          STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST "http://localhost:8110/v3/xample-resource" \
-            -H "accept: application/json" -H "Content-Type: application/json" \
-            -d '{"resourceId":"1234","diagnosticCode":"J"}')
-          # Note: diagnosticCode must be J in order for the request to be routed to the svc-xample-j microservice,
-          # as coded in Xample's Camel route (XampleRoutes.java#L130-L131).
-
-          if [ "$STATUS_CODE" != 201 ]; then
-            echo "Unexpected status code: $STATUS_CODE"
-            exit 10
-          fi
-
           ./gradlew -p domain-xample integrationTest
 
       - name: "Collect docker logs"

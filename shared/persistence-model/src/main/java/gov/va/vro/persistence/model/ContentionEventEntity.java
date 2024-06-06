@@ -50,6 +50,9 @@ public class ContentionEventEntity extends BaseEntity {
   @Column(name = "actor_station")
   private String actorStation;
 
+  @Column(name = "actor_user_id")
+  private String actorUserId;
+
   @Column(name = "automation_indicator")
   private boolean automationIndicator;
 
@@ -79,4 +82,7 @@ public class ContentionEventEntity extends BaseEntity {
 
   @Column(name = "action_result_name")
   private String actionResultName;
+
+  @Column(name = "description")
+  private String description;
 }

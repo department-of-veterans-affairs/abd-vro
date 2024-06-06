@@ -1,0 +1,738 @@
+Diagnostic Code,Rated Issue Name,Max Rating,Body System,Category,Subcategory,CFR Reference
+5000,"Osteomyelitis, acute, subacute, or chronic",100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5001,"Bones and joints, tuberculosis of, active or inactive",100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5002,"Multi-joint arthritis (except post-traumatic and gout), 2 or more joints, as an active process",100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5003,"Degenerative arthritis, other than post-traumatic",20,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5004,"Arthritis, gonorrheal",100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5005,"Arthritis, pneumococcic",100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5006,"Arthritis, typhoid",100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5007,"Arthritis, syphilitic",100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5008,"Arthritis, streptococcic",100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5009,Other specified forms of arthropathy (excluding gout),100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5010,Post-traumatic arthritis,100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5011,Decompression illness,100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5012,"Bones, neoplasm, malignant, primary or secondary",100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5013,"Osteoporosis, residuals of",100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5014,"Osteomalacia, residuals of",100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5015,"Bones, neoplasm, benign",100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5016,Osteitis deformans,100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5017,Gout,100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5018,[Removed],100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5019,Bursitis,100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5020,[Removed],100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5021,Myositis,100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5022,[Removed],100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5023,Heterotopic ossification,100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5024,"Tenosynovitis, tendinitis, tendinosis or tendinopathy",100,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5025,"Fibromyalgia (fibrositis, primary fibromyalgia syndrome)",40,Musculoskeletal,"Acute, Subacute, or Chronic Diseases",,38 CFR 4.71a
+5051,Shoulder replacement (prosthesis),100,Musculoskeletal,Prosthetic Implants and Resurfacing,,38 CFR 4.71a
+5052,Elbow replacement (prosthesis),100,Musculoskeletal,Prosthetic Implants and Resurfacing,,38 CFR 4.71a
+5053,Wrist replacement (prosthesis),100,Musculoskeletal,Prosthetic Implants and Resurfacing,,38 CFR 4.71a
+5054,"Hip, resurfacing or replacement (prosthesis)",100,Musculoskeletal,Prosthetic Implants and Resurfacing,,38 CFR 4.71a
+5055,"Knee, resurfacing or replacement (prosthesis)",100,Musculoskeletal,Prosthetic Implants and Resurfacing,,38 CFR 4.71a
+5056,Ankle replacement (prosthesis),100,Musculoskeletal,Prosthetic Implants and Resurfacing,,38 CFR 4.71a
+5104,Anatomical loss of one hand and loss of use of one foot,100,Musculoskeletal,Prosthetic Implants and Resurfacing,,38 CFR 4.71a
+5105,Anatomical loss of one foot and loss of use of one hand,100,Musculoskeletal,Prosthetic Implants and Resurfacing,,38 CFR 4.71a
+5106,Anatomical loss of both hands,100,Musculoskeletal,Prosthetic Implants and Resurfacing,,38 CFR 4.71a
+5107,Anatomical loss of both feet,100,Musculoskeletal,Prosthetic Implants and Resurfacing,,38 CFR 4.71a
+5108,Anatomical loss of one hand and one foot,100,Musculoskeletal,Prosthetic Implants and Resurfacing,,38 CFR 4.71a
+5109,Loss of use of both hands,100,Musculoskeletal,Prosthetic Implants and Resurfacing,,38 CFR 4.71a
+5110,Loss of use of both feet,100,Musculoskeletal,Prosthetic Implants and Resurfacing,,38 CFR 4.71a
+5111,Loss of use of one hand and one foot,100,Musculoskeletal,Prosthetic Implants and Resurfacing,,38 CFR 4.71a
+5120,"Complete amputation, upper extremity",100,Musculoskeletal,Amputations: Upper Extremity,"Arm, amputation of:",38 CFR 4.71a
+5121,Above insertion of deltoid,90,Musculoskeletal,Amputations: Upper Extremity,"Arm, amputation of:",38 CFR 4.71a
+5122,Below insertion of deltoid,80,Musculoskeletal,Amputations: Upper Extremity,"Arm, amputation of:",38 CFR 4.71a
+5123,Above insertion of pronator teres,80,Musculoskeletal,Amputations: Upper Extremity,"Forearm, amputation of:",38 CFR 4.71a
+5124,Below insertion of pronator teres,70,Musculoskeletal,Amputations: Upper Extremity,"Forearm, amputation of:",38 CFR 4.71a
+5125,"Hand, loss of use of",70,Musculoskeletal,Amputations: Upper Extremity,"Forearm, amputation of:",38 CFR 4.71a
+5126,"Five digits of one hand, amputation of",70,Musculoskeletal,Amputations: Upper Extremity,"Four digits of one hand, amputation of:",38 CFR 4.71a
+5127,"Thumb, index, long and ring",70,Musculoskeletal,Amputations: Upper Extremity,"Four digits of one hand, amputation of:",38 CFR 4.71a
+5128,"Thumb, index, long and little",70,Musculoskeletal,Amputations: Upper Extremity,"Four digits of one hand, amputation of:",38 CFR 4.71a
+5129,"Thumb, index, ring and little",70,Musculoskeletal,Amputations: Upper Extremity,"Four digits of one hand, amputation of:",38 CFR 4.71a
+5130,"Thumb, long, ring and little",70,Musculoskeletal,Amputations: Upper Extremity,"Four digits of one hand, amputation of:",38 CFR 4.71a
+5131,"Index, long, ring and little",60,Musculoskeletal,Amputations: Upper Extremity,"Four digits of one hand, amputation of:",38 CFR 4.71a
+5132,"Thumb, index and long",60,Musculoskeletal,Amputations: Upper Extremity,"Three digits of one hand, amputation of:",38 CFR 4.71a
+5133,"Thumb, index and ring",60,Musculoskeletal,Amputations: Upper Extremity,"Three digits of one hand, amputation of:",38 CFR 4.71a
+5134,"Thumb, index and little",60,Musculoskeletal,Amputations: Upper Extremity,"Three digits of one hand, amputation of:",38 CFR 4.71a
+5135,"Thumb, long and ring",60,Musculoskeletal,Amputations: Upper Extremity,"Three digits of one hand, amputation of:",38 CFR 4.71a
+5136,"Thumb, long and little",60,Musculoskeletal,Amputations: Upper Extremity,"Three digits of one hand, amputation of:",38 CFR 4.71a
+5137,"Thumb, ring and little",60,Musculoskeletal,Amputations: Upper Extremity,"Three digits of one hand, amputation of:",38 CFR 4.71a
+5138,"Index, long and ring",50,Musculoskeletal,Amputations: Upper Extremity,"Three digits of one hand, amputation of:",38 CFR 4.71a
+5139,"Index, long and little",50,Musculoskeletal,Amputations: Upper Extremity,"Three digits of one hand, amputation of:",38 CFR 4.71a
+5140,"Index, ring and little",50,Musculoskeletal,Amputations: Upper Extremity,"Three digits of one hand, amputation of:",38 CFR 4.71a
+5141,"Long, ring and little",40,Musculoskeletal,Amputations: Upper Extremity,"Three digits of one hand, amputation of:",38 CFR 4.71a
+5142,Thumb and index,50,Musculoskeletal,Amputations: Upper Extremity,"Two digits of one hand, amputation of:",38 CFR 4.71a
+5143,Thumb and long,50,Musculoskeletal,Amputations: Upper Extremity,"Two digits of one hand, amputation of:",38 CFR 4.71a
+5144,Thumb and ring,50,Musculoskeletal,Amputations: Upper Extremity,"Two digits of one hand, amputation of:",38 CFR 4.71a
+5145,Thumb and little,50,Musculoskeletal,Amputations: Upper Extremity,"Two digits of one hand, amputation of:",38 CFR 4.71a
+5146,Index and long,40,Musculoskeletal,Amputations: Upper Extremity,"Two digits of one hand, amputation of:",38 CFR 4.71a
+5147,Index and ring,40,Musculoskeletal,Amputations: Upper Extremity,"Two digits of one hand, amputation of:",38 CFR 4.71a
+5148,Index and little,40,Musculoskeletal,Amputations: Upper Extremity,"Two digits of one hand, amputation of:",38 CFR 4.71a
+5149,Long and ring,30,Musculoskeletal,Amputations: Upper Extremity,"Two digits of one hand, amputation of:",38 CFR 4.71a
+5150,Long and little,30,Musculoskeletal,Amputations: Upper Extremity,"Two digits of one hand, amputation of:",38 CFR 4.71a
+5151,Ring and little,30,Musculoskeletal,Amputations: Upper Extremity,"Two digits of one hand, amputation of:",38 CFR 4.71a
+5152,"Thumb, amputation of",40,Musculoskeletal,Amputations: Upper Extremity,Single finger amputations,38 CFR 4.71a
+5153,"Index finger, amputation of",30,Musculoskeletal,Amputations: Upper Extremity,Single finger amputations,38 CFR 4.71a
+5154,"Long finger, amputation of",20,Musculoskeletal,Amputations: Upper Extremity,Single finger amputations,38 CFR 4.71a
+5155,"Ring finger, amputation of",20,Musculoskeletal,Amputations: Upper Extremity,Single finger amputations,38 CFR 4.71a
+5156,"Little finger, amputation of",20,Musculoskeletal,Amputations: Upper Extremity,Single finger amputations,38 CFR 4.71a
+5160,"Complete amputation, lower extremity",100,Musculoskeletal,Amputations: Lower Extremity,"Thigh, amputation of:",38 CFR 4.71a
+5161,"Upper third, one-third of the distance from perineum to knee joint measured from perineum",80,Musculoskeletal,Amputations: Lower Extremity,"Thigh, amputation of:",38 CFR 4.71a
+5162,Middle or lower thirds,60,Musculoskeletal,Amputations: Lower Extremity,"Thigh, amputation of:",38 CFR 4.71a
+5163,"With defective stump, thigh amputation recommended",60,Musculoskeletal,Amputations: Lower Extremity,"Leg, amputation of:",38 CFR 4.71a
+5164,Amputation not improvable by prosthesis controlled by natural knee action,60,Musculoskeletal,Amputations: Lower Extremity,"Leg, amputation of:",38 CFR 4.71a
+5165,"At a lower level, permitting prosthesis",40,Musculoskeletal,Amputations: Lower Extremity,"Leg, amputation of:",38 CFR 4.71a
+5166,"Forefoot, amputation proximal to metatarsal bones (more than one-half of metatarsal loss)",40,Musculoskeletal,Amputations: Lower Extremity,"Leg, amputation of:",38 CFR 4.71a
+5167,"Foot, loss of use of",40,Musculoskeletal,Amputations: Lower Extremity,"Leg, amputation of:",38 CFR 4.71a
+5170,"Toes, all, amputation of, without metatarsal loss or transmetatarsal, amputation of, with up to half of metatarsal loss",30,Musculoskeletal,Amputations: Lower Extremity,"Leg, amputation of:",38 CFR 4.71a
+5171,"Toe, great, amputation of",30,Musculoskeletal,Amputations: Lower Extremity,"Leg, amputation of:",38 CFR 4.71a
+5172,"Toes, other than great, amputation of, with removal of metatarsal head",20,Musculoskeletal,Amputations: Lower Extremity,"Leg, amputation of:",38 CFR 4.71a
+5173,"Toes, three or four, amputation of, without metatarsal involvement",20,Musculoskeletal,Amputations: Lower Extremity,"Leg, amputation of:",38 CFR 4.71a
+5200,"Scapulohumeral articulation, ankylosis of",50,Musculoskeletal,The Shoulder and Arm,,38 CFR 4.71a
+5201,"Arm, limitation of motion of",40,Musculoskeletal,The Shoulder and Arm,,38 CFR 4.71a
+5202,"Humerus, other impairment of",80,Musculoskeletal,The Shoulder and Arm,,38 CFR 4.71a
+5203,"Clavicle or scapula, impairment of",20,Musculoskeletal,The Shoulder and Arm,,38 CFR 4.71a
+5205,"Elbow, ankylosis of",60,Musculoskeletal,The Shoulder and Arm,,38 CFR 4.71a
+5206,"Forearm, limitation of flexion of",50,Musculoskeletal,The Shoulder and Arm,,38 CFR 4.71a
+5207,"Forearm, limitation of extension of",50,Musculoskeletal,The Shoulder and Arm,,38 CFR 4.71a
+5208,"Forearm, flexion limited to 100° and extension to 45°",20,Musculoskeletal,The Shoulder and Arm,,38 CFR 4.71a
+5209,"Elbow, other impairment of Flail joint",60,Musculoskeletal,The Shoulder and Arm,,38 CFR 4.71a
+5210,"Radius and ulna, nonunion of, with flail false joint",50,Musculoskeletal,The Shoulder and Arm,,38 CFR 4.71a
+5211,"Ulna, impairment of",40,Musculoskeletal,The Shoulder and Arm,,38 CFR 4.71a
+5212,"Radius, impairment of",40,Musculoskeletal,The Shoulder and Arm,,38 CFR 4.71a
+5213,"Supination and pronation, impairment of",40,Musculoskeletal,The Shoulder and Arm,,38 CFR 4.71a
+5214,"Wrist, ankylosis of",50,Musculoskeletal,The Shoulder and Arm,,38 CFR 4.71a
+5215,"Wrist, limitation of motion of",10,Musculoskeletal,The Shoulder and Arm,,38 CFR 4.71a
+5216,"Five digits of one hand, unfavorable ankylosis of",60,Musculoskeletal,Evaluation of Ankylosis or Limitation of Motion of Single or Multiple Digits of the Hand,,38 CFR 4.71a
+5217,"Four digits of one hand, unfavorable ankylosis of",60,Musculoskeletal,Evaluation of Ankylosis or Limitation of Motion of Single or Multiple Digits of the Hand,,38 CFR 4.71a
+5218,"Three digits of one hand, unfavorable ankylosis of",50,Musculoskeletal,Evaluation of Ankylosis or Limitation of Motion of Single or Multiple Digits of the Hand,,38 CFR 4.71a
+5219,"Two digits of one hand, unfavorable ankylosis of",40,Musculoskeletal,Evaluation of Ankylosis or Limitation of Motion of Single or Multiple Digits of the Hand,,38 CFR 4.71a
+5220,"Five digits of one hand, favorable ankylosis of",50,Musculoskeletal,Evaluation of Ankylosis or Limitation of Motion of Single or Multiple Digits of the Hand,,38 CFR 4.71a
+5221,"Four digits of one hand, favorable ankylosis of",50,Musculoskeletal,Evaluation of Ankylosis or Limitation of Motion of Single or Multiple Digits of the Hand,,38 CFR 4.71a
+5222,"Three digits of one hand, favorable ankylosis of",40,Musculoskeletal,Evaluation of Ankylosis or Limitation of Motion of Single or Multiple Digits of the Hand,,38 CFR 4.71a
+5223,"Two digits of one hand, favorable ankylosis of",30,Musculoskeletal,Evaluation of Ankylosis or Limitation of Motion of Single or Multiple Digits of the Hand,,38 CFR 4.71a
+5224,"Thumb, ankylosis of",20,Musculoskeletal,Evaluation of Ankylosis or Limitation of Motion of Single or Multiple Digits of the Hand,,38 CFR 4.71a
+5225,"Index finger, ankylosis of",10,Musculoskeletal,Evaluation of Ankylosis or Limitation of Motion of Single or Multiple Digits of the Hand,,38 CFR 4.71a
+5226,"Long finger, ankylosis of",10,Musculoskeletal,Evaluation of Ankylosis or Limitation of Motion of Single or Multiple Digits of the Hand,,38 CFR 4.71a
+5227,"Ring or little finger, ankylosis of",0,Musculoskeletal,Evaluation of Ankylosis or Limitation of Motion of Single or Multiple Digits of the Hand,,38 CFR 4.71a
+5228,"Thumb, limitation of motion",20,Musculoskeletal,Evaluation of Ankylosis or Limitation of Motion of Single or Multiple Digits of the Hand,,38 CFR 4.71a
+5229,"Index or long finger, limitation of motion",10,Musculoskeletal,Evaluation of Ankylosis or Limitation of Motion of Single or Multiple Digits of the Hand,,38 CFR 4.71a
+5230,"Ring or little finger, limitation of motion",0,Musculoskeletal,Evaluation of Ankylosis or Limitation of Motion of Single or Multiple Digits of the Hand,,38 CFR 4.71a
+5235,Vertebral fracture or dislocation,100,Musculoskeletal,The Spine,,38 CFR 4.71a
+5236,Sacroiliac injury and weakness,100,Musculoskeletal,The Spine,,38 CFR 4.71a
+5237,Lumbosacral or cervical strain,100,Musculoskeletal,The Spine,,38 CFR 4.71a
+5238,Spinal stenosis,100,Musculoskeletal,The Spine,,38 CFR 4.71a
+5239,Spondylolisthesis or segmental instability,100,Musculoskeletal,The Spine,,38 CFR 4.71a
+5240,Ankylosing spondylitis,100,Musculoskeletal,The Spine,,38 CFR 4.71a
+5241,Spinal fusion,100,Musculoskeletal,The Spine,,38 CFR 4.71a
+5242,"Degenerative arthritis, degenerative disc disease other than intervertebral disc syndrome",100,Musculoskeletal,The Spine,,38 CFR 4.71a
+5243,Intervertebral disc syndrome,100,Musculoskeletal,The Spine,,38 CFR 4.71a
+5244,"Traumatic paralysis, complete",100,Musculoskeletal,The Spine,,38 CFR 4.71a
+5250,"Hip, ankylosis of",90,Musculoskeletal,The Hip and Thigh,,38 CFR 4.71a
+5251,"Thigh, limitation of extension of",10,Musculoskeletal,The Hip and Thigh,,38 CFR 4.71a
+5252,"Thigh, limitation of flexion of",40,Musculoskeletal,The Hip and Thigh,,38 CFR 4.71a
+5253,"Thigh, impairment of",20,Musculoskeletal,The Hip and Thigh,,38 CFR 4.71a
+5254,"Hip, flail joint",80,Musculoskeletal,The Hip and Thigh,,38 CFR 4.71a
+5255,"Femur, impairment of",80,Musculoskeletal,The Hip and Thigh,,38 CFR 4.71a
+5256,"Knee, ankylosis of",60,Musculoskeletal,The Knee and Leg,,38 CFR 4.71a
+5257,"Knee, other impairment of",30,Musculoskeletal,The Knee and Leg,,38 CFR 4.71a
+5258,"Cartilage, semilunar, dislocated, with frequent episodes of “locking,” pain, and effusion into the joint",20,Musculoskeletal,The Knee and Leg,,38 CFR 4.71a
+5259,"Cartilage, semilunar, removal of, symptomatic",10,Musculoskeletal,The Knee and Leg,,38 CFR 4.71a
+5260,"Leg, limitation of flexion of",30,Musculoskeletal,The Knee and Leg,,38 CFR 4.71a
+5261,"Leg, limitation of extension of",50,Musculoskeletal,The Knee and Leg,,38 CFR 4.71a
+5262,"Tibia and fibula, impairment of",40,Musculoskeletal,The Knee and Leg,,38 CFR 4.71a
+5263,"Genu recurvatum (acquired, traumatic, with weakness and insecurity in weight-bearing objectively demonstrated)",10,Musculoskeletal,The Knee and Leg,,38 CFR 4.71a
+5269,Plantar fasciitis,40,Musculoskeletal,The Foot,,38 CFR 4.71a
+5270,"Ankle, ankylosis of",40,Musculoskeletal,The Ankle,,38 CFR 4.71a
+5271,"Ankle, limited motion of",20,Musculoskeletal,The Ankle,,38 CFR 4.71a
+5272,"Subastragalar or tarsal joint, ankylosis of",20,Musculoskeletal,The Ankle,,38 CFR 4.71a
+5273,"Os calcis or astragalus, malunion of",20,Musculoskeletal,The Ankle,,38 CFR 4.71a
+5274,Astragalectomy,20,Musculoskeletal,The Ankle,,38 CFR 4.71a
+5275,"Bones, of the lower extremity, shortening of",60,Musculoskeletal,Shortening of the Lower Extremity,,38 CFR 4.71a
+5276,"Flatfoot, acquired",50,Musculoskeletal,The Foot,,38 CFR 4.71a
+5277,"Weak foot, bilateral",100,Musculoskeletal,The Foot,,38 CFR 4.71a
+5278,"Claw foot (pes cavus), acquired",50,Musculoskeletal,The Foot,,38 CFR 4.71a
+5279,"Metatarsalgia, anterior (Morton's disease), unilateral, or bilateral",10,Musculoskeletal,The Foot,,38 CFR 4.71a
+5280,"Hallux valgus, unilateral",10,Musculoskeletal,The Foot,,38 CFR 4.71a
+5281,"Hallux rigidus, unilateral, severe",10,Musculoskeletal,The Foot,,38 CFR 4.71a
+5282,Hammer toe,10,Musculoskeletal,The Foot,,38 CFR 4.71a
+5283,"Tarsal, or metatarsal bones, malunion of, or nonunion of",40,Musculoskeletal,The Foot,,38 CFR 4.71a
+5284,"Foot injuries, other",40,Musculoskeletal,The Foot,,38 CFR 4.71a
+5296,"Skull, loss of part of, both inner and outer tables",80,Musculoskeletal,The Skull,,38 CFR 4.71a
+5297,"Ribs, removal of",50,Musculoskeletal,The Ribs,,38 CFR 4.71a
+5298,"Coccyx, removal of",10,Musculoskeletal,The Coccyx,,38 CFR 4.71a
+5301,Group I. Function: Upward rotation of scapula,40,Musculoskeletal,Muscle Injuries,,38 CFR 4.71a
+5302,Group II. Function: Depression of arm,40,Musculoskeletal,Muscle Injuries,,38 CFR 4.71a
+5303,Group III. Function: Elevation and abduction of arm,40,Musculoskeletal,Muscle Injuries,,38 CFR 4.71a
+5304,Group IV. Function: Stabilization of shoulder,30,Musculoskeletal,Muscle Injuries,,38 CFR 4.71a
+5305,Group V. Function: Elbow supination,40,Musculoskeletal,Muscle Injuries,,38 CFR 4.71a
+5306,Group VI. Function: Extension of elbow,40,Musculoskeletal,Muscle Injuries,,38 CFR 4.71a
+5307,Group VII. Function: Flexion of wrist and fingers,40,Musculoskeletal,Muscle Injuries,,38 CFR 4.71a
+5308,"Group VIII. Function: Extension of wrist, fingers, and thumb",30,Musculoskeletal,Muscle Injuries,,38 CFR 4.71a
+5309,Group IX. Function: The forearm,50,Musculoskeletal,Muscle Injuries,,38 CFR 4.71a
+5310,Group X. Function: Movements of forefoot and toes,30,Musculoskeletal,Muscle Injuries,,38 CFR 4.71a
+5311,"Group XI. Function: Propulsion, plantar flexion of foot",30,Musculoskeletal,Muscle Injuries,,38 CFR 4.71a
+5312,Group XII. Function: Dorsiflexion,30,Musculoskeletal,Muscle Injuries,,38 CFR 4.71a
+5313,Group XIII. Function: Extension of hip and flexion of knee,40,Musculoskeletal,Muscle Injuries,,38 CFR 4.71a
+5314,Group XIV. Function: Extension of knee,40,Musculoskeletal,Muscle Injuries,,38 CFR 4.71a
+5315,Group XV. Function: Adduction of hip,30,Musculoskeletal,Muscle Injuries,,38 CFR 4.71a
+5316,Group XVI. Function: Flexion of hip,40,Musculoskeletal,Muscle Injuries,,38 CFR 4.71a
+5317,Group XVII. Function: Extension of hip,50,Musculoskeletal,Muscle Injuries,,38 CFR 4.71a
+5318,Group XVIII. Function: Outward rotation of thigh,30,Musculoskeletal,Muscle Injuries,,38 CFR 4.71a
+5319,Group XIX. Function: Support and compression of abdominal wall and lower thoraz,50,Musculoskeletal,Muscle Injuries,,38 CFR 4.71a
+5320,Group XX. Function: Postural support of body,60,Musculoskeletal,Muscle Injuries,,38 CFR 4.71a
+5321,Group XXI. Function: Respiration,20,Musculoskeletal,Muscle Injuries,,38 CFR 4.71a
+5322,Group XXII. Function: Rotary and forward movements of the head,30,Musculoskeletal,Muscle Injuries,,38 CFR 4.71a
+5323,Group XXIII. Function: Movements of the head,30,Musculoskeletal,Muscle Injuries,,38 CFR 4.71a
+5324,"Diaphragm, rupture of, with herniation. Rate under diagnostic code 7346",60,Musculoskeletal,Miscellaneous,,38 CFR 4.71a
+5325,"Muscle injury, facial muscles. Evaluate functional impairment as seventh (facial) cranial nerve neuropathy (diagnostic code 8207), disfiguring scar (diagnostic code 7800), etc. Minimum, if interfering to any extent with mastication—10",80,Musculoskeletal,Miscellaneous,,38 CFR 4.71a
+5326,"Muscle hernia, extensive",10,Musculoskeletal,Miscellaneous,,38 CFR 4.71a
+5327,"Muscle, neoplasm of, malignant (excluding soft tissue sarcoma)",100,Musculoskeletal,Miscellaneous,,38 CFR 4.71a
+5328,"Muscle, neoplasm of, benign, postoperative. Rate on impairment of function, i.e, limitation of motion, or scars, diagnostic code 7805, etc",100,Musculoskeletal,Miscellaneous,,38 CFR 4.71a
+5329,"Sarcoma, soft tissue (of muscle, fat, or fibrous connective tissue)",100,Musculoskeletal,Miscellaneous,,38 CFR 4.71a
+5330,"Rhabdomyolysis, residuals of",100,Musculoskeletal,Miscellaneous,,38 CFR 4.71a
+5331,Compartment syndrome,60,Musculoskeletal,Miscellaneous,,38 CFR 4.71a
+6000,"Choroidopathy, including uveitis, iritis, cyclitis, or choroiditis",100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6001,Keratopathy,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6002,Scleritis,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6006,Retinopathy or maculopathy not otherwise specified,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6007,Intraocular hemorrhage,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6008,Detachment of retina,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6009,Unhealed eye injury,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6010,Tuberculosis of eye,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6011,"Retinal scars, atrophy, or irregularities",100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6012,Angle-closure glaucoma,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6013,Open-angle glaucoma,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6014,"Malignant neoplasms of the eye, orbit, and adnexa (excluding skin)",100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6015,"Benign neoplasms of the eye, orbit, and adnexa (excluding skin)",100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6016,"Nystagmus, central",10,The Organs of Special Sense,Eye,,38 CFR 4.79
+6017,Trachomatous conjunctivitis,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6018,Chronic conjunctivitis (nontrachomatous),100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6019,"Ptosis, unilateral or bilateral",100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6020,Ectropion,20,The Organs of Special Sense,Eye,,38 CFR 4.79
+6021,Entropion,20,The Organs of Special Sense,Eye,,38 CFR 4.79
+6022,Lagophthalmos,20,The Organs of Special Sense,Eye,,38 CFR 4.79
+6023,"Loss of eyebrows, complete, unilateral or bilateral",10,The Organs of Special Sense,Eye,,38 CFR 4.79
+6024,"Loss of eyelashes, complete, unilateral or bilateral",10,The Organs of Special Sense,Eye,,38 CFR 4.79
+6025,"Disorders of the lacrimal apparatus (epiphora, dacryocystitis, etc.)",20,The Organs of Special Sense,Eye,,38 CFR 4.79
+6026,Optic neuropathy,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6027,Cataract,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6029,Aphakia or dislocation of crystalline lens,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6030,Paralysis of accommodation (due to neuropathy of the Oculomotor Nerve (cranial nerve III)),20,The Organs of Special Sense,Eye,,38 CFR 4.79
+6032,"Loss of eyelids, partial or complete",100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6034,Pterygium,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6035,Keratoconus,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6036,Status post corneal transplant,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6037,Pinguecula,90,The Organs of Special Sense,Eye,,38 CFR 4.79
+6040,Diabetic retinopathy,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6042,"Retinal dystrophy (including retinitis pigmentosa, wet or dry macular degeneration, early-onset macular degeneration, rod and/or cone dystrophy)",100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6046,Post-chiasmal disorders,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6061,Anatomical loss of both eyes,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6062,No more than light perception in both eyes,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6063,Anatomical loss of one eye,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6064,No more than light perception in one eye,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6065,Vision in one eye 5/200 (1.5/60),100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6066,Visual acuity in one eye 10/200 (3/60) or better,90,The Organs of Special Sense,Eye,,38 CFR 4.79
+6080,Visual field defects,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6081,"Scotoma, unilateral",100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6090,Diplopia (double vision),100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6091,Symblepharon,100,The Organs of Special Sense,Eye,,38 CFR 4.79
+6200,"Chronic suppurative otitis media, mastoiditis, or cholesteatoma (or any combination)",10,The Organs of Special Sense,Ear,,38 CFR 4.87
+6201,Chronic nonsuppurative otitis media with effusion (serous otitis media),100,The Organs of Special Sense,Ear,,38 CFR 4.87
+6202,Otosclerosis,100,The Organs of Special Sense,Ear,,38 CFR 4.87
+6204,Peripheral vestibular disorders,30,The Organs of Special Sense,Ear,,38 CFR 4.87
+6205,Meniere's syndrome (endolymphatic hydrops),100,The Organs of Special Sense,Ear,,38 CFR 4.87
+6207,Loss of auricle,50,The Organs of Special Sense,Ear,,38 CFR 4.87
+6208,Malignant neoplasm of the ear (other than skin only),100,The Organs of Special Sense,Ear,,38 CFR 4.87
+6209,Benign neoplasms of the ear (other than skin only),100,The Organs of Special Sense,Ear,,38 CFR 4.87
+6210,Chronic otitis externa,10,The Organs of Special Sense,Ear,,38 CFR 4.87
+6211,"Tympanic membrane, perforation of",0,The Organs of Special Sense,Ear,,38 CFR 4.87
+6260,"Tinnitus, recurrent",10,The Organs of Special Sense,Ear,,38 CFR 4.87
+6275,"Sense of smell, complete loss",10,The Organs of Special Sense,Other sense organs,,38 CFR 4.87a
+6276,"Sense of taste, complete loss",10,The Organs of Special Sense,Other sense organs,,38 CFR 4.87a
+6300,"Vibriosis (Cholera, Non-cholera)",100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6301,Visceral leishmaniasis,100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6302,Leprosy (Hansen's disease),100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6304,Malaria,100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6305,"Lymphatic filariasis, to include elephantiasis",100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6306,Bartonellosis,100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6307,Plague,100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6308,Relapsing Fever,100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6309,Rheumatic fever,100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6310,"Syphilis, and other treponema infections",100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6311,"Tuberculosis, miliary",100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6312,Nontuberculosis mycobacterium infection,100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6313,Avitaminosis,100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6314,Beriberi,100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6315,Pellagra,100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6316,Brucellosis,100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6317,"Rickettsial, ehrlichia, and anaplasma infections",100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6318,Melioidosis,100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6319,Lyme disease,100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6320,Parasitic diseases otherwise not specified,100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6325,Hyperinfection syndrome or disseminated strongyloidiasis,100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6326,Schistosomiasis,0,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6329,"Hemorrhagic fevers, including dengue, yellow fever, and others",100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6330,Campylobacter jejuni infection,100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6331,Coxiella burnetii infection (Q fever),100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6333,Nontyphoid salmonella infections,100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6334,Shigella infections,100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6335,West Nile virus infection,100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6350,"Lupus erythematosus, systemic (disseminated)",100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6351,HIV-related illness,100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6354,Chronic fatigue syndrome (CFS),100,"Infectious Diseases, Immune Disorders and Nutritional Deficiencies",,,38 CFR 4.88b
+6502,"Septum, nasal, deviation of",10,The respiratory system,DISEASES OF THE NOSE AND THROAT,,38 CFR 4.97
+6504,"Nose, loss of part of, or scars",30,The respiratory system,DISEASES OF THE NOSE AND THROAT,,38 CFR 4.97
+6510,"Sinusitis, pansinusitis, chronic",50,The respiratory system,DISEASES OF THE NOSE AND THROAT,,38 CFR 4.97
+6511,"Sinusitis, ethmoid, chronic",50,The respiratory system,DISEASES OF THE NOSE AND THROAT,,38 CFR 4.97
+6512,"Sinusitis, frontal, chronic",50,The respiratory system,DISEASES OF THE NOSE AND THROAT,,38 CFR 4.97
+6513,"Sinusitis, maxillary, chronic",50,The respiratory system,DISEASES OF THE NOSE AND THROAT,,38 CFR 4.97
+6514,"Sinusitis, sphenoid, chronic",50,The respiratory system,DISEASES OF THE NOSE AND THROAT,,38 CFR 4.97
+6515,"Laryngitis, tuberculous, active or inactive",100,The respiratory system,DISEASES OF THE NOSE AND THROAT,,38 CFR 4.97
+6516,"Laryngitis, chronic",30,The respiratory system,DISEASES OF THE NOSE AND THROAT,,38 CFR 4.97
+6518,"Laryngectomy, total",100,The respiratory system,DISEASES OF THE NOSE AND THROAT,,38 CFR 4.97
+6519,"Aphonia, complete organic",100,The respiratory system,DISEASES OF THE NOSE AND THROAT,,38 CFR 4.97
+6520,"Larynx, stenosis of, including residuals of laryngeal trauma (unilateral or bilateral)",100,The respiratory system,DISEASES OF THE NOSE AND THROAT,,38 CFR 4.97
+6521,"Pharynx, injuries to",50,The respiratory system,DISEASES OF THE NOSE AND THROAT,,38 CFR 4.97
+6522,Allergic or vasomotor rhinitis,30,The respiratory system,DISEASES OF THE NOSE AND THROAT,,38 CFR 4.97
+6523,Bacterial rhinitis,50,The respiratory system,DISEASES OF THE NOSE AND THROAT,,38 CFR 4.97
+6524,Granulomatous rhinitis,100,The respiratory system,DISEASES OF THE NOSE AND THROAT,,38 CFR 4.97
+6600,"Bronchitis, chronic",100,The respiratory system,DISEASES OF THE TRACHEA AND BRONCHI,,38 CFR 4.97
+6601,Bronchiectasis,100,The respiratory system,DISEASES OF THE TRACHEA AND BRONCHI,,38 CFR 4.97
+6602,"Asthma, bronchial",100,The respiratory system,DISEASES OF THE TRACHEA AND BRONCHI,,38 CFR 4.97
+6603,"Emphysema, pulmonary",100,The respiratory system,DISEASES OF THE TRACHEA AND BRONCHI,,38 CFR 4.97
+6604,Chronic obstructive pulmonary disease,100,The respiratory system,DISEASES OF THE TRACHEA AND BRONCHI,,38 CFR 4.97
+6701,"Tuberculosis, pulmonary, chronic, far advanced, active",100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6702,"Tuberculosis, pulmonary, chronic, moderately advanced, active",100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6703,"Tuberculosis, pulmonary, chronic, minimal, active",100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6704,"Tuberculosis, pulmonary, chronic, active, advancement unspecified",100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6721,"Tuberculosis, pulmonary, chronic, far advanced, inactive",100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6722,"Tuberculosis, pulmonary, chronic, moderately advanced, inactive",100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6723,"Tuberculosis, pulmonary, chronic, minimal, inactive",100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6724,"Tuberculosis, pulmonary, chronic, inactive, advancement unspecified",100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6730,"Tuberculosis, pulmonary, chronic, active",100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6731,"Tuberculosis, pulmonary, chronic, inactive",100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6732,"Pleurisy, tuberculous, active or inactive",100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6817,Pulmonary Vascular Disease,100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6819,"Neoplasms, malignant, any specified part of respiratory system exclusive of skin growths",100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6820,"Neoplasms, benign, any specified part of respiratory system. Evaluate using an appropriate respiratory analogy",100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6822,Actinomycosis,100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6823,Nocardiosis,100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6824,Chronic lung abscess,100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6825,"Diffuse interstitial fibrosis (interstitial pneumonitis, fibrosing alveolitis)",100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6826,Desquamative interstitial pneumonitis,100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6827,Pulmonary alveolar proteinosis,100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6828,Eosinophilic granuloma of lung,100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6829,Drug-induced pulmonary pneumonitis and fibrosis,100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6830,Radiation-induced pulmonary pneumonitis and fibrosis,100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6831,Hypersensitivity pneumonitis (extrinsic allergic alveolitis),100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6832,"Pneumoconiosis (silicosis, anthracosis, etc.)",100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6833,Asbestosis,100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6834,Histoplasmosis of lung,100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6835,Coccidioidomycosis,100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6836,Blastomycosis,100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6837,Cryptococcosis,100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6838,Aspergillosis,100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6839,Mucormycosis,100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6840,Diaphragm paralysis or paresis,100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6841,Spinal cord injury with respiratory insufficiency,100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6842,"Kyphoscoliosis, pectus excavatum, pectus carinatum",100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6843,"Traumatic chest wall defect, pneumothorax, hernia, etc",100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6844,"Post-surgical residual (lobectomy, pneumonectomy, etc.)",100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6845,Chronic pleural effusion or fibrosis,100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6846,Sarcoidosis,100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+6847,"Sleep Apnea Syndromes (Obstructive, Central, Mixed)",100,The respiratory system,DISEASES OF THE LUNGS AND PLEURA—TUBERCULOSIS,,38 CFR 4.97
+7000,"Valvular heart disease (including rheumatic heart disease),",100,The Cardiovascular System,,,38 CFR 4.104
+7001,"Endocarditis, or",100,The Cardiovascular System,,,38 CFR 4.104
+7002,Pericarditis,100,The Cardiovascular System,,,38 CFR 4.104
+7003,Pericardial adhesions,100,The Cardiovascular System,,,38 CFR 4.104
+7004,Syphilitic heart disease,100,The Cardiovascular System,,,38 CFR 4.104
+7005,Arteriosclerotic heart disease (coronary artery disease),100,The Cardiovascular System,,,38 CFR 4.104
+7006,Myocardial infarction,100,The Cardiovascular System,,,38 CFR 4.104
+7007,Hypertensive heart disease,100,The Cardiovascular System,,,38 CFR 4.104
+7008,Hyperthyroid heart disease,100,The Cardiovascular System,,,38 CFR 4.104
+7009,"Bradycardia (Bradyarrhythmia), symptomatic, requiring permanent pacemaker implantation",100,The Cardiovascular System,,,38 CFR 4.104
+7010,Supraventricular tachycardia,30,The Cardiovascular System,,,38 CFR 4.104
+7011,Ventricular arrhythmias (sustained),100,The Cardiovascular System,,,38 CFR 4.104
+7015,Atrioventricular block,100,The Cardiovascular System,,,38 CFR 4.104
+7016,Heart valve replacement (prosthesis),100,The Cardiovascular System,,,38 CFR 4.104
+7017,Coronary bypass surgery,100,The Cardiovascular System,,,38 CFR 4.104
+7018,Implantable cardiac pacemakers,100,The Cardiovascular System,,,38 CFR 4.104
+7019,Cardiac transplantation,100,The Cardiovascular System,,,38 CFR 4.104
+7020,Cardiomyopathy,100,The Cardiovascular System,,,38 CFR 4.104
+7101,Hypertensive vascular disease (hypertension and isolated systolic hypertension),60,The Cardiovascular System,Diseases of the Arteries and Veins,,38 CFR 4.104
+7110,"Aortic aneurysm. Ascending, thoracic, or abdominal",100,The Cardiovascular System,Diseases of the Arteries and Veins,,38 CFR 4.104
+7111,"Aneurysm, any large artery",100,The Cardiovascular System,Diseases of the Arteries and Veins,,38 CFR 4.104
+7112,"Aneurysm, any small artery",100,The Cardiovascular System,Diseases of the Arteries and Veins,,38 CFR 4.104
+7113,"Arteriovenous fistula, traumatic",100,The Cardiovascular System,Diseases of the Arteries and Veins,,38 CFR 4.104
+7114,Peripheral arterial disease,100,The Cardiovascular System,Diseases of the Arteries and Veins,,38 CFR 4.104
+7115,Thrombo-angiitis obliterans (Buerger's Disease),100,The Cardiovascular System,Diseases of the Arteries and Veins,,38 CFR 4.104
+7117,Raynaud's syndrome (also known as secondary Raynaud's phenomenon or secondary Raynaud's),100,The Cardiovascular System,Diseases of the Arteries and Veins,,38 CFR 4.104
+7118,Angioneurotic edema,40,The Cardiovascular System,Diseases of the Arteries and Veins,,38 CFR 4.104
+7119,Erythromelalgia,100,The Cardiovascular System,Diseases of the Arteries and Veins,,38 CFR 4.104
+7120,Varicose veins,100,The Cardiovascular System,Diseases of the Arteries and Veins,,38 CFR 4.104
+7121,Post-phlebitic syndrome of any etiology,100,The Cardiovascular System,Diseases of the Arteries and Veins,,38 CFR 4.104
+7122,Cold injury residuals,30,The Cardiovascular System,Diseases of the Arteries and Veins,,38 CFR 4.104
+7123,Soft tissue sarcoma (of vascular origin),100,The Cardiovascular System,Diseases of the Arteries and Veins,,38 CFR 4.104
+7124,Raynaud's disease (also known as primary Raynaud's),10,The Cardiovascular System,Diseases of the Arteries and Veins,,38 CFR 4.104
+7200,"Soft tissue injury of the mouth, other than tongue or lips",90,The Digestive System,,,38 CFR 4.114
+7201,"Lips, injuries of",90,The Digestive System,,,38 CFR 4.114
+7202,"Tongue, loss of whole or part",100,The Digestive System,,,38 CFR 4.114
+7203,"Esophagus, stricture of",80,The Digestive System,,,38 CFR 4.114
+7204,Esophageal motility disorder,80,The Digestive System,,,38 CFR 4.114
+7205,"Esophagus, diverticulum of, acquired",80,The Digestive System,,,38 CFR 4.114
+7206,Gastroesophageal reflux disease,80,The Digestive System,,,38 CFR 4.114
+7207,Barrett’s esophagus,80,The Digestive System,,,38 CFR 4.114
+7301,"Peritoneum, adhesions of, due to surgery, trauma, disease, or infection",80,The Digestive System,,,38 CFR 4.114
+7303,Chronic complications of upper gastrointestinal surgery,80,The Digestive System,,,38 CFR 4.114
+7304,Peptic ulcer disease,100,The Digestive System,,,38 CFR 4.114
+7305,[Removed],,The Digestive System,,,38 CFR 4.114
+7306,[Removed],,The Digestive System,,,38 CFR 4.114
+7307,"Gastritis, chronic",100,The Digestive System,,,38 CFR 4.114
+7308,Postgastrectomy syndromes,80,The Digestive System,,,38 CFR 4.114
+7309,"Stomach, stenosis of",100,The Digestive System,,,38 CFR 4.114
+7310,"Stomach, injury of, residuals",80,The Digestive System,,,38 CFR 4.114
+7311,Residuals of injury of the liver,100,The Digestive System,,,38 CFR 4.114
+7312,"Cirrhosis of the liver, primary biliary cirrhosis, or cirrhotic phase of sclerosing cholangitis",100,The Digestive System,,,38 CFR 4.114
+7314,Chronic biliary tract disease,30,The Digestive System,,,38 CFR 4.114
+7315,"Cholelithiasis, chronic",30,The Digestive System,,,38 CFR 4.114
+7316,[Removed],,The Digestive System,,,38 CFR 4.114
+7317,"Gall bladder, injury of",80,The Digestive System,,,38 CFR 4.114
+7318,"Cholecystectomy (gallbladder removal), complications of (such as strictures and biliary leaks)",30,The Digestive System,,,38 CFR 4.114
+7319,Irritable bowel syndrome (IBS),30,The Digestive System,,,38 CFR 4.114
+7321,[Removed],,The Digestive System,,,38 CFR 4.114
+7322,[Removed],,The Digestive System,,,38 CFR 4.114
+7323,"Colitis, ulcerative",100,The Digestive System,,,38 CFR 4.114
+7324,[Removed],,The Digestive System,,,38 CFR 4.114
+7325,"Enteritis, chronic",100,The Digestive System,,,38 CFR 4.114
+7326,Crohn’s disease or undifferentiated form of inflammatory bowel disease,100,The Digestive System,,,38 CFR 4.114
+7327,Diverticulitis and diverticulosis,100,The Digestive System,,,38 CFR 4.114
+7328,"Intestine, small, resection of",100,The Digestive System,,,38 CFR 4.114
+7329,"Intestine, large, resection of",100,The Digestive System,,,38 CFR 4.114
+7330,"Intestinal fistulous disease, external",100,The Digestive System,,,38 CFR 4.114
+7331,[Removed],,The Digestive System,,,38 CFR 4.114
+7332,"Rectum and anus, impairment of sphincter control",100,The Digestive System,,,38 CFR 4.114
+7333,"Rectum and anus, stricture of",100,The Digestive System,,,38 CFR 4.114
+7334,"Rectum, prolapse of",100,The Digestive System,,,38 CFR 4.114
+7335,"Ano, fistula in, including anorectal fistula and anorectal abscess",60,The Digestive System,,,38 CFR 4.114
+7336,"Hemorrhoids, external or internal",20,The Digestive System,,,38 CFR 4.114
+7337,Pruritus ani,10,The Digestive System,,,38 CFR 4.114
+7338,"Hernia, including femoral, inguinal, umbilical, ventral, incisional, and other (but not including hiatal)",100,The Digestive System,,,38 CFR 4.114
+7339,[Removed],,The Digestive System,,,38 CFR 4.114
+7340,[Removed],,The Digestive System,,,38 CFR 4.114
+7342,[Removed],,The Digestive System,,,38 CFR 4.114
+7343,[Removed],,The Digestive System,,,38 CFR 4.114
+7344,"Benign neoplasms, exclusive of skin growths",,The Digestive System,,,38 CFR 4.114
+7345,"Chronic liver disease without cirrhosis (including hepatitis B, chronic active hepatitis, autoimmune hepatitis, hemochromatosis, drug-induced hepatitis, etc., but excluding bile duct disorders and hepatitis C)",100,The Digestive System,,,38 CFR 4.114
+7346,Hiatal hernia and paraesophageal hernia,80,The Digestive System,,,38 CFR 4.114
+7347,"Pancreatitis, chronic",100,The Digestive System,,,38 CFR 4.114
+7348,Vagotomy with pyloroplasty or gastroenterostomy,40,The Digestive System,,,38 CFR 4.114
+7350,Liver abscess,100,The Digestive System,,,38 CFR 4.114
+7351,Liver transplant,100,The Digestive System,,,38 CFR 4.114
+7352,Pancreas transplant,100,The Digestive System,,,38 CFR 4.114
+7354,"Hepatitis C (or non-A, non-B hepatitis)",100,The Digestive System,,,38 CFR 4.114
+7355,Celiac disease,100,The Digestive System,,,38 CFR 4.114
+7356,Gastrointestinal dysmotility syndrome,80,The Digestive System,,,38 CFR 4.114
+7357,Post pancreatectomy syndrome,100,The Digestive System,,,38 CFR 4.114
+7500,"Kidney, removal of one",100,The Genitourinary System,,,38 CFR 4.115b
+7501,"Kidney, abscess of",30,The Genitourinary System,,,38 CFR 4.115b
+7502,"Nephritis, chronic",100,The Genitourinary System,,,38 CFR 4.115b
+7504,"Pyelonephritis, chronic",100,The Genitourinary System,,,38 CFR 4.115b
+7505,"Kidney, tuberculosis of",100,The Genitourinary System,,,38 CFR 4.115b
+7507,"Nephrosclerosis, arteriolar",100,The Genitourinary System,,,38 CFR 4.115b
+7508,Nephrolithiasis/Ureterolithiasis/Nephrocalcinosis,100,The Genitourinary System,,,38 CFR 4.115b
+7509,Hydronephrosis,100,The Genitourinary System,,,38 CFR 4.115b
+7511,"Ureter, stricture of",100,The Genitourinary System,,,38 CFR 4.115b
+7512,"Cystitis, chronic, includes interstitial and all etiologies, infectious and non-infectious",60,The Genitourinary System,,,38 CFR 4.115b
+7515,"Bladder, calculus in, with symptoms interfering with function",60,The Genitourinary System,,,38 CFR 4.115b
+7516,"Bladder, fistula of",100,The Genitourinary System,,,38 CFR 4.115b
+7517,"Bladder, injury of",60,The Genitourinary System,,,38 CFR 4.115b
+7518,"Urethra, stricture of",60,The Genitourinary System,,,38 CFR 4.115b
+7519,"Urethra, fistula of",100,The Genitourinary System,,,38 CFR 4.115b
+7520,"Penis, removal of half or more",30,The Genitourinary System,,,38 CFR 4.115b
+7521,"Penis, removal of glans",20,The Genitourinary System,,,38 CFR 4.115b
+7522,"Erectile dysfunction, with or without penile deformity",0,The Genitourinary System,,,38 CFR 4.115b
+7523,"Testis, atrophy complete",20,The Genitourinary System,,,38 CFR 4.115b
+7524,"Testis, removal",30,The Genitourinary System,,,38 CFR 4.115b
+7525,"Prostatitis, urethritis, epididymitis, orchitis (unilateral or bilateral), chronic only",100,The Genitourinary System,,,38 CFR 4.115b
+7527,"Prostate gland injuries, infections, hypertrophy, postoperative residuals, bladder outlet obstruction",60,The Genitourinary System,,,38 CFR 4.115b
+7528,Malignant neoplasms of the genitourinary system,100,The Genitourinary System,,,38 CFR 4.115b
+7529,Benign neoplasms of the genitourinary system,100,The Genitourinary System,,,38 CFR 4.115b
+7530,Chronic renal disease requiring regular dialysis,100,The Genitourinary System,,,38 CFR 4.115b
+7531,Kidney transplant,100,The Genitourinary System,,,38 CFR 4.115b
+7532,"Renal tubular disorders (such as renal glycosurias, aminoacidurias, renal tubular acidosis, Fanconi's syndrome, Bartter's syndrome, related disorders of Henle's loop and proximal or distal nephron function, etc.)",100,The Genitourinary System,,,38 CFR 4.115b
+7533,Cystic diseases of the kidneys,100,The Genitourinary System,,,38 CFR 4.115b
+7534,"Atherosclerotic renal disease (renal artery stenosis, atheroembolic renal disease, or large vessel disease, unspecified)",100,The Genitourinary System,,,38 CFR 4.115b
+7535,"Toxic nephropathy (antibotics, radiocontrast agents, nonsteroidal anti-inflammatory agents, heavy metals, and similar agents)",100,The Genitourinary System,,,38 CFR 4.115b
+7536,Glomerulonephritis,100,The Genitourinary System,,,38 CFR 4.115b
+7537,"Interstitial nephritis, including gouty nephropathy, disorders of calcium metabolism",100,The Genitourinary System,,,38 CFR 4.115b
+7538,Papillary necrosis,100,The Genitourinary System,,,38 CFR 4.115b
+7539,Renal amyloid disease,100,The Genitourinary System,,,38 CFR 4.115b
+7540,Disseminated intravascular coagulation with renal cortical necrosis,100,The Genitourinary System,,,38 CFR 4.115b
+7541,Renal involvement in diabetes mellitus type I or II,100,The Genitourinary System,,,38 CFR 4.115b
+7542,Neurogenic bladder,60,The Genitourinary System,,,38 CFR 4.115b
+7543,Varicocele/Hydrocele,0,The Genitourinary System,,,38 CFR 4.115b
+7544,"Renal disease caused by viral infection such as human immunodeficiency virus (HIV), Hepatitis B, and Hepatitis C",100,The Genitourinary System,,,38 CFR 4.115b
+7545,"Bladder, diverticulum of",60,The Genitourinary System,,,38 CFR 4.115b
+7610,"Vulva or clitoris, disease or injury of (including vulvovaginitis)",30,Gynecological Conditions and Disorders of the Breast,,,38 CFR 4.116
+7611,"Vagina, disease or injury of",30,Gynecological Conditions and Disorders of the Breast,,,38 CFR 4.116
+7612,"Cervix, disease or injury of",30,Gynecological Conditions and Disorders of the Breast,,,38 CFR 4.116
+7613,"Uterus, disease, injury, or adhesions of",30,Gynecological Conditions and Disorders of the Breast,,,38 CFR 4.116
+7614,"Fallopian tube, disease, injury, or adhesions of (including pelvic inflammatory disease (PID))",30,Gynecological Conditions and Disorders of the Breast,,,38 CFR 4.116
+7615,"Ovary, disease, injury, or adhesions of",30,Gynecological Conditions and Disorders of the Breast,,,38 CFR 4.116
+7617,"Uterus and both ovaries, removal of, complete",100,Gynecological Conditions and Disorders of the Breast,,,38 CFR 4.116
+7618,"Uterus, removal of, including corpus",100,Gynecological Conditions and Disorders of the Breast,,,38 CFR 4.116
+7619,"Ovary, removal of",100,Gynecological Conditions and Disorders of the Breast,,,38 CFR 4.116
+7620,"Ovaries, atrophy of both, complete",20,Gynecological Conditions and Disorders of the Breast,,,38 CFR 4.116
+7621,"Complete or incomplete pelvic organ prolapse due to injury, disease, or surgical complications of pregnancy",10,Gynecological Conditions and Disorders of the Breast,,,38 CFR 4.116
+7624,"Fistula, rectovaginal",100,Gynecological Conditions and Disorders of the Breast,,,38 CFR 4.116
+7625,"Fistula, urethrovaginal",100,Gynecological Conditions and Disorders of the Breast,,,38 CFR 4.116
+7626,"Breast, surgery of",80,Gynecological Conditions and Disorders of the Breast,,,38 CFR 4.116
+7627,Malignant neoplasms of gynecological system,100,Gynecological Conditions and Disorders of the Breast,,,38 CFR 4.116
+7628,Benign neoplasms of gynecological system,,Gynecological Conditions and Disorders of the Breast,,,38 CFR 4.116
+7629,Endometriosis,50,Gynecological Conditions and Disorders of the Breast,,,38 CFR 4.116
+7630,Malignant neoplasms of the breast,100,Gynecological Conditions and Disorders of the Breast,,,38 CFR 4.116
+7631,Benign neoplasms of the breast and other injuries of the breast,,Gynecological Conditions and Disorders of the Breast,,,38 CFR 4.116
+7632,Female sexual arousal disorder (FSAD),0,Gynecological Conditions and Disorders of the Breast,,,38 CFR 4.116
+7702,"Agranulocytosis, acquired",100,The Hematologic and Lymphatic Systems,,,38 CFR 4.117
+7703,Leukemia (except for chronic myelogenous leukemia),100,The Hematologic and Lymphatic Systems,,,38 CFR 4.117
+7704,Polycythemia vera,100,The Hematologic and Lymphatic Systems,,,38 CFR 4.117
+7705,Immune thrombocytopenia,100,The Hematologic and Lymphatic Systems,,,38 CFR 4.117
+7706,Splenectomy,20,The Hematologic and Lymphatic Systems,,,38 CFR 4.117
+7707,"Spleen, injury of, healed",0,The Hematologic and Lymphatic Systems,,,38 CFR 4.117
+7709,Hodgkin's lymphoma,100,The Hematologic and Lymphatic Systems,,,38 CFR 4.117
+7710,"Adenitis, tuberculous, active or inactive",100,The Hematologic and Lymphatic Systems,,,38 CFR 4.117
+7712,Multiple myeloma,100,The Hematologic and Lymphatic Systems,,,38 CFR 4.117
+7714,Sickle cell anemia,100,The Hematologic and Lymphatic Systems,,,38 CFR 4.117
+7715,Non-Hodgkin's lymphoma,100,The Hematologic and Lymphatic Systems,,,38 CFR 4.117
+7716,Aplastic anemia,100,The Hematologic and Lymphatic Systems,,,38 CFR 4.117
+7717,AL amyloidosis (primary amyloidosis),100,The Hematologic and Lymphatic Systems,,,38 CFR 4.117
+7718,Essential thrombocythemia and primary myelofibrosis,100,The Hematologic and Lymphatic Systems,,,38 CFR 4.117
+7719,Chronic myelogenous leukemia (CML) (chronic myeloid leukemia or chronic granulocytic leukemia),100,The Hematologic and Lymphatic Systems,,,38 CFR 4.117
+7720,Iron deficiency anemia,30,The Hematologic and Lymphatic Systems,,,38 CFR 4.117
+7721,Folic acid deficiency,10,The Hematologic and Lymphatic Systems,,,38 CFR 4.117
+7722,Pernicious anemia and Vitamin B12 deficiency anemia,100,The Hematologic and Lymphatic Systems,,,38 CFR 4.117
+7723,Acquired hemolytic anemia,100,The Hematologic and Lymphatic Systems,,,38 CFR 4.117
+7724,Solitary plasmacytoma,100,The Hematologic and Lymphatic Systems,,,38 CFR 4.117
+7725,Myelodysplastic syndromes,100,The Hematologic and Lymphatic Systems,,,38 CFR 4.117
+7800,"Burn scar(s) of the head, face, or neck; scar(s) of the head, face, or neck due to other causes; or other disfigurement of the head, face, or neck",80,The Skin,,,38 CFR 4.118
+7801,"Burn scar(s) or scar(s) due to other causes, not of the head, face, or neck, that are associated with underlying soft tissue damage",40,The Skin,,,38 CFR 4.118
+7802,"Burn scar(s) or scar(s) due to other causes, not of the head, face, or neck, that are not associated with underlying soft tissue damage",10,The Skin,,,38 CFR 4.118
+7804,"Scar(s), unstable or painful",40,The Skin,,,38 CFR 4.118
+7805,"Scars, other; and other effects of scars evaluated under diagnostic codes 7800, 7801, 7802, or 7804",,The Skin,,,38 CFR 4.118
+7806,Dermatitis or eczema,60,The Skin,,,38 CFR 4.118
+7807,"American (New World) leishmaniasis (mucocutaneous, espundia)",,The Skin,,,38 CFR 4.118
+7808,"Old World leishmaniasis (cutaneous, Oriental sore)",,The Skin,,,38 CFR 4.118
+7809,Discoid lupus erythematosus,60,The Skin,,,38 CFR 4.118
+7811,"Tuberculosis luposa (lupus vulgaris), active or inactive",100,The Skin,,,38 CFR 4.118
+7813,"Dermatophytosis (ringworm: Of body, tinea corporis; of head, tinea capitis; of feet, tinea pedis; of beard area, tinea barbae; of nails, tinea unguium (onychomycosis); of inguinal area (jock itch), tinea cruris; tinea versicolor)",60,The Skin,,,38 CFR 4.118
+7815,"Bullous disorders (including pemphigus vulgaris, pemphigus foliaceous, bullous pemphigoid, dermatitis herpetiformis, epidermolysis bullosa acquisita, benign chronic familial pemphigus (Hailey-Hailey), and porphyria cutanea tarda)",60,The Skin,,,38 CFR 4.118
+7816,Psoriasis,60,The Skin,,,38 CFR 4.118
+7817,Erythroderma,100,The Skin,,,38 CFR 4.118
+7818,Malignant skin neoplasms (other than malignant melanoma),100,The Skin,,,38 CFR 4.118
+7819,Benign skin neoplasms,,The Skin,,,38 CFR 4.118
+7820,"Infections of the skin not listed elsewhere (including bacterial, fungal, viral, treponemal, and parasitic diseases)",60,The Skin,,,38 CFR 4.118
+7821,"Cutaneous manifestations of collagen-vascular diseases not listed elsewhere (including scleroderma, calcinosis cutis, subacute cutaneous lupus erythematosus, and dermatomyositis)",60,The Skin,,,38 CFR 4.118
+7822,"Papulosquamous disorders not listed elsewhere (including lichen planus, large or small plaque parapsoriasis, pityriasis lichenoides et varioliformis acuta (PLEVA), lymphomatoid papulosus, mycosis fungoides, and pityriasis rubra pilaris (PRP))",60,The Skin,,,38 CFR 4.118
+7823,Vitiligo,10,The Skin,,,38 CFR 4.118
+7824,"Diseases of keratinization (including icthyoses, Darier's disease, and palmoplantar keratoderma)",60,The Skin,,,38 CFR 4.118
+7825,Chronic urticaria,60,The Skin,,,38 CFR 4.118
+7826,"Vasculitis, primary cutaneous",60,The Skin,,,38 CFR 4.118
+7827,Erythema multiforme; Toxic epidermal necrolysis,60,The Skin,,,38 CFR 4.118
+7828,Acne,30,The Skin,,,38 CFR 4.118
+7829,Chloracne,30,The Skin,,,38 CFR 4.118
+7830,Scarring alopecia,20,The Skin,,,38 CFR 4.118
+7831,Alopecia areata:,10,The Skin,,,38 CFR 4.118
+7832,Hyperhidrosis,30,The Skin,,,38 CFR 4.118
+7833,Malignant melanoma,100,The Skin,,,38 CFR 4.118
+7900,"Hyperthyroidism, including, but not limited to, Graves' disease",30,The Endocrine System,,,38 CFR 4.119
+7901,"Thyroid enlargement, toxic",80,The Endocrine System,,,38 CFR 4.119
+7902,"Thyroid enlargement, nontoxic",100,The Endocrine System,,,38 CFR 4.119
+7903,Hypothyroidism,100,The Endocrine System,,,38 CFR 4.119
+7904,Hyperparathyroidism,100,The Endocrine System,,,38 CFR 4.119
+7905,Hypoparathyroidism,100,The Endocrine System,,,38 CFR 4.119
+7906,Thyroiditis,100,The Endocrine System,,,38 CFR 4.119
+7907,Cushing's syndrome,100,The Endocrine System,,,38 CFR 4.119
+7908,Acromegaly,100,The Endocrine System,,,38 CFR 4.119
+7909,Diabetes insipidus,30,The Endocrine System,,,38 CFR 4.119
+7911,Addison's disease (adrenocortical insufficiency),60,The Endocrine System,,,38 CFR 4.119
+7912,"Polyglandular syndrome (multiple endocrine neoplasia, autoimmune polyglandular syndrome)",100,The Endocrine System,,,38 CFR 4.119
+7913,Diabetes mellitus,100,The Endocrine System,,,38 CFR 4.119
+7914,"Neoplasm, malignant, any specified part of the endocrine system",100,The Endocrine System,,,38 CFR 4.119
+7915,"Neoplasm, benign, any specified part of the endocrine system",100,The Endocrine System,,,38 CFR 4.119
+7916,Hyperpituitarism (prolactin secreting pituitary dysfunction),100,The Endocrine System,,,38 CFR 4.119
+7917,Hyperaldosteronism (benign or malignant),100,The Endocrine System,,,38 CFR 4.119
+7918,Pheochromocytoma (benign or malignant),100,The Endocrine System,,,38 CFR 4.119
+7919,C-cell hyperplasia of the thyroid,100,The Endocrine System,,,38 CFR 4.119
+8000,"Encephalitis, epidemic, chronic",100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,,38 CFR 4.124a
+8002,Malignant new growth of the brain,100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,"Brain, new growth of:",38 CFR 4.124a
+8003,"Benign, minimum new growth of the brain",100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,"Brain, new growth of:",38 CFR 4.124a
+8004,Paralysis agitans,100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,,38 CFR 4.124a
+8005,Bulbar palsy,100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,,38 CFR 4.124a
+8007,"Brain, vessels, embolism of",100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,,38 CFR 4.124a
+8008,"Brain, vessels, thrombosis of",100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,,38 CFR 4.124a
+8009,"Brain, vessels, hemorrhage from",100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,,38 CFR 4.124a
+8010,Myelitis,100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,,38 CFR 4.124a
+8011,"Poliomyelitis, anterior",100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,,38 CFR 4.124a
+8012,Hematomyelia,100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,,38 CFR 4.124a
+8013,"Syphilis, cerebrospinal",100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,,38 CFR 4.124a
+8014,"Syphilis, meningovascular",100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,,38 CFR 4.124a
+8015,Tabes dorsalis,100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,,38 CFR 4.124a
+8017,Amyotrophic lateral sclerosis,100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,,38 CFR 4.124a
+8018,Multiple sclerosis,100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,,38 CFR 4.124a
+8019,"Meningitis, cerebrospinal, epidemic",100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,,38 CFR 4.124a
+8020,"Brain, abscess of",100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,,38 CFR 4.124a
+8021,Malignant new growths of the spinal cord,100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,"Spinal cord, new growths of:",38 CFR 4.124a
+8022,"Benign new growths of the spinal cord, minimum rating",100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,"Spinal cord, new growths of:",38 CFR 4.124a
+8023,Progressive muscular atrophy,100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,,38 CFR 4.124a
+8024,Syringomyelia,100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,,38 CFR 4.124a
+8025,Myasthenia gravis,100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,,38 CFR 4.124a
+8045,Residuals of traumatic brain injury (TBI),100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,,38 CFR 4.124a
+8046,Cerebral arteriosclerosis,100,Neurological Conditions and Convulsive Disorders,Organic Diseases of the Central Nervous System,,38 CFR 4.124a
+8100,Migraine,50,Neurological Conditions and Convulsive Disorders,Miscellaneous Diseases,,38 CFR 4.124a
+8103,"Tic, convulsive",30,Neurological Conditions and Convulsive Disorders,Miscellaneous Diseases,,38 CFR 4.124a
+8104,"Paramyoclonus multiplex (convulsive state, myoclonic type)",60,Neurological Conditions and Convulsive Disorders,Miscellaneous Diseases,,38 CFR 4.124a
+8105,"Chorea, Sydenham's",100,Neurological Conditions and Convulsive Disorders,Miscellaneous Diseases,,38 CFR 4.124a
+8106,"Chorea, Huntington's",100,Neurological Conditions and Convulsive Disorders,Miscellaneous Diseases,,38 CFR 4.124a
+8107,"Athetosis, acquired",100,Neurological Conditions and Convulsive Disorders,Miscellaneous Diseases,,38 CFR 4.124a
+8108,Narcolepsy,100,Neurological Conditions and Convulsive Disorders,Miscellaneous Diseases,,38 CFR 4.124a
+8205,Paralysis of,50,Neurological Conditions and Convulsive Disorders,Diseases of the Cranial Nerves,Fifth (trigeminal) cranial nerve,38 CFR 4.124a
+8207,Paralysis of,30,Neurological Conditions and Convulsive Disorders,Diseases of the Cranial Nerves,Seventh (facial) cranial nerve,38 CFR 4.124a
+8209,Paralysis of,30,Neurological Conditions and Convulsive Disorders,Diseases of the Cranial Nerves,Ninth (glossopharyngeal) cranial nerve,38 CFR 4.124a
+8210,Paralysis of,50,Neurological Conditions and Convulsive Disorders,Diseases of the Cranial Nerves,"Tenth (pneumogastric, vagus) cranial nerve",38 CFR 4.124a
+8211,Paralysis of,30,Neurological Conditions and Convulsive Disorders,Diseases of the Cranial Nerves,"Eleventh (spinal accessory, external branch) cranial nerve.",38 CFR 4.124a
+8212,Paralysis of,50,Neurological Conditions and Convulsive Disorders,Diseases of the Cranial Nerves,Twelfth (hypoglossal) cranial nerve,38 CFR 4.124a
+8305,Neuritis,30,Neurological Conditions and Convulsive Disorders,Diseases of the Cranial Nerves,Fifth (trigeminal) cranial nerve,38 CFR 4.124a
+8307,Neuritis,20,Neurological Conditions and Convulsive Disorders,Diseases of the Cranial Nerves,Seventh (facial) cranial nerve,38 CFR 4.124a
+8309,Neuritis,20,Neurological Conditions and Convulsive Disorders,Diseases of the Cranial Nerves,Ninth (glossopharyngeal) cranial nerve,38 CFR 4.124a
+8310,Neuritis,30,Neurological Conditions and Convulsive Disorders,Diseases of the Cranial Nerves,"Tenth (pneumogastric, vagus) cranial nerve",38 CFR 4.124a
+8311,Neuritis,20,Neurological Conditions and Convulsive Disorders,Diseases of the Cranial Nerves,"Eleventh (spinal accessory, external branch) cranial nerve.",38 CFR 4.124a
+8312,Neuritis,30,Neurological Conditions and Convulsive Disorders,Diseases of the Cranial Nerves,Twelfth (hypoglossal) cranial nerve,38 CFR 4.124a
+8405,Neuralgia,10,Neurological Conditions and Convulsive Disorders,Diseases of the Cranial Nerves,Fifth (trigeminal) cranial nerve,38 CFR 4.124a
+8407,Neuralgia,10,Neurological Conditions and Convulsive Disorders,Diseases of the Cranial Nerves,Seventh (facial) cranial nerve,38 CFR 4.124a
+8409,Neuralgia,10,Neurological Conditions and Convulsive Disorders,Diseases of the Cranial Nerves,Ninth (glossopharyngeal) cranial nerve,38 CFR 4.124a
+8410,Neuralgia,10,Neurological Conditions and Convulsive Disorders,Diseases of the Cranial Nerves,"Tenth (pneumogastric, vagus) cranial nerve",38 CFR 4.124a
+8411,Neuralgia,10,Neurological Conditions and Convulsive Disorders,Diseases of the Cranial Nerves,"Eleventh (spinal accessory, external branch) cranial nerve.",38 CFR 4.124a
+8412,Neuralgia,10,Neurological Conditions and Convulsive Disorders,Diseases of the Cranial Nerves,Twelfth (hypoglossal) cranial nerve,38 CFR 4.124a
+8510,Paralysis of,70,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Upper radicular group (fifth and sixth cervicals),38 CFR 4.124a
+8511,Paralysis of,70,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Middle radicular group,38 CFR 4.124a
+8512,Paralysis of,70,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Lower radicular group,38 CFR 4.124a
+8513,Paralysis of,90,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,All radicular groups,38 CFR 4.124a
+8514,Paralysis of,70,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,The musculospiral nerve (radial nerve),38 CFR 4.124a
+8515,Paralysis of,70,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,The median nerve,38 CFR 4.124a
+8516,Paralysis of,60,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,The ulnar nerve,38 CFR 4.124a
+8517,Paralysis of,30,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Musculocutaneous nerve,38 CFR 4.124a
+8518,Paralysis of,50,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Circumflex nerve,38 CFR 4.124a
+8519,Paralysis of,30,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Long thoracic nerve,38 CFR 4.124a
+8520,Paralysis of,80,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Sciatic nerve,38 CFR 4.124a
+8521,Paralysis of,40,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,External popliteal nerve (common peroneal),38 CFR 4.124a
+8522,Paralysis of,30,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Musculocutaneous nerve (superficial peroneal),38 CFR 4.124a
+8523,Paralysis of,30,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Anterior tibial nerve (deep peroneal),38 CFR 4.124a
+8524,Paralysis of,40,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Internal popliteal nerve (tibial),38 CFR 4.124a
+8525,Paralysis of,30,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Posterior tibial nerve,38 CFR 4.124a
+8526,Paralysis of,40,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Anterior crural nerve (femoral),38 CFR 4.124a
+8527,Paralysis of,10,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Internal saphenous nerve,38 CFR 4.124a
+8528,Paralysis of,10,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Obturator nerve,38 CFR 4.124a
+8529,Paralysis of,10,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,External cutaneous nerve of thigh,38 CFR 4.124a
+8530,Paralysis of,10,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Ilio-inguinal nerve,38 CFR 4.124a
+8540,Soft-tissue sarcoma (of neurogenic origin),100,Neurological Conditions and Convulsive Disorders,,Ilio-inguinal nerve,38 CFR 4.124a
+8610,Neuritis,50,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Upper radicular group (fifth and sixth cervicals),38 CFR 4.124a
+8611,Neuritis,50,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Middle radicular group,38 CFR 4.124a
+8612,Neuritis,50,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Lower radicular group,38 CFR 4.124a
+8613,Neuritis,70,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,All radicular groups,38 CFR 4.124a
+8614,Neuritis,50,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,The musculospiral nerve (radial nerve),38 CFR 4.124a
+8615,Neuritis,50,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,The median nerve,38 CFR 4.124a
+8616,Neuritis,40,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,The ulnar nerve,38 CFR 4.124a
+8617,Neuritis,20,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Musculocutaneous nerve,38 CFR 4.124a
+8618,Neuritis,30,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Circumflex nerve,38 CFR 4.124a
+8619,Neuritis,20,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Long thoracic nerve,38 CFR 4.124a
+8620,Neuritis,60,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Sciatic nerve,38 CFR 4.124a
+8621,Neuritis,30,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,External popliteal nerve (common peroneal),38 CFR 4.124a
+8622,Neuritis,20,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Musculocutaneous nerve (superficial peroneal),38 CFR 4.124a
+8623,Neuritis,20,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Anterior tibial nerve (deep peroneal),38 CFR 4.124a
+8624,Neuritis,30,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Internal popliteal nerve (tibial),38 CFR 4.124a
+8625,Neuritis,20,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Posterior tibial nerve,38 CFR 4.124a
+8626,Neuritis,30,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Anterior crural nerve (femoral),38 CFR 4.124a
+8627,Neuritis,10,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Internal saphenous nerve,38 CFR 4.124a
+8628,Neuritis,10,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Obturator nerve,38 CFR 4.124a
+8629,Neuritis,10,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,External cutaneous nerve of thigh,38 CFR 4.124a
+8630,Neuritis,10,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Ilio-inguinal nerve,38 CFR 4.124a
+8710,Neuralgia,40,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Upper radicular group (fifth and sixth cervicals),38 CFR 4.124a
+8711,Neuralgia,40,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Middle radicular group,38 CFR 4.124a
+8712,Neuralgia,40,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Lower radicular group,38 CFR 4.124a
+8713,Neuralgia,40,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,All radicular groups,38 CFR 4.124a
+8714,Neuralgia,30,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,The musculospiral nerve (radial nerve),38 CFR 4.124a
+8715,Neuralgia,30,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,The median nerve,38 CFR 4.124a
+8716,Neuralgia,30,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,The ulnar nerve,38 CFR 4.124a
+8717,Neuralgia,10,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Musculocutaneous nerve,38 CFR 4.124a
+8718,Neuralgia,10,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Circumflex nerve,38 CFR 4.124a
+8719,Neuralgia,10,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Long thoracic nerve,38 CFR 4.124a
+8720,Neuralgia,40,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Sciatic nerve,38 CFR 4.124a
+8721,Neuralgia,20,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,External popliteal nerve (common peroneal),38 CFR 4.124a
+8722,Neuralgia,10,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Musculocutaneous nerve (superficial peroneal),38 CFR 4.124a
+8723,Neuralgia,10,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Anterior tibial nerve (deep peroneal),38 CFR 4.124a
+8724,Neuralgia,20,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Internal popliteal nerve (tibial),38 CFR 4.124a
+8725,Neuralgia,10,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Posterior tibial nerve,38 CFR 4.124a
+8726,Neuralgia,20,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Anterior crural nerve (femoral),38 CFR 4.124a
+8727,Neuralgia,0,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Internal saphenous nerve,38 CFR 4.124a
+8728,Neuralgia,0,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Obturator nerve,38 CFR 4.124a
+8729,Neuralgia,0,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,External cutaneous nerve of thigh,38 CFR 4.124a
+8730,Neuralgia,0,Neurological Conditions and Convulsive Disorders,Diseases of the Peripheral Nerves,Ilio-inguinal nerve,38 CFR 4.124a
+8910,"Epilepsy, grand mal",100,Neurological Conditions and Convulsive Disorders,The Epilepsies,,38 CFR 4.124a
+8911,"Epilepsy, petit mal",80,Neurological Conditions and Convulsive Disorders,The Epilepsies,,38 CFR 4.124a
+8912,"Epilepsy, Jacksonian and focal motor or sensory",100,Neurological Conditions and Convulsive Disorders,The Epilepsies,,38 CFR 4.124a
+8913,"Epilepsy, diencephalic",100,Neurological Conditions and Convulsive Disorders,The Epilepsies,,38 CFR 4.124a
+8914,"Epilepsy, psychomotor",100,Neurological Conditions and Convulsive Disorders,The Epilepsies,,38 CFR 4.124a
+9201,Schizophrenia,100,Mental Disorders,,,38 CFR 4.130
+9202,[Removed],,Mental Disorders,,,38 CFR 4.130
+9203,[Removed],,Mental Disorders,,,38 CFR 4.130
+9204,[Removed],,Mental Disorders,,,38 CFR 4.130
+9205,[Removed],,Mental Disorders,,,38 CFR 4.130
+9208,Delusional disorder,100,Mental Disorders,,,38 CFR 4.130
+9210,Other specified and unspecified schizophrenia spectrum and other psychotic disorders,100,Mental Disorders,,,38 CFR 4.130
+9211,Schizoaffective disorder,100,Mental Disorders,,,38 CFR 4.130
+9300,Delirium,100,Mental Disorders,,,38 CFR 4.130
+9301,Major or mild neurocognitive disorder due to HIV or other infections,100,Mental Disorders,,,38 CFR 4.130
+9304,Major or mild neurocognitive disorder due to traumatic brain injury,100,Mental Disorders,,,38 CFR 4.130
+9305,Major or mild vascular neurocognitive disorder,100,Mental Disorders,,,38 CFR 4.130
+9310,Unspecified neurocognitive disorder,100,Mental Disorders,,,38 CFR 4.130
+9312,Major or mild neurocognitive disorder due to Alzheimer's disease,100,Mental Disorders,,,38 CFR 4.130
+9326,Major or mild neurocognitive disorder due to another medical condition or substance/medication-induced major or mild neurocognitive disorder,100,Mental Disorders,,,38 CFR 4.130
+9327,[Removed],,Mental Disorders,,,38 CFR 4.130
+9400,Generalized anxiety disorder,100,Mental Disorders,,,38 CFR 4.130
+9403,Specific phobia; social anxiety disorder (social phobia),100,Mental Disorders,,,38 CFR 4.130
+9404,Obsessive compulsive disorder,100,Mental Disorders,,,38 CFR 4.130
+9410,Other specified anxiety disorder,100,Mental Disorders,,,38 CFR 4.130
+9411,Posttraumatic stress disorder,100,Mental Disorders,,,38 CFR 4.130
+9412,Panic disorder and/or agoraphobia,100,Mental Disorders,,,38 CFR 4.130
+9413,Unspecified anxiety disorder,100,Mental Disorders,,,38 CFR 4.130
+9416,Dissociative amnesia; dissociative identity disorder,100,Mental Disorders,,,38 CFR 4.130
+9417,Depersonalization/Derealization disorder,100,Mental Disorders,,,38 CFR 4.130
+9421,Somatic symptom disorder,100,Mental Disorders,,,38 CFR 4.130
+9422,Other specified somatic symptom and related disorder,100,Mental Disorders,,,38 CFR 4.130
+9423,Unspecified somatic symptom and related disorder,100,Mental Disorders,,,38 CFR 4.130
+9424,Conversion disorder (functional neurological symptom disorder),100,Mental Disorders,,,38 CFR 4.130
+9425,Illness anxiety disorder,100,Mental Disorders,,,38 CFR 4.130
+9431,Cyclothymic disorder,100,Mental Disorders,,,38 CFR 4.130
+9432,Bipolar disorder,100,Mental Disorders,,,38 CFR 4.130
+9433,Persistent depressive disorder (dysthymia),100,Mental Disorders,,,38 CFR 4.130
+9434,Major depressive disorder,100,Mental Disorders,,,38 CFR 4.130
+9435,Unspecified depressive disorder,100,Mental Disorders,,,38 CFR 4.130
+9440,Chronic adjustment disorder,100,Mental Disorders,,,38 CFR 4.130
+9520,Anorexia nervosa,100,Mental Disorders,,,38 CFR 4.130
+9521,Bulimia nervosa,100,Mental Disorders,,,38 CFR 4.130
+9900,"Maxilla or mandible, chronic osteomyelitis, osteonecrosis or osteoradionecrosis of",100,Dental and Oral Conditions,,,38 CFR 4.150
+9901,"Mandible, loss of, complete, between angles",100,Dental and Oral Conditions,,,38 CFR 4.150
+9902,"Mandible, loss of, including ramus, unilaterally or bilaterally",70,Dental and Oral Conditions,,,38 CFR 4.150
+9903,"Mandible, nonunion of, confirmed by diagnostic imaging studies",30,Dental and Oral Conditions,,,38 CFR 4.150
+9904,"Mandible, malunion of",20,Dental and Oral Conditions,,,38 CFR 4.150
+9905,Temporomandibular disorder (TMD),50,Dental and Oral Conditions,,,38 CFR 4.150
+9908,"Condyloid process, loss of, one or both sides",30,Dental and Oral Conditions,,,38 CFR 4.150
+9909,"Coronoid process, loss of",20,Dental and Oral Conditions,,,38 CFR 4.150
+9911,"Hard palate, loss of",30,Dental and Oral Conditions,,,38 CFR 4.150
+9913,"Teeth, loss of, due to loss of substance of body of maxilla or mandible without loss of continuity",40,Dental and Oral Conditions,,,38 CFR 4.150
+9914,"Maxilla, loss of more than half",100,Dental and Oral Conditions,,,38 CFR 4.150
+9915,"Maxilla, loss of half or less",40,Dental and Oral Conditions,,,38 CFR 4.150
+9916,"Maxilla, malunion or nonunion of",30,Dental and Oral Conditions,,,38 CFR 4.150
+9917,"Neoplasm, hard and soft tissue, benign",0,Dental and Oral Conditions,,,38 CFR 4.150
+9918,"Neoplasm, hard and soft tissue, malignant",100,Dental and Oral Conditions,,,38 CFR 4.150

@@ -1,7 +1,7 @@
 # pyproject.toml
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "-rfesp"
+addopts = "-ra --cov=./src --cov-fail-under=80 --no-cov-on-fail --cov-report=term:skip-covered --cov-report=html:build/reports/coverage --cov-branch"
 testpaths = [
     "tests"
 ]
@@ -12,3 +12,45 @@ env = [
     "EP400_CONTENTION_RETRIES = 2",
     "EP400_CONTENTION_RETRY_RATE = 1"
 ]
+
+[tool.coverage.run]
+# The following files are for development purposes and are not part of the coverage report
+omit = [
+    "src/python_src/graph_export.py",
+    "src/python_src/pull_api_documentation.py",
+]
+
+[tool.isort]
+profile = "black"
+
+[tool.ruff]
+line-length = 160
+
+[tool.ruff.lint]
+# Ruff enables Flake8's F rules, along with a subset of the E rules, omitting any stylistic rules that overlap with the use of Ruff formatter
+extend-select = [
+    # Add the `line-too-long` rule to the enforced rule set.
+    "E501"
+]
+
+[tool.ruff.format]
+quote-style = "single"
+# Use `\n` line endings for all files
+line-ending = "lf"
+
+[tool.mypy]
+plugins = [
+    "pydantic.mypy"
+]
+python_version = "3.10"
+strict = true
+ignore_missing_imports = true
+disallow_untyped_defs = false  # End goal here is to make this true
+disallow_incomplete_defs = true
+strict_optional = false
+exclude = [
+    'graph_export\.py$',
+    'pull_api_documentation\.py$'
+]
+# Ignore calls from third party libraries that are not typed
+untyped_calls_exclude = "datadog_api_client"

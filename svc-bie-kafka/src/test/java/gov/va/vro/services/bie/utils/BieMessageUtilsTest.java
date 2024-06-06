@@ -23,6 +23,7 @@ class BieMessageUtilsTest {
     // Set up a GenericRecord with test data
     Mockito.lenient().when(genericRecord.get("BenefitClaimTypeCode")).thenReturn("TypeCode123");
     Mockito.lenient().when(genericRecord.get("ActorStation")).thenReturn("Station456");
+    Mockito.lenient().when(genericRecord.get("ActorUserId")).thenReturn("UserId789");
     Mockito.lenient().when(genericRecord.get("Details")).thenReturn("Some details");
     Mockito.lenient()
         .when(genericRecord.get("VeteranParticipantId"))
@@ -72,6 +73,7 @@ class BieMessageUtilsTest {
     testCommonFields(actualPayload);
     assertEquals("TypeCode123", actualPayload.getBenefitClaimTypeCode());
     assertEquals("Station456", actualPayload.getActorStation());
+    assertEquals("UserId789", actualPayload.getActorUserId());
     assertEquals("Some details", actualPayload.getDetails());
     assertEquals(Long.valueOf(12345L), actualPayload.getVeteranParticipantId());
     assertEquals("ClassificationName", actualPayload.getContentionClassificationName());
