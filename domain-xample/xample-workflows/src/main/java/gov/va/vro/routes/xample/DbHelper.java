@@ -81,7 +81,9 @@ public class DbHelper {
     contentionEventEntity.setActionResultName(bieMessagePayload.getActionResultName());
     contentionEventEntity.setDescription(bieMessagePayload.getDescription());
 
-    return contentionEventRepository.save(contentionEventEntity);
+    contentionEventRepository.save(contentionEventEntity);
+    log.info("Saved bieMessagePayload {}", bieMessagePayload);
+    return contentionEventEntity;
   }
 
   public LocalDateTime convertTime(Long time) {
