@@ -50,7 +50,7 @@ public class BieMessagePayloadFactory {
     BieMessagePayload payload = createPayload(eventType);
 
     switch (eventType) {
-      case CONTENTION_ASSOCIATED_TO_CLAIM:
+      case CONTENTION_ASSOCIATED:
       case CONTENTION_CLASSIFIED:
         setCommonPayloadValues(payload);
         break;

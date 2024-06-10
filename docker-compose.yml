@@ -60,7 +60,7 @@ services:
       - var_rabbitmq:/var/lib/rabbitmq/mnesia
     networks:
       - intranet
-    profiles: [ "all", "platform" ]
+    profiles: [ "all", "platform", "kafka"]
     ports:
       - "5672:5672"
       - "15672:15672"
