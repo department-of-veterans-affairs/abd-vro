@@ -1,21 +1,21 @@
 package gov.va.vro.bip.service;
 
-import com.datadog.api.client.ApiClient;
-import com.datadog.api.client.RetryConfig;
 import com.datadog.api.client.v1.api.MetricsApi;
 import com.datadog.api.client.v1.model.*;
-import gov.va.vro.bip.config.DatadogConfigProperties;
+import gov.va.vro.bip.config.DatadogClientConfig;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 
 import java.time.OffsetDateTime;
 import java.util.*;
 
+@Configuration
 @Slf4j
-@ConfigurationProperties(prefix = "bip")
 public class MetricLoggerService {
 
+  @Value("${bip.env}")
   public String env;
 
   private static final String APP_PREFIX = "vro_bip";
@@ -33,36 +33,18 @@ public class MetricLoggerService {
   private MetricsApi metricsApi;
 
   public MetricLoggerService() {
-    try {
-      ApiClient apiClient = new ApiClient();
-      HashMap<String, String> serverVariables = new HashMap<String, String>();
-      serverVariables.put("site", DatadogConfigProperties.site);
-      apiClient.setServerVariables(serverVariables);
-
-      HashMap<String, String> secrets = new HashMap<String, String>();
-      if (DatadogConfigProperties.api_key != null) {
-        secrets.put("apiKeyAuth", DatadogConfigProperties.api_key);
-      } else {
-        log.warn("datadog api key not set");
-      }
-      if (DatadogConfigProperties.app_key != null) {
-        secrets.put("appKeyAuth", DatadogConfigProperties.app_key);
-      }
-      apiClient.configureApiKeys(secrets);
-      apiClient.setRetry(new RetryConfig(true, 2, 2, 3));
-
-      metricsApi = new MetricsApi(ApiClient.getDefaultApiClient());
-      log.info("initialized Datadog API client");
-    } catch (Exception e) {
-      log.error(String.format("exception initializing Datadog API client: %s", e.getMessage()));
-    }
+    metricsApi = new MetricsApi((new DatadogClientConfig()).getApiClient());
+    log.info("initialized MetricLoggerService");
   }
 
   public static String getFullMetricString(@NotNull METRIC metric) {
+    // the name of the metric as queryable from datadog
     return String.format("%s.%s", APP_PREFIX, metric.name().toLowerCase());
   }
 
   public ArrayList<String> getTagsForSubmission(String[] customTags) {
+    // tags that will accompany the submitted data point(s).
+    // a "key:value" format, while not required, can be convenient with querying metrics in the datadog dashboard
     ArrayList<String> tags = new ArrayList<>();
     tags.add(String.format("environment:%s", env));
     tags.add(SERVICE_TAG);
@@ -77,6 +59,7 @@ public class MetricLoggerService {
   }
 
   public MetricsPayload createMetricsPayload(@NotNull METRIC metric, double value, String[] tags) {
+    //  create the payload for a count metric
     Series dataPointSeries = new Series();
     dataPointSeries.setMetric(getFullMetricString(metric));
     dataPointSeries.setType("count");
@@ -109,6 +92,7 @@ public class MetricLoggerService {
 
   public DistributionPointsPayload createDistributionPointsPayload(
       @NotNull METRIC metric, double timestamp, double value, String[] tags) {
+    //  create the payload for a distribution metric
 
     DistributionPointsSeries dataPointSeries = new DistributionPointsSeries();
     dataPointSeries.setMetric(getFullMetricString(metric));
