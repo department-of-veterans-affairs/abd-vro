@@ -19,8 +19,8 @@ public class MetricLoggerServiceTest {
   @Test
   void testGetFullMetricString() {
     assertEquals(
-        "vro_bip.request",
-        MetricLoggerService.getFullMetricString(MetricLoggerService.METRIC.REQUEST));
+        "vro_bip.request_start",
+        MetricLoggerService.getFullMetricString(MetricLoggerService.METRIC.REQUEST_START));
     assertEquals(
         "vro_bip.request_duration",
         MetricLoggerService.getFullMetricString(MetricLoggerService.METRIC.REQUEST_DURATION));
@@ -30,6 +30,13 @@ public class MetricLoggerServiceTest {
     assertEquals(
         "vro_bip.response_error",
         MetricLoggerService.getFullMetricString(MetricLoggerService.METRIC.RESPONSE_ERROR));
+    assertEquals(
+        "vro_bip.listener_error",
+        MetricLoggerService.getFullMetricString(MetricLoggerService.METRIC.LISTENER_ERROR));
+    assertEquals(
+        "vro_bip.message_conversion_error",
+        MetricLoggerService.getFullMetricString(
+            MetricLoggerService.METRIC.MESSAGE_CONVERSION_ERROR));
   }
 
   @Test

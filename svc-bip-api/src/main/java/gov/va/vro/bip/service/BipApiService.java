@@ -143,7 +143,7 @@ public class BipApiService implements IBipApiService {
       HttpEntity<Object> httpEntity = new HttpEntity<>(requestBody, getBipHeader());
       log.info("event=requestSent url={} method={}", url, method);
       metricLogger.submitCount(
-          MetricLoggerService.METRIC.REQUEST,
+          MetricLoggerService.METRIC.REQUEST_START,
           new String[] {
             String.format("expectedResponse:%s", expectedResponse.getSimpleName()),
             "source:bipApiService",

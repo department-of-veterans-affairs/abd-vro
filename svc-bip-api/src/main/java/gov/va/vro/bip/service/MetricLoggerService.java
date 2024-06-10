@@ -22,7 +22,7 @@ public class MetricLoggerService {
   private static final String SERVICE_TAG = "service:vro-svc-bip-api";
 
   public enum METRIC {
-    REQUEST,
+    REQUEST_START,
     REQUEST_DURATION,
     RESPONSE_COMPLETE,
     RESPONSE_ERROR,
