@@ -44,7 +44,8 @@ public class MetricLoggerService {
 
   public ArrayList<String> getTagsForSubmission(String[] customTags) {
     // tags that will accompany the submitted data point(s).
-    // a "key:value" format, while not required, can be convenient with querying metrics in the datadog dashboard
+    // a "key:value" format, while not required, can be convenient with querying metrics in the
+    // datadog dashboard
     ArrayList<String> tags = new ArrayList<>();
     tags.add(String.format("environment:%s", env));
     tags.add(SERVICE_TAG);
