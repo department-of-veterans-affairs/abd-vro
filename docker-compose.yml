@@ -26,6 +26,11 @@ x-rabbitmq-placeholder-vars: &rabbitmq-placeholder-vars
   RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
   RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
 
+x-datadog-placeholder-vars: &datadog-placeholder-vars
+  DD_SITE: ${DD_SITE}
+  DD_API_KEY: ${DD_API_KEY}
+  DD_APP_KEY: ${DD_APP_KEY}
+
 x-common-security-opt: &common-security-opt
   security_opt:
     - no-new-privileges:true
@@ -118,7 +123,7 @@ services:
     profiles: ["all", "svc", "bip"]
     image: va/abd_vro-svc-bip-api:latest
     environment:
-      <<: [ *rabbitmq-placeholder-vars ]
+      <<: [ *rabbitmq-placeholder-vars, *datadog-placeholder-vars ]
       BIP_CLAIM_USERID: ${BIP_CLAIM_USERID}
       BIP_CLAIM_SECRET: ${BIP_CLAIM_SECRET}
       BIP_EVIDENCE_USERID: ${BIP_EVIDENCE_USERID}
