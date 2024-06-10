@@ -25,7 +25,9 @@ public class MetricLoggerService {
     REQUEST,
     REQUEST_DURATION,
     RESPONSE_COMPLETE,
-    RESPONSE_ERROR
+    RESPONSE_ERROR,
+    LISTENER_ERROR,
+    MESSAGE_CONVERSION_ERROR
   }
 
   private MetricsApi metricsApi;
