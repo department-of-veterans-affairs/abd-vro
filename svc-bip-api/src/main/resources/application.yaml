@@ -28,9 +28,9 @@ spring:
     username: ${RABBITMQ_USERNAME:user}
     password: ${RABBITMQ_PASSWORD:bitnami}
   datadog:
-    site: ${DD_SITE}
-    api_key: ${DD_API_KEY}
-    app_key: ${DD_APP_KEY}
+    site: ${DD_SITE:https://api.ddog-gov.com}
+    api_key: ${DD_API_KEY:secret-api-key}
+    app_key: ${DD_APP_KEY:secret-app-key}
 
 getClaimDetailsQueue: getClaimDetailsQueue
 putClaimLifecycleStatusQueue: putClaimLifecycleStatusQueue
