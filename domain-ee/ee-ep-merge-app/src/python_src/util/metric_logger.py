@@ -1,5 +1,6 @@
 import logging
-from datetime import datetime
+import time
+from typing import NamedTuple
 
 import datadog_api_client.v1.api.metrics_api as metrics_v1
 import datadog_api_client.v2.api.metrics_api as metrics_v2
@@ -35,39 +36,14 @@ count_metrics_api = metrics_v2.MetricsApi(api_client)
 distribution_metrics_api = metrics_v1.MetricsApi(api_client)  # Metrics API does not have an endpoint for distribution metrics
 
 
-class Metric:
-    """
-    A class used to represent a base Metric.
-
-    Attributes:
-        name (str): The name of the metric
-        value (float): The value of the metric
-    """
-
-    def __init__(self, name: str, value: float):
-        self.name = name
-        self.value = value
-
-    def __eq__(self, other):
-        if not isinstance(other, self.__class__):
-            return False
-        return self.name == other.name and self.value == other.value
-
-    def __hash__(self):
-        return hash((self.name, self.value))
+class CountMetric(NamedTuple):
+    name: str
+    value: float = 1
 
 
-class CountMetric(Metric):
-    def __init__(self, name: str, value: float = 1):
-        super().__init__(name, value)
-
-    def __repr__(self):
-        return f'CountMetric(name={self.name}, value={self.value})'
-
-
-class DistributionMetric(Metric):
-    def __repr__(self):
-        return f'DistributionMetric(name={self.name}, value={self.value})'
+class DistributionMetric(NamedTuple):
+    name: str
+    value: float = 1
 
 
 def increment(metrics: list[CountMetric]) -> None:
@@ -81,7 +57,7 @@ def increment(metrics: list[CountMetric]) -> None:
             type=MetricIntakeType.COUNT,
             points=[
                 MetricPoint(
-                    timestamp=int(datetime.now().timestamp()),
+                    timestamp=int(time.time()),
                     value=metric.value,
                 ),
             ],
@@ -112,7 +88,7 @@ def distribution(metrics: list[DistributionMetric]) -> None:
             points=[
                 DistributionPoint(
                     [
-                        datetime.now().timestamp(),
+                        int(time.time()),
                         [metric.value],
                     ]
                 ),
