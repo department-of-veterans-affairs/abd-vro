@@ -54,6 +54,7 @@ jobs:
     secrets: inherit
 
   svc-bip-api:
+    needs: nondraft-pr
     uses: ./.github/workflows/svc-bip-api-integration-test.yml
     secrets: inherit
 
