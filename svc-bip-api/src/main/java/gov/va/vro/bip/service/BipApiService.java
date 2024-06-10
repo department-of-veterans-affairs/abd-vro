@@ -138,17 +138,17 @@ public class BipApiService implements IBipApiService {
   private <T extends BipPayloadResponse> T makeRequest(
       String url, HttpMethod method, Object requestBody, Class<T> expectedResponse) {
 
-    metricLogger.submitCount(
-        MetricLoggerService.METRIC.REQUEST,
-        new String[] {
-          String.format("expectedResponse:%s", expectedResponse.getSimpleName()),
-          "source:bipApiService"
-        });
-
     try {
 
       HttpEntity<Object> httpEntity = new HttpEntity<>(requestBody, getBipHeader());
       log.info("event=requestSent url={} method={}", url, method);
+      metricLogger.submitCount(
+          MetricLoggerService.METRIC.REQUEST,
+          new String[] {
+            String.format("expectedResponse:%s", expectedResponse.getSimpleName()),
+            "source:bipApiService",
+            String.format("method:%s", method.name())
+          });
 
       long requestStartTime = System.nanoTime();
       ResponseEntity<T> bipResponse =
@@ -166,7 +166,8 @@ public class BipApiService implements IBipApiService {
           elapsedTime,
           new String[] {
             String.format("expectedResponse:%s", expectedResponse.getSimpleName()),
-            "source:bipApiService"
+            "source:bipApiService",
+            String.format("method:%s", method.name())
           });
 
       BipPayloadResponse.BipPayloadResponseBuilder<?, ?> responseBuilder;
@@ -180,7 +181,8 @@ public class BipApiService implements IBipApiService {
           MetricLoggerService.METRIC.RESPONSE_COMPLETE,
           new String[] {
             String.format("expectedResponse:%s", expectedResponse.getSimpleName()),
-            "source:bipApiService"
+            "source:bipApiService",
+            String.format("method:%s", method.name())
           });
 
       return (T)
@@ -209,6 +211,7 @@ public class BipApiService implements IBipApiService {
           new String[] {
             String.format("expectedResponse:%s", expectedResponse.getSimpleName()),
             "source:bipApiService",
+            String.format("method:%s", method.name()),
             String.format("error:%s", e.getMessage())
           });
 
