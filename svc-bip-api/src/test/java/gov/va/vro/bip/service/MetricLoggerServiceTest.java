@@ -7,13 +7,11 @@ import com.datadog.api.client.v1.model.DistributionPointItem;
 import com.datadog.api.client.v1.model.DistributionPointsPayload;
 import com.datadog.api.client.v1.model.MetricsPayload;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
-@ActiveProfiles("test")
 public class MetricLoggerServiceTest {
 
   private MetricLoggerService mls = new MetricLoggerService();
