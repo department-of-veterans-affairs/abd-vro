@@ -71,9 +71,22 @@ public class MetricLoggerServiceTest {
   }
 
   @Test
-  void testCreateDistributionPointsPayload() {
+  void testGetTimestamp() {
+    // verify that the timestamp is current
+
     double timestamp =
         Long.valueOf(OffsetDateTime.now().toInstant().getEpochSecond()).doubleValue();
+
+    double timestampToTest = MetricLoggerService.getTimestamp();
+
+    assertTrue((timestamp - 10) < timestampToTest);
+    assertTrue(timestampToTest < (timestamp + 10));
+  }
+
+  @Test
+  void testCreateDistributionPointsPayload() {
+    double timestamp = MetricLoggerService.getTimestamp();
+
     DistributionPointsPayload dpl =
         mls.createDistributionPointsPayload(
             MetricLoggerService.METRIC.REQUEST_DURATION,
@@ -91,5 +104,15 @@ public class MetricLoggerServiceTest {
     mls.submitCount(
         MetricLoggerService.METRIC.RESPONSE_COMPLETE,
         new String[] {"isTest:true", "source:ci-test"});
+  }
+
+  @Test
+  public void testGetElapsedTimeInMilliseconds() {
+    long nowInNano = System.nanoTime();
+    double timeDelayInNano = 721000; // equivalent to .721 ms
+    double elapsedTimeInMs =
+        MetricLoggerService.getElapsedTimeInMilliseconds(
+            nowInNano, (long) (nowInNano + timeDelayInNano));
+    assertEquals(0.721, elapsedTimeInMs);
   }
 }

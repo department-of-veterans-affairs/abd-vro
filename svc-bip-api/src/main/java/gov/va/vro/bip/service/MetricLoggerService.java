@@ -55,7 +55,7 @@ public class MetricLoggerService {
     return tags;
   }
 
-  private static double getTimestamp() {
+  public static double getTimestamp() {
     return Long.valueOf(OffsetDateTime.now().toInstant().getEpochSecond()).doubleValue();
   }
 
@@ -108,14 +108,21 @@ public class MetricLoggerService {
     return new DistributionPointsPayload().series(Collections.singletonList(dataPointSeries));
   }
 
-  public void submitDistribution(@NotNull METRIC metric, double value, String[] tags) {
-    submitDistribution(metric, getTimestamp(), value, tags);
+  public static double getElapsedTimeInMilliseconds(long startTimeNano, long endTimeNano) {
+    // return as milliseconds the time between the start and end timestamps, where
+    // the start and end timestamps are expressed in nanoseconds
+    return (endTimeNano - startTimeNano) / 1000000.0;
   }
 
-  public void submitDistribution(
-      @NotNull METRIC metric, double timestamp, double value, String[] tags) {
+  public void submitRequestDuration(
+      long requestStartNanoseconds, long requestEndNanoseconds, String[] tags) {
+
     DistributionPointsPayload payload =
-        createDistributionPointsPayload(metric, timestamp, value, tags);
+        createDistributionPointsPayload(
+            METRIC.REQUEST_DURATION,
+            getTimestamp(),
+            getElapsedTimeInMilliseconds(requestStartNanoseconds, requestEndNanoseconds),
+            tags);
 
     try {
       IntakePayloadAccepted payloadResult = metricsApi.submitDistributionPoints(payload);

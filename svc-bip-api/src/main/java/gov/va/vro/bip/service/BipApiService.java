@@ -153,17 +153,15 @@ public class BipApiService implements IBipApiService {
       long requestStartTime = System.nanoTime();
       ResponseEntity<T> bipResponse =
           restTemplate.exchange(url, method, httpEntity, expectedResponse);
-      long elapsedTime = System.nanoTime() - requestStartTime;
 
       log.info(
           "event=responseReceived url={} method={} status={}",
           url,
           method,
           bipResponse.getStatusCode().value());
-
-      metricLogger.submitDistribution(
-          MetricLoggerService.METRIC.REQUEST_DURATION,
-          elapsedTime,
+      metricLogger.submitRequestDuration(
+          requestStartTime,
+          System.nanoTime(),
           new String[] {
             String.format("expectedResponse:%s", expectedResponse.getSimpleName()),
             "source:bipApiService",
