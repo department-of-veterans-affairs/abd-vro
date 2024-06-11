@@ -9,7 +9,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # hadolint ignore=DL3018,DL3009
 RUN apt-get update && \
-    install_packages sudo curl unzip gnupg ca-certificates && \
+    install_packages sudo curl unzip gnupg ca-certificates groff && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy AWS CLI from the awscli stage
