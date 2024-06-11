@@ -889,7 +889,20 @@ class TestUpToCancelClaim:
                 call(machine.job.job_id, revert_temporary_station_of_jurisdiction_req),
             ],
         )
-        assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.CANCEL_EP400_CLAIM, 1, False)
+        assert_metrics_called(
+            metric_logger_distribution,
+            metric_logger_increment,
+            JobState.COMPLETED_ERROR,
+            JobState.CANCEL_EP400_CLAIM,
+            expected_pending_new_contentions=0,
+            expected_pending_cfi_contentions=1,
+            expected_ep400_new_contentions=0,
+            expected_ep400_cfi_contentions=1,
+            expected_merge_contentions=1,
+            expected_merge_new_contentions=0,
+            expected_merge_cfi_contentions=1,
+            expected_merge_skip=False,
+        )
 
     @pytest.mark.parametrize(
         'invalid_request',
@@ -937,8 +950,14 @@ class TestUpToCancelClaim:
             metric_logger_increment,
             JobState.COMPLETED_ERROR,
             JobState.CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION,
-            1,
-            False,
+            expected_pending_new_contentions=0,
+            expected_pending_cfi_contentions=1,
+            expected_ep400_new_contentions=0,
+            expected_ep400_cfi_contentions=1,
+            expected_merge_contentions=1,
+            expected_merge_new_contentions=0,
+            expected_merge_cfi_contentions=1,
+            expected_merge_skip=False,
         )
 
 
@@ -983,7 +1002,20 @@ class TestUpToAddClaimNote:
                 call(machine.job.job_id, add_claim_note_req),
             ],
         )
-        assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.ADD_CLAIM_NOTE_TO_EP400, 1, False)
+        assert_metrics_called(
+            metric_logger_distribution,
+            metric_logger_increment,
+            JobState.COMPLETED_ERROR,
+            JobState.ADD_CLAIM_NOTE_TO_EP400,
+            expected_pending_new_contentions=0,
+            expected_pending_cfi_contentions=1,
+            expected_ep400_new_contentions=0,
+            expected_ep400_cfi_contentions=1,
+            expected_merge_contentions=1,
+            expected_merge_new_contentions=0,
+            expected_merge_cfi_contentions=1,
+            expected_merge_skip=False,
+        )
 
 
 class TestSuccess:
