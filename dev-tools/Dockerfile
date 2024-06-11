@@ -1,7 +1,7 @@
-# Use Amazon AWS CLI image as the base image
-FROM amazon/aws-cli:2.16.5
+# Use the official AWS CLI image for the first stage
+FROM amazon/aws-cli:2.16.5 as awscli
 
-# Use bitnami/minideb:bookworm as a second stage to install PostgreSQL client
+# Use the bitnami/minideb:bookworm as the base image for the second stage
 FROM bitnami/minideb:bookworm
 
 # Set SHELL option to handle pipes more safely
@@ -12,10 +12,10 @@ RUN apt-get update && \
     install_packages sudo curl unzip gnupg ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy AWS CLI from the first stage
-COPY --from=amazon/aws-cli:latest /usr/local/aws-cli /usr/local/aws-cli
+# Copy AWS CLI from the awscli stage
+COPY --from=awscli /usr/local/aws-cli /usr/local/aws-cli
 
-# Set AWS CLI binary to the PATH
+# Make the AWS CLI binaries available in PATH
 ENV PATH="/usr/local/aws-cli/v2/current/bin:${PATH}"
 
 # Download and import PostgreSQL GPG key
