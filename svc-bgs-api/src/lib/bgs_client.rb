@@ -3,6 +3,8 @@
 require 'active_support/time'
 require 'active_support/core_ext/object/blank'
 require 'bgs'
+require 'metric_logger'
+require 'metric_logger_service'  # Assuming your translated file is named metric_logger_service.rb
 
 # patch bgs_ext with a createNote implementation that follows our spec better
 BGS::DevelopmentNotesService.class_eval do
@@ -38,13 +40,19 @@ end
 
 class BgsClient
   attr_reader :bgs
+  attr_reader :metrics
 
   def initialize
     @bgs = BGS::Services.new(external_uid: nil, external_key: nil)
+    MetricsApi
+    # @metrics = BGS::metric_logger.new()
+    @metrics = MetricLoggerService.new()
   end
 
   def handle_request(req)
     claim_id = req["vbmsClaimId"]
+    submit_count(METRIC[:REQUEST_START])
+    start_time = Time.now
     if req.has_key?("claimNotes") && req["claimNotes"].any?
       raise ArgumentError.new("vbmsClaimId is required for claimNotes") unless claim_id
 
@@ -59,6 +67,8 @@ class BgsClient
     else
       raise ArgumentError.new("missing claimNotes or veteranNote")
     end
+    submit_request_duration(start_time, end_time)
+    submit_count(METRIC[:REQUEST_COMPLETE])
   end
 
   def vro_participant_id
