@@ -1,3 +1,19 @@
 plugins {
   id 'shared.docker.container-conventions'
 }
+
+// Task to copy the Dockerfile to the build/docker directory
+task copyDockerfile(type: Copy) {
+  from 'Dockerfile'
+  into 'build/docker'
+}
+
+// Task to build the Docker image using the Dockerfile in the build/docker directory
+task buildDockerImage(type: Exec) {
+  dependsOn copyDockerfile
+  workingDir 'build/docker'
+  commandLine 'docker', 'build', '-t', 'dev-tools', '.'
+}
+
+// Ensure the build task depends on the buildDockerImage task
+build.dependsOn buildDockerImage
