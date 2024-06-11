@@ -129,7 +129,7 @@ def log_contention_stats(
 
     log_as_json(
         {
-            "claim_id": sanitize_log(claim.claim_id),
+            "vagov_claim_id": sanitize_log(claim.claim_id),
             "claim_type": sanitize_log(log_contention_type),
             "classification_code": classification_code,
             "classification_name": classification_name,
