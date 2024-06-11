@@ -105,6 +105,7 @@ def log_as_json(log: dict):
 def log_contention_stats(
     contention: Contention,
     classified_contention: ClassifiedContention,
+    claim: VaGovClaim,
 ):
     """
     Logs stats about each contention process by the classifier. This will maintain
@@ -124,8 +125,11 @@ def log_contention_stats(
     else:
         log_contention_type = contention.contention_type.lower()
 
+    is_multi_contention = len(claim.contentions) > 1
+
     log_as_json(
         {
+            "claim_id": sanitize_log(claim.claim_id),
             "claim_type": sanitize_log(log_contention_type),
             "classification_code": classification_code,
             "classification_name": classification_name,
@@ -133,6 +137,7 @@ def log_contention_stats(
             "diagnostic_code": sanitize_log(contention.diagnostic_code),
             "is_in_dropdown": is_in_dropdown,
             "is_lookup_table_match": classification_code is not None,
+            "is_multi_contention": is_multi_contention,
         }
     )
 
@@ -175,10 +180,10 @@ def log_contention_stats_decorator(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         result = func(*args, **kwargs)
-
-        if kwargs.get("contention"):
-            contention = kwargs["contention"]
-            log_contention_stats(contention, result)
+        if isinstance(args[0], Contention) and isinstance(args[1], VaGovClaim):
+            contention = args[0]
+            claim = args[1]
+            log_contention_stats(contention, result, claim)
 
         return result
 
@@ -285,7 +290,9 @@ def get_classification_code(contention: Contention) -> Optional[int]:
 
 
 @log_contention_stats_decorator
-def classify_contention(contention: Contention) -> ClassifiedContention:
+def classify_contention(
+    contention: Contention, claim: VaGovClaim
+) -> ClassifiedContention:
     classification_code = get_classification_code(contention)
     if classification_code:
         classification_name = get_classification_name(classification_code)
@@ -298,7 +305,7 @@ def classify_contention(contention: Contention) -> ClassifiedContention:
         diagnostic_code=contention.diagnostic_code,
         contention_type=contention.contention_type,
     )
-    log_contention_stats(contention, response)
+
     return response
 
 
@@ -307,7 +314,7 @@ def classify_contention(contention: Contention) -> ClassifiedContention:
 def va_gov_claim_classifier(claim: VaGovClaim) -> ClassifierResponse:
     classified_contentions = []
     for contention in claim.contentions:
-        classification = classify_contention(contention)
+        classification = classify_contention(contention, claim)
         classified_contentions.append(classification)
 
     num_classified = len([c for c in classified_contentions if c.classification_code])
