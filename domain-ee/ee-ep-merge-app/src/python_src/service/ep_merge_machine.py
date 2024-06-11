@@ -28,7 +28,7 @@ from service.hoppy_service import HOPPY, ClientName
 from service.job_store import JOB_STORE
 from statemachine import State, StateMachine
 from util.contentions_util import ContentionsUtil
-from util.metric_logger import distribution, increment
+from util.metric_logger import CountMetric, DistributionMetric, distribution, increment
 
 ERROR_STATES_TO_LOG_METRICS = [
     JobState.CANCEL_EP400_CLAIM,
@@ -41,7 +41,14 @@ JOB_FAILURE_METRIC = 'job.failure'
 JOB_ERROR_METRIC_PREFIX = 'job.error'
 JOB_DURATION_METRIC = 'job.duration'
 JOB_SKIPPED_MERGE_METRIC = 'job.skipped_merge'
-JOB_NEW_CONTENTIONS_METRIC = 'job.new_contentions'
+JOB_MERGED_CONTENTIONS_METRIC = 'job.merged_contentions'
+JOB_MERGED_NEW_CONTENTIONS_METRIC = 'job.merged_new_contentions'
+JOB_MERGED_CFI_CONTENTIONS_METRIC = 'job.merged_cfi_contentions'
+
+PENDING_NEW_CONTENTIONS_METRIC = 'pending_ep.new_contentions'
+PENDING_CFI_CONTENTIONS_METRIC = 'pending_ep.cfi_contentions'
+EP400_NEW_CONTENTIONS_METRIC = 'ep400.new_contentions'
+EP400_CFI_CONTENTIONS_METRIC = 'ep400.cfi_contentions'
 
 ELIGIBLE_CLAIM_LIFECYCLE_STATUSES = frozenset(['open'])
 EP400_PRODUCT_CODES = frozenset([str(i) for i in range(400, 410)])
@@ -76,12 +83,6 @@ class Workflow(str, Enum):
 
 class EpMergeMachine(StateMachine):  # type: ignore[misc]
     """State machine for the EP merge process. Type hint is ignored because mypy incorrectly assesses StateMachine as a subclasses of Any."""
-
-    job: MergeJob | None = None
-    cancellation_reason: str | None = None
-    original_tsoj: str | None = None
-    num_new_contentions: int | None = None
-    skipped_merge: bool = True
 
     # States:
     pending = State(initial=True, value=JobState.PENDING)
@@ -122,8 +123,8 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
         | running_check_pending_is_open.to(running_set_temp_station_of_jurisdiction, unless='has_error')
         | running_check_pending_is_open.to(running_check_pending_is_open_failed_remove_special_issue, cond='has_error')
         | running_check_pending_is_open_failed_remove_special_issue.to(completed_error)
-        | running_set_temp_station_of_jurisdiction.to(running_merge_contentions, cond='has_new_contentions', unless='has_error')
-        | running_set_temp_station_of_jurisdiction.to(running_cancel_ep400_claim, unless=['has_new_contentions', 'has_error'])
+        | running_set_temp_station_of_jurisdiction.to(running_merge_contentions, cond='has_contentions_for_merge', unless='has_error')
+        | running_set_temp_station_of_jurisdiction.to(running_cancel_ep400_claim, unless=['has_contentions_for_merge', 'has_error'])
         | running_set_temp_station_of_jurisdiction.to(running_set_temp_station_of_jurisdiction_failed_remove_special_issue, cond='has_error')
         | running_set_temp_station_of_jurisdiction_failed_remove_special_issue.to(completed_error)
         | running_merge_contentions.to(running_move_contentions_to_pending_claim, unless='has_error')
@@ -165,6 +166,10 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
     def __init__(self, merge_job: MergeJob, main_event: Workflow = Workflow.PROCESS):
         self.job = merge_job
         self.main_event = main_event
+        self.cancellation_reason: str | None = None
+        self.original_tsoj: str | None = None
+        self.ep_metrics: list[DistributionMetric] = []
+        self.skipped_merge: bool = True
         super().__init__()
 
     def start(self):
@@ -230,6 +235,16 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
             response_type=get_contentions.Response,
             expected_statuses=expected_statuses,
         )
+        if response and response.status_code in expected_statuses:
+            contentions = response.contentions or []
+            num_pending_ep_new_contentions = sum(c.contention_type_code == 'NEW' for c in contentions)
+            num_pending_ep_cfi_contentions = sum(c.contention_type_code == 'INCREASE' for c in contentions)
+            self.ep_metrics.extend(
+                [
+                    DistributionMetric(PENDING_NEW_CONTENTIONS_METRIC, num_pending_ep_new_contentions),
+                    DistributionMetric(PENDING_CFI_CONTENTIONS_METRIC, num_pending_ep_cfi_contentions),
+                ]
+            )
         self.send(event=event, pending_contentions_response=response)
 
     @running_get_ep400_contentions.enter
@@ -245,8 +260,18 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
             retry_wait_time=EP400_CONTENTION_RETRY_WAIT_TIME,
             will_retry_condition=ep400_has_no_contentions,
         )
-        if response and (response.status_code in expected_responses and not response.contentions):
-            self.add_job_error(f'EP400 claim #{self.job.ep400_claim_id} does not have any contentions')
+        if response and response.status_code in expected_responses:
+            if not response.contentions:
+                self.add_job_error(f'EP400 claim #{self.job.ep400_claim_id} does not have any contentions')
+
+            num_ep_new_contentions = sum(c.contention_type_code == 'NEW' for c in response.contentions or [])
+            num_ep_cfi_contentions = sum(c.contention_type_code == 'INCREASE' for c in response.contentions or [])
+            self.ep_metrics.extend(
+                [
+                    DistributionMetric(EP400_NEW_CONTENTIONS_METRIC, num_ep_new_contentions),
+                    DistributionMetric(EP400_CFI_CONTENTIONS_METRIC, num_ep_cfi_contentions),
+                ]
+            )
 
         self.send(event=event, pending_contentions_response=pending_contentions_response, ep400_contentions_response=response)
 
@@ -375,20 +400,24 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
             )
 
     def log_metrics(self, job_duration: float) -> None:
-        distribution(JOB_DURATION_METRIC, job_duration)
+        distribution_metrics = [DistributionMetric(JOB_DURATION_METRIC, job_duration)]
+        increment_metrics = []
 
         if self.job.state == JobState.COMPLETED_SUCCESS:
-            increment(JOB_SUCCESS_METRIC)
-            distribution(JOB_NEW_CONTENTIONS_METRIC, self.num_new_contentions)
+            increment_metrics.append(CountMetric(JOB_SUCCESS_METRIC))
+            distribution_metrics.extend(self.ep_metrics)
             if self.skipped_merge:
-                increment(JOB_SKIPPED_MERGE_METRIC)
+                increment_metrics.append(CountMetric(JOB_SKIPPED_MERGE_METRIC))
         else:
-            increment(JOB_FAILURE_METRIC)
-            increment(f'{JOB_ERROR_METRIC_PREFIX}.{self.job.error_state}')
+            increment_metrics.extend([CountMetric(JOB_FAILURE_METRIC), CountMetric(f'{JOB_ERROR_METRIC_PREFIX}.{self.job.error_state}')])
             if self.job.error_state in ERROR_STATES_TO_LOG_METRICS:
-                distribution(JOB_NEW_CONTENTIONS_METRIC, self.num_new_contentions)
+                distribution_metrics.extend(self.ep_metrics)
+
                 if self.skipped_merge:
-                    increment(JOB_SKIPPED_MERGE_METRIC)
+                    increment_metrics.append(CountMetric(JOB_SKIPPED_MERGE_METRIC))
+
+        increment(increment_metrics)
+        distribution(distribution_metrics)
 
     async def make_hoppy_request(
         self,
@@ -453,12 +482,21 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
     def has_error(self) -> bool:
         return self.job.state == JobState.COMPLETED_ERROR  # type: ignore[no-any-return]
 
-    def has_new_contentions(
+    def has_contentions_for_merge(
         self, pending_contentions_response: get_contentions.Response, ep400_contentions_response: get_contentions.Response
     ) -> list[ContentionSummary]:
-        contentions = ContentionsUtil.new_contentions(pending_contentions_response.contentions, ep400_contentions_response.contentions)
-        self.num_new_contentions = len(contentions)
-        return contentions  # type: ignore[no-any-return]
+        contentions: list[ContentionSummary] = ContentionsUtil.new_contentions(pending_contentions_response.contentions, ep400_contentions_response.contentions)
+
+        merge_metrics = [
+            DistributionMetric(JOB_MERGED_CONTENTIONS_METRIC, len(contentions)),
+            DistributionMetric(JOB_MERGED_NEW_CONTENTIONS_METRIC, sum(c.contention_type_code == 'NEW' for c in contentions)),
+            DistributionMetric(JOB_MERGED_CFI_CONTENTIONS_METRIC, sum(c.contention_type_code == 'INCREASE' for c in contentions)),
+        ]
+        for metric in merge_metrics:
+            if metric not in self.ep_metrics:
+                self.ep_metrics.append(metric)
+
+        return contentions
 
     def add_job_error(self, message: str) -> None:
         errors = {'state': self.job.state, 'error': message}

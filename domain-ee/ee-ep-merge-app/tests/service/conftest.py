@@ -18,15 +18,22 @@ from schema.merge_job import JobState
 from service.ep_merge_machine import (
     CANCEL_TRACKING_EP,
     CANCELLATION_REASON_FORMAT,
+    EP400_CFI_CONTENTIONS_METRIC,
+    EP400_NEW_CONTENTIONS_METRIC,
     ERROR_STATES_TO_LOG_METRICS,
     JOB_DURATION_METRIC,
     JOB_ERROR_METRIC_PREFIX,
     JOB_FAILURE_METRIC,
-    JOB_NEW_CONTENTIONS_METRIC,
+    JOB_MERGED_CFI_CONTENTIONS_METRIC,
+    JOB_MERGED_CONTENTIONS_METRIC,
+    JOB_MERGED_NEW_CONTENTIONS_METRIC,
     JOB_SKIPPED_MERGE_METRIC,
     JOB_SUCCESS_METRIC,
+    PENDING_CFI_CONTENTIONS_METRIC,
+    PENDING_NEW_CONTENTIONS_METRIC,
 )
 from util.contentions_util import ContentionsUtil
+from util.metric_logger import CountMetric, DistributionMetric
 
 JOB_ID = uuid.uuid4()
 PENDING_CLAIM_ID = 1
@@ -152,34 +159,55 @@ def assert_metrics_called(
     metric_logger_increment,
     expected_completed_state: JobState,
     expected_error_state: JobState = None,
-    expected_new_contentions: int | None = None,
+    expected_pending_new_contentions: int = 0,
+    expected_pending_cfi_contentions: int = 0,
+    expected_ep400_new_contentions: int = 0,
+    expected_ep400_cfi_contentions: int = 0,
+    expected_merge_contentions: int = 0,
+    expected_merge_new_contentions: int = 0,
+    expected_merge_cfi_contentions: int = 0,
     expected_merge_skip: bool = True,
 ):
-    increment_calls = []
-    distribution_calls = [call(JOB_DURATION_METRIC, ANY)]
+    increment_metrics = []
+    distribution_metrics = [DistributionMetric(JOB_DURATION_METRIC, ANY)]
+    contention_metrics = [
+        DistributionMetric(PENDING_NEW_CONTENTIONS_METRIC, expected_pending_new_contentions),
+        DistributionMetric(PENDING_CFI_CONTENTIONS_METRIC, expected_pending_cfi_contentions),
+        DistributionMetric(EP400_NEW_CONTENTIONS_METRIC, expected_ep400_new_contentions),
+        DistributionMetric(EP400_CFI_CONTENTIONS_METRIC, expected_ep400_cfi_contentions),
+        DistributionMetric(JOB_MERGED_CONTENTIONS_METRIC, expected_merge_contentions),
+        DistributionMetric(JOB_MERGED_NEW_CONTENTIONS_METRIC, expected_merge_new_contentions),
+        DistributionMetric(JOB_MERGED_CFI_CONTENTIONS_METRIC, expected_merge_cfi_contentions),
+    ]
     if expected_completed_state == JobState.COMPLETED_SUCCESS:
-        increment_calls.append(call(JOB_SUCCESS_METRIC))
-        distribution_calls.append(call(JOB_NEW_CONTENTIONS_METRIC, expected_new_contentions))
+        increment_metrics.append(CountMetric(JOB_SUCCESS_METRIC))
+        distribution_metrics.extend(contention_metrics)
         if expected_merge_skip:
-            increment_calls.append(call(JOB_SKIPPED_MERGE_METRIC))
+            increment_metrics.append(CountMetric(JOB_SKIPPED_MERGE_METRIC))
 
     else:
-        increment_calls.append(call(JOB_FAILURE_METRIC))
-        increment_calls.append(call(f'{JOB_ERROR_METRIC_PREFIX}.{expected_error_state}'))
+        increment_metrics.extend([CountMetric(JOB_FAILURE_METRIC), CountMetric(f'{JOB_ERROR_METRIC_PREFIX}.{expected_error_state}')])
         if expected_error_state in ERROR_STATES_TO_LOG_METRICS:
-            distribution_calls.append(call(JOB_NEW_CONTENTIONS_METRIC, expected_new_contentions))
+            distribution_metrics.extend(contention_metrics)
             if expected_merge_skip:
-                increment_calls.append(call(JOB_SKIPPED_MERGE_METRIC))
+                increment_metrics.append(CountMetric(JOB_SKIPPED_MERGE_METRIC))
 
-    metric_logger_increment.assert_has_calls(increment_calls)
-    metric_logger_distribution.assert_has_calls(distribution_calls)
+    metric_logger_increment.assert_has_calls([call(increment_metrics)])
+    metric_logger_distribution.assert_has_calls([call(distribution_metrics)])
 
 
 def assert_requests_and_metrics_for_success(
     machine, metric_logger_distribution, metric_logger_increment, mock_hoppy_async_client, pending_contentions_response, ep400_contentions_response
 ):
-    new_contentions = ContentionsUtil.new_contentions(pending_contentions_response.contentions, ep400_contentions_response.contentions)
-    merge_skipped = not new_contentions
+    num_pending_new_contentions = sum(1 for c in pending_contentions_response.contentions or [] if c.contention_type_code == 'NEW')
+    num_pending_cfi_contentions = sum(1 for c in pending_contentions_response.contentions or [] if c.contention_type_code == 'INCREASE')
+    num_ep400_new_contentions = sum(1 for c in ep400_contentions_response.contentions if c.contention_type_code == 'NEW')
+    num_ep400_cfi_contentions = sum(1 for c in ep400_contentions_response.contentions if c.contention_type_code == 'INCREASE')
+
+    merged_contentions = ContentionsUtil.new_contentions(pending_contentions_response.contentions, ep400_contentions_response.contentions)
+    num_merged_new_contentions = sum(1 for c in merged_contentions if c.contention_type_code == 'NEW')
+    num_merged_cfi_contentions = sum(1 for c in merged_contentions if c.contention_type_code == 'INCREASE')
+    merge_skipped = not merged_contentions
 
     requests = [
         call(machine.job.job_id, get_pending_claim_req),
@@ -190,7 +218,7 @@ def assert_requests_and_metrics_for_success(
         call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
     ]
     if not merge_skipped:
-        create_pending_claim_req = create_contentions.Request(claim_id=PENDING_CLAIM_ID, create_contentions=new_contentions).model_dump(by_alias=True)
+        create_pending_claim_req = create_contentions.Request(claim_id=PENDING_CLAIM_ID, create_contentions=merged_contentions).model_dump(by_alias=True)
         requests.append(call(machine.job.job_id, create_pending_claim_req))
     requests.extend(
         [
@@ -203,4 +231,17 @@ def assert_requests_and_metrics_for_success(
         mock_hoppy_async_client,
         requests,
     )
-    assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_SUCCESS, None, len(new_contentions), not new_contentions)
+    assert_metrics_called(
+        metric_logger_distribution,
+        metric_logger_increment,
+        JobState.COMPLETED_SUCCESS,
+        None,
+        expected_pending_new_contentions=num_pending_new_contentions,
+        expected_pending_cfi_contentions=num_pending_cfi_contentions,
+        expected_ep400_new_contentions=num_ep400_new_contentions,
+        expected_ep400_cfi_contentions=num_ep400_cfi_contentions,
+        expected_merge_contentions=len(merged_contentions),
+        expected_merge_new_contentions=num_merged_new_contentions,
+        expected_merge_cfi_contentions=num_merged_cfi_contentions,
+        expected_merge_skip=not merged_contentions,
+    )
