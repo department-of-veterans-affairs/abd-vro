@@ -1,10 +1,10 @@
-FROM ruby:3.3.0-alpine3.19
+FROM ruby:3.3.2-alpine3.20
 
  # Bundler needs git, and ruby-dev curl-dev build-base to make native gems
  # https://www.cloudbees.com/blog/build-minimal-docker-container-ruby-apps
 
 # hadolint ignore=DL3018
-RUN apk update && apk upgrade && apk --no-cache add git ruby-dev=3.2.4-r0 curl-dev build-base=0.5-r3 openssl && rm -rf /var/cache/apk/*
+RUN apk update && apk upgrade && apk --no-cache add git ruby-dev curl-dev build-base openssl && rm -rf /var/cache/apk/*
 
 WORKDIR /app
 
