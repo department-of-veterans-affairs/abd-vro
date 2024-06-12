@@ -28,22 +28,10 @@ GEM
       sorted_set (~> 1, >= 1.0.2)
     cgi (0.3.6)
     concurrent-ruby (1.2.2)
-    datadog-ci (0.8.3)
-      msgpack
     date (3.3.4)
-    ddtrace (1.23.0)
-      datadog-ci (~> 0.8.1)
-      debase-ruby_core_source (= 3.3.1)
-      libdatadog (~> 7.0.0.1.0)
-      libddwaf (~> 1.14.0.0.0)
-      msgpack
-    debase-ruby_core_source (3.3.1)
     diff-lcs (1.5.0)
     dogapi (1.45.0)
       multi_json
-    ffi (1.17.0)
-    ffi (1.17.0-x86_64-darwin)
-    ffi (1.17.0-x86_64-linux-gnu)
     gyoku (1.4.0)
       builder (>= 2.1.2)
       rexml (~> 3.0)
@@ -52,14 +40,6 @@ GEM
       rack
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
-    libdatadog (7.0.0.1.0)
-    libdatadog (7.0.0.1.0-x86_64-linux)
-    libddwaf (1.14.0.0.0)
-      ffi (~> 1.0)
-    libddwaf (1.14.0.0.0-x86_64-darwin)
-      ffi (~> 1.0)
-    libddwaf (1.14.0.0.0-x86_64-linux)
-      ffi (~> 1.0)
     mail (2.8.1)
       mini_mime (>= 0.1.1)
       net-imap
@@ -68,7 +48,6 @@ GEM
     mini_mime (1.1.5)
     mini_portile2 (2.8.6)
     minitest (5.20.0)
-    msgpack (1.7.2)
     multi_json (1.15.0)
     net-imap (0.4.9.1)
       date
@@ -139,8 +118,7 @@ DEPENDENCIES
   bgs_ext!
   bunny (>= 2.13.0)
   cgi (~> 0.3.6)
-  ddtrace
-  dogapi
+  dogapi (~> 1.45)
   rspec
 
 RUBY VERSION
