@@ -11,6 +11,9 @@ gem 'bgs_ext', git: 'https://github.com/department-of-veterans-affairs/bgs-ext.g
 # Add rexml to the gem list
 gem 'rexml', '>= 3.2.7'
 
+# Update the rack gem to version 3.0.0.beta1 or higher
+gem 'rack', '>= 3.0.0.beta1'
+
 group :development, :test do
   gem 'rspec'
 end
