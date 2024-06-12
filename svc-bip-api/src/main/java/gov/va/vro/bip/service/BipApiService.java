@@ -62,6 +62,8 @@ public class BipApiService implements IBipApiService {
 
   final ObjectMapper mapper;
 
+  final MetricLoggerService metricLogger = new MetricLoggerService();
+
   @Override
   public GetClaimResponse getClaimDetails(long claimId) {
     String url = bipApiProps.getClaimRequestUrl(String.format(CLAIM_DETAILS, claimId));
@@ -140,6 +142,13 @@ public class BipApiService implements IBipApiService {
 
       HttpEntity<Object> httpEntity = new HttpEntity<>(requestBody, getBipHeader());
       log.info("event=requestSent url={} method={}", url, method);
+      metricLogger.submitCount(
+          MetricLoggerService.METRIC.REQUEST_START,
+          new String[] {
+            String.format("expectedResponse:%s", expectedResponse.getSimpleName()),
+            "source:bipApiService",
+            String.format("method:%s", method.name())
+          });
 
       long requestStartTime = System.nanoTime();
       ResponseEntity<T> bipResponse =
@@ -150,6 +159,14 @@ public class BipApiService implements IBipApiService {
           url,
           method,
           bipResponse.getStatusCode().value());
+      metricLogger.submitRequestDuration(
+          requestStartTime,
+          System.nanoTime(),
+          new String[] {
+            String.format("expectedResponse:%s", expectedResponse.getSimpleName()),
+            "source:bipApiService",
+            String.format("method:%s", method.name())
+          });
 
       BipPayloadResponse.BipPayloadResponseBuilder<?, ?> responseBuilder;
       if (bipResponse.hasBody()) {
@@ -157,6 +174,14 @@ public class BipApiService implements IBipApiService {
       } else {
         responseBuilder = mapper.readValue("{}", expectedResponse).toBuilder();
       }
+
+      metricLogger.submitCount(
+          MetricLoggerService.METRIC.RESPONSE_COMPLETE,
+          new String[] {
+            String.format("expectedResponse:%s", expectedResponse.getSimpleName()),
+            "source:bipApiService",
+            String.format("method:%s", method.name())
+          });
 
       return (T)
           responseBuilder
@@ -178,6 +203,15 @@ public class BipApiService implements IBipApiService {
           method,
           HttpStatus.INTERNAL_SERVER_ERROR.value(),
           e.getMessage());
+
+      metricLogger.submitCount(
+          MetricLoggerService.METRIC.RESPONSE_ERROR,
+          new String[] {
+            String.format("expectedResponse:%s", expectedResponse.getSimpleName()),
+            "source:bipApiService",
+            String.format("method:%s", method.name()),
+            String.format("error:%s", e.getMessage())
+          });
 
       throw new BipException(e.getMessage(), e);
     }

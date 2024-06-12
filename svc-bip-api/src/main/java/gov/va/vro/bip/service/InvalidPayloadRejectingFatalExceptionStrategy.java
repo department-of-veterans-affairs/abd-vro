@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class InvalidPayloadRejectingFatalExceptionStrategy implements FatalExceptionStrategy {
 
+  private final MetricLoggerService metricLoggerService = new MetricLoggerService();
+
   @Override
   public boolean isFatal(@NotNull Throwable t) {
     if (t instanceof ListenerExecutionFailedException
@@ -23,6 +25,13 @@ public class InvalidPayloadRejectingFatalExceptionStrategy implements FatalExcep
           "Fatal message conversion error; message rejected; it will be dropped: {}",
           ((ListenerExecutionFailedException) t).getFailedMessage());
 
+      metricLoggerService.submitCount(
+          MetricLoggerService.METRIC.MESSAGE_CONVERSION_ERROR,
+          new String[] {
+            "event:fatalMessageConversionError",
+            "source:InvalidPayloadRejectingFatalExceptionStrategy",
+            String.format("error:%s", ((ListenerExecutionFailedException) t).getFailedMessage())
+          });
       return true;
     }
     return false;

@@ -27,6 +27,8 @@ public class BipRequestErrorHandler implements RabbitListenerErrorHandler {
 
   private final ObjectMapper mapper;
 
+  private final MetricLoggerService metricLoggerService = new MetricLoggerService();
+
   public BipRequestErrorHandler(ObjectMapper mapper) {
     this.mapper = mapper;
   }
@@ -62,6 +64,16 @@ public class BipRequestErrorHandler implements RabbitListenerErrorHandler {
         }
       }
 
+      metricLoggerService.submitCount(
+          MetricLoggerService.METRIC.LISTENER_ERROR,
+          new String[] {
+            "event:statusCodeException",
+            String.format("statusCode:%d", status),
+            String.format("statusMessage:%s", statusMessage),
+            "source:BipRequestErrorHandler",
+            String.format("error:%s", exception.getMessage())
+          });
+
       return BipPayloadResponse.builder()
           .statusCode(status)
           .statusMessage(statusMessage)
@@ -81,6 +93,14 @@ public class BipRequestErrorHandler implements RabbitListenerErrorHandler {
                   .text("Unexpected error in svc-bip-api: " + exception.getCause().getMessage())
                   .timestamp(timestamp)
                   .build());
+
+      metricLoggerService.submitCount(
+          MetricLoggerService.METRIC.LISTENER_ERROR,
+          new String[] {
+            "event:unexpectedError",
+            "source:BipRequestErrorHandler",
+            String.format("error:%s", exception.getMessage())
+          });
 
       return BipPayloadResponse.builder()
           .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
