@@ -33,8 +33,12 @@ public class MetricLoggerService {
   private MetricsApi metricsApi;
 
   public MetricLoggerService() {
-    metricsApi = new MetricsApi((new DatadogClientConfig()).getApiClient());
-    log.info("initialized MetricLoggerService");
+    try {
+      metricsApi = new MetricsApi((new DatadogClientConfig()).getApiClient());
+      log.info("initialized MetricLoggerService");
+    } catch (Exception e) {
+      log.error("failure initializing api client for MetricLoggerService");
+    }
   }
 
   public static String getFullMetricString(@NotNull METRIC metric) {
