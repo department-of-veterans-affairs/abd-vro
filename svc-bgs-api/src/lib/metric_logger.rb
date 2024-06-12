@@ -1,5 +1,6 @@
 
 require "datadog_api_client"
+require 'logger'
 require "time"
 
 # Configure Datadog API Client
@@ -88,11 +89,11 @@ def submit_request_duration(start_time, end_time, custom_tags = nil)
 
   begin
     payload_result = metrics_api.submit_distribution_points(payload)
-    log.info(
+    $logger.info(
       "submitted #{payload[:series].first[:metric]}: #{payload_result.status}"
     )
   rescue Exception => e
-    log.error(
+    $logger.error(
       "exception submitting #{payload[:series].first[:metric]}: #{e.message}"
     )
   end
