@@ -5,7 +5,7 @@ from typing import NamedTuple
 import datadog_api_client.v1.api.metrics_api as metrics_v1
 import datadog_api_client.v2.api.metrics_api as metrics_v2
 from config import ENV
-from datadog_api_client import ApiClient, Configuration
+from datadog_api_client import AsyncApiClient, Configuration
 from datadog_api_client.exceptions import ApiException
 from datadog_api_client.v1.model.distribution_point import DistributionPoint
 from datadog_api_client.v1.model.distribution_points_content_encoding import (
@@ -31,7 +31,7 @@ STANDARD_TAGS = [ENV_TAG, SERVICE_TAG]
 
 
 configuration = Configuration(enable_retry=True)
-api_client = ApiClient(configuration)
+api_client = AsyncApiClient(configuration)
 count_metrics_api = metrics_v2.MetricsApi(api_client)
 distribution_metrics_api = metrics_v1.MetricsApi(api_client)  # Metrics API does not have an endpoint for distribution metrics
 
@@ -46,7 +46,7 @@ class DistributionMetric(NamedTuple):
     value: float = 1
 
 
-def increment(metrics: list[CountMetric]) -> None:
+async def increment(metrics: list[CountMetric]) -> None:
     """
     Adds value to a count metric with by the name '{APP_PREFIX}.{metric.name.strip(".").lower()}'
     :param metrics: list of CountMetric objects
@@ -69,14 +69,14 @@ def increment(metrics: list[CountMetric]) -> None:
     body = MetricPayload(series=series)
 
     try:
-        count_metrics_api.submit_metrics(body=body, content_encoding=MetricContentEncoding.DEFLATE)
+        await count_metrics_api.submit_metrics(body=body, content_encoding=MetricContentEncoding.DEFLATE)
     except ApiException as e:
-        logging.warning(f'event=logMetricFailed metrics={metrics} type=count status={e.status} reason={e.reason} body={e.body}')
+        logging.warning(f'event=logMetricFailed type=count metrics={metrics} status={e.status} reason={e.reason} body={e.body}')
     except Exception as e:
-        logging.warning(f'event=logMetricFailed metrics={metrics} type=count type={type(e)} error="{e}"')
+        logging.warning(f'event=logMetricFailed type=count metrics={metrics} error_type={type(e)} error="{e}"')
 
 
-def distribution(metrics: list[DistributionMetric]) -> None:
+async def distribution(metrics: list[DistributionMetric]) -> None:
     """
     Adds value to a distribution metric with by the name '{APP_PREFIX}.{metric.name.strip(".").lower()}.distribution'
     :param metrics: list of DistributionMetric objects
@@ -101,8 +101,8 @@ def distribution(metrics: list[DistributionMetric]) -> None:
     body = DistributionPointsPayload(series=series)
 
     try:
-        distribution_metrics_api.submit_distribution_points(content_encoding=DistributionPointsContentEncoding.DEFLATE, body=body)
+        await distribution_metrics_api.submit_distribution_points(content_encoding=DistributionPointsContentEncoding.DEFLATE, body=body)
     except ApiException as e:
         logging.warning(f"event=logMetricFailed type=distribution metrics={metrics} status={e.status} reason={e.reason} body='{e.body}'")
     except Exception as e:
-        logging.warning(f"event=logMetricFailed type=distribution metrics={metrics} type={type(e)} error='{e}'")
+        logging.warning(f"event=logMetricFailed type=distribution metrics={metrics} error_type={type(e)} error='{e}'")
