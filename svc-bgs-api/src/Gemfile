@@ -8,6 +8,7 @@ gem 'bunny', '>= 2.13.0'
 gem 'activesupport', '~> 6.0'
 gem 'bgs_ext', git: 'https://github.com/department-of-veterans-affairs/bgs-ext.git', require: 'bgs'
 gem 'rexml', '>= 3.2.7'
+gem 'rack', '>= 3.0.6.1'
 
 group :development, :test do
   gem 'rspec'
