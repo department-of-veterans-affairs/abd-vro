@@ -10,7 +10,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (6.1.7.6)
+    activesupport (6.1.7.8)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -18,25 +18,31 @@ GEM
       zeitwerk (~> 2.3)
     addressable (2.8.6)
       public_suffix (>= 2.0.2, < 6.0)
-    akami (1.3.1)
+    akami (1.3.3)
+      base64
       gyoku (>= 0.4.0)
       nokogiri
     amq-protocol (2.3.2)
-    builder (3.2.4)
+    base64 (0.2.0)
+    bigdecimal (3.1.8)
+    builder (3.3.0)
     bunny (2.22.0)
       amq-protocol (~> 2.3, >= 2.3.1)
       sorted_set (~> 1, >= 1.0.2)
     cgi (0.3.6)
-    concurrent-ruby (1.2.2)
+    concurrent-ruby (1.3.3)
     date (3.3.4)
-    diff-lcs (1.5.0)
+    diff-lcs (1.5.1)
     gyoku (1.4.0)
       builder (>= 2.1.2)
       rexml (~> 3.0)
     httpclient (2.8.3)
-    httpi (3.0.1)
-      rack
-    i18n (1.14.1)
+    httpi (3.0.2)
+      base64
+      mutex_m
+      nkf
+      rack (< 3)
+    i18n (1.14.5)
       concurrent-ruby (~> 1.0)
     mail (2.8.1)
       mini_mime (>= 0.1.1)
@@ -44,44 +50,43 @@ GEM
       net-pop
       net-smtp
     mini_mime (1.1.5)
-    mini_portile2 (2.8.6)
-    minitest (5.20.0)
-    net-imap (0.4.9.1)
+    minitest (5.23.1)
+    mutex_m (0.2.0)
+    net-imap (0.4.12)
       date
       net-protocol
     net-pop (0.1.2)
       net-protocol
     net-protocol (0.2.2)
       timeout
-    net-smtp (0.4.0.1)
+    net-smtp (0.5.0)
       net-protocol
-    nokogiri (1.16.5)
-      mini_portile2 (~> 2.8.2)
-      racc (~> 1.4)
-    nokogiri (1.16.5-x86_64-darwin)
+    nkf (0.2.0)
+    nokogiri (1.16.5-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.16.5-x86_64-linux)
       racc (~> 1.4)
-    nori (2.6.0)
-    public_suffix (5.0.4)
-    racc (1.7.3)
-    rack (3.0.9.1)
+    nori (2.7.0)
+      bigdecimal
+    public_suffix (5.0.5)
+    racc (1.8.0)
+    rack (2.2.9)
     rbtree (0.4.6)
-    rexml (3.2.8)
-      strscan (>= 3.0.9)
-    rspec (3.12.0)
-      rspec-core (~> 3.12.0)
-      rspec-expectations (~> 3.12.0)
-      rspec-mocks (~> 3.12.0)
-    rspec-core (3.12.2)
-      rspec-support (~> 3.12.0)
-    rspec-expectations (3.12.3)
+    rexml (3.3.0)
+      strscan
+    rspec (3.13.0)
+      rspec-core (~> 3.13.0)
+      rspec-expectations (~> 3.13.0)
+      rspec-mocks (~> 3.13.0)
+    rspec-core (3.13.0)
+      rspec-support (~> 3.13.0)
+    rspec-expectations (3.13.0)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.12.0)
-    rspec-mocks (3.12.6)
+      rspec-support (~> 3.13.0)
+    rspec-mocks (3.13.1)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.12.0)
-    rspec-support (3.12.1)
+      rspec-support (~> 3.13.0)
+    rspec-support (3.13.1)
     savon (2.14.0)
       akami (~> 1.2)
       builder (>= 2.1.2)
@@ -103,11 +108,10 @@ GEM
       addressable
       httpi (~> 3.0)
       nokogiri (>= 1.4.2)
-    zeitwerk (2.6.12)
+    zeitwerk (2.6.15)
 
 PLATFORMS
-  ruby
-  x86_64-darwin-21
+  arm64-darwin-23
   x86_64-linux
 
 DEPENDENCIES
@@ -115,10 +119,11 @@ DEPENDENCIES
   bgs_ext!
   bunny (>= 2.13.0)
   cgi (~> 0.3.6)
+  rexml (>= 3.2.7)
   rspec
 
 RUBY VERSION
    ruby 3.3.0p0
 
 BUNDLED WITH
-   2.5.4
+   2.5.3
