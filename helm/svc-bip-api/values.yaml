@@ -9,7 +9,7 @@ resources:
     cpu: 1000m
     memory: 1024Mi
 
-replicaCount: 1
+replicaCount: 2
 
 ports:
   - name: liveness

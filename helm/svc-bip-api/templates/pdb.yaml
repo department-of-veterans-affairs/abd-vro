@@ -1,0 +1,9 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: vro-svc-bip-api-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      {{- toYaml .Values.labels | nindent 6 }}
