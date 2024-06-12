@@ -17,8 +17,7 @@ jobs:
       - name: 'Setup Ruby'
         uses: ruby/setup-ruby@v1.165.1
         with:
-          ruby-version: '3.3.2'
-
+          ruby-version: '3.3.0'
       - name: 'Checkout source code'
         uses: actions/checkout@v4
 
