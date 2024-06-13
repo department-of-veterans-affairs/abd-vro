@@ -69,7 +69,8 @@ async def increment(metrics: list[CountMetric]) -> None:
     body = MetricPayload(series=series)
 
     try:
-        await count_metrics_api.submit_metrics(body=body, content_encoding=MetricContentEncoding.DEFLATE)
+        # mypy Cannot determine type of 'submit_metrics' to be awaitable
+        await count_metrics_api.submit_metrics(body=body, content_encoding=MetricContentEncoding.DEFLATE)  # type: ignore
     except ApiException as e:
         logging.warning(f'event=logMetricFailed type=count metrics={metrics} status={e.status} reason={e.reason} body={e.body}')
     except Exception as e:
@@ -101,7 +102,8 @@ async def distribution(metrics: list[DistributionMetric]) -> None:
     body = DistributionPointsPayload(series=series)
 
     try:
-        await distribution_metrics_api.submit_distribution_points(content_encoding=DistributionPointsContentEncoding.DEFLATE, body=body)
+        # mypy Cannot determine type of 'submit_distribution_points' to be awaitable
+        await distribution_metrics_api.submit_distribution_points(content_encoding=DistributionPointsContentEncoding.DEFLATE, body=body)  # type: ignore
     except ApiException as e:
         logging.warning(f"event=logMetricFailed type=distribution metrics={metrics} status={e.status} reason={e.reason} body='{e.body}'")
     except Exception as e:
