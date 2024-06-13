@@ -176,6 +176,10 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
         self.ep_metrics: list[DistributionMetric] = []
         self.skipped_merge: bool = True
         super().__init__()
+        self.loop = asyncio.new_event_loop()
+
+    def __del__(self):
+        self.loop.close()
 
     def start(self):
         self.send(self.main_event.value)
@@ -421,7 +425,8 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
                 if self.skipped_merge:
                     increment_metrics.append(CountMetric(JOB_SKIPPED_MERGE_METRIC))
 
-        asyncio.run(log_metrics_async(increment_metrics, distribution_metrics))
+        self.loop.run_until_complete(increment(increment_metrics))
+        self.loop.run_until_complete(distribution(distribution_metrics))
 
     async def make_hoppy_request(
         self,
@@ -473,7 +478,7 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
                 retry_wait_time,
                 will_retry_condition,
             )
-            return asyncio.run(req)
+            return self.loop.run_until_complete(req)
         except ValidationError as e:
             self.add_client_error(hoppy_client.name, e.errors(include_url=False, include_input=False))
         except ResponseException as e:
