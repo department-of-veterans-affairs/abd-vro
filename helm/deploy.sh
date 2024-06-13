@@ -82,16 +82,7 @@ case "$HELM_CHART" in
     HELM_ARGS="$HELM_ARGS --set-string imageTag=$devtools_VER";;
 esac
 
-set -x
-# Exit with error code when command fails so that GH Action fails
-set -e
-helm upgrade "$RELEASE_NAME" "helm/$HELM_CHART" -n "${NAMESPACE}" \
-  --install --reset-values \
-  --set-string "global.imageTag=${IMAGE_TAG}" \
-  --set-string "global.commitSha=${GITHUB_SHA}" \
-  --set-string "global.triggeringActor=${TRIGGERING_ACTOR}" \
-  ${HELM_ARGS}
-set +x
+
 
 k8sInfo(){
   echo "==================================="
@@ -103,7 +94,25 @@ k8sInfo(){
     {"\tname: "}{.name}
     {"\timage: "}{.image}{end}'
   kubectl -n "${NAMESPACE}" get pvc
+  kubectl -n "${NAMESPACE}" get pdb
   kubectl -n "${NAMESPACE}" get services
   kubectl -n "${NAMESPACE}" get events
 }
 [ "${K8S_INFO}" == "true" ] && k8sInfo
+
+
+set -x
+# Exit with error code when command fails so that GH Action fails
+set -e
+
+kubectl delete pdb "${RELEASE_NAME}-pdb" -n "$NAMESPACE" --v=6
+
+helm upgrade "$RELEASE_NAME" "helm/$HELM_CHART" -n "${NAMESPACE}" \
+  --install --reset-values \
+  --set-string "global.imageTag=${IMAGE_TAG}" \
+  --set-string "global.commitSha=${GITHUB_SHA}" \
+  --set-string "global.triggeringActor=${TRIGGERING_ACTOR}" \
+  ${HELM_ARGS}
+set +x
+
+k8sInfo
