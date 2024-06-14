@@ -28,6 +28,7 @@ class MetricLogger
         DatadogAPIClient.configure do |config|
           config.enable_retry = true
         end
+        @distribution_metrics_api = DatadogAPIClient::V1::MetricsAPI.new
         @metrics_api = DatadogAPIClient::V2::MetricsAPI.new
     end
 
@@ -111,7 +112,7 @@ class MetricLogger
       )
 
       begin
-        payload_result = @metrics_api.submit_distribution_points(payload)
+        payload_result = @distribution_metrics_api.submit_distribution_points(payload)
         $logger.info(
           "submitted #{payload.series.first.metric}  #{payload_result.status}"
         )
