@@ -83,8 +83,8 @@ class MetricLogger
     end
   end
 
-  def submit_count_with_default_values(metric)
-    submit_count(metric, 1, nil)
+  def submit_count_with_default_value(metric, custom_tags)
+    submit_count(metric, 1, custom_tags)
   end
 
   def submit_request_duration(start_time, end_time, custom_tags = nil)

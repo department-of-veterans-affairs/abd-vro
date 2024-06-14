@@ -48,24 +48,30 @@ class BgsClient
 
   def handle_request(req)
     claim_id = req["vbmsClaimId"]
-    @metrics.submit_count_with_default_values(METRIC[:REQUEST_START])
-    start_time = Time.now
-    if req.has_key?("claimNotes") && req["claimNotes"].any?
-      raise ArgumentError.new("vbmsClaimId is required for claimNotes") unless claim_id
+    begin
+        start_time = Time.now
+        metric_custom_tag = req.has_key?("claimNotes") && req["claimNotes"].any? ? 'bgsNoteType:claim' : 'bgsNoteType:veteran'
+        @metrics.submit_count_with_default_value(METRIC[:REQUEST_START], [metric_custom_tag])
+        if isClaimNotes
+          raise ArgumentError.new("vbmsClaimId is required for claimNotes") unless claim_id
+          create_claim_notes(claim_id: claim_id, notes: req["claimNotes"])
+        elsif req.has_key?("veteranNote")
+          participant_id = req["veteranParticipantId"]
+          note = req["veteranNote"]
+          raise ArgumentError.new("at least one of vbmsClaimId and veteranParticipantId is required") unless claim_id || participant_id
+          raise ArgumentError.new("invalid veteranNote value") unless note.is_a?(String) && note.length > 0
+          create_veteran_note(claim_id: claim_id, participant_id: participant_id, note: note)
+        else
+          raise ArgumentError.new("missing claimNotes or veteranNote")
+        end
+        @metrics.submit_request_duration(start_time, Time.now, [metric_custom_tag])
+        @metrics.submit_count_with_default_value(METRIC[:REQUEST_COMPLETE], [metric_custom_tag])
+    rescue Exception => e
+        @metric_logger.submit_count(METRIC[:RESPONSE_ERROR])
+        $logger.error "Exception submitting metric RESPONSE_ERROR #{e.message}"
 
-      create_claim_notes(claim_id: claim_id, notes: req["claimNotes"])
-    elsif req.has_key?("veteranNote")
-      participant_id = req["veteranParticipantId"]
-      note = req["veteranNote"]
-      raise ArgumentError.new("at least one of vbmsClaimId and veteranParticipantId is required") unless claim_id || participant_id
-      raise ArgumentError.new("invalid veteranNote value") unless note.is_a?(String) && note.length > 0
-
-      create_veteran_note(claim_id: claim_id, participant_id: participant_id, note: note)
-    else
-      raise ArgumentError.new("missing claimNotes or veteranNote")
+        raise e.class, "Message: #{e.message}"
     end
-    @metrics.submit_request_duration(start_time, Time.now)
-    @metrics.submit_count_with_default_values(METRIC[:REQUEST_COMPLETE])
   end
 
   def vro_participant_id
