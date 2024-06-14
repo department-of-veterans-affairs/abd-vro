@@ -48,7 +48,7 @@ class BgsClient
 
   def handle_request(req)
     claim_id = req["vbmsClaimId"]
-    @metrics.submit_count(METRIC[:REQUEST_START])
+    @metrics.submit_count_with_default_values(METRIC[:REQUEST_START])
     start_time = Time.now
     if req.has_key?("claimNotes") && req["claimNotes"].any?
       raise ArgumentError.new("vbmsClaimId is required for claimNotes") unless claim_id
@@ -65,7 +65,7 @@ class BgsClient
       raise ArgumentError.new("missing claimNotes or veteranNote")
     end
     @metrics.submit_request_duration(start_time, Time.now)
-    @metrics.submit_count(METRIC[:REQUEST_COMPLETE])
+    @metrics.submit_count_with_default_values(METRIC[:REQUEST_COMPLETE])
   end
 
   def vro_participant_id
