@@ -23,6 +23,7 @@ GEM
       gyoku (>= 0.4.0)
       nokogiri
     amq-protocol (2.3.2)
+    base64 (0.2.0)
     bigdecimal (3.1.8)
     builder (3.2.4)
     bunny (2.22.0)
@@ -55,7 +56,6 @@ GEM
       net-pop
       net-smtp
     mini_mime (1.1.5)
-    mini_portile2 (2.8.6)
     minitest (5.20.0)
     multi_xml (0.7.1)
       bigdecimal (~> 3.1)
@@ -69,8 +69,6 @@ GEM
     net-smtp (0.5.0)
       net-protocol
     nokogiri (1.16.5-arm64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.16.5-x86_64-linux)
       racc (~> 1.4)
     nori (2.7.0)
       bigdecimal
@@ -119,7 +117,6 @@ GEM
 
 PLATFORMS
   arm64-darwin-23
-  x86_64-linux
 
 DEPENDENCIES
   activesupport (~> 6.0)
