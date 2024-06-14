@@ -3,6 +3,23 @@ require "datadog_api_client"
 require 'logger'
 require "time"
 
+require_relative '../config/setup'
+
+APP_PREFIX = 'vro_bgs'
+
+ENV_TAG = "environment:"+ENVIRONMENT
+SERVICE_TAG = 'service:vro-svc-bgs-api'
+STANDARD_TAGS = [ENV_TAG, SERVICE_TAG]
+
+METRIC = {
+  REQUEST_START: :REQUEST_START,
+  REQUEST_DURATION: :REQUEST_DURATION,
+  RESPONSE_COMPLETE: :RESPONSE_COMPLETE,
+  RESPONSE_ERROR: :RESPONSE_ERROR,
+  LISTENER_ERROR: :LISTENER_ERROR,
+  MESSAGE_CONVERSION_ERROR: :MESSAGE_CONVERSION_ERROR
+}
+
 class MetricLogger
 
     def initialize()
@@ -11,23 +28,10 @@ class MetricLogger
         DatadogAPIClient.configure do |config|
           config.enable_retry = true
         end
-        metrics_api = DatadogAPIClient::V2::MetricsAPI.new
+        @metrics_api = DatadogAPIClient::V2::MetricsAPI.new
     end
 
-    APP_PREFIX = 'vro_bgs'
 
-    ENV_TAG = "environment:#{ENV}"
-    SERVICE_TAG = 'service:vro-svc-bgs-api'
-    STANDARD_TAGS = [ENV_TAG, SERVICE_TAG]
-
-    METRIC = {
-      REQUEST_START: :REQUEST_START,
-      REQUEST_DURATION: :REQUEST_DURATION,
-      RESPONSE_COMPLETE: :RESPONSE_COMPLETE,
-      RESPONSE_ERROR: :RESPONSE_ERROR,
-      LISTENER_ERROR: :LISTENER_ERROR,
-      MESSAGE_CONVERSION_ERROR: :MESSAGE_CONVERSION_ERROR
-    }
 
     def get_epoch_milliseconds(time = Time.now)
       return (time.to_f * 1000).to_i
@@ -35,27 +39,27 @@ class MetricLogger
 
     def generate_tags(custom_tags = nil)
       # Similar logic to Java function
-      tags = ["environment:#{env}"]
+      tags = ENV_TAG
       tags << SERVICE_TAG
       tags.concat(custom_tags) if custom_tags
       return tags
     end
 
-    def submit_count(metric:, value: 1)
+    def submit_count(metric, value: 1)
       """
       submit_counts a count metric with by the name 'APP_PREFIX.{metric}'
       :param metric: string containing the metric name
       :param value: value to submit_count by (default: 1)
       """
-      full_metric = "#{APP_PREFIX}.#{metric.strip(".").downcase}"
+      full_metric = "#{APP_PREFIX}.#{metric.to_s.downcase}"
 
-      payload = Datadog::API::V2::MetricPayload.new(
+      payload = DatadogAPIClient::V2::MetricPayload.new(
         series: [
-          Datadog::API::V2::MetricSeries.new(
+          DatadogAPIClient::V2::MetricSeries.new(
             metric: full_metric,
-            type: Datadog::API::V2::MetricIntakeType::COUNT,
+            type: DatadogAPIClient::V2::MetricIntakeType::COUNT,
             points: [
-              Datadog::API::V2::MetricPoint.new(
+              DatadogAPIClient::V2::MetricPoint.new(
                 timestamp: Time.now.to_i,
                 value: value,
               ),
@@ -66,11 +70,9 @@ class MetricLogger
       )
 
       begin
-        metrics_api.submit_metrics(payload: payload)
-      rescue Datadog::Api::Client::ApiException => e
-        puts "Failed to log metric: #{full_metric} (count). Status: #{e.status}, Reason: #{e.reason}, payload: #{e.payload}"
-      rescue StandardError => e
-        puts "Error logging metric: #{full_metric} (count). Error: #{e.class}, Message: #{e.message}"
+        @metrics_api.submit_metrics(payload: payload)
+      rescue Exception => e
+        $logger.error("Error logging metric: #{full_metric} (count). Error: #{e.class}, Message: #{e.message}")
       end
     end
 
@@ -87,18 +89,18 @@ class MetricLogger
       payload = generate_distribution_metric(
         METRIC[:REQUEST_DURATION],
         Time.now.to_i,
-        get_elapsed_milliseconds(start_time, end_time),
-        tags
+        end_time - start_time,
+        custom_tags
       )
 
       begin
-        payload_result = metrics_api.submit_distribution_points(payload)
+        payload_result = @metrics_api.submit_distribution_points(payload)
         $logger.info(
-          "submitted #{payload[:series].first[:metric]}: #{payload_result.status}"
+          "submitted #{payload.series.first.metric}  #{payload_result.status}"
         )
       rescue Exception => e
         $logger.error(
-          "exception submitting #{payload[:series].first[:metric]}: #{e.message}"
+        "exception submitting #{payload.series.first.metric}  #{e.message}"
         )
       end
     end
@@ -116,15 +118,22 @@ class MetricLogger
       Returns:
           hash: The distribution points payload hash.
       """
+      full_metric = "#{APP_PREFIX}.#{metric.to_s.downcase}"
 
-      payload = Datadog::API::V1::DistributionPointsPayload.new(
+      payload = DatadogAPIClient::V1::DistributionPointsPayload.new(
         series: [
-          Datadog::API::V1::DistributionPointsSeries.new(
+          DatadogAPIClient::V1::DistributionPointsSeries.new(
             metric: full_metric,
             points: [
-              Datadog::API::V1::DistributionPoint.new(
-                [Time.now.to_i, [value]],
-              ),
+
+
+            [
+                      Time.now.to_i,
+                      [
+                        value
+                      ],
+                    ],
+
             ],
             tags: generate_tags(custom_tags),
           ),

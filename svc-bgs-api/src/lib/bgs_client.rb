@@ -64,7 +64,7 @@ class BgsClient
     else
       raise ArgumentError.new("missing claimNotes or veteranNote")
     end
-    @metrics.submit_request_duration(start_time, end_time)
+    @metrics.submit_request_duration(start_time, Time.now)
     @metrics.submit_count(METRIC[:REQUEST_COMPLETE])
   end
 
