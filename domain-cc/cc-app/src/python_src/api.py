@@ -18,11 +18,11 @@ from .pydantic_models import (
 )
 from .util.brd_classification_codes import get_classification_name
 from .util.logging_dropdown_selections import build_logging_table
-from .util.lookup_table import ConditionDropdownLookupTable, DiagnosticCodeLookupTable
+from .util.lookup_table import ContentionTextLookupTable, DiagnosticCodeLookupTable
 from .util.sanitizer import sanitize_log
 
 dc_lookup_table = DiagnosticCodeLookupTable()
-dropdown_lookup_table = ConditionDropdownLookupTable()
+dropdown_lookup_table = ContentionTextLookupTable()
 dropdown_values = build_logging_table()
 
 app = FastAPI(
