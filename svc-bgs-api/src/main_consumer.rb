@@ -58,7 +58,12 @@ def initialize_subscriber(bgs_client, metric_logger)
           }
         ]
       }
-      metric_logger.submit_count(MetricLogger.METRIC[:RESPONSE_ERROR])
+
+      begin
+        metric_logger.submit_count(METRIC[:RESPONSE_ERROR])
+      rescue => metric_e
+        $logger.error "Exception submitting metric RESPONSE_ERROR #{e.message}"
+      end
     else
       {
         statusCode: 200,
