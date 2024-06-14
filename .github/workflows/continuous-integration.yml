@@ -49,6 +49,7 @@ jobs:
     secrets: inherit
 
   svc-bgs-api:
+    needs: nondraft-pr
     uses: ./.github/workflows/svc-bgs-api-integration-test.yml
     secrets: inherit
 
@@ -63,5 +64,6 @@ jobs:
     secrets: inherit
 
   ee-ep-merge-end-to-end:
+    needs: nondraft-pr
     uses: ./.github/workflows/ee-ep-merge-end-to-end.yml
     secrets: inherit
