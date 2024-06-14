@@ -67,7 +67,7 @@ class BgsClient
         @metrics.submit_request_duration(start_time, Time.now, [metric_custom_tag])
         @metrics.submit_count_with_default_value(METRIC[:REQUEST_COMPLETE], [metric_custom_tag])
     rescue Exception => e
-        @metric_logger.submit_count(METRIC[:RESPONSE_ERROR])
+        @metric_logger.submit_count_with_default_value(METRIC[:RESPONSE_ERROR], nil)
         $logger.error "Exception submitting metric RESPONSE_ERROR #{e.message}"
 
         raise e.class, "Message: #{e.message}"
