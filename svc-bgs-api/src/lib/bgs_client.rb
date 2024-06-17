@@ -21,11 +21,11 @@ BGS::DevelopmentNotesService.class_eval do
     response.body[:create_notes_response]
   end
 
-  def format_note(claim_id: nil, participant_id: nil, txt:, user_id:)
+  def format_note(txt:, user_id:, claim_id: nil, participant_id: nil)
     note = if claim_id.nil?
-             { 'ptcpntNoteTc' => "CLMNTCONTACT", 'noteOutTn' => "Contact with Claimant" }
+             { 'ptcpntNoteTc' => 'CLMNTCONTACT', 'noteOutTn' => 'Contact with Claimant' }
            else
-             { 'clmId' => claim_id, 'bnftClmNoteTc' => "CLMDVLNOTE", 'noteOutTn' => "Claim Development Note" }
+             { 'clmId' => claim_id, 'bnftClmNoteTc' => 'CLMDVLNOTE', 'noteOutTn' => 'Claim Development Note' }
            end
     note['ptcpntId'] = participant_id unless participant_id.nil?
     note.merge(
@@ -36,10 +36,8 @@ BGS::DevelopmentNotesService.class_eval do
   end
 end
 
-
 class BgsClient
-  attr_reader :bgs
-  attr_reader :metrics
+  attr_reader :bgs, :metrics
 
   def initialize
     @bgs = BGS::Services.new(external_uid: nil, external_key: nil)
@@ -47,34 +45,37 @@ class BgsClient
   end
 
   def handle_request(req)
-    claim_id = req["vbmsClaimId"]
+    claim_id = req['vbmsClaimId']
 
-    if req.has_key?("claimNotes") && req["claimNotes"].any?
-      raise ArgumentError.new("vbmsClaimId is required for claimNotes") unless claim_id
-      create_claim_notes(claim_id: claim_id, notes: req["claimNotes"])
-    elsif req.has_key?("veteranNote")
-      participant_id = req["veteranParticipantId"]
-      note = req["veteranNote"]
-      raise ArgumentError.new("at least one of vbmsClaimId and veteranParticipantId is required") unless claim_id || participant_id
-      raise ArgumentError.new("invalid veteranNote value") unless note.is_a?(String) && note.length > 0
-      create_veteran_note(claim_id: claim_id, participant_id: participant_id, note: note)
+    if req.has_key?('claimNotes') && req['claimNotes'].any?
+      raise ArgumentError.new('vbmsClaimId is required for claimNotes') unless claim_id
+
+      create_claim_notes(claim_id:, notes: req['claimNotes'])
+    elsif req.has_key?('veteranNote')
+      participant_id = req['veteranParticipantId']
+      note = req['veteranNote']
+      unless claim_id || participant_id
+        raise ArgumentError.new('at least one of vbmsClaimId and veteranParticipantId is required')
+      end
+      raise ArgumentError.new('invalid veteranNote value') unless note.is_a?(String) && note.length > 0
+
+      create_veteran_note(claim_id:, participant_id:, note:)
     else
-      raise ArgumentError.new("missing claimNotes or veteranNote")
+      raise ArgumentError.new('missing claimNotes or veteranNote')
     end
   end
 
   def vro_participant_id
-    @vro_participant_id ||= begin
-      if ENVIRONMENT != 'local'
-        cfg = BGS.configuration
-        bgs.security.find_participant_id(station_id: cfg.client_station_id, css_id: cfg.client_username)
-      end
-    end
+    @vro_participant_id ||= if ENVIRONMENT != 'local'
+                              cfg = BGS.configuration
+                              bgs.security.find_participant_id(station_id: cfg.client_station_id,
+                                                               css_id: cfg.client_username)
+                            end
   end
 
   def create_claim_notes(claim_id:, notes:)
     note_hashes = notes.map do |note|
-      { claim_id: claim_id, txt: note, user_id: vro_participant_id }
+      { claim_id:, txt: note, user_id: vro_participant_id }
     end
     start_time = Time.now
     metric_custom_tags = ['bgsNoteType:claim']
@@ -84,13 +85,13 @@ class BgsClient
     @metrics.submit_count_with_default_value(METRIC[:RESPONSE_COMPLETE], metric_custom_tags)
   end
 
-  def create_veteran_note(claim_id: nil, participant_id: nil, note:)
-    participant_id ||= bgs.benefit_claims.find_bnft_claim(claim_id: claim_id)[:bnft_claim_dto][:ptcpnt_vet_id]
+  def create_veteran_note(note:, claim_id: nil, participant_id: nil)
+    participant_id ||= bgs.benefit_claims.find_bnft_claim(claim_id:)[:bnft_claim_dto][:ptcpnt_vet_id]
 
     start_time = Time.now
     metric_custom_tags = ['bgsNoteType:veteran']
     @metrics.submit_count_with_default_value(METRIC[:REQUEST_START], metric_custom_tags)
-    bgs.notes.create_note(participant_id: participant_id, txt: note, user_id: vro_participant_id)
+    bgs.notes.create_note(participant_id:, txt: note, user_id: vro_participant_id)
     @metrics.submit_request_duration(start_time, Time.now, metric_custom_tags)
     @metrics.submit_count_with_default_value(METRIC[:RESPONSE_COMPLETE], metric_custom_tags)
   end

@@ -2,7 +2,6 @@ require 'datadog_api_client'
 require 'logger'
 require 'time'
 
-require_relative '../config/constants'
 require_relative '../config/setup'
 
 APP_PREFIX = 'vro_bgs'
@@ -29,11 +28,11 @@ class MetricLogger
     @metrics_api = DatadogAPIClient::V2::MetricsAPI.new
 
     begin
-        api_instance = DatadogAPIClient::V1::AuthenticationAPI.new
-        api_instance.validate()
-        $logger.info("Succeeded Datadog authentication check")
+      api_instance = DatadogAPIClient::V1::AuthenticationAPI.new
+      api_instance.validate
+      $logger.info('Succeeded Datadog authentication check')
     rescue Exception => e
-        $logger.error("Failed Datadog authentication check: #{e.message}")
+      $logger.error("Failed Datadog authentication check: #{e.message}")
     end
   end
 
@@ -53,19 +52,19 @@ class MetricLogger
 
   def get_metric_payload(_metric, _value, _custom_tags)
     DatadogAPIClient::V2::MetricPayload.new({
-        series: [
-            DatadogAPIClient::V2::MetricSeries.new({
-                metric: get_full_metric_name(_metric),
-                type: DatadogAPIClient::V2::MetricIntakeType::COUNT,
-                points: [
-                    DatadogAPIClient::V2::MetricPoint.new({
-                    timestamp: Time.now.to_i,
-                    value: _value
-                    })
-                ],
-                tags: generate_tags(_custom_tags)
-            })
-        ]
+      series: [
+        DatadogAPIClient::V2::MetricSeries.new({
+             metric: get_full_metric_name(_metric),
+             type: DatadogAPIClient::V2::MetricIntakeType::COUNT,
+             points: [
+               DatadogAPIClient::V2::MetricPoint.new({
+                   timestamp: Time.now.to_i,
+                   value: _value
+                 })
+             ],
+             tags: generate_tags(_custom_tags)
+           })
+      ]
     })
   end
 
@@ -114,21 +113,20 @@ class MetricLogger
 
   def generate_distribution_metric(metric, value, custom_tags = nil)
     DatadogAPIClient::V1::DistributionPointsPayload.new({
-                                                          series: [
-                                                            DatadogAPIClient::V1::DistributionPointsSeries.new({
-                                                                                                                 metric: get_full_metric_name(metric),
-                                                                                                                 points: [
-                                                                                                                   [
-                                                                                                                     Time.now.to_i,
-                                                                                                                     [
-                                                                                                                       value
-                                                                                                                     ]
-                                                                                                                   ]
-
-                                                                                                                 ],
-                                                                                                                 tags: generate_tags(custom_tags)
-                                                                                                               })
-                                                          ]
-                                                        })
+      series: [
+        DatadogAPIClient::V1::DistributionPointsSeries.new({
+         metric: get_full_metric_name(metric),
+         points: [
+           [
+             Time.now.to_i,
+             [
+               value
+             ]
+           ]
+         ],
+         tags: generate_tags(custom_tags)
+       })
+      ]
+    })
   end
 end
