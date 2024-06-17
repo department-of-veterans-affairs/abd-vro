@@ -19,11 +19,10 @@ def distribution_metrics_api(mocker):
     return mocker.patch('src.python_src.util.metric_logger.distribution_metrics_api')
 
 
-@pytest.mark.asyncio()
-async def test_increment_with_one_metric_to_increment(count_metrics_api):
+def test_increment_with_one_metric_to_increment(count_metrics_api):
     metrics = [CountMetric(name='test_metric', value=1)]
 
-    await increment(metrics)
+    increment(metrics)
 
     body = count_metrics_api.submit_metrics.call_args[1]['body']
 
@@ -34,11 +33,10 @@ async def test_increment_with_one_metric_to_increment(count_metrics_api):
     assert body.series[0].points[0].value == 1
 
 
-@pytest.mark.asyncio()
-async def test_increment_with_multiple_metrics_to_increment(count_metrics_api):
+def test_increment_with_multiple_metrics_to_increment(count_metrics_api):
     metrics = [CountMetric(name='test_metric_1', value=1), CountMetric(name='test_metric_2', value=2)]
 
-    await increment(metrics)
+    increment(metrics)
 
     body = count_metrics_api.submit_metrics.call_args[1]['body']
 
@@ -54,11 +52,10 @@ async def test_increment_with_multiple_metrics_to_increment(count_metrics_api):
     assert body.series[1].points[0].value == 2
 
 
-@pytest.mark.asyncio()
-async def test_increment_with_one_metric_to_distribution(distribution_metrics_api):
+def test_increment_with_one_metric_to_distribution(distribution_metrics_api):
     metrics = [DistributionMetric(name='test_metric', value=1.5)]
 
-    await distribution(metrics)
+    distribution(metrics)
 
     body = distribution_metrics_api.submit_distribution_points.call_args[1]['body']
 
@@ -70,11 +67,10 @@ async def test_increment_with_one_metric_to_distribution(distribution_metrics_ap
     assert points[0] == 1.5
 
 
-@pytest.mark.asyncio()
-async def test_increment_with_multiple_metrics_to_distribution(distribution_metrics_api):
+def test_increment_with_multiple_metrics_to_distribution(distribution_metrics_api):
     metrics = [DistributionMetric(name='test_metric_1', value=1.1), DistributionMetric(name='test_metric_2', value=2.2)]
 
-    await distribution(metrics)
+    distribution(metrics)
 
     body = distribution_metrics_api.submit_distribution_points.call_args[1]['body']
 

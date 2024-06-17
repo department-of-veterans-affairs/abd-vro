@@ -62,11 +62,6 @@ EP400_CONTENTION_RETRIES = int(os.getenv('EP400_CONTENTION_RETRIES') or 30)
 EP400_CONTENTION_RETRY_WAIT_TIME = int(os.getenv('EP400_CONTENTION_RETRY_WAIT_TIME') or 2)
 
 
-async def log_metrics_async(increment_metrics: list[CountMetric], distribution_metrics: list[DistributionMetric]) -> None:
-    await increment(increment_metrics)
-    await distribution(distribution_metrics)
-
-
 def ep400_has_no_contentions(response: get_contentions.Response) -> bool:
     return not response.contentions
 
@@ -176,10 +171,6 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
         self.ep_metrics: list[DistributionMetric] = []
         self.skipped_merge: bool = True
         super().__init__()
-        self.loop = asyncio.new_event_loop()
-
-    def __del__(self):
-        self.loop.close()
 
     def start(self):
         self.send(self.main_event.value)
@@ -425,8 +416,8 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
                 if self.skipped_merge:
                     increment_metrics.append(CountMetric(JOB_SKIPPED_MERGE_METRIC))
 
-        self.loop.run_until_complete(increment(increment_metrics))
-        self.loop.run_until_complete(distribution(distribution_metrics))
+        increment(increment_metrics)
+        distribution(distribution_metrics)
 
     async def make_hoppy_request(
         self,
@@ -468,6 +459,7 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
         if not isinstance(expected_statuses, list):
             expected_statuses = [expected_statuses]
         try:
+            loop = asyncio.new_event_loop()
             req = self.make_hoppy_request(
                 hoppy_client,
                 self.job.job_id,
@@ -478,7 +470,7 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
                 retry_wait_time,
                 will_retry_condition,
             )
-            return self.loop.run_until_complete(req)
+            return loop.run_until_complete(req)
         except ValidationError as e:
             self.add_client_error(hoppy_client.name, e.errors(include_url=False, include_input=False))
         except ResponseException as e:
