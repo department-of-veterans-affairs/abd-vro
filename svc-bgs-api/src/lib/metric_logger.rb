@@ -78,6 +78,7 @@ class MetricLogger
 
     begin
       @metrics_api.submit_metrics(payload)
+      $logger.info("submitted #{payload.series.first.metric}")
     rescue Exception => e
       $logger.error("Error logging metric: #{metric} (count). Error: #{e.class}, Message: #{e.message}")
     end
