@@ -59,7 +59,7 @@ def initialize_subscriber(bgs_client, metric_logger)
         ]
       }
       begin
-        metric_logger.submit_count(METRIC[:RESPONSE_ERROR])
+        metric_logger.submit_count_with_default_value(METRIC[:RESPONSE_ERROR], nil)
       rescue => metric_e
         $logger.error "Exception submitting metric RESPONSE_ERROR #{e.message}"
       end
