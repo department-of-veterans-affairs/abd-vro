@@ -119,7 +119,6 @@ DEPENDENCIES
   bgs_ext!
   bunny (>= 2.13.0)
   cgi (~> 0.3.6)
-  rexml (>= 3.2.7)
   rspec
 
 RUBY VERSION
