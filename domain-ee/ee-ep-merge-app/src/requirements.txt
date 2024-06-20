@@ -1,4 +1,4 @@
-datadog-api-client==2.22.*
+datadog-api-client==2.25.*
 fastapi==0.109.*
 hoppy @ git+https://github.com/department-of-veterans-affairs/abd-vro.git@shared/lib-hoppy-0.6#subdirectory=shared/lib-hoppy
 httpx==0.24.*
