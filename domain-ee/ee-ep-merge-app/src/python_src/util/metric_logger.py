@@ -71,9 +71,9 @@ def increment(metrics: list[CountMetric]) -> None:
     try:
         count_metrics_api.submit_metrics(body=body, content_encoding=MetricContentEncoding.DEFLATE)
     except ApiException as e:
-        logging.warning(f'event=logMetricFailed metrics={metrics} type=count status={e.status} reason={e.reason} body={e.body}')
+        logging.warning(f'event=logMetricFailed type=count metrics={metrics} status={e.status} reason={e.reason} body={e.body}')
     except Exception as e:
-        logging.warning(f'event=logMetricFailed metrics={metrics} type=count type={type(e)} error="{e}"')
+        logging.warning(f'event=logMetricFailed type=count metrics={metrics} error_type={type(e)} error="{e}"')
 
 
 def distribution(metrics: list[DistributionMetric]) -> None:
@@ -105,4 +105,4 @@ def distribution(metrics: list[DistributionMetric]) -> None:
     except ApiException as e:
         logging.warning(f"event=logMetricFailed type=distribution metrics={metrics} status={e.status} reason={e.reason} body='{e.body}'")
     except Exception as e:
-        logging.warning(f"event=logMetricFailed type=distribution metrics={metrics} type={type(e)} error='{e}'")
+        logging.warning(f"event=logMetricFailed type=distribution metrics={metrics} error_type={type(e)} error='{e}'")
