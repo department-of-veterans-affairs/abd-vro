@@ -80,17 +80,6 @@ jobs:
           COMPOSE_PROFILES="bip,bgs" ./gradlew -p mocks docker
           COMPOSE_PROFILES="bip,bgs" ./gradlew -p mocks :dockerComposeUp
 
-      - name: 'Wait for other containers to start'
-        uses: department-of-veterans-affairs/curl-action@v1.0.0
-        with:
-          url: 'http://localhost:10401/actuator/health'
-          method: 'GET'
-          accept: 200
-          # Retry every 2 seconds
-          timeout: 2000
-          # Quit after 240 seconds
-          retries: 120
-
       - name: 'Wait for svc-bip-api container to start'
         uses: department-of-veterans-affairs/curl-action@v1.0.0
         with:
