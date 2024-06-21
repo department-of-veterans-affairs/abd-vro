@@ -91,17 +91,6 @@ jobs:
           # Quit after 120 seconds
           retries: 60
 
-      - name: 'Wait for svc-bip-api container to start'
-        uses: department-of-veterans-affairs/curl-action@v1.0.0
-        with:
-          url: 'http://localhost:10401/actuator/health'
-          method: 'GET'
-          accept: 200
-          # Retry every 2 seconds
-          timeout: 2000
-          # Quit after 120 seconds
-          retries: 60
-
       - name: 'Check disk space (Post-Build)'
         uses: ./.github/actions/check-disk-space
 
