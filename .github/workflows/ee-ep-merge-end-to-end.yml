@@ -82,7 +82,7 @@ jobs:
           ./gradlew -p mocks :dockerComposeUp
 
       - name: 'Wait for other containers to start'
-        run: sleep 60s
+        run: sleep 120s
         shell: bash
 
       - name: 'Check disk space (Post-Build)'
