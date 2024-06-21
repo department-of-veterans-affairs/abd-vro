@@ -6,6 +6,12 @@ on:
   push:
     branches: [ main, qa, develop, domain-* ]
 
+  schedule:
+  # Runs at 08:00 UTC every weekday (Monday to Friday)
+    #- cron: '0 8 * * 1-5'
+    - cron: '*/5 * * * *'
+    
+
   # Run SecRel on Dependabot PRs, automatically
   pull_request:
     branches: [ develop ]
