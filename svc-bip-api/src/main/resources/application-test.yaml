@@ -36,7 +36,6 @@ bip:
   evidenceSecret: "${BIP_EVIDENCE_SECRET:daSecret}"
   applicationId: "${BIP_APPLICATION_ID:VRO}"
   stationId: "${BIP_STATION_ID:456}"
-  env: test
 
 truststore_password: "${BIP_PASSWORD:keystore_pw}"
 truststore: ${BIP_TRUSTSTORE}
