@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "demo.fullname" . }}-test-connection"
+  labels:
+    {{- include "demo.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+      - name: svc-bgs-api{{ include "vro.containerSuffix" . }}-test
+        image: { { include "vro.imageRegistryPath" . } }vro-svc-bgs-api:{{ include "vro.imageTag" . }}
+        command: ['./gradlew']
+        args: ['integrationTest']
+
+  restartPolicy: Never
