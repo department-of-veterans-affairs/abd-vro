@@ -62,7 +62,7 @@ public class BipApiService implements IBipApiService {
 
   final ObjectMapper mapper;
 
-  final MetricLoggerService metricLogger = new MetricLoggerService();
+  final IMetricLoggerService metricLogger;
 
   @Override
   public GetClaimResponse getClaimDetails(long claimId) {
