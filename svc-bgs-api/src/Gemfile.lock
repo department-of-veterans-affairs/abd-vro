@@ -46,8 +46,11 @@ GEM
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
     httpclient (2.8.3)
-    httpi (3.0.1)
-      rack
+    httpi (3.0.2)
+      base64
+      mutex_m
+      nkf
+      rack (< 3)
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
     mail (2.8.1)
@@ -56,10 +59,9 @@ GEM
       net-pop
       net-smtp
     mini_mime (1.1.5)
-    minitest (5.20.0)
-    multi_xml (0.7.1)
-      bigdecimal (~> 3.1)
-    net-imap (0.4.9.1)
+    minitest (5.23.1)
+    mutex_m (0.2.0)
+    net-imap (0.4.12)
       date
       net-protocol
     net-pop (0.1.2)
@@ -68,6 +70,7 @@ GEM
       timeout
     net-smtp (0.5.0)
       net-protocol
+    nkf (0.2.0)
     nokogiri (1.16.5-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.16.5-x86_64-linux)
@@ -76,7 +79,7 @@ GEM
       bigdecimal
     public_suffix (5.0.5)
     racc (1.8.0)
-    rack (3.1.3)
+    rack (2.2.9)
     rbtree (0.4.6)
     rexml (3.3.0)
       strscan
@@ -127,7 +130,6 @@ DEPENDENCIES
   bunny (>= 2.13.0)
   cgi (~> 0.3.6)
   datadog_api_client (>= 2.23.0)
-  rack (>= 3.0.6.1)
   rexml (>= 3.2.7)
   rspec
 

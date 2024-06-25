@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.datadog.api.client.v1.api.MetricsApi;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.bip.model.BipPayloadResponse;
@@ -27,6 +28,8 @@ import java.util.Objects;
 class BipRequestErrorHandlerTest {
   private static final String CLAIM_RESPONSE_404 = "bip-test-data/claim_response_404.json";
 
+  private final MetricLoggerService metricLoggerService = new MetricLoggerService(new MetricsApi());
+
   enum HttpStatusCodeTestCase {
     NOT_FOUND(new HttpClientErrorException(HttpStatus.NOT_FOUND)),
     BAD_REQUEST(new HttpClientErrorException(HttpStatus.NOT_FOUND)),
@@ -46,7 +49,8 @@ class BipRequestErrorHandlerTest {
   @ParameterizedTest
   @EnumSource(value = HttpStatusCodeTestCase.class)
   public void testHandleError_ClientOrServerErrors(HttpStatusCodeTestCase test) {
-    BipRequestErrorHandler handler = new BipRequestErrorHandler(new ObjectMapper());
+    BipRequestErrorHandler handler =
+        new BipRequestErrorHandler(new ObjectMapper(), metricLoggerService);
 
     Object response =
         handler.handleError(
@@ -60,7 +64,8 @@ class BipRequestErrorHandlerTest {
 
   @Test
   public void testHandleError_BipException() {
-    BipRequestErrorHandler handler = new BipRequestErrorHandler(new ObjectMapper());
+    BipRequestErrorHandler handler =
+        new BipRequestErrorHandler(new ObjectMapper(), metricLoggerService);
 
     BipException cause = new BipException("Oops");
     Object response =
@@ -77,7 +82,7 @@ class BipRequestErrorHandlerTest {
     ObjectMapper mapper = mock(ObjectMapper.class);
     when(mapper.readValue(anyString(), eq(BipPayloadResponse.class)))
         .thenThrow(JsonProcessingException.class);
-    BipRequestErrorHandler handler = new BipRequestErrorHandler(mapper);
+    BipRequestErrorHandler handler = new BipRequestErrorHandler(mapper, metricLoggerService);
 
     Object response =
         handler.handleError(
@@ -94,7 +99,8 @@ class BipRequestErrorHandlerTest {
 
   @Test
   public void testHandleError_ValidResponseBody() throws Exception {
-    BipRequestErrorHandler handler = new BipRequestErrorHandler(new ObjectMapper());
+    BipRequestErrorHandler handler =
+        new BipRequestErrorHandler(new ObjectMapper(), metricLoggerService);
 
     String resp404Body = getTestData(CLAIM_RESPONSE_404);
 

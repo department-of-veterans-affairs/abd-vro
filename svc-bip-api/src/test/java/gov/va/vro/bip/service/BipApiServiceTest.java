@@ -94,6 +94,8 @@ public class BipApiServiceTest {
 
   private final ObjectMapper mapper = new JacksonConfig().objectMapper();
 
+  @Mock private MetricLoggerService metricLoggerService;
+
   @Mock private RestTemplate restTemplate;
 
   @BeforeEach
@@ -106,7 +108,7 @@ public class BipApiServiceTest {
     bipApiProps.setStationId(STATION_ID);
     bipApiProps.setClaimClientId(CLAIM_USERID);
 
-    service = new BipApiService(restTemplate, bipApiProps, mapper);
+    service = new BipApiService(restTemplate, bipApiProps, mapper, metricLoggerService);
   }
 
   private String formatClaimUrl(String format, Long claimId) {

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.bip.model.BipMessage;
 import gov.va.vro.bip.model.BipPayloadResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.listener.api.RabbitListenerErrorHandler;
@@ -23,15 +24,12 @@ import java.util.Optional;
 @Slf4j
 @Primary
 @Component
+@RequiredArgsConstructor
 public class BipRequestErrorHandler implements RabbitListenerErrorHandler {
 
   private final ObjectMapper mapper;
 
-  private final MetricLoggerService metricLoggerService = new MetricLoggerService();
-
-  public BipRequestErrorHandler(ObjectMapper mapper) {
-    this.mapper = mapper;
-  }
+  private final IMetricLoggerService metricLoggerService;
 
   @Override
   public Object handleError(

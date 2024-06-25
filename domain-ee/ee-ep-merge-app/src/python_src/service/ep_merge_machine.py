@@ -458,8 +458,8 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
     ) -> GeneralResponse | None:
         if not isinstance(expected_statuses, list):
             expected_statuses = [expected_statuses]
+
         try:
-            loop = asyncio.new_event_loop()
             req = self.make_hoppy_request(
                 hoppy_client,
                 self.job.job_id,
@@ -470,7 +470,7 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
                 retry_wait_time,
                 will_retry_condition,
             )
-            return loop.run_until_complete(req)
+            return asyncio.run(req)
         except ValidationError as e:
             self.add_client_error(hoppy_client.name, e.errors(include_url=False, include_input=False))
         except ResponseException as e:

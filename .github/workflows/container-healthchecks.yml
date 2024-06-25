@@ -82,7 +82,7 @@ jobs:
           # Ignore mocks since they don't have health checks
           # TODO: add health check for svc-bgs-api; ignore it for now
           if docker container ls --format '{{.Names}} \t {{.Status}}' | grep -v "(healthy)" \
-            | grep -v "-mock-\|svc-bgs-api"; then
+            | grep -v "svc-bgs-api\|-mock-"; then
             echo 'There are unexpected unhealthy containers!'
             exit 2
           fi
