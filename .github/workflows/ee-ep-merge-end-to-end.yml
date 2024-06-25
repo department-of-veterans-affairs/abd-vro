@@ -65,7 +65,7 @@ jobs:
       - name: "Run Employee Experience Integration Tests"
         run: |
           ./gradlew :domain-ee:ee-ep-merge-app:integrationTest
-        timeout-minutes: 18
+        timeout-minutes: 15
 
       - name: "Start svc-bip-api, svc-bgs-api, and mock-bip-claims-api and mock-bgs-api"
         run: |
@@ -102,7 +102,7 @@ jobs:
         shell: bash
         run: |
           ./gradlew :domain-ee:ee-ep-merge-app:endToEndTest
-        timeout-minutes: 18
+        timeout-minutes: 15
 
       - name: "Collect docker logs"
         if: always()
