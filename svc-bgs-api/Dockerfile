@@ -44,7 +44,7 @@ RUN chmod +x /app/healthcheck/liveness_script.rb \
     && chmod +x /app/healthcheck/startup_script.rb
 
 USER tron
-CMD ["/app/entrypoint-wrapper.sh"]
+ENTRYPOINT ["/app/entrypoint-wrapper.sh"]
 
 ARG HEALTHCHECK_PORT_ARG=8080
 ENV HEALTHCHECK_PORT=${HEALTHCHECK_PORT_ARG}
