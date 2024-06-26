@@ -9,9 +9,7 @@ on:
   # Run on a schedule, at 1100 UTC/0700 EST every weekday MON-FRI
   # Per the documentation: Scheduled workflows will only run on the default (develop) branch
   schedule:
-    #- cron: "0 11 * * 1-5"
-    # this is a test - will r-commit after cron is validated
-    - cron: "*/20 * * * *"
+    - cron: "0 11 * * 1-5"
 
   # Run SecRel on Dependabot PRs, automatically
   pull_request:
