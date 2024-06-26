@@ -7,10 +7,6 @@ spring:
   jackson:
     date-format: gov.va.vro.mockshared.mapper.Rfc3339DateFormat
     serialization.WRITE_DATES_AS_TIMESTAMPS: false
-  datadog:
-    site: ${DD_SITE:ddog-gov.com}
-    api_key: ${DD_API_KEY:secret-api-key}
-    app_key: ${DD_APP_KEY:secret-app-key}
 
 server:
   port: 20300

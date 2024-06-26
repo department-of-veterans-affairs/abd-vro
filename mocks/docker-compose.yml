@@ -115,7 +115,6 @@ services:
     ports:
       - "20300:20300"
       - "20306:20306"
-      - "20301:20301"
     environment:
       <<: *common-vars
       BIP_CLAIM_USERID: ${BIP_CLAIM_USERID}
