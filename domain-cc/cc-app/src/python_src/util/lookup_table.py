@@ -17,14 +17,15 @@ previous_condition_dropdown_table_name = (
     "Contention dropdown to classification master - Dropdown Lookup v0.1.csv"
 )
 
-# condition_dropdown_table_name = (
-#     f"Contention dropdown to classification master - Dropdown Lookup "
-#     f"{CONDITION_DROPDOWN_TABLE_VERSION}.csv"
-# )
 contention_lut_csv_filename = (
     f"[Release notes] Contention Text to Classification mapping release notes - Contention Text Lookup "
     f"{CONDITION_DROPDOWN_TABLE_VERSION}.csv"
 )
+
+DEFAULT_VALUE = {
+    "classification_code": None,
+    "contention_text": None,
+}
 
 
 class LookupTable(ABC):
@@ -56,46 +57,11 @@ class LookupTable(ABC):
     def __len__(self):
         return len(self.mappings)
 
-    def get(self, input_str, fallback=None):
+    def get(self, input_str, default_value=DEFAULT_VALUE):
         print(
-            f"(DC Table) returning {self.mappings.get(input_str, fallback)} for {input_str}"
+            f"(DC Table) returning {self.mappings.get(input_str, default_value)} for {input_str}"
         )
-        return self.mappings.get(input_str, fallback)
-
-
-# class ConditionDropdownLookupTable(LookupTable):
-#     """Lookup table for mapping condition dropdown values to contention classification codes"""
-#
-#     CSV_FILEPATH = os.path.join(
-#         os.path.dirname(__file__),
-#         "data",
-#         "condition_dropdown_lookup_table",
-#         previous_condition_dropdown_table_name,
-#     )
-#     V2_FILEPATH = os.path.join(
-#         os.path.dirname(__file__),
-#         "data",
-#         "condition_dropdown_lookup_table",
-#         condition_dropdown_table_name,
-#     )
-#     input_key = "CONTENTION_TEXT"
-#     output_key = "CLASSIFICATION_CODE"
-#     v2_input_key = [
-#         "UI Term 1",
-#         "UI Term 2",
-#         "UI Term 3",
-#         "UI Term 4",
-#         "UI Term 5",
-#         "UI Term 6",
-#     ]
-#     v2_output_key = "Classification Code"
-#
-#     def __init__(self):
-#         super().__init__()
-#
-#     def get(self, input_str: str, fallback=None):
-#         input_str = input_str.strip().lower()
-#         return self.mappings.get(input_str, fallback)
+        return self.mappings.get(input_str, default_value)
 
 
 class DiagnosticCodeLookupTable(LookupTable):
@@ -152,6 +118,11 @@ def get_v1_lookup_table(filepath: str, input_key: str, output_key: str) -> dict:
 
 
 class ContentionTextLookupTable:
+    """
+    Maps contention text to classification code
+    For mapping autosuggestion combobox values of the add disabilities page of the 526-ez form
+      as well as free text entries to a classification (name and code)
+    """
     CSV_FILEPATH = os.path.join(
         os.path.dirname(__file__),
         "data",
@@ -168,13 +139,15 @@ class ContentionTextLookupTable:
             csv_reader = csv.DictReader(fh)
             for row in csv_reader:
                 table_key = row[self.input_key].strip().lower()
-                self.classification_code_mappings[table_key] = int(row[self.output_key])
+                self.classification_code_mappings[table_key] = {
+                    "classification_code": int(row[self.output_key]),
+                    "classification_name": row["CLASSIFICATION TEXT"],
+                }
 
-    def get(self, input_str: str, fallback=None):
+    def get(self, input_str: str, default_value=DEFAULT_VALUE):
         input_str = input_str.strip().lower()
-        classification = self.classification_code_mappings.get(input_str, fallback)
+        classification = self.classification_code_mappings.get(input_str, default_value)
         print(f"(ContentionTextLookupTable) returning {classification} for {input_str}")
-        # return self.classification_code_mappings.get(input_str, fallback)
         return classification
 
     def __len__(self):
