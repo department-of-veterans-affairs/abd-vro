@@ -74,6 +74,7 @@ jobs:
         - vro-xample-workflows
         - vro-cc-app
         - vro-ee-max-cfi-app
+        - vro-mock-bgs-api
     runs-on: ubuntu-latest
     steps:
     - name: "Delete old images in GHCR"
