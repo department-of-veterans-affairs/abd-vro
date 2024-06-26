@@ -94,6 +94,7 @@ jobs:
           timeout: 2000
           # Quit after 120 seconds
           retries: 60
+          log-response: true
 
       - name: 'Check disk space (Post-Build)'
         uses: ./.github/actions/check-disk-space

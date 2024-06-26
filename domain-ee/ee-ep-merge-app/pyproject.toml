@@ -6,7 +6,7 @@ testpaths = [
     "tests"
 ]
 env = [
-    "REQUEST_TIMEOUT = 1",
+    "REQUEST_TIMEOUT = 2",
     "REQUEST_RETRIES = 1",
     "EP_MERGE_SPECIAL_ISSUE_CODE = TEST",
     "EP400_CONTENTION_RETRIES = 2",
