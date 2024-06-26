@@ -1,3 +1,6 @@
+-- Create the schema if it doesn't exist
+CREATE SCHEMA IF NOT EXISTS #[alembic_schemaname];
+
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = '#[alembic_username]') THEN
