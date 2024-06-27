@@ -6,11 +6,12 @@ require_relative 'config/setup'
 require_relative 'config/constants'
 
 require 'rabbit_subscriber'
+require 'metric_logger'
 require 'bgs_client'
 
 $stdout.sync = true
 
-def initialize_subscriber(bgs_client)
+def initialize_subscriber(bgs_client, metric_logger)
   subscriber = RabbitSubscriber.new(BUNNY_ARGS)
 
   # Setup queue/subscription for healthcheck
@@ -57,6 +58,11 @@ def initialize_subscriber(bgs_client)
           }
         ]
       }
+      begin
+        metric_logger.submit_count_with_default_value(METRIC[:RESPONSE_ERROR], nil)
+      rescue => metric_e
+        $logger.error "Exception submitting metric RESPONSE_ERROR #{e.message}"
+      end
     else
       {
         statusCode: 200,
@@ -80,6 +86,6 @@ def run(subscriber)
 end
 
 $logger.info "Initializing subscriber..."
-subscriber = initialize_subscriber(BgsClient.new)
+subscriber = initialize_subscriber(BgsClient.new, MetricLogger.new)
 $logger.info "Initialized subscriber!"
 run(subscriber)
