@@ -9,7 +9,8 @@ on:
   # Run on a schedule, at 1100 UTC/0700 EST every weekday MON-FRI
   # Per the documentation: Scheduled workflows will only run on the default (develop) branch
   schedule:
-    - cron: "0 11 * * 1-5"
+#    - cron: "0 11 * * 1-5"
+    - cron: "*/30 * * * 1-5"
 
   # Run SecRel on Dependabot PRs, automatically
   pull_request:
@@ -90,6 +91,9 @@ jobs:
           elif [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             RUN_SECREL=${{ inputs.run_secrel }}
             PUBLISH_IMAGES=${{ inputs.publish_images }}
+          elif [ "${{ github.event_name }}" == "schedule" ]; then
+            RUN_SECREL=true
+            PUBLISH_IMAGES=true
           fi
 
           {
