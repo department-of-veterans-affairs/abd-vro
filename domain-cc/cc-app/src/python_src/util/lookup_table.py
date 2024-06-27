@@ -1,6 +1,5 @@
 import csv
 import os
-from abc import ABC
 
 from .table_versions import (
     CONDITION_DROPDOWN_TABLE_VERSION,
@@ -22,49 +21,13 @@ contention_lut_csv_filename = (
     f"{CONDITION_DROPDOWN_TABLE_VERSION}.csv"
 )
 
-DEFAULT_VALUE = {
+LUT_DEFAULT_VALUE = {
     "classification_code": None,
-    "contention_text": None,
+    "classification_name": None,
 }
 
 
-class LookupTable(ABC):
-    """
-    Generalized lookup table for mapping input strings to contention
-    classification codes
-    """
-
-    CSV_FILEPATH = None
-    V2_FILEPATH = None
-    input_key = None
-    output_key = None
-    v2_input_key = None
-    v2_output_key = None
-
-    def __init__(self):
-        if not self.CSV_FILEPATH:
-            raise NotImplementedError("csv_filepath must be set in child class")
-        self.mappings = get_lookup_table(
-            version_num=CONDITION_DROPDOWN_TABLE_VERSION,
-            v2_filepath=self.V2_FILEPATH,
-            v1_mapping_filepath=self.CSV_FILEPATH,
-            input_key=self.input_key,
-            output_key=self.output_key,
-            v2_input_key=self.v2_input_key,
-            v2_output_key=self.v2_output_key,
-        )
-
-    def __len__(self):
-        return len(self.mappings)
-
-    def get(self, input_str, default_value=DEFAULT_VALUE):
-        print(
-            f"(DC Table) returning {self.mappings.get(input_str, default_value)} for {input_str}"
-        )
-        return self.mappings.get(input_str, default_value)
-
-
-class DiagnosticCodeLookupTable(LookupTable):
+class DiagnosticCodeLookupTable:
     """
     Lookup table for mapping diagnostic codes to contention classification codes
     """
@@ -76,7 +39,22 @@ class DiagnosticCodeLookupTable(LookupTable):
     output_key = "CLASSIFICATION_CODE"
 
     def __init__(self):
-        super().__init__()
+        self.classification_code_mappings = {}
+        with open(self.CSV_FILEPATH, "r") as fh:
+            csv_reader = csv.DictReader(fh)
+            for row in csv_reader:
+                table_key = row[str(self.input_key)].strip().lower()
+                self.classification_code_mappings[table_key] = {
+                    "classification_code": int(row[self.output_key]),
+                    "classification_name": row["CLASSIFICATION_TEXT"],  # note underscore different from contention LUT
+                }
+
+    def get(self, input_key: int, default_value=LUT_DEFAULT_VALUE):
+        classification = self.classification_code_mappings.get(str(input_key), default_value)
+        return classification
+
+    def __len__(self):
+        return len(self.classification_code_mappings)
 
 
 def get_v1_lookup_table(filepath: str, input_key: str, output_key: str) -> dict:
@@ -144,7 +122,7 @@ class ContentionTextLookupTable:
                     "classification_name": row["CLASSIFICATION TEXT"],
                 }
 
-    def get(self, input_str: str, default_value=DEFAULT_VALUE):
+    def get(self, input_str: str, default_value=LUT_DEFAULT_VALUE):
         input_str = input_str.strip().lower()
         classification = self.classification_code_mappings.get(input_str, default_value)
         print(f"(ContentionTextLookupTable) returning {classification} for {input_str}")
