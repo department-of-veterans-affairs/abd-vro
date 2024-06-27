@@ -31,11 +31,20 @@ GEM
       sorted_set (~> 1, >= 1.0.2)
     cgi (0.3.6)
     concurrent-ruby (1.3.3)
+    csv (3.3.0)
+    datadog_api_client (2.23.0)
+      httparty (~> 0.20, >= 0.20.0)
+      uuidtools (~> 2.1.5, >= 2.1.5)
+      zeitwerk (~> 2.6, >= 2.6.0)
     date (3.3.4)
     diff-lcs (1.5.1)
     gyoku (1.4.0)
       builder (>= 2.1.2)
       rexml (~> 3.0)
+    httparty (0.22.0)
+      csv
+      mini_mime (>= 1.0.0)
+      multi_xml (>= 0.5.2)
     httpclient (2.8.3)
     httpi (3.0.2)
       base64
@@ -51,6 +60,8 @@ GEM
       net-smtp
     mini_mime (1.1.5)
     minitest (5.23.1)
+    multi_xml (0.7.1)
+      bigdecimal (~> 3.1)
     mutex_m (0.2.0)
     net-imap (0.4.12)
       date
@@ -104,6 +115,7 @@ GEM
     timeout (0.4.1)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
+    uuidtools (2.1.5)
     wasabi (3.8.0)
       addressable
       httpi (~> 3.0)
@@ -119,6 +131,7 @@ DEPENDENCIES
   bgs_ext!
   bunny (>= 2.13.0)
   cgi (~> 0.3.6)
+  datadog_api_client (>= 2.23.0)
   rexml (>= 3.2.7)
   rspec
 
