@@ -89,6 +89,9 @@ jobs:
           elif [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             RUN_SECREL=${{ inputs.run_secrel }}
             PUBLISH_IMAGES=${{ inputs.publish_images }}
+          elif [ "${{ github.event_name }}" == "schedule" ]; then
+            RUN_SECREL=true
+            PUBLISH_IMAGES=true
           fi
 
           {
