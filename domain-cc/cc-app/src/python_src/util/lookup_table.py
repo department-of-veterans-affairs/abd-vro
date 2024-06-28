@@ -125,7 +125,6 @@ class ContentionTextLookupTable:
     def get(self, input_str: str, default_value=LUT_DEFAULT_VALUE):
         input_str = input_str.strip().lower()
         classification = self.classification_code_mappings.get(input_str, default_value)
-        print(f"(ContentionTextLookupTable) returning {classification} for {input_str}")
         return classification
 
     def __len__(self):
