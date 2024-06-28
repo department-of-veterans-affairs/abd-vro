@@ -92,7 +92,7 @@ jobs:
             PUBLISH_IMAGES=${{ inputs.publish_images }}
           elif [ "${{ github.event_name }}" == "schedule" ]; then
             RUN_SECREL=true
-            PUBLISH_IMAGES=true
+            PUBLISH_IMAGES=false
           fi
 
           {
