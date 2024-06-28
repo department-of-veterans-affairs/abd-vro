@@ -200,13 +200,13 @@ def assert_requests_and_metrics_for_success(
     machine, metric_logger_distribution, metric_logger_increment, mock_hoppy_async_client, pending_contentions_response, ep400_contentions_response
 ):
     num_pending_new_contentions = sum(1 for c in pending_contentions_response.contentions or [] if c.contention_type_code == 'NEW')
-    num_pending_cfi_contentions = sum(1 for c in pending_contentions_response.contentions or [] if c.contention_type_code == 'INCREASE')
+    num_pending_cfi_contentions = sum(1 for c in pending_contentions_response.contentions or [] if c.contention_type_code == 'INC')
     num_ep400_new_contentions = sum(1 for c in ep400_contentions_response.contentions if c.contention_type_code == 'NEW')
-    num_ep400_cfi_contentions = sum(1 for c in ep400_contentions_response.contentions if c.contention_type_code == 'INCREASE')
+    num_ep400_cfi_contentions = sum(1 for c in ep400_contentions_response.contentions if c.contention_type_code == 'INC')
 
     merged_contentions = ContentionsUtil.new_contentions(pending_contentions_response.contentions, ep400_contentions_response.contentions)
     num_merged_new_contentions = sum(1 for c in merged_contentions if c.contention_type_code == 'NEW')
-    num_merged_cfi_contentions = sum(1 for c in merged_contentions if c.contention_type_code == 'INCREASE')
+    num_merged_cfi_contentions = sum(1 for c in merged_contentions if c.contention_type_code == 'INC')
     merge_skipped = not merged_contentions
 
     requests = [

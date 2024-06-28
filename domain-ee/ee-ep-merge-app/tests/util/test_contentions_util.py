@@ -20,7 +20,7 @@ increase_tendinitis = ContentionSummary(
     medical_ind=True,
     begin_date=datetime(2023, 1, 1),
     last_modified=datetime(2023, 1, 1),
-    contention_type_code='INCREASE',
+    contention_type_code='INC',
     claimant_text='tendinitis/bilateral',
     contention_id=1,
 )
