@@ -3,7 +3,7 @@ import logging
 import sys
 import time
 from functools import wraps
-from typing import Optional
+from typing import Optional, Tuple
 
 from fastapi import FastAPI, HTTPException, Request
 
@@ -18,11 +18,11 @@ from .pydantic_models import (
 )
 from .util.brd_classification_codes import get_classification_name
 from .util.logging_dropdown_selections import build_logging_table
-from .util.lookup_table import ConditionDropdownLookupTable, DiagnosticCodeLookupTable
+from .util.lookup_table import ContentionTextLookupTable, DiagnosticCodeLookupTable
 from .util.sanitizer import sanitize_log
 
 dc_lookup_table = DiagnosticCodeLookupTable()
-dropdown_lookup_table = ConditionDropdownLookupTable()
+dropdown_lookup_table = ContentionTextLookupTable()
 dropdown_values = build_logging_table()
 
 app = FastAPI(
@@ -231,10 +231,10 @@ def get_classification(claim: Claim) -> Optional[PredictedClassification]:
     )
     classification_code = None
     if claim.claim_type == "claim_for_increase":
-        classification_code = dc_lookup_table.get(claim.diagnostic_code, None)
+        classification_code = dc_lookup_table.get(claim.diagnostic_code)["classification_code"]
 
     if claim.contention_text and not classification_code:
-        classification_code = dropdown_lookup_table.get(claim.contention_text, None)
+        classification_code = dropdown_lookup_table.get(claim.contention_text)["classification_code"]
 
     if claim.claim_type == "new":
         log_lookup_table_match(classification_code, claim.contention_text)
@@ -272,32 +272,31 @@ def link_vbms_claim_id(claim_link_info: ClaimLinkInfo):
     }
 
 
-def get_classification_code(contention: Contention) -> Optional[int]:
+def get_classification_code_name(contention: Contention) -> Tuple:
     """
     check contention type and match contention to appropriate table's
     classification code (if available)
     """
     classification_code = None
+    classification_name = None
     if contention.contention_type == "INCREASE":
-        classification_code = dc_lookup_table.get(contention.diagnostic_code, None)
+        classification = dc_lookup_table.get(contention.diagnostic_code)
+        classification_code = classification["classification_code"]
+        classification_name = classification["classification_name"]
 
     if contention.contention_text and not classification_code:
-        classification_code = dropdown_lookup_table.get(
-            contention.contention_text, None
-        )
+        classification = dropdown_lookup_table.get(contention.contention_text)
+        classification_code = classification["classification_code"]
+        classification_name = classification["classification_name"]
 
-    return classification_code
+    return classification_code, classification_name
 
 
 @log_contention_stats_decorator
 def classify_contention(
     contention: Contention, claim: VaGovClaim
 ) -> ClassifiedContention:
-    classification_code = get_classification_code(contention)
-    if classification_code:
-        classification_name = get_classification_name(classification_code)
-    else:
-        classification_name = None
+    classification_code, classification_name = get_classification_code_name(contention)
 
     response = ClassifiedContention(
         classification_code=classification_code,
