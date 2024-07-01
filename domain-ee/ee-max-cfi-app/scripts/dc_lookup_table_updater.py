@@ -1,4 +1,5 @@
 import csv
+import re
 import sys
 from typing import Any
 
@@ -45,9 +46,21 @@ def import_file(filename: str) -> dict[int, tuple[Any, Any, Any, Any, Any, Any]]
             except ValueError:
                 raise ValueError(f'Invalid diagnostic code at index {index}: \n{csv_line}')
 
+            rated_issue_name = remove_diagnostic_code_prefix(clean_string(rated_issue_name), diagnostic_code_str)
             diagnostic_code_to_data[diagnostic_code] = (rated_issue_name, max_rating_str, body_system, category, subcategory, cfr_ref)
 
     return diagnostic_code_to_data
+
+
+def clean_string(input_string):
+    # Remove non-alphanumeric characters, excluding some special characters, from the end of the string
+    return re.sub(r'[^\w(){}\[\]°]*$', '', input_string)
+
+
+def remove_diagnostic_code_prefix(rated_issue_name: str, diagnostic_code_str: str) -> str:
+    if rated_issue_name.startswith(diagnostic_code_str):
+        return rated_issue_name[len(diagnostic_code_str) :].strip()
+    return rated_issue_name
 
 
 def export_data(data: dict[int, tuple[Any, int, Any, Any, Any, Any]]):
