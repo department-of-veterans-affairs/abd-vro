@@ -26,6 +26,7 @@ spec:
           readinessProbe: {{- toYaml .Values.readinessProbe | nindent 12 }}
           env:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
+            {{- include "vro.datadog.envVars" . | nindent 12 }}
             {{- include "vro.mqClient.envVars" . | nindent 12 }}
             - name: VRO_SECRETS_BIP
               valueFrom:

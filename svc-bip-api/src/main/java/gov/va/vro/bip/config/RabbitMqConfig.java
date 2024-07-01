@@ -1,5 +1,6 @@
 package gov.va.vro.bip.config;
 
+import gov.va.vro.bip.service.IMetricLoggerService;
 import gov.va.vro.bip.service.InvalidPayloadRejectingFatalExceptionStrategy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ public class RabbitMqConfig implements RabbitListenerConfigurer {
 
   private final RabbitMqConfigProperties props;
   private final JacksonConfig jacksonConfig;
+  private final IMetricLoggerService metricLoggerService;
 
   @Value("${exchangeName}")
   String exchangeName;
@@ -34,7 +36,8 @@ public class RabbitMqConfig implements RabbitListenerConfigurer {
     factory.setMessageConverter(
         (jacksonConfig.jackson2MessageConverter(jacksonConfig.objectMapper())));
     factory.setErrorHandler(
-        new ConditionalRejectingErrorHandler(new InvalidPayloadRejectingFatalExceptionStrategy()));
+        new ConditionalRejectingErrorHandler(
+            new InvalidPayloadRejectingFatalExceptionStrategy(metricLoggerService)));
     return factory;
   }
 

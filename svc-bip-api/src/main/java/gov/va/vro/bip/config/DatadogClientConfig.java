@@ -2,20 +2,20 @@ package gov.va.vro.bip.config;
 
 import com.datadog.api.client.ApiClient;
 import com.datadog.api.client.RetryConfig;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.datadog.api.client.v1.api.MetricsApi;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.HashMap;
 
-@Data
 @Configuration
-@NoArgsConstructor
 @ConfigurationProperties(prefix = "spring.datadog")
 @Slf4j
+@Conditional(NonLocalEnvironmentCondition.class)
 public class DatadogClientConfig {
 
   @Value("${spring.datadog.site}")
@@ -27,7 +27,13 @@ public class DatadogClientConfig {
   @Value("${spring.datadog.app_key}")
   private String app_key;
 
-  public ApiClient getApiClient() throws Exception {
+  @Bean
+  public MetricsApi metricsApi(ApiClient apiClient) {
+    return new MetricsApi(apiClient);
+  }
+
+  @Bean
+  public ApiClient apiClient() throws Exception {
     ApiClient apiClient = null;
     try {
       if (site != null && api_key != null) {

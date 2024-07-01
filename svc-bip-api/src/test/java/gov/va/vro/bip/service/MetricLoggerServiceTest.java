@@ -3,6 +3,7 @@ package gov.va.vro.bip.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.datadog.api.client.v1.api.MetricsApi;
 import com.datadog.api.client.v1.model.DistributionPointItem;
 import com.datadog.api.client.v1.model.DistributionPointsPayload;
 import com.datadog.api.client.v1.model.MetricsPayload;
@@ -14,7 +15,7 @@ import java.util.Objects;
 
 public class MetricLoggerServiceTest {
 
-  private MetricLoggerService mls = new MetricLoggerService();
+  private MetricLoggerService mls = new MetricLoggerService(new MetricsApi());
 
   @Test
   void testGetFullMetricString() {

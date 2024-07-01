@@ -8,7 +8,6 @@ on:
   workflow_call:
 
 env:
-  COMPOSE_PROFILES: 'bip,bgs,platform'
   VRO_DEV_SECRETS_FOLDER: "${{ github.workspace }}/.cache/abd-vro-dev-secrets"
 
 jobs:
@@ -68,7 +67,7 @@ jobs:
           ./gradlew :domain-ee:ee-ep-merge-app:integrationTest
         timeout-minutes: 15
 
-      - name: "Start svc-bip-api and mock-bip-claims-api"
+      - name: "Start svc-bip-api, svc-bgs-api, and mock-bip-claims-api and mock-bgs-api"
         run: |
           source scripts/setenv.sh
 
@@ -77,13 +76,25 @@ jobs:
 
           export -p | sed 's/declare -x //'
 
-          ./gradlew :dockerComposeUp
-          ./gradlew -p mocks docker
-          ./gradlew -p mocks :dockerComposeUp
+          COMPOSE_PROFILES="platform,bip,bgs" ./gradlew :dockerComposeUp
+          COMPOSE_PROFILES="bip,bgs" ./gradlew -p mocks docker
+          COMPOSE_PROFILES="bip,bgs" ./gradlew -p mocks :dockerComposeUp
 
       - name: 'Wait for other containers to start'
         run: sleep 60s
         shell: bash
+
+      - name: 'Wait for svc-bip-api container to start'
+        uses: department-of-veterans-affairs/curl-action@v1.0.0
+        with:
+          url: 'http://localhost:10401/actuator/health'
+          method: 'GET'
+          accept: 200
+          # Retry every 2 seconds
+          timeout: 2000
+          # Quit after 120 seconds
+          retries: 60
+          log-response: true
 
       - name: 'Check disk space (Post-Build)'
         uses: ./.github/actions/check-disk-space
@@ -93,6 +104,20 @@ jobs:
         run: |
           ./gradlew :domain-ee:ee-ep-merge-app:endToEndTest
         timeout-minutes: 15
+
+      - name: "Collect docker logs"
+        if: always()
+        uses: jwalton/gh-docker-logs@v2
+        with:
+          dest: './ep-merge-container-logs'
+
+      - name: "Upload artifact"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ep-merge-container-logs
+          path: ./ep-merge-container-logs/**
+          retention-days: 14
 
       - name: 'Clean shutdown of all containers'
         if: always()

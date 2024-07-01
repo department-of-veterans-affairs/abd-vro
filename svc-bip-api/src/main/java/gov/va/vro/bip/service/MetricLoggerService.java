@@ -2,18 +2,22 @@ package gov.va.vro.bip.service;
 
 import com.datadog.api.client.v1.api.MetricsApi;
 import com.datadog.api.client.v1.model.*;
-import gov.va.vro.bip.config.DatadogClientConfig;
+import gov.va.vro.bip.config.NonLocalEnvironmentCondition;
 import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Conditional;
+import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 import java.util.*;
 
-@Configuration
+@Service
 @Slf4j
-public class MetricLoggerService {
+@RequiredArgsConstructor
+@Conditional(NonLocalEnvironmentCondition.class)
+public class MetricLoggerService implements IMetricLoggerService {
 
   @Value("${bip.env}")
   public String env;
@@ -21,24 +25,16 @@ public class MetricLoggerService {
   private static final String APP_PREFIX = "vro_bip";
   private static final String SERVICE_TAG = "service:vro-svc-bip-api";
 
-  public enum METRIC {
-    REQUEST_START,
-    REQUEST_DURATION,
-    RESPONSE_COMPLETE,
-    RESPONSE_ERROR,
-    LISTENER_ERROR,
-    MESSAGE_CONVERSION_ERROR
+  private final MetricsApi metricsApi;
+
+  public static double getTimestamp() {
+    return Long.valueOf(OffsetDateTime.now().toInstant().getEpochSecond()).doubleValue();
   }
 
-  private MetricsApi metricsApi;
-
-  public MetricLoggerService() {
-    try {
-      metricsApi = new MetricsApi((new DatadogClientConfig()).getApiClient());
-      log.info("initialized MetricLoggerService");
-    } catch (Exception e) {
-      log.error("failure initializing api client for MetricLoggerService");
-    }
+  public static double getElapsedTimeInMilliseconds(long startTimeNano, long endTimeNano) {
+    // return as milliseconds the time between the start and end timestamps, where
+    // the start and end timestamps are expressed in nanoseconds
+    return (endTimeNano - startTimeNano) / 1000000.0;
   }
 
   public static String getFullMetricString(@NotNull METRIC metric) {
@@ -46,6 +42,7 @@ public class MetricLoggerService {
     return String.format("%s.%s", APP_PREFIX, metric.name().toLowerCase());
   }
 
+  @Override
   public ArrayList<String> getTagsForSubmission(String[] customTags) {
     // tags that will accompany the submitted data point(s).
     // a "key:value" format, while not required, can be convenient with querying metrics in the
@@ -59,10 +56,7 @@ public class MetricLoggerService {
     return tags;
   }
 
-  public static double getTimestamp() {
-    return Long.valueOf(OffsetDateTime.now().toInstant().getEpochSecond()).doubleValue();
-  }
-
+  @Override
   public MetricsPayload createMetricsPayload(@NotNull METRIC metric, double value, String[] tags) {
     //  create the payload for a count metric
     Series dataPointSeries = new Series();
@@ -74,10 +68,12 @@ public class MetricLoggerService {
     return new MetricsPayload().series(Collections.singletonList(dataPointSeries));
   }
 
+  @Override
   public void submitCount(@NotNull METRIC metric, String[] tags) {
     submitCount(metric, 1.0, tags);
   }
 
+  @Override
   public void submitCount(@NotNull METRIC metric, double value, String[] tags) {
     MetricsPayload payload = createMetricsPayload(metric, value, tags);
 
@@ -95,6 +91,7 @@ public class MetricLoggerService {
     }
   }
 
+  @Override
   public DistributionPointsPayload createDistributionPointsPayload(
       @NotNull METRIC metric, double timestamp, double value, String[] tags) {
     //  create the payload for a distribution metric
@@ -112,12 +109,7 @@ public class MetricLoggerService {
     return new DistributionPointsPayload().series(Collections.singletonList(dataPointSeries));
   }
 
-  public static double getElapsedTimeInMilliseconds(long startTimeNano, long endTimeNano) {
-    // return as milliseconds the time between the start and end timestamps, where
-    // the start and end timestamps are expressed in nanoseconds
-    return (endTimeNano - startTimeNano) / 1000000.0;
-  }
-
+  @Override
   public void submitRequestDuration(
       long requestStartNanoseconds, long requestEndNanoseconds, String[] tags) {
 
