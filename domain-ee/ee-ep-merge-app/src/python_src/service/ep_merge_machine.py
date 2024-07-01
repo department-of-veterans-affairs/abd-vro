@@ -54,6 +54,9 @@ ELIGIBLE_CLAIM_LIFECYCLE_STATUSES = frozenset(['open'])
 EP400_PRODUCT_CODES = frozenset([str(i) for i in range(400, 410)])
 EP400_BENEFIT_CLAIM_TYPE_CODES = frozenset(['400SUPP'])
 
+NEW_CONTENTION_TYPE_CODE = 'NEW'
+INCREASE_CONTENTION_TYPE_CODE = 'INC'
+
 CANCEL_TRACKING_EP = '60'
 CANCELLATION_REASON_FORMAT = 'Issues moved into or confirmed in pending EP{ep_code} - claim #{claim_id}'
 
@@ -237,8 +240,8 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
         )
         if response and response.status_code in expected_statuses:
             contentions = response.contentions or []
-            num_pending_ep_new_contentions = sum(c.contention_type_code == 'NEW' for c in contentions)
-            num_pending_ep_cfi_contentions = sum(c.contention_type_code == 'INCREASE' for c in contentions)
+            num_pending_ep_new_contentions = sum(c.contention_type_code == NEW_CONTENTION_TYPE_CODE for c in contentions)
+            num_pending_ep_cfi_contentions = sum(c.contention_type_code == INCREASE_CONTENTION_TYPE_CODE for c in contentions)
             self.ep_metrics.extend(
                 [
                     DistributionMetric(PENDING_NEW_CONTENTIONS_METRIC, num_pending_ep_new_contentions),
@@ -264,8 +267,8 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
             if not response.contentions:
                 self.add_job_error(f'EP400 claim #{self.job.ep400_claim_id} does not have any contentions')
 
-            num_ep_new_contentions = sum(c.contention_type_code == 'NEW' for c in response.contentions or [])
-            num_ep_cfi_contentions = sum(c.contention_type_code == 'INCREASE' for c in response.contentions or [])
+            num_ep_new_contentions = sum(c.contention_type_code == NEW_CONTENTION_TYPE_CODE for c in response.contentions or [])
+            num_ep_cfi_contentions = sum(c.contention_type_code == INCREASE_CONTENTION_TYPE_CODE for c in response.contentions or [])
             self.ep_metrics.extend(
                 [
                     DistributionMetric(EP400_NEW_CONTENTIONS_METRIC, num_ep_new_contentions),
@@ -489,8 +492,8 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
 
         merge_metrics = [
             DistributionMetric(JOB_MERGED_CONTENTIONS_METRIC, len(contentions)),
-            DistributionMetric(JOB_MERGED_NEW_CONTENTIONS_METRIC, sum(c.contention_type_code == 'NEW' for c in contentions)),
-            DistributionMetric(JOB_MERGED_CFI_CONTENTIONS_METRIC, sum(c.contention_type_code == 'INCREASE' for c in contentions)),
+            DistributionMetric(JOB_MERGED_NEW_CONTENTIONS_METRIC, sum(c.contention_type_code == NEW_CONTENTION_TYPE_CODE for c in contentions)),
+            DistributionMetric(JOB_MERGED_CFI_CONTENTIONS_METRIC, sum(c.contention_type_code == INCREASE_CONTENTION_TYPE_CODE for c in contentions)),
         ]
         for metric in merge_metrics:
             if metric not in self.ep_metrics:
