@@ -3,7 +3,7 @@
 require 'active_support/time'
 require 'active_support/core_ext/object/blank'
 require 'bgs'
-require 'metric_logger'
+require_relative 'metric_logger'
 
 # patch bgs_ext with a createNote implementation that follows our spec better
 BGS::DevelopmentNotesService.class_eval do
