@@ -1,7 +1,12 @@
 # Contention Classification
-`/contention-classification/classifier` maps contention diagnostic codes to classifications as defined in the [Benefits Reference Data API](https://developer.va.gov/explore/benefits/docs/benefits_reference_data).
+`/contention-classification/va-gov-claim-classifier` maps contention text and diagnostic codes from 526 submission to classifications as defined in the [Benefits Reference Data API](https://developer.va.gov/explore/benefits/docs/benefits_reference_data).
 
 ## Getting started
+Codebase is part of the VRO gradle project and is automatically spun up when you run the gradle project locally.
+See [Local Setup](https://github.com/department-of-veterans-affairs/abd-vro/wiki/Local-Setup) on the wiki for gradle setup.
+However, for a more speedy, lightweight setup, you can run the FastAPI server in a standalone terminal.
+
+## FastAPI Setup
 Install Python3.10
 If you're on a mac, you can use pyenv to handle multiple python versions
 ```
@@ -29,23 +34,11 @@ pip3 install -r requirements.txt
 uvicorn python_src.api:app --port 8120 --reload
 ```
 
-## testing it all together
-Get the java project up and running
-See [Local Setup](https://github.com/department-of-veterans-affairs/abd-vro/wiki/Local-Setup) on the wiki.
-
-Run the Python webserver (uvicorn command above)
-
-After you have run the db-init container container and FastAPI running...
-In another terminal, run the RabbitMQ client
-```
-# source ~/.virtualenvs/domain-cc/bin/activate
-python3 rabbitmq_client.py
-```
 
 Now you should be able to make a post request to the java code prefixed w/ "domain-cc" and the response from FastAPI will get sent back up
 
 ## Unit tests
-Make sure you're in your virtualenv
+Pytest is used for Python Unit tests. Make sure you're in your virtualenv
 ```
 source ~/.virtualenvs/domain-cc/bin/activate
 ```
@@ -69,16 +62,24 @@ pre-commit install
 ```
 
 ## Building docs
-```
-source ~/.virtualenvs/domain-cc/bin/activate
-cd src
-python util/pull_api_documentation.py
-cp ./fastapi.json ../../app/src/main/java/gov/va/vro/config
-# somehow make the java code pull that json in
-```
+API Documentation is automatically created by FastAPI. This can be viewed at the /docs (e.g. localhost:8080/docs)
+For exporting the open API spec and using documentation elsewhere, see [pull_api_documentation.py](https://github.com/department-of-veterans-affairs/abd-vro/blob/79bad1e34c98bada6dcfebe216820e52f4666df7/domain-cc/cc-app/src/python_src/util/pull_api_documentation.py)
 
 ## Docker Stuff
 ### Build the image
 ```
+./gradlew :domain-cc:dockerComposeUp
+```
+
+### Misc
+- if you're running into issues w/ the gradle project, try completely tearing everything down and deleting artifacts
+```commandline
+./gradlew :domain-cc:dockerComposeDown
+./gradlew :app:dockerComposeDown
+./gradlew :dockerComposeDown
+./gradlew dcPrune
+./gradlew dockerPruneVolume
+./gradlew :dockerComposeUp
+./gradlew :app:dockerComposeUp
 ./gradlew :domain-cc:dockerComposeUp
 ```
