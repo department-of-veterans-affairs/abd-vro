@@ -1,4 +1,7 @@
 """
+This standalone script pulls the OpenAPI specification of the FastAPI app and exports it to a JSON file.
+This can be used to move the Swagger documentation to other tools, like a java project.
+
 Make sure you are in cc-app/src/ and have set your PYTHONPATH accordingly in order to execute
 python3.10 pull_api_documentation.py
 """
