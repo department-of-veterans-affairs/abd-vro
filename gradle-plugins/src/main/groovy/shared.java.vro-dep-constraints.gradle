@@ -61,7 +61,7 @@ dependencies {
         implementation 'org.apache.commons:commons-compress:1.24.0'
 
         // for tomcat
-        implementation 'org.apache.tomcat.embed:tomcat-embed-core:10.1.14'
+        implementation 'org.apache.tomcat.embed:tomcat-embed-core:10.1.25'
 
         implementation 'org.springframework.amqp:spring-amqp:3.0.10'
         implementation 'org.springframework.security:spring-security-config:6.1.5'
