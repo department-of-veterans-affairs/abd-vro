@@ -2,6 +2,7 @@ import asyncio
 import logging
 import sys
 from contextlib import asynccontextmanager
+from datetime import datetime
 from typing import Annotated, AsyncIterator
 from uuid import UUID, uuid4
 
@@ -149,12 +150,22 @@ async def get_merge_request_by_job_id(job_id: UUID) -> MergeJobResponse | JSONRe
 
 @app.get('/merge', response_model=MergeJobsResponse, responses={status.HTTP_200_OK: {'description': 'Find all jobs'}}, response_model_exclude_none=True)
 async def get_merge_jobs(
-    state: Annotated[list[JobState], Query()] = JobState.incomplete_states(),
+    state: Annotated[list[JobState], Query(title='the states to filter the query by')] = JobState.incomplete_states(),
     page: Annotated[int, Query(title='the page of results to return', ge=1)] = 1,
     size: Annotated[int, Query(title='the number of results per page', ge=1)] = 10,
+    updated_at_start: Annotated[datetime, Query(title='start of timeframe query filter of the datetime the job was last updated')] = None,
+    updated_at_end: Annotated[datetime, Query(title='end of timeframe query filter of the datetime the job was last updated')] = None,
 ) -> MergeJobsResponse:
-    jobs, total = JOB_STORE.query(states=state, offset=page, limit=size)
-    logging.info(f'event=getMergeJobs ' f'total={total} ' f'page={sanitize(page)} ' f'size={sanitize(size)} ' f'states={sanitize(state)}')
+    jobs, total = JOB_STORE.query(states=state, offset=page, limit=size, updated_at_start=updated_at_start, updated_at_end=updated_at_end)
+
+    logging.info(
+        f'event=getMergeJobs total={total} '
+        f'page={sanitize(page)} '
+        f'size={sanitize(size)} '
+        f'updated_at_start={sanitize(updated_at_start.isoformat()) if updated_at_start else None} '
+        f'updated_at_end={sanitize(updated_at_end.isoformat()) if updated_at_end else None} '
+        f'states={[str(s) for s in state] if state else None}'
+    )
 
     return MergeJobsResponse(states=state, total=total, page=page, size=size, jobs=jobs)
 

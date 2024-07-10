@@ -1,12 +1,14 @@
 # mypy: ignore-errors
 # TODO: refactor to add type hints
 
+from datetime import datetime
 from uuid import UUID
 
 from db.database import Database, database
 from fastapi.encoders import jsonable_encoder
 from model.merge_job import MergeJob
 from schema import merge_job as schema
+from sqlalchemy import and_
 
 
 class JobStore:
@@ -22,8 +24,20 @@ class JobStore:
     def clear(self):
         self.db.clear(MergeJob)
 
-    def query(self, states: list[schema.JobState] = schema.JobState.incomplete_states(), offset: int = 1, limit: int = 10) -> list[MergeJob]:
-        return self.db.query(MergeJob, MergeJob.state.in_(states) if states else True, MergeJob.updated_at, offset, limit)
+    def query(
+        self,
+        states: list[schema.JobState] = schema.JobState.incomplete_states(),
+        updated_at_start: datetime | None = None,
+        updated_at_end: datetime | None = None,
+        offset: int = 1,
+        limit: int = 10,
+    ) -> list[MergeJob]:
+        query_conditions = [MergeJob.state.in_(states)] if states else []
+        if updated_at_start:
+            query_conditions.append(MergeJob.updated_at >= updated_at_start)
+        if updated_at_end:
+            query_conditions.append(MergeJob.updated_at <= updated_at_end)
+        return self.db.query(MergeJob, and_(*query_conditions), MergeJob.updated_at, offset, limit)
 
     def get_merge_jobs_in_progress(self) -> list[MergeJob]:
         return self.db.query_all(MergeJob, MergeJob.state.in_((schema.JobState.incomplete_states())))

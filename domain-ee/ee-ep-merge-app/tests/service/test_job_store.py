@@ -5,6 +5,7 @@ import model
 import pytest
 from schema.merge_job import JobState, MergeJob
 from service.job_store import JobStore
+from sqlalchemy import and_
 
 DEFAULT_STATES = JobState.incomplete_states()
 DEFAULT_OFFSET = 1
@@ -117,5 +118,40 @@ def test_query(db, merge_job, states: list, offset: int, limit: int):
     assert actual_order_by == model.merge_job.MergeJob.updated_at
     assert actual_offset == offset if offset else DEFAULT_OFFSET
     assert actual_limit == limit if limit else DEFAULT_LIMIT
+
+    db.query.assert_called_once()
+
+
+@pytest.mark.parametrize(
+    'updated_at_start,updated_at_end',
+    [
+        pytest.param(None, None, id='defaults'),
+        pytest.param(None, datetime.now(), id='no start date'),
+        pytest.param(datetime.now(), None, id='no end date'),
+    ],
+)
+def test_query_with_updated_start_and_end(db, updated_at_start, updated_at_end):
+    job_store = JobStore(db)
+    now = datetime.now()
+    job_store.query(updated_at_start=now, updated_at_end=now)
+
+    query_args = db.query.call_args[0]
+    actual_model = query_args[0]
+    actual_filter = query_args[1]
+    actual_order_by = query_args[2]
+    actual_offset = query_args[3]
+    actual_limit = query_args[4]
+
+    assert actual_model == model.merge_job.MergeJob
+    assert actual_filter.compare(
+        and_(
+            model.merge_job.MergeJob.state.in_(DEFAULT_STATES),
+            model.merge_job.MergeJob.updated_at >= now,
+            model.merge_job.MergeJob.updated_at <= now,
+        )
+    )
+    assert actual_order_by == model.merge_job.MergeJob.updated_at
+    assert actual_offset == DEFAULT_OFFSET
+    assert actual_limit == DEFAULT_LIMIT
 
     db.query.assert_called_once()
