@@ -7,7 +7,7 @@ from schema.merge_job import JobState, MergeJob
 from service.job_store import JobStore
 from sqlalchemy import and_
 
-DEFAULT_STATES = JobState.incomplete_states()
+DEFAULT_STATES = None
 DEFAULT_OFFSET = 1
 DEFAULT_LIMIT = 10
 
@@ -114,7 +114,7 @@ def test_query(db, merge_job, states: list, offset: int, limit: int):
     actual_limit = query_args[4]
 
     assert actual_model == model.merge_job.MergeJob
-    assert actual_filter.compare(model.merge_job.MergeJob.state.in_(states if states else DEFAULT_STATES))
+    assert actual_filter.compare(model.merge_job.MergeJob.state.in_(states) if states else and_(True))
     assert actual_order_by == model.merge_job.MergeJob.updated_at
     assert actual_offset == offset if offset else DEFAULT_OFFSET
     assert actual_limit == limit if limit else DEFAULT_LIMIT
@@ -145,7 +145,6 @@ def test_query_with_updated_start_and_end(db, updated_at_start, updated_at_end):
     assert actual_model == model.merge_job.MergeJob
     assert actual_filter.compare(
         and_(
-            model.merge_job.MergeJob.state.in_(DEFAULT_STATES),
             model.merge_job.MergeJob.updated_at >= now,
             model.merge_job.MergeJob.updated_at <= now,
         )
