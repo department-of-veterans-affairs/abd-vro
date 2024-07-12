@@ -51,7 +51,6 @@ on:
           - db-init
           - app
           - rabbitmq
-          - mock-bgs-api
       image_tag:
         description: "Image tag to run SecRel on. If 'all' is selected, then 'latest' will always be used. This does not define the image tag during publishing"
         required: true
