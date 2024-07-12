@@ -4,6 +4,6 @@ plugins {
 
 dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-amqp'
-  implementation 'net.datafaker:datafaker:2.3.0'
+  implementation 'net.datafaker:datafaker:2.3.1'
   implementation "com.google.guava:guava"
 }
