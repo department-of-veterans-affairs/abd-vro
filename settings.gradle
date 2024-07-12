@@ -50,6 +50,4 @@ include ':domain-xample:svc-hoppy-usage'
 include ':domain-cc:cc-app'
 include ':domain-ee:ee-max-cfi-app'
 include ':domain-ee:ee-ep-merge-app'
-include ':rabbitmq'
-
-include ':mocks:mock-bgs-api'
+include 'rabbitmq'

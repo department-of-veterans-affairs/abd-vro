@@ -30,7 +30,6 @@ on:
         - domain-ee-ep-merge-app
         - dev-tools
         - db-init
-        - mock-bgs-api
 
       image_tag:
         description: 'Image tag: first 7 of commit hash or "latest"'

@@ -5,14 +5,14 @@
 
 # Array of VRO images
 # shellcheck disable=SC2034
-VRO_IMAGES_ARR=( postgres rabbitmq db-init dev-tools svc-bgs-api svc-bie-kafka svc-bip-api xample-workflows cc-app ee-max-cfi-app ee-ep-merge-app mock-bgs-api )
+VRO_IMAGES_ARR=( postgres rabbitmq db-init dev-tools svc-bgs-api svc-bie-kafka svc-bip-api xample-workflows cc-app ee-max-cfi-app ee-ep-merge-app )
 # Usage: for IMG in ${VRO_IMAGES_ARR[@]}; do echo "- $IMG"; done
-export VRO_IMAGES="postgres rabbitmq db-init dev-tools svc-bgs-api svc-bie-kafka svc-bip-api xample-workflows cc-app ee-max-cfi-app ee-ep-merge-app mock-bgs-api"
+export VRO_IMAGES="postgres rabbitmq db-init dev-tools svc-bgs-api svc-bie-kafka svc-bip-api xample-workflows cc-app ee-max-cfi-app ee-ep-merge-app"
 
 # Array of variable prefixes
 # shellcheck disable=SC2034
-VAR_PREFIXES_ARR=( postgres rabbitmq dbinit devtools svcbgsapi svcbiekafka svcbipapi xampleworkflows ccapp eemaxcfiapp eeepmergeapp mockbgsapi )
-export VAR_PREFIXES="postgres rabbitmq dbinit devtools svcbgsapi svcbiekafka svcbipapi xampleworkflows ccapp eemaxcfiapp eeepmergeapp mockbgsapi"
+VAR_PREFIXES_ARR=( postgres rabbitmq dbinit devtools svcbgsapi svcbiekafka svcbipapi xampleworkflows ccapp eemaxcfiapp eeepmergeapp )
+export VAR_PREFIXES="postgres rabbitmq dbinit devtools svcbgsapi svcbiekafka svcbipapi xampleworkflows ccapp eemaxcfiapp eeepmergeapp"
 
 ## Helper functions
 # Usage example to get the variable value for app_GRADLE_IMG: GRADLE_IMG_TAG=`getVarValue app _GRADLE_IMG`
@@ -78,6 +78,3 @@ export eemaxcfiapp_IMG="vro-ee-max-cfi-app"
 
 export eeepmergeapp_GRADLE_IMG="va/abd_vro-ee-ep-merge-app"
 export eeepmergeapp_IMG="vro-ee-ep-merge-app"
-
-export mockbgsapi_GRADLE_IMG="va/abd_vro-mock-bgs-api"
-export mockbgsapi_IMG="vro-mock-bgs-api"
