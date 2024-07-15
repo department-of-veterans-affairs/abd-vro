@@ -85,8 +85,7 @@ async def test_get_jobs_by_state(submit_jobs, states: list[JobState]):
     params = generate_query_params(states)
     async with AsyncClient(app=app, base_url='http://test') as client:
         response = await client.get(url=f'/merge?{params}')
-        # assert response.status_code == 200
-        print(response.json())
+        assert response.status_code == 200
         json = response.json()
         assert json is not None
         assert json['states'] == states
