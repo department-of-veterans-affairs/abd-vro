@@ -26,13 +26,18 @@ class JobStore:
 
     def query(
         self,
-        states: list[schema.JobState] = schema.JobState.incomplete_states(),
+        states: list[schema.JobState] | None = None,
+        error_states: list[schema.JobState] | None = None,
         updated_at_start: datetime | None = None,
         updated_at_end: datetime | None = None,
         offset: int = 1,
         limit: int = 10,
     ) -> list[MergeJob]:
-        query_conditions = [MergeJob.state.in_(states)] if states else []
+        query_conditions = [True]
+        if states:
+            query_conditions.append(MergeJob.state.in_(states))
+        if error_states:
+            query_conditions.append(MergeJob.error_state.in_(error_states))
         if updated_at_start:
             query_conditions.append(MergeJob.updated_at >= updated_at_start)
         if updated_at_end:
