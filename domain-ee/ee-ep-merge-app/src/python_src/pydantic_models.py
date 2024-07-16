@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import UUID
 
 from pydantic import BaseModel, Field
@@ -20,7 +21,10 @@ class MergeJobResponse(BaseModel):
 
 
 class MergeJobsResponse(BaseModel):
-    states: list[JobState]
+    states: list[JobState] | None = None
+    error_states: list[JobState] | None = None
+    updated_at_start: datetime | None = None
+    updated_at_end: datetime | None = None
     total: int
     page: int
     size: int

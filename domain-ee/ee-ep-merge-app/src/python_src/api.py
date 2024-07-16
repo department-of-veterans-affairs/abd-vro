@@ -148,15 +148,23 @@ async def get_merge_request_by_job_id(job_id: UUID) -> MergeJobResponse | JSONRe
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=jsonable_encoder({'job_id': job_id, 'message': 'Could not find job'}))
 
 
-@app.get('/merge', response_model=MergeJobsResponse, responses={status.HTTP_200_OK: {'description': 'Find all jobs'}}, response_model_exclude_none=True)
+@app.get(
+    '/merge',
+    response_model=MergeJobsResponse,
+    responses={status.HTTP_200_OK: {'description': 'Find all jobs matching the query parameters'}},
+    response_model_exclude_none=False,
+)
 async def get_merge_jobs(
-    state: Annotated[list[JobState], Query(title='the states to filter the query by')] = JobState.incomplete_states(),
-    page: Annotated[int, Query(title='the page of results to return', ge=1)] = 1,
-    size: Annotated[int, Query(title='the number of results per page', ge=1)] = 10,
+    state: Annotated[list[JobState], Query(title='the states to filter the query by')] = None,
+    error_state: Annotated[list[JobState], Query(title='the error states to filter the query by')] = None,
     updated_at_start: Annotated[datetime, Query(title='start of timeframe query filter of the datetime the job was last updated')] = None,
     updated_at_end: Annotated[datetime, Query(title='end of timeframe query filter of the datetime the job was last updated')] = None,
+    page: Annotated[int, Query(title='the page of results to return', ge=1)] = 1,
+    size: Annotated[int, Query(title='the number of results per page', ge=1)] = 10,
 ) -> MergeJobsResponse:
-    jobs, total = JOB_STORE.query(states=state, offset=page, limit=size, updated_at_start=updated_at_start, updated_at_end=updated_at_end)
+    jobs, total = JOB_STORE.query(
+        states=state, error_states=error_state, offset=page, limit=size, updated_at_start=updated_at_start, updated_at_end=updated_at_end
+    )
 
     logging.info(
         f'event=getMergeJobs total={total} '
@@ -164,10 +172,13 @@ async def get_merge_jobs(
         f'size={sanitize(size)} '
         f'updated_at_start={sanitize(updated_at_start.isoformat()) if updated_at_start else None} '
         f'updated_at_end={sanitize(updated_at_end.isoformat()) if updated_at_end else None} '
-        f'states={[str(s) for s in state] if state else None}'
+        f'states={[str(s) for s in state] if state else None} '
+        f'error_states={[str(s) for s in error_state] if error_state else None}'
     )
 
-    return MergeJobsResponse(states=state, total=total, page=page, size=size, jobs=jobs)
+    return MergeJobsResponse(
+        states=state, error_states=error_state, updated_at_start=updated_at_start, updated_at_end=updated_at_end, total=total, page=page, size=size, jobs=jobs
+    )
 
 
 @app.exception_handler(SQLAlchemyError)
