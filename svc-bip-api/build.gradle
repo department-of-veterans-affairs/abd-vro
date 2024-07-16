@@ -18,7 +18,7 @@ dependencies {
 
   implementation "com.fasterxml.jackson.core:jackson-core"
   implementation "com.fasterxml.jackson.core:jackson-databind"
-  implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.1"
+  implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.2"
 
   def jjwt_version = "0.12.6"
   implementation "io.jsonwebtoken:jjwt-api:${jjwt_version}"
@@ -33,7 +33,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
   // Datadog API
-  implementation 'com.datadoghq:datadog-api-client:2.25.0'
+  implementation 'com.datadoghq:datadog-api-client:2.26.0'
 }
 
 // https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html#sec:jvm_test_suite_usage
