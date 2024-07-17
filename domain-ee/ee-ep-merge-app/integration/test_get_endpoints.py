@@ -18,13 +18,14 @@ CREATED_AT = NOW
 UPDATED_AT = NOW + timedelta(seconds=1)
 
 
-def create_job(state, job_id, created_at: datetime = CREATED_AT, updated_at: datetime = UPDATED_AT):
+def create_job(job_id, state: JobState, error_state: JobState | None = None, created_at: datetime = CREATED_AT, updated_at: datetime = UPDATED_AT):
     JOB_IDS.append(str(job_id))
     return {
         'job_id': job_id,
         'pending_claim_id': PENDING_ID,
         'ep400_claim_id': EP400_ID,
         'state': state,
+        'error_state': error_state,
         'created_at': created_at.isoformat(),
         'updated_at': updated_at.isoformat(),
     }
@@ -44,10 +45,10 @@ def assert_response(response, expected_state: JobState, status_code: int = 200):
 
 @pytest.fixture(scope='session')
 def submit_jobs():
-    JOB_STORE.submit_merge_job(create_job(JobState.COMPLETED_SUCCESS, JOB_ID))
-    JOB_STORE.submit_merge_job(create_job(JobState.COMPLETED_ERROR, uuid4()))
+    JOB_STORE.submit_merge_job(create_job(JOB_ID, JobState.COMPLETED_SUCCESS))
+    JOB_STORE.submit_merge_job(create_job(uuid4(), JobState.COMPLETED_ERROR))
     for state in JobState.incomplete_states():
-        JOB_STORE.submit_merge_job(create_job(state, uuid4()))
+        JOB_STORE.submit_merge_job(create_job(uuid4(), state))
 
 
 @pytest.mark.asyncio(scope='session')
@@ -65,27 +66,25 @@ async def test_get_job_by_id_not_found(submit_jobs):
         assert response.status_code == 404
 
 
-def generate_query_params(states: list[JobState]):
-    if not states:
-        return ''
-    return '&state=' + '&state='.join([state.name for state in states])
+def generate_query_params(states):
+    if states:
+        return f'size={len(states)}&state=' + '&state='.join([str(state) for state in states])
+    return ''
 
 
 @pytest.mark.asyncio(scope='session')
 @pytest.mark.parametrize(
     'states',
     [
-        pytest.param([], id='incomplete states'),
+        pytest.param(JobState.incomplete_states(), id='incomplete states'),
         pytest.param([JobState.PENDING, JobState.GET_PENDING_CLAIM], id='multiple states'),
         pytest.param([JobState.COMPLETED_ERROR, JobState.COMPLETED_SUCCESS], id='completed states'),
     ],
 )
 async def test_get_jobs_by_state(submit_jobs, states: list[JobState]):
     params = generate_query_params(states)
-    if not states:
-        states = JobState.incomplete_states()
     async with AsyncClient(app=app, base_url='http://test') as client:
-        response = await client.get(url=f'/merge?size={len(states)}{params}')
+        response = await client.get(url=f'/merge?{params}')
         assert response.status_code == 200
         json = response.json()
         assert json is not None
@@ -95,15 +94,16 @@ async def test_get_jobs_by_state(submit_jobs, states: list[JobState]):
         assert json['size'] == len(states)
         assert len(json['jobs']) == len(states)
 
-        for job_json in json['jobs']:
-            assert job_json['job_id'] in JOB_IDS
+        if states:
+            for job_json in json['jobs']:
+                assert job_json['job_id'] in JOB_IDS
 
 
 @pytest.mark.asyncio(scope='session')
 async def test_get_jobs_by_updated_at_start_found():
     created_at = datetime.now()
     updated_at = created_at + timedelta(seconds=1)
-    JOB_STORE.submit_merge_job(create_job(JobState.PENDING, uuid4(), created_at, updated_at))
+    JOB_STORE.submit_merge_job(create_job(uuid4(), JobState.PENDING, created_at=created_at, updated_at=updated_at))
 
     async with AsyncClient(app=app, base_url='http://test') as client:
         response = await client.get(url=f'/merge?updated_at_start={created_at.isoformat()}')
@@ -118,7 +118,7 @@ async def test_get_jobs_by_updated_at_start_found():
 
 @pytest.mark.asyncio(scope='session')
 async def test_get_jobs_by_updated_at_start_not_found():
-    JOB_STORE.submit_merge_job(create_job(JobState.PENDING, uuid4()))
+    JOB_STORE.submit_merge_job(create_job(uuid4(), JobState.PENDING))
 
     async with AsyncClient(app=app, base_url='http://test') as client:
         response = await client.get(url=f'/merge?updated_at_start={(NOW + timedelta(days=1)).isoformat()}')
@@ -133,7 +133,7 @@ async def test_get_jobs_by_updated_at_start_not_found():
 async def test_get_jobs_by_updated_at_end_found():
     created_at = NOW - timedelta(days=1)
     updated_at = created_at + timedelta(seconds=1)
-    JOB_STORE.submit_merge_job(create_job(JobState.PENDING, uuid4(), created_at, updated_at))
+    JOB_STORE.submit_merge_job(create_job(uuid4(), JobState.PENDING, created_at=created_at, updated_at=updated_at))
 
     async with AsyncClient(app=app, base_url='http://test') as client:
         response = await client.get(url=f'/merge?updated_at_end={updated_at.isoformat()}')
@@ -150,7 +150,7 @@ async def test_get_jobs_by_updated_at_end_found():
 async def test_get_jobs_by_updated_at_end_not_found():
     created_at = NOW - timedelta(days=1)
     updated_at = created_at + timedelta(seconds=1)
-    JOB_STORE.submit_merge_job(create_job(JobState.PENDING, uuid4(), created_at, updated_at))
+    JOB_STORE.submit_merge_job(create_job(uuid4(), JobState.PENDING, created_at=created_at, updated_at=updated_at))
 
     async with AsyncClient(app=app, base_url='http://test') as client:
         response = await client.get(url=f'/merge?updated_at_end={created_at.isoformat()}')
@@ -159,3 +159,34 @@ async def test_get_jobs_by_updated_at_end_not_found():
         assert json is not None
         assert json['total'] == 0
         assert len(json['jobs']) == 0
+
+
+@pytest.mark.asyncio(scope='session')
+async def test_get_jobs_by_error_state_not_found():
+    states = JobState.incomplete_states()
+    query = 'error_state=' + '&error_state='.join([str(state) for state in states])
+
+    async with AsyncClient(app=app, base_url='http://test') as client:
+        response = await client.get(url=f'/merge?{query}')
+        assert response.status_code == 200
+        json = response.json()
+        assert json is not None
+        assert json['total'] == 0
+        assert len(json['jobs']) == 0
+
+
+@pytest.mark.asyncio(scope='session')
+async def test_get_jobs_by_error_state_found():
+    error_state = JobState.GET_PENDING_CLAIM
+    JOB_STORE.submit_merge_job(create_job(uuid4(), JobState.COMPLETED_ERROR, error_state=error_state))
+
+    async with AsyncClient(app=app, base_url='http://test') as client:
+        response = await client.get(url=f'/merge?error_state={error_state}')
+        assert response.status_code == 200
+        json = response.json()
+        assert json is not None
+        assert json['total'] == 1
+        assert len(json['jobs']) == 1
+        assert json['jobs'][0]['job_id'] in JOB_IDS
+        assert json['jobs'][0]['state'] == JobState.COMPLETED_ERROR
+        assert json['jobs'][0]['error_state'] == error_state

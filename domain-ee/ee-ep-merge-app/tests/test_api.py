@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from unittest.mock import MagicMock, Mock
 
 import pytest
@@ -41,8 +41,8 @@ def mock_job_store(mocker):
     return mocker.patch('src.python_src.api.JOB_STORE', return_value=job_store_mock)
 
 
-def submitted_job():
-    return MergeJob(job_id=JOB_ID, pending_claim_id=1, ep400_claim_id=2, state=JobState.PENDING.value, created_at=TIME, updated_at=TIME)
+def create_job(state=JobState.PENDING, error_state=None):
+    return MergeJob(job_id=JOB_ID, pending_claim_id=1, ep400_claim_id=2, state=state.value, error_state=error_state, created_at=TIME, updated_at=TIME)
 
 
 @pytest.mark.parametrize(
@@ -142,7 +142,7 @@ def test_get_job_by_job_id_job_not_found(client: TestClient, mock_job_store):
 
 def test_get_job_by_job_id_job_found(client: TestClient, mock_job_store):
     job_id = make_merge_request(client)
-    mock_job_store.get_merge_job.return_value = submitted_job()
+    mock_job_store.get_merge_job.return_value = create_job()
 
     response = client.get(MERGE + f'/{job_id}')
     assert response.status_code == 200
@@ -173,24 +173,26 @@ def make_merge_request(client: TestClient):
 
 
 @pytest.mark.parametrize(
-    'page,size',
+    'state,page,size',
     [
-        pytest.param(None, None, id='defaults'),
-        pytest.param(1, None, id='first page, 10 items'),
-        pytest.param(1, None, id='last page, 1 item'),
-        pytest.param(1, 2, id='first page, 2 items'),
-        pytest.param(6, 2, id='last page, 2 items'),
+        pytest.param(None, None, None, id='defaults'),
+        pytest.param(JobState.incomplete_states(), 1, None, id='first page, 10 items'),
+        pytest.param(JobState.incomplete_states(), 1, None, id='last page, 1 item'),
+        pytest.param(JobState.incomplete_states(), 1, 2, id='first page, 2 items'),
+        pytest.param(JobState.incomplete_states(), 6, 2, id='last page, 2 items'),
     ],
 )
-def test_get_merge_jobs_pagination(client: TestClient, mock_job_store, page, size):
+def test_get_merge_jobs_pagination(client: TestClient, mock_job_store, state, page, size):
     # Set defaults for missing values:
     expected_page = page if page else 1
     expected_size = size if size else 10
 
-    expected_jobs = [submitted_job() for i in range(expected_size)]
+    expected_jobs = [create_job() for i in range(11)]
     mock_job_store.query = Mock(return_value=(expected_jobs, 11))
 
     params = {}
+    if state:
+        params['state'] = state
     if page:
         params['page'] = page
     if size:
@@ -201,7 +203,10 @@ def test_get_merge_jobs_pagination(client: TestClient, mock_job_store, page, siz
 
     response_json = response.json()
     assert response_json['total'] == 11
-    assert response_json['states'] == JobState.incomplete_states()
+    assert response_json['states'] == state
+    assert response_json['error_states'] is None
+    assert response_json['updated_at_start'] is None
+    assert response_json['updated_at_end'] is None
     assert response_json['page'] == expected_page
     assert response_json['size'] == expected_size
     results = response_json['jobs']
@@ -212,6 +217,88 @@ def test_get_merge_jobs_pagination(client: TestClient, mock_job_store, page, siz
         assert job['pending_claim_id'] == 1
         assert job['ep400_claim_id'] == 2
         assert job['state'] == JobState.PENDING.value
+        assert job['created_at'] == TIME.isoformat()
+        assert job['updated_at'] == TIME.isoformat()
+
+
+def test_get_merge_jobs_with_error_state_param(client: TestClient, mock_job_store):
+    expected_jobs = [
+        MergeJob(
+            job_id=JOB_ID,
+            pending_claim_id=1,
+            ep400_claim_id=2,
+            state=JobState.COMPLETED_ERROR,
+            error_state=JobState.GET_PENDING_CLAIM,
+            created_at=TIME,
+            updated_at=TIME,
+        ),
+    ]
+    mock_job_store.query = Mock(return_value=(expected_jobs, 1))
+
+    params = {'error_state': 'GET_PENDING_CLAIM'}
+    response = client.get(MERGE, params=params)
+    assert response.status_code == 200
+
+    response_json = response.json()
+    assert response_json['total'] == 1
+    assert response_json['states'] is None
+    assert response_json['error_states'] == [JobState.GET_PENDING_CLAIM.value]
+    assert response_json['updated_at_start'] is None
+    assert response_json['updated_at_end'] is None
+    assert response_json['page'] == 1
+    assert response_json['size'] == 10
+    results = response_json['jobs']
+    assert len(results) == len(expected_jobs)
+
+    for job in results:
+        assert job['job_id'] == str(JOB_ID)
+        assert job['pending_claim_id'] == 1
+        assert job['ep400_claim_id'] == 2
+        assert job['state'] == JobState.COMPLETED_ERROR.value
+        assert job['error_state'] == JobState.GET_PENDING_CLAIM.value
+        assert job['created_at'] == TIME.isoformat()
+        assert job['updated_at'] == TIME.isoformat()
+
+
+@pytest.mark.parametrize(
+    'updated_at_start,updated_at_end',
+    [
+        pytest.param(None, None, id='No times specified'),
+        pytest.param((TIME + timedelta(days=-1)).isoformat(), None, id='start time only'),
+        pytest.param(None, (TIME + timedelta(days=1)).isoformat(), id='end time only'),
+        pytest.param((TIME + timedelta(days=-1)).isoformat(), (TIME + timedelta(days=1)).isoformat(), id='both times specified'),
+    ],
+)
+def test_get_merge_jobs_with_updated_at_start_and_updated_at_end_times(client: TestClient, mock_job_store, updated_at_start, updated_at_end):
+    expected_jobs = [create_job()]
+    mock_job_store.query = Mock(return_value=(expected_jobs, 1))
+
+    params = {}
+    if updated_at_start:
+        params['updated_at_start'] = updated_at_start
+    if updated_at_end:
+        params['updated_at_end'] = updated_at_end
+
+    response = client.get(MERGE, params=params)
+    assert response.status_code == 200
+
+    response_json = response.json()
+    assert response_json['total'] == 1
+    assert response_json['states'] is None
+    assert response_json['error_states'] is None
+    assert response_json['updated_at_start'] == updated_at_start
+    assert response_json['updated_at_end'] == updated_at_end
+    assert response_json['page'] == 1
+    assert response_json['size'] == 10
+    results = response_json['jobs']
+    assert len(results) == len(expected_jobs)
+
+    for job in results:
+        assert job['job_id'] == str(JOB_ID)
+        assert job['pending_claim_id'] == 1
+        assert job['ep400_claim_id'] == 2
+        assert job['state'] == JobState.PENDING.value
+        assert job['error_state'] is None
         assert job['created_at'] == TIME.isoformat()
         assert job['updated_at'] == TIME.isoformat()
 

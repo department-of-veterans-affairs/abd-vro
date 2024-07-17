@@ -27,12 +27,12 @@ def mock_async_publisher(mocker):
 
 
 def get_client(mock_async_publisher, mock_async_consumer, app_id="test", exchange_name="exchange", queue_name="queue",
-               reply_queue="reply_queue", max_latency=3, requeue_attempts=3):
+               reply_queue="reply_queue", request_message_ttl=0, max_latency=3, requeue_attempts=3):
     exchange_props = ExchangeProperties(name=exchange_name)
     request_props = QueueProperties(name=queue_name)
     reply_props = QueueProperties(name=reply_queue)
     client = AsyncHoppyClient("test_client", app_id, config, exchange_props, request_props, reply_props, queue_name,
-                              reply_queue, max_latency, requeue_attempts)
+                              reply_queue, request_message_ttl, max_latency, requeue_attempts)
     client.async_publisher = mock_async_publisher
     client.async_consumer = mock_async_consumer
     return client
@@ -77,7 +77,7 @@ class TestAsyncHoppyClient:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("expected_response", [
-        pytest.param('{}', id="empty object"),
+        pytest.param('{}', id='empty object'),
         pytest.param('{"test_response":1}', id="valid object")
     ])
     async def test_make_request_and_correlated_valid_response_received(self,
@@ -258,20 +258,18 @@ class TestAsyncHoppyClient:
 
 
 def get_retry_client(mock_async_publisher, mock_async_consumer, app_id="test", exchange_name="exchange",
-                     queue_name="queue",
-                     reply_queue="reply_queue", max_latency=3, requeue_attempts=3, max_retries=3):
+                     queue_name="queue", reply_queue="reply_queue", request_ttl=0, max_latency=3, requeue_attempts=3, max_retries=3):
     exchange_props = ExchangeProperties(name=exchange_name)
     request_props = QueueProperties(name=queue_name)
     reply_props = QueueProperties(name=reply_queue)
     client = RetryableAsyncHoppyClient("test_client", app_id, config, exchange_props, request_props, reply_props,
-                                       queue_name, reply_queue, max_latency, requeue_attempts, max_retries)
+                                       queue_name, reply_queue, request_ttl, max_latency, requeue_attempts, max_retries)
     client.async_publisher = mock_async_publisher
     client.async_consumer = mock_async_consumer
     return client
 
 
 class TestRetryableAsyncHoppyClient:
-
     @pytest.mark.asyncio
     async def test_make_request_and_max_retries_reached(self, mock_async_publisher, mock_async_consumer, mocker):
         # Given
@@ -282,9 +280,9 @@ class TestRetryableAsyncHoppyClient:
         correlation_id_2 = uuid.uuid4()
         mocker.patch('uuid.uuid4', side_effect=[correlation_id_1, correlation_id_2])
         properties_1 = pika.spec.BasicProperties(app_id="test", content_type="application/json", reply_to="reply_queue",
-                                                 correlation_id=str(correlation_id_1))
+                                                 correlation_id=str(correlation_id_1), expiration=0)
         properties_2 = pika.spec.BasicProperties(app_id="test", content_type="application/json", reply_to="reply_queue",
-                                                 correlation_id=str(correlation_id_2))
+                                                 correlation_id=str(correlation_id_2), expiration=0)
         mocker.patch('pika.spec.BasicProperties', side_effect=[properties_1, properties_2])
 
         # When / Then
@@ -332,9 +330,9 @@ class TestRetryableAsyncHoppyClient:
         correlation_id_2 = uuid.uuid4()
         mocker.patch('uuid.uuid4', side_effect=[correlation_id_1, correlation_id_2])
         properties_1 = pika.spec.BasicProperties(app_id="test", content_type="application/json", reply_to="reply_queue",
-                                                 correlation_id=str(correlation_id_1))
+                                                 correlation_id=str(correlation_id_1), expiration=0)
         properties_2 = pika.spec.BasicProperties(app_id="test", content_type="application/json", reply_to="reply_queue",
-                                                 correlation_id=str(correlation_id_2))
+                                                 correlation_id=str(correlation_id_2), expiration=0)
         mocker.patch('pika.spec.BasicProperties', side_effect=[properties_1, properties_2])
 
         # Response
