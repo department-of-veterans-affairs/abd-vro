@@ -31,8 +31,7 @@ IMAGES=( postgres \
   xample-workflows \
   cc-app \
   ee-max-cfi-app \
-  ee-ep-merge-app \
-  mock-bgs-api)
+  ee-ep-merge-app )
 echo
 echo "=== ${#IMAGES[@]} VRO images"
 for INDEX in "${!IMAGES[@]}"; do

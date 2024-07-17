@@ -33,9 +33,10 @@ class HoppyService:
             request_routing_key=req_queue,
             reply_queue_properties=reply_queue_props,
             reply_routing_key=reply_queue,
-            max_latency=config['request_timeout'],
-            max_retries=config['request_retries'],
+            request_message_ttl=config['request_message_ttl'],
+            response_max_latency=config['response_max_latency'],
             response_reject_and_requeue_attempts=config['response_delivery_attempts'],
+            max_retries=config['request_retries'],
         )
         self.clients[name] = client
 

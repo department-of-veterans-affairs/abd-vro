@@ -1,11 +1,11 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools >= 70.0.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "hoppy"
-description = "Python library for building VRO microservices that need to interact with Rabbit MQ"
-requires-python = ">=3.6"
+description = "Python library for building asynchrounous REST-like clients that perform requests and receive responses over Rabbit MQ"
+requires-python = ">= 3.10"
 dependencies = [
     "pika",
     "pytest",
@@ -35,4 +35,4 @@ testpaths = [
     "test",
     "integration" # depends on rabbitmq-service
 ]
-timeout=5
+timeout = 5
