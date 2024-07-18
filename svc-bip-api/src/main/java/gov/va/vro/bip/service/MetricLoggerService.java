@@ -84,7 +84,7 @@ public class MetricLoggerService implements IMetricLoggerService {
               "submitted %s: %s",
               payload.getSeries().get(0).getMetric(), payloadResult.getStatus()));
     } catch (Exception e) {
-      log.error(
+      log.warn(
           String.format(
               "exception submitting %s: %s",
               payload.getSeries().get(0).getMetric(), e.getMessage()));
@@ -127,7 +127,7 @@ public class MetricLoggerService implements IMetricLoggerService {
               "submitted %s: %s",
               payload.getSeries().get(0).getMetric(), payloadResult.getStatus()));
     } catch (Exception e) {
-      log.error(
+      log.warn(
           String.format(
               "exception submitting %s: %s",
               payload.getSeries().get(0).getMetric(), e.getMessage()));
