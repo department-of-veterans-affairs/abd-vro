@@ -10,7 +10,7 @@ RESUME_IN_PROGRESS_JOBS_RETRY_RATE = 5
 
 
 class JobRunner:
-    def __init__(self):
+    def __init__(self) -> None:
         self.starting = True
 
     def is_ready(self) -> bool:
