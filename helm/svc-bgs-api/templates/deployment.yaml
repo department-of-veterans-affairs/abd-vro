@@ -32,5 +32,11 @@ spec:
                 secretKeyRef:
                   name: vro-secrets-bip
                   key: VRO_SECRETS_BIP
+            - name: DD_RABBITMQ_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: vro-dd-rabbitmq-pass
+                  key: rabbitmq_pass
+
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
