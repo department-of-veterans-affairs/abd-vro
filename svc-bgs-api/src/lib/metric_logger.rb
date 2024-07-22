@@ -32,7 +32,7 @@ class MetricLogger
       api_instance.validate
       $logger.info('Succeeded Datadog authentication check')
     rescue Exception => e
-      $logger.error("Failed Datadog authentication check: #{e.message}")
+      $logger.warn("Failed Datadog authentication check: #{e.message}")
     end
   end
 
@@ -79,7 +79,7 @@ class MetricLogger
       @metrics_api.submit_metrics(payload)
       $logger.info("submitted #{payload.series.first.metric}")
     rescue Exception => e
-      $logger.error("Error logging metric: #{metric} (count). Error: #{e.class}, Message: #{e.message}")
+      $logger.warn("Error logging metric: #{metric} (count). Error: #{e.class}, Message: #{e.message}")
     end
   end
 
@@ -105,7 +105,7 @@ class MetricLogger
         "submitted #{payload.series.first.metric}  #{payload_result.status}"
       )
     rescue Exception => e
-      $logger.error(
+      $logger.warn(
         "exception submitting request duration  #{e.message}"
       )
     end

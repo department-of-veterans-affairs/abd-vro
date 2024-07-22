@@ -27,6 +27,7 @@ from util.sanitizer import sanitize
 
 CONNECT_TO_DATABASE_FAILURE = 'Cannot connect to database.'
 CONNECT_TO_RABBIT_MQ_FAILURE = 'Cannot connect to RabbitMQ.'
+JOB_RUNNER_NOT_READY = 'Cannot accept new jobs at this time.'
 
 
 @asynccontextmanager
@@ -92,6 +93,8 @@ def health_check_errors() -> list[str]:
         errors.append(CONNECT_TO_RABBIT_MQ_FAILURE)
     if not JOB_STORE.is_ready():
         errors.append(CONNECT_TO_DATABASE_FAILURE)
+    if not JOB_RUNNER.is_ready():
+        errors.append(JOB_RUNNER_NOT_READY)
     return errors
 
 
