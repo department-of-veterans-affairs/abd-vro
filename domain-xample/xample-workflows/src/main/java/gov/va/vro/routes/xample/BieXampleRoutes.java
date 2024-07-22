@@ -24,8 +24,6 @@ public class BieXampleRoutes {
       })
   public void handleMessage(BieMessagePayload payload) {
     try {
-      log.info("Converted to: " + payload.getClass());
-      log.info("Saving Contention Event to DB");
       dbHelper.saveContentionEvent(payload);
       payload.setStatus(200);
       log.info("Saved Contention Event to DB");
