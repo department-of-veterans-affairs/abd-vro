@@ -151,10 +151,6 @@ export POSTGRES_DOMAIN_CC_PW=domain_cc_password
 export RABBITMQ_USERNAME=user
 export RABBITMQ_PASSWORD=bitnami
 
-# Credentials for RabbitMQ datadog user and shared across containers
-export RABBITMQ_DD_USERNAME=datadog
-export RABBITMQ_DD_PASSWORD=datadog123
-
 ###
 ### Slack notifications ###
 
