@@ -378,7 +378,7 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
     def on_completed(self, event):
         job_duration = (self.job.updated_at - self.job.created_at).total_seconds()
         self.log_metrics(job_duration)
-        ep_metrics_str = ' '.join([f'{m.name.replace("job.","").replace(".", "_")}={m.value}' for m in self.ep_metrics])
+        ep_metrics_str = ' '.join(f'{m.name.replace("job.","").replace(".", "_")}={m.value}' for m in self.ep_metrics)
 
         if self.job.state == JobState.COMPLETED_ERROR:
             logging.error(
