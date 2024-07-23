@@ -378,6 +378,7 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
     def on_completed(self, event):
         job_duration = (self.job.updated_at - self.job.created_at).total_seconds()
         self.log_metrics(job_duration)
+        ep_metrics_str = ' '.join(f'{m.name.replace("job.","").replace(".", "_")}={m.value}' for m in self.ep_metrics)
 
         if self.job.state == JobState.COMPLETED_ERROR:
             logging.error(
@@ -386,10 +387,12 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
                 f'job_id={self.job.job_id} '
                 f'pending_claim_id={self.job.pending_claim_id} '
                 f'ep400_claim_id={self.job.ep400_claim_id} '
-                f'job_duration_seconds={job_duration} '
+                f'duration_seconds={job_duration} '
                 f'state={self.job.state} '
                 f'errorState={self.job.error_state} '
-                f'errors={jsonable_encoder(self.job.messages)}'
+                f'errors={jsonable_encoder(self.job.messages)} '
+                f'{ep_metrics_str} '
+                f'skipped_merge={self.skipped_merge if self.job.error_state in ERROR_STATES_TO_LOG_METRICS else None}'
             )
         else:
             logging.info(
@@ -399,7 +402,9 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
                 f'pending_claim_id={self.job.pending_claim_id} '
                 f'ep400_claim_id={self.job.ep400_claim_id} '
                 f'job_duration_seconds={job_duration} '
-                f'state={self.job.state}'
+                f'state={self.job.state} '
+                f'{ep_metrics_str} '
+                f'job.skipped_merge={self.skipped_merge}'
             )
 
     def log_metrics(self, job_duration: float) -> None:
