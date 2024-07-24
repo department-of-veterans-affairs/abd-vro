@@ -4,11 +4,11 @@
 # with the service locally
 
 
-export COMPOSE_PROFILES='bip'
+export COMPOSE_PROFILES='platform'
 source scripts/setenv.sh
 
 ./gradlew docker
 ./gradlew :dockerComposeUp
 
-./gradlew -p mocks docker
-./gradlew -p mocks :dockerComposeUp
+#./gradlew -p mocks docker
+#./gradlew -p mocks :dockerComposeUp

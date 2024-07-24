@@ -10,6 +10,12 @@ RESUME_IN_PROGRESS_JOBS_RETRY_RATE = 5
 
 
 class JobRunner:
+    def __init__(self) -> None:
+        self.starting = True
+
+    def is_ready(self) -> bool:
+        return not self.starting
+
     async def start(self):
         """
         Resume any in-progress jobs that are in the database upon application startup, and after JOB_STORE and HOPPY
@@ -20,9 +26,13 @@ class JobRunner:
             await asyncio.sleep(RESUME_IN_PROGRESS_JOBS_RETRY_RATE)
 
         jobs_to_resume = JOB_STORE.get_all_incomplete_jobs()
+        self.starting = False
+
         logging.info(f'event=resumeJobsInProgress status=started total={len(jobs_to_resume)}')
-        for in_progress_job in jobs_to_resume:
-            asyncio.get_event_loop().run_in_executor(None, self.resume_job, in_progress_job)
+        for index, in_progress_job in enumerate(jobs_to_resume):
+            logging.info(f'event=resumeJobsInProgress status=running job={index+1} total={len(jobs_to_resume)}')
+            await asyncio.get_event_loop().run_in_executor(None, self.resume_job, in_progress_job)
+        logging.info(f'event=resumeJobsInProgress status=completed total={len(jobs_to_resume)}')
 
     @staticmethod
     def __start_machine(machine: EpMergeMachine) -> None:

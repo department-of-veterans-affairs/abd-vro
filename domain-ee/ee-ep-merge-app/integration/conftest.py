@@ -4,7 +4,7 @@ import pytest
 import pytest_asyncio
 
 from integration.mq_endpoint import MqEndpoint
-from src.python_src.api import on_shut_down, start_hoppy
+from src.python_src.api import on_shut_down, start_hoppy, start_job_runner
 from src.python_src.config import EXCHANGES, QUEUES, REPLY_QUEUES, ClientName
 
 
@@ -76,6 +76,7 @@ async def endpoint_lifecycle(
     await cancel_claim_endpoint.start(event_loop)
     await add_claim_note_endpoint.start(event_loop)
     await start_hoppy()
+    await start_job_runner()
 
     yield
 

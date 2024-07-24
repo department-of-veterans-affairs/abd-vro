@@ -1,95 +1,91 @@
 package gov.va.vro.routes.xample;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.model.biekafka.BieMessagePayload;
-import gov.va.vro.model.biekafka.test.BieMessagePayloadFactory;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.RoutesBuilder;
-import org.apache.camel.builder.AdviceWith;
-import org.apache.camel.component.mock.MockEndpoint;
-import org.apache.camel.test.junit5.CamelTestSupport;
+import gov.va.vro.model.biekafka.ContentionEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
+import org.mockito.MockitoAnnotations;
 
-import java.util.List;
-
-@Slf4j
-@ExtendWith(MockitoExtension.class)
-class BieXampleRoutesTest extends CamelTestSupport {
-
-  private static final String STARTING_URI = "seda:testQueue";
-  private static final String TEST_QUEUE = "test";
-  private static final String TEST_ROUTE_ID = TEST_QUEUE + "-saveToDb-route";
-
+class BieXampleRoutesTest {
   @Mock private DbHelper dbHelper;
 
-  @Override
-  protected RoutesBuilder createRouteBuilder() {
-    return new BieXampleRoutes(dbHelper, List.of(TEST_QUEUE));
-  }
+  @Mock private ObjectMapper objectMapper;
 
-  // See https://camel.apache.org/manual/advice-with.html#_enabling_advice_during_testing
-  @Override
-  public boolean isUseAdviceWith() {
-    return true;
-  }
+  @InjectMocks private BieXampleRoutes bieXampleRoutes;
 
   @BeforeEach
-  @SneakyThrows
-  void mockEndpoints() {
-    AdviceWith.adviceWith(
-        context,
-        TEST_ROUTE_ID,
-        false,
-        rb -> {
-          // replace the rabbitmq with seda
-          rb.replaceFromWith(STARTING_URI);
-        });
-    if (isUseAdviceWith()) context.start();
-  }
-
-  final BieMessagePayload testItem = BieMessagePayloadFactory.create();
-
-  @Test
-  @SneakyThrows
-  void testSaveContentionEventRoute() {
-    final BieMessagePayload response =
-        template.requestBody(STARTING_URI, testItem, BieMessagePayload.class);
-    assertThat(response.getEventType()).isEqualTo(testItem.getEventType());
-    assertThat(response.getStatusMessage()).isNull();
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(response.getClaimId()).isEqualTo(testItem.getClaimId());
-    assertThat(response.getContentionClassificationName())
-        .isEqualTo(testItem.getContentionClassificationName());
-    assertThat(response.getContentionId()).isEqualTo(testItem.getContentionId());
-    assertThat(response.getContentionTypeCode()).isEqualTo(testItem.getContentionTypeCode());
-    assertThat(response.getDiagnosticTypeCode()).isEqualTo(testItem.getDiagnosticTypeCode());
-    assertThat(response.getActionName()).isEqualTo(testItem.getActionName());
-    assertThat(response.getActionResultName()).isEqualTo(testItem.getActionResultName());
-
-    MockEndpoint.assertIsSatisfied(context);
+  void setUp() {
+    MockitoAnnotations.openMocks(this);
   }
 
   @Test
-  @SneakyThrows
-  void testMainRouteOnException() {
-    final RuntimeException exception = new RuntimeException("Testing exception handling");
-    Mockito.when(dbHelper.saveContentionEvent(Mockito.any())).thenThrow(exception);
+  void handleMessage_SuccessfulProcessing() throws Exception {
+    // Arrange
+    BieMessagePayload payload = createSamplePayload();
+    when(objectMapper.writeValueAsString(any(BieMessagePayload.class)))
+        .thenReturn("{\"claimId\":123,\"contentionId\":456}");
 
-    // send a message in the original route
-    final BieMessagePayload response =
-        template.requestBody(STARTING_URI, testItem, BieMessagePayload.class);
-    assertThat(response.getEventType()).isEqualTo(testItem.getEventType());
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-    assertThat(response.getStatusMessage()).isEqualTo(exception.toString());
+    // Act
+    bieXampleRoutes.handleMessage(payload);
 
-    MockEndpoint.assertIsSatisfied(context);
+    // Assert
+    verify(dbHelper, times(1)).saveContentionEvent(payload);
+    verify(objectMapper, times(1)).writeValueAsString(payload);
+    assertEquals(200, payload.getStatus());
+  }
+
+  @Test
+  void handleMessage_ExceptionThrown() throws Exception {
+    // Arrange
+    BieMessagePayload payload = createSamplePayload();
+    Exception testException = new RuntimeException("Test exception");
+
+    doThrow(testException).when(dbHelper).saveContentionEvent(payload);
+    when(objectMapper.writeValueAsString(any(BieMessagePayload.class)))
+        .thenReturn(
+            "{\"claimId\":123,\"contentionId\":456,\"status\":500,\"statusMessage\":\"java.lang.RuntimeException: Test exception\"}");
+
+    // Act
+    bieXampleRoutes.handleMessage(payload);
+
+    // Assert
+    verify(dbHelper, times(1)).saveContentionEvent(payload);
+    verify(objectMapper, times(1)).writeValueAsString(payload);
+    assertEquals(500, payload.getStatus());
+    assertEquals(testException.toString(), payload.getStatusMessage());
+  }
+
+  private BieMessagePayload createSamplePayload() {
+    return BieMessagePayload.builder()
+        .claimId(123L)
+        .contentionId(456L)
+        .eventType(ContentionEvent.CONTENTION_ASSOCIATED)
+        .notifiedAt(System.currentTimeMillis())
+        .actionName("TestAction")
+        .actionResultName("TestResult")
+        .automationIndicator(true)
+        .contentionTypeCode("TEST_CODE")
+        .contentionStatusTypeCode("ACTIVE")
+        .currentLifecycleStatus("IN_PROGRESS")
+        .eventTime(System.currentTimeMillis())
+        .benefitClaimTypeCode("BENEFIT_CODE")
+        .description("Test Description")
+        .actorStation("STATION_1")
+        .actorUserId("USER_123")
+        .details("Test Details")
+        .veteranParticipantId(789L)
+        .contentionClassificationName("Test Classification")
+        .diagnosticTypeCode("DIAG_CODE")
+        .journalStatusTypeCode("JOURNAL_STATUS")
+        .dateAdded(System.currentTimeMillis())
+        .dateCompleted(null)
+        .dateUpdated(System.currentTimeMillis())
+        .build();
   }
 }
