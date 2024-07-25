@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Map;
+
 @Configuration
 public class CancelClaimConfig {
 
@@ -16,10 +18,11 @@ public class CancelClaimConfig {
   String cancelClaimQueue;
 
   @Autowired DirectExchange bipApiExchange;
+  @Autowired RabbitMqConfigProperties props;
 
   @Bean
   Queue cancelClaimQueue() {
-    return new Queue(cancelClaimQueue, true, false, true);
+    return new Queue(cancelClaimQueue, true, false, true, props.getDeadLetterQueueArgs());
   }
 
   @Bean

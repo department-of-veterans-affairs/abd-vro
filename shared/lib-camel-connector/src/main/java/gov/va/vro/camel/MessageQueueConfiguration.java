@@ -14,6 +14,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.util.Map.entry;
 
 @Slf4j
 @EnableRabbit
@@ -28,6 +32,12 @@ public class MessageQueueConfiguration {
   private final String BIE_EVENTS_CONTENTION_COMPLETED = "bie-events-contention-completed";
   private final String BIE_EVENTS_CONTENTION_DELETED = "bie-events-contention-deleted";
   private final String SAVE_TO_DB_PREFIX = "saveToDB-";
+  private final String QUEUE_MESSAGES_DLQ = "bie-events-dql";
+  private final String DLX_EXCHANGE_MESSAGES = "bie-events.dlx";
+  Map<String, Object> DQL_ARGS = Map.ofEntries(
+          entry("x-dead-letter-exchange", ""),
+          entry("x-dead-letter-routing-key", QUEUE_MESSAGES_DLQ)
+  );
 
   @Bean
   ConnectionFactory rabbitmqConnectionFactory() {
@@ -106,6 +116,11 @@ public class MessageQueueConfiguration {
   }
 
   @Bean
+  FanoutExchange deadLetterExchange() {
+    return new FanoutExchange(DLX_EXCHANGE_MESSAGES);
+  }
+
+  @Bean
   Queue queuePostResource() {
     return new Queue(CamelConstants.POST_RESOURCE_QUEUE, true, false, true);
   }
@@ -117,27 +132,37 @@ public class MessageQueueConfiguration {
 
   @Bean
   Queue queueSaveToDbBieAssociated() {
-    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_ASSOCIATED);
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_ASSOCIATED,
+            true, false, false, DQL_ARGS);
   }
 
   @Bean
   Queue queueSaveToDbBieUpdated() {
-    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_UPDATED);
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_UPDATED,
+            true, false, false, DQL_ARGS);
   }
 
   @Bean
   Queue queueSaveToDbBieClassified() {
-    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_CLASSIFIED);
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_CLASSIFIED,
+            true, false, false, DQL_ARGS);
   }
 
   @Bean
   Queue queueSaveToDbBieCompleted() {
-    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_COMPLETED);
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_COMPLETED,
+            true, false, false, DQL_ARGS);
   }
 
   @Bean
   Queue queueSaveToDbBieDeleted() {
-    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_DELETED);
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_DELETED,
+            true, false, false, DQL_ARGS);
+  }
+
+  @Bean
+  Queue deadLetterQueue() {
+    return QueueBuilder.durable(QUEUE_MESSAGES_DLQ).build();
   }
 
   @Bean
@@ -182,5 +207,10 @@ public class MessageQueueConfiguration {
     return BindingBuilder.bind(queueGetResource())
         .to(topicExchangeV3())
         .with(CamelConstants.GET_RESOURCE_QUEUE);
+  }
+
+  @Bean
+  Binding deadLetterBinding() {
+    return BindingBuilder.bind(deadLetterQueue()).to(deadLetterExchange());
   }
 }

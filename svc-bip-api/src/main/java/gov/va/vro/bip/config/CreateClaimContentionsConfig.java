@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Map;
+
 @Configuration
 public class CreateClaimContentionsConfig {
 
@@ -16,10 +18,11 @@ public class CreateClaimContentionsConfig {
   String createClaimContentionsQueue;
 
   @Autowired DirectExchange bipApiExchange;
+  @Autowired RabbitMqConfigProperties props;
 
   @Bean
   Queue createClaimContentionsQueue() {
-    return new Queue(createClaimContentionsQueue, true, false, true);
+    return new Queue(createClaimContentionsQueue, true, false, true, props.getDeadLetterQueueArgs());
   }
 
   @Bean
