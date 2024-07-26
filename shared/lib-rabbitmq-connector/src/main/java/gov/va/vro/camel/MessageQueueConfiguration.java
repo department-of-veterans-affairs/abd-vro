@@ -4,7 +4,7 @@ import static java.util.Map.entry;
 
 import gov.va.vro.camel.config.MessageQueueEnvVariables;
 import gov.va.vro.camel.config.MessageQueueProperties;
-import gov.va.vro.model.xample.CamelConstants;
+import gov.va.vro.model.xample.RabbitMqConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
@@ -12,6 +12,8 @@ import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -60,13 +62,25 @@ public class MessageQueueConfiguration {
 
   /** Required for executing adminstration functions against an AMQP Broker */
   @Bean
-  AmqpAdmin amqpAdmin() {
+  public AmqpAdmin amqpAdmin() {
     return new RabbitAdmin(rabbitmqConnectionFactory());
   }
 
   @Bean
-  TopicExchange topicExchangeV3() {
-    return new TopicExchange(CamelConstants.V3_EXCHANGE, false, true);
+  public Jackson2JsonMessageConverter jsonMessageConverter() {
+    return new Jackson2JsonMessageConverter();
+  }
+
+  @Bean
+  public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+    RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+    rabbitTemplate.setMessageConverter(jsonMessageConverter());
+    return rabbitTemplate;
+  }
+
+  @Bean
+  public TopicExchange topicExchangeV3() {
+    return new TopicExchange(RabbitMqConstants.V3_EXCHANGE, false, true);
   }
 
   @Bean
@@ -121,12 +135,12 @@ public class MessageQueueConfiguration {
 
   @Bean
   Queue queuePostResource() {
-    return new Queue(CamelConstants.POST_RESOURCE_QUEUE, true, false, true);
+    return new Queue(RabbitMqConstants.POST_RESOURCE_QUEUE, true, false, true);
   }
 
   @Bean
   Queue queueGetResource() {
-    return new Queue(CamelConstants.GET_RESOURCE_QUEUE, true, false, true);
+    return new Queue(RabbitMqConstants.GET_RESOURCE_QUEUE, true, false, true);
   }
 
   @Bean
@@ -192,20 +206,6 @@ public class MessageQueueConfiguration {
   Binding bindingExchangeBieAssociated() {
     return BindingBuilder.bind(queueSaveToDbBieAssociated())
         .to(fanoutExchangeBieEventsContentionAssociated());
-  }
-
-  @Bean
-  Binding bindingExchangeV3WithQueuePostResource() {
-    return BindingBuilder.bind(queuePostResource())
-        .to(topicExchangeV3())
-        .with(CamelConstants.POST_RESOURCE_QUEUE);
-  }
-
-  @Bean
-  Binding bindingExchangeV3WithQueueGetResource() {
-    return BindingBuilder.bind(queueGetResource())
-        .to(topicExchangeV3())
-        .with(CamelConstants.GET_RESOURCE_QUEUE);
   }
 
   @Bean

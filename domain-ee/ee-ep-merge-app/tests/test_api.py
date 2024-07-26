@@ -41,6 +41,13 @@ def mock_job_store(mocker):
     return mocker.patch('src.python_src.api.JOB_STORE', return_value=job_store_mock)
 
 
+@pytest.fixture(autouse=True)
+def mock_job_runner(mocker):
+    mock_job_runner = Mock()
+    mock_job_runner.is_ready = Mock(return_value=True)
+    return mocker.patch('src.python_src.api.JOB_RUNNER', return_value=mock_job_runner)
+
+
 def create_job(state=JobState.PENDING, error_state=None):
     return MergeJob(job_id=JOB_ID, pending_claim_id=1, ep400_claim_id=2, state=state.value, error_state=error_state, created_at=TIME, updated_at=TIME)
 

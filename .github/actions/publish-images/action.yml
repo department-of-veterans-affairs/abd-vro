@@ -64,9 +64,20 @@ runs:
             IMG_NAME="$(getVarValue "${PREFIX}" _IMG)"
             echo "::group::Push image $IMG_NAME $IMG_TAG"
             GHCR_PATH="ghcr.io/${{ github.repository }}/${IMG_NAME}"
+
             if [ "$(imageTagExists "$IMG_NAME" "$IMG_TAG")" == "200" ]; then
-              echo "Image already exists: $IMG_NAME:$IMG_TAG -- not overwriting"
-              echo "* ($IMG_NAME:$IMG_TAG -- already exists, not overwriting)" >> "$GITHUB_STEP_SUMMARY"
+              if [ "${{ github.event_name }}" == "schedule" ]; then
+                echo "* $IMG_NAME:$IMG_TAG" >> "$GITHUB_STEP_SUMMARY"
+                echo -n "\"${GHCR_PATH}:$IMG_TAG\"" >> "$GITHUB_OUTPUT"
+
+                # For all but the last image include a comma
+                if [ ${PREFIX} != ${VAR_PREFIXES_ARR[-1]} ]; then
+                  echo -n "," >> "$GITHUB_OUTPUT"
+                fi
+              else
+                echo "Image already exists: $IMG_NAME:$IMG_TAG -- not overwriting"
+                echo "* ($IMG_NAME:$IMG_TAG -- already exists, not overwriting)" >> "$GITHUB_STEP_SUMMARY"
+              fi
             else
               GRADLE_IMG_NAME=$(getVarValue "${PREFIX}" _GRADLE_IMG)
 

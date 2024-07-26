@@ -13,7 +13,7 @@ tasks.named('bootJar') {
 
 dependencies {
   implementation project(':domain-xample:xample-shared')
-  implementation project(':shared:lib-camel-connector')
+  implementation project(':shared:lib-rabbitmq-connector')
   implementation project(':shared:lib-bie-kafka')
   implementation project(':shared:persistence-model')
 
@@ -22,19 +22,12 @@ dependencies {
   // Postgres DB client library
   runtimeOnly "org.postgresql:postgresql:${postgresql_version}"
 
-  // Enables more expressive Camel Route definitions https://camel.apache.org/manual/Endpoint-dsl.html
-  implementation "org.apache.camel:camel-endpointdsl:${camel_version}"
-  implementation "org.apache.camel.springboot:camel-jaxb-starter:${camel_version}"
-  implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camel_version}"
-  implementation "org.apache.camel:camel-spring-rabbitmq:${camel_version}"
-
   // Actuator for health check
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
+  implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
-  testImplementation "org.apache.camel:camel-test-junit5:${camel_version}"
-  testImplementation "com.github.fppt:jedis-mock:1.1.2"
-  // testImplementation 'org.slf4j:slf4j-simple:2.0.7'
+  testImplementation "com.github.fppt:jedis-mock:1.1.3"
 
   // To fix jackson error: Java 8 date/time type `java.time.LocalDateTime` not supported by default
   // in order to convert ClaimEntity.createdAt into JSON.
