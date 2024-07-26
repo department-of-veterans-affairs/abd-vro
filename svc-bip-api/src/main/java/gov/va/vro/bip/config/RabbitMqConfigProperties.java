@@ -1,5 +1,7 @@
 package gov.va.vro.bip.config;
 
+import static java.util.Map.entry;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,8 +10,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Map;
-
-import static java.util.Map.entry;
 
 @Data
 @Configuration
@@ -37,8 +37,8 @@ public class RabbitMqConfigProperties {
 
   Map<String, Object> getDeadLetterQueueArgs() {
     return Map.ofEntries(
-            entry("x-dead-letter-exchange", ""), // empty string tells broker to use the default exchange
-            entry("x-dead-letter-routing-key", deadLetterQueueName)
-    );
+        entry(
+            "x-dead-letter-exchange", ""), // empty string tells broker to use the default exchange
+        entry("x-dead-letter-routing-key", deadLetterQueueName));
   }
 }

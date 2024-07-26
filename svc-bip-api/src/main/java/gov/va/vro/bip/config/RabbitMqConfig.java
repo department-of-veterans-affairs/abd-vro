@@ -18,10 +18,6 @@ import org.springframework.messaging.handler.annotation.support.DefaultMessageHa
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.OptionalValidatorFactoryBean;
 
-import java.util.Map;
-
-import static java.util.Map.entry;
-
 @Configuration
 @Slf4j
 @RequiredArgsConstructor
