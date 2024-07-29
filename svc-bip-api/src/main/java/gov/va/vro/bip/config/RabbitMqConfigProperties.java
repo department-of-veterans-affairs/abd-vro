@@ -17,22 +17,22 @@ import java.util.Map;
 @AllArgsConstructor
 @ConfigurationProperties(prefix = "spring.rabbitmq")
 public class RabbitMqConfigProperties {
-  @Value("${spring.rabbitmq.host}")
+  @Value("${spring.rabbitmq.host:localhost}")
   private String host;
 
-  @Value("${spring.rabbitmq.port}")
+  @Value("${spring.rabbitmq.port:5672}")
   private int port;
 
-  @Value("${spring.rabbitmq.username}")
+  @Value("${spring.rabbitmq.username:user}")
   private String username;
 
-  @Value("${spring.rabbitmq.password}")
+  @Value("${spring.rabbitmq.password:bitnami}")
   private String password;
 
-  @Value("${deadLetterQueueName}")
+  @Value("${deadLetterQueueName:bipDeadLetterQueue}")
   private String deadLetterQueueName;
 
-  @Value("${deadLetterExchangeName}")
+  @Value("${deadLetterExchangeName:bipApi.dlx}")
   private String deadLetterExchangeName;
 
   Map<String, Object> getDeadLetterQueueArgs() {
