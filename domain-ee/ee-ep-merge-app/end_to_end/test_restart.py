@@ -46,6 +46,24 @@ def assert_job(job_id, pending_claim_id, ep400_claim_id, expected_state: JobStat
     [state for state in JobState.incomplete_states() if state not in [JobState.CANCEL_EP400_CLAIM, JobState.ADD_CLAIM_NOTE_TO_EP400]],
 )
 class TestRestart:
+    class TestAbort:
+        @pytest.mark.asyncio(scope='session')
+        @pytest.mark.parametrize(
+            'pending_claim_id,ep400_claim_id,expected_error_state,expected_num_errors',
+            [
+                pytest.param(PENDING_CLAIM_ID, EP400_WITH_NO_CONTENTIONS, JobState.GET_EP400_CLAIM_CONTENTIONS, 1, id='ep400 claim has zero contentions'),
+            ],
+        )
+        async def test(self, starting_state, pending_claim_id, ep400_claim_id, expected_error_state, expected_num_errors):
+            job_id = uuid4()
+            job = MergeJob(
+                job_id=job_id, pending_claim_id=pending_claim_id, ep400_claim_id=ep400_claim_id, state=starting_state, created_at=NOW, updated_at=NOW
+            )
+            JOB_STORE.submit_merge_job(job)
+
+            await asyncio.get_event_loop().run_in_executor(None, JOB_RUNNER.resume_job, job)
+            assert_job(job_id, pending_claim_id, ep400_claim_id, JobState.ABORTED, expected_error_state, expected_num_errors)
+
     class TestSuccess:
         @pytest.mark.asyncio(scope='session')
         @pytest.mark.parametrize(
@@ -101,7 +119,6 @@ class TestRestart:
                     1,
                     id='fail to get ep400 claim contentions',
                 ),
-                pytest.param(PENDING_CLAIM_ID, EP400_WITH_NO_CONTENTIONS, JobState.GET_EP400_CLAIM_CONTENTIONS, 1, id='ep400 claim has zero contentions'),
                 pytest.param(PENDING_CLAIM_ID, CLAIM_ID_ERROR_AT_SET_TSOJ, JobState.SET_TEMP_STATION_OF_JURISDICTION, 1, id='fail to set tsoj on ep400'),
                 pytest.param(
                     CLAIM_ID_ERROR_AT_CREATE_CONTENTIONS,

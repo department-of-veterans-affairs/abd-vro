@@ -38,6 +38,7 @@ ERROR_STATES_TO_LOG_METRICS = [
 
 JOB_SUCCESS_METRIC = 'job.success'
 JOB_FAILURE_METRIC = 'job.failure'
+JOB_ABORTED_METRIC = 'job.aborted'
 JOB_ERROR_METRIC_PREFIX = 'job.error'
 JOB_DURATION_METRIC = 'job.duration'
 JOB_SKIPPED_MERGE_METRIC = 'job.skipped_merge'
@@ -78,9 +79,8 @@ def is_claim_open(claim: ClaimDetail) -> bool:
 
 class Workflow(str, Enum):
     PROCESS = 'process'
-    RESTART = ('resume_restart',)
-    RESUME_MOVE_CONTENTIONS = ('resume_processing_from_running_move_contentions_to_pending_claim',)
-    RESUME_CANCEL_EP400 = ('resume_processing_from_running_cancel_ep400_claim',)
+    RESTART = 'resume_restart'
+    RESUME_CANCEL_EP400 = 'resume_processing_from_running_cancel_ep400_claim'
     RESUME_ADD_NOTE = 'resume_processing_from_running_add_note_to_ep400_claim'
 
 
@@ -110,22 +110,30 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
     completed_success = State(final=True, value=JobState.COMPLETED_SUCCESS)
     completed_error = State(final=True, value=JobState.COMPLETED_ERROR)
 
+    aborting = State(value=JobState.ABORTING)
+    aborted = State(final=True, value=JobState.ABORTED)
+
     process = (
         pending.to(running_get_pending_claim)
-        | running_get_pending_claim.to(running_get_ep400_claim, unless='has_error')
+        | running_get_pending_claim.to(running_get_ep400_claim, unless=['has_error', 'is_aborted'])
+        | running_get_pending_claim.to(aborting, cond='is_aborted')
         | running_get_pending_claim.to(running_get_pending_claim_failed_remove_special_issue, cond='has_error')
         | running_get_pending_claim_failed_remove_special_issue.to(completed_error)
-        | running_get_ep400_claim.to(running_get_pending_contentions, unless='has_error')
+        | running_get_ep400_claim.to(running_get_pending_contentions, unless=['has_error', 'is_aborted'])
+        | running_get_ep400_claim.to(aborting, cond='is_aborted')
         | running_get_ep400_claim.to(running_get_ep400_claim_failed_remove_special_issue, cond='has_error')
         | running_get_ep400_claim_failed_remove_special_issue.to(completed_error)
         | running_get_pending_contentions.to(running_get_ep400_contentions, unless='has_error')
         | running_get_pending_contentions.to(running_get_pending_contentions_failed_remove_special_issue, cond='has_error')
         | running_get_pending_contentions_failed_remove_special_issue.to(completed_error)
-        | running_get_ep400_contentions.to(running_check_pending_is_open, unless='has_error')
+        | running_get_ep400_contentions.to(running_check_pending_is_open, unless=['has_error', 'is_aborted'])
+        | running_get_ep400_contentions.to(aborted, cond='is_aborted')
         | running_get_ep400_contentions.to(completed_error, cond='has_error')
-        | running_check_pending_is_open.to(running_set_temp_station_of_jurisdiction, unless='has_error')
+        | running_check_pending_is_open.to(running_set_temp_station_of_jurisdiction, unless=['has_error', 'is_aborted'])
+        | running_check_pending_is_open.to(aborting, cond='is_aborted')
         | running_check_pending_is_open.to(running_check_pending_is_open_failed_remove_special_issue, cond='has_error')
         | running_check_pending_is_open_failed_remove_special_issue.to(completed_error)
+        | aborting.to(aborted)
         | running_set_temp_station_of_jurisdiction.to(running_merge_contentions, cond='has_contentions_for_merge', unless='has_error')
         | running_set_temp_station_of_jurisdiction.to(running_cancel_ep400_claim, unless=['has_contentions_for_merge', 'has_error'])
         | running_set_temp_station_of_jurisdiction.to(running_set_temp_station_of_jurisdiction_failed_remove_special_issue, cond='has_error')
@@ -335,6 +343,7 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
     @running_check_pending_is_open_failed_remove_special_issue.enter
     @running_set_temp_station_of_jurisdiction_failed_remove_special_issue.enter
     @running_move_contentions_failed_remove_special_issue.enter
+    @aborting.enter
     def on_pre_cancel_step_failed_remove_special_issue_code(self, event, ep400_contentions_response=None):
         if ep400_contentions_response is None:
             request = get_contentions.Request(claim_id=self.job.ep400_claim_id)
@@ -373,6 +382,7 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
 
         self.send(event=event)
 
+    @aborted.enter
     @completed_success.enter
     @completed_error.enter
     def on_completed(self, event):
@@ -380,19 +390,21 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
         self.log_metrics(job_duration)
         ep_metrics_str = ' '.join(f'{m.name.replace("job.","").replace(".", "_")}={m.value}' for m in self.ep_metrics)
 
-        if self.job.state == JobState.COMPLETED_ERROR:
+        if self.job.state == JobState.COMPLETED_ERROR or self.job.state == JobState.ABORTED:
+            event_str = 'jobCompletedWithError' if self.job.state == JobState.COMPLETED_ERROR else 'jobAborted'
+            skipped_merge_str = f'skipped_merge={self.skipped_merge}' if self.job.error_state in ERROR_STATES_TO_LOG_METRICS else ''
             logging.error(
-                f'event=jobCompletedWithError '
+                f'event={event_str} '
                 f'trigger={event} '
                 f'job_id={self.job.job_id} '
                 f'pending_claim_id={self.job.pending_claim_id} '
                 f'ep400_claim_id={self.job.ep400_claim_id} '
                 f'duration_seconds={job_duration} '
                 f'state={self.job.state} '
-                f'errorState={self.job.error_state} '
+                f'error_state={self.job.error_state} '
                 f'errors={jsonable_encoder(self.job.messages)} '
                 f'{ep_metrics_str} '
-                f'skipped_merge={self.skipped_merge if self.job.error_state in ERROR_STATES_TO_LOG_METRICS else None}'
+                f'{skipped_merge_str}'
             )
         else:
             logging.info(
@@ -401,10 +413,10 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
                 f'job_id={self.job.job_id} '
                 f'pending_claim_id={self.job.pending_claim_id} '
                 f'ep400_claim_id={self.job.ep400_claim_id} '
-                f'job_duration_seconds={job_duration} '
+                f'duration_seconds={job_duration} '
                 f'state={self.job.state} '
                 f'{ep_metrics_str} '
-                f'job.skipped_merge={self.skipped_merge}'
+                f'skipped_merge={self.skipped_merge}'
             )
 
     def log_metrics(self, job_duration: float) -> None:
@@ -417,7 +429,8 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
             if self.skipped_merge:
                 increment_metrics.append(CountMetric(JOB_SKIPPED_MERGE_METRIC))
         else:
-            increment_metrics.extend([CountMetric(JOB_FAILURE_METRIC), CountMetric(f'{JOB_ERROR_METRIC_PREFIX}.{self.job.error_state}')])
+            completion_metric = JOB_FAILURE_METRIC if self.job.state == JobState.COMPLETED_ERROR else JOB_ABORTED_METRIC
+            increment_metrics.extend([CountMetric(completion_metric), CountMetric(f'{JOB_ERROR_METRIC_PREFIX}.{self.job.error_state}')])
             if self.job.error_state in ERROR_STATES_TO_LOG_METRICS:
                 distribution_metrics.extend(self.ep_metrics)
 
@@ -490,6 +503,9 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
     def has_error(self) -> bool:
         return self.job.state == JobState.COMPLETED_ERROR  # type: ignore[no-any-return]
 
+    def is_aborted(self) -> bool:
+        return self.job.state == JobState.ABORTED  # type: ignore[no-any-return]
+
     def has_contentions_for_merge(
         self, pending_contentions_response: get_contentions.Response, ep400_contentions_response: get_contentions.Response
     ) -> list[ContentionSummary]:
@@ -508,8 +524,14 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
 
     def add_job_error(self, message: str) -> None:
         errors = {'state': self.job.state, 'error': message}
-        logging.warning(f'event=jobError job_id={self.job.job_id} error={jsonable_encoder(errors)}')
-        self.job.error(errors)
+
+        # if job was resumed from either of these points, the contentions were already moved over, and the job should end in error instead of aborting
+        if self.main_event == Workflow.RESUME_CANCEL_EP400 or self.main_event == Workflow.RESUME_ADD_NOTE:
+            logging.warning(f'event=jobError job_id={self.job.job_id} error={jsonable_encoder(errors)}')
+            self.job.error(errors)
+        else:
+            logging.warning(f'event=jobAbortError job_id={self.job.job_id} error={jsonable_encoder(errors)}')
+            self.job.abort(errors)
 
     def add_client_error(self, client_name: str, message: Any) -> None:
         errors = {'state': self.job.state, 'client': client_name, 'error': message}

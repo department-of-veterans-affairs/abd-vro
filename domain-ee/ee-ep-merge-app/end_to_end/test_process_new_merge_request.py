@@ -95,6 +95,28 @@ async def submit_request_and_process(client, pending_claim_id, ep400_claim_id):
     return response
 
 
+class TestAbort:
+    @pytest.mark.asyncio(scope='session')
+    @pytest.mark.parametrize(
+        'pending_claim_id,ep400_claim_id,expected_error_state,expected_num_errors',
+        [
+            pytest.param(PENDING_CLAIM_ID, EP400_WITH_NO_CONTENTIONS, JobState.GET_EP400_CLAIM_CONTENTIONS, 1, id='ep400 claim has zero contentions'),
+        ],
+    )
+    async def test(self, pending_claim_id, ep400_claim_id, expected_error_state, expected_num_errors):
+        async with AsyncClient(app=app, base_url='http://test') as client:
+            response = await submit_request_and_process(client, pending_claim_id, ep400_claim_id)
+            assert_response_and_job(
+                response,
+                pending_claim_id=pending_claim_id,
+                ep400_claim_id=ep400_claim_id,
+                expected_state=JobState.ABORTED,
+                expected_error_state=expected_error_state,
+                expected_num_errors=expected_num_errors,
+                status_code=200,
+            )
+
+
 class TestSuccess:
     @pytest.mark.asyncio(scope='session')
     @pytest.mark.parametrize(
@@ -142,7 +164,6 @@ class TestError:
             pytest.param(
                 PENDING_CLAIM_ID, CLAIM_ID_ERROR_AT_GET_EP400_CONTENTIONS, JobState.GET_EP400_CLAIM_CONTENTIONS, 1, id='fail to get ep400 claim contentions'
             ),
-            pytest.param(PENDING_CLAIM_ID, EP400_WITH_NO_CONTENTIONS, JobState.GET_EP400_CLAIM_CONTENTIONS, 1, id='ep400 claim has zero contentions'),
             pytest.param(PENDING_CLAIM_ID, CLAIM_ID_ERROR_AT_SET_TSOJ, JobState.SET_TEMP_STATION_OF_JURISDICTION, 1, id='fail to set tsoj on ep400'),
             pytest.param(
                 CLAIM_ID_ERROR_AT_CREATE_CONTENTIONS,

@@ -1,0 +1,12 @@
+{
+  "statusCode": 200,
+  "statusMessage": "OK",
+  "claim": {
+    "claimId": 2,
+    "tempStationOfJurisdiction": "111",
+    "benefitClaimType": {
+      "name": "eBenefits 526EZ-Supplemental (400)",
+      "code": "400SUPP"
+    }
+  }
+}

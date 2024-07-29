@@ -34,9 +34,12 @@ class JobState(StrEnum):  # type: ignore[misc]
     CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION = auto()
     COMPLETED_ERROR = auto()
 
+    ABORTING = auto()
+    ABORTED = auto()
+
     @classmethod
     def incomplete_states(cls) -> list[str]:
-        return [state.name for state in cls if state != JobState.COMPLETED_SUCCESS and state != JobState.COMPLETED_ERROR]  # type: ignore
+        return [state.name for state in cls if state != JobState.ABORTED and state != JobState.COMPLETED_SUCCESS and state != JobState.COMPLETED_ERROR]  # type: ignore
 
     def __str__(self):
         return self.value
@@ -65,6 +68,11 @@ class MergeJob(BaseModel):
     def error(self, message: dict[Any, Any]) -> None:
         self.error_state = self.state
         self.state = JobState.COMPLETED_ERROR  # type: ignore
+        self.add_message(message)
+
+    def abort(self, message: dict[Any, Any]) -> None:
+        self.error_state = self.state
+        self.state = JobState.ABORTED  # type: ignore
         self.add_message(message)
 
     def add_message(self, message: dict[Any, Any]) -> None:
