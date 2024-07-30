@@ -37,8 +37,7 @@ public class RabbitMqConfigProperties {
 
   Map<String, Object> getDeadLetterQueueArgs() {
     return Map.ofEntries(
-        entry(
-            "x-dead-letter-exchange", ""), // empty string tells broker to use the default exchange
+        entry("x-dead-letter-exchange", deadLetterExchangeName),
         entry("x-dead-letter-routing-key", deadLetterQueueName));
   }
 }
