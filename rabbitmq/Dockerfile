@@ -1,5 +1,5 @@
 # Use the Bitnami RabbitMQ image as the base
-FROM bitnami/rabbitmq:3.12
+FROM bitnami/rabbitmq:3.13
 
 COPY rabbitmq.conf /tmp/rabbitmq.conf
 
