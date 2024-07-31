@@ -37,7 +37,7 @@ public class MessageQueueConfiguration {
   private final String DLX_EXCHANGE_MESSAGES = "bie-events.dlx";
   Map<String, Object> DLQ_ARGS =
       Map.ofEntries(
-          entry("x-dead-letter-exchange", ""),
+          entry("x-dead-letter-exchange", "bipApi.dlx"),
           entry("x-dead-letter-routing-key", QUEUE_MESSAGES_DLQ));
 
   @Bean
