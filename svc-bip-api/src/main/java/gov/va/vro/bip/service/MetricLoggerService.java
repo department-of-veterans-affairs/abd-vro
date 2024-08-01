@@ -113,14 +113,14 @@ public class MetricLoggerService implements IMetricLoggerService {
   public void submitRequestDuration(
       long requestStartNanoseconds, long requestEndNanoseconds, String[] tags) {
 
+    double elapsedTime =
+        getElapsedTimeInMilliseconds(requestStartNanoseconds, requestEndNanoseconds);
+
     DistributionPointsPayload payload =
-        createDistributionPointsPayload(
-            METRIC.REQUEST_DURATION,
-            getTimestamp(),
-            getElapsedTimeInMilliseconds(requestStartNanoseconds, requestEndNanoseconds),
-            tags);
+        createDistributionPointsPayload(METRIC.REQUEST_DURATION, getTimestamp(), elapsedTime, tags);
 
     try {
+      log.info(String.format("duration=%.2f tags=%s", elapsedTime, String.join(",", tags)));
       IntakePayloadAccepted payloadResult = metricsApi.submitDistributionPoints(payload);
       log.info(
           String.format(
