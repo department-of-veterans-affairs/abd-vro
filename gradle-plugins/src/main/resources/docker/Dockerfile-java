@@ -6,7 +6,7 @@ FROM eclipse-temurin:17.0.10_7-jre-alpine
 
 # curl is needed for HEALTHCHECK
 # hadolint ignore=DL3018
-RUN apk add --no-cache curl sudo gcompat libxml2 && \
+RUN apk add --no-cache curl sudo gcompat libxml2 openssl && \
     apk upgrade --available
 
 WORKDIR /app
@@ -18,6 +18,13 @@ COPY set-env-secrets.src entrypoint-wrapper.sh docker-entry*.sh ./
 ARG JAR_FILE
 ENV JAR_FILENAME=${JAR_FILE}
 COPY ${JAR_FILE} fat.jar
+
+# add datadog certificate to keystore
+RUN openssl s_client -showcerts -connect www.ddog-gov.com:443 2>&1 |\
+    sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > temp.pem
+RUN openssl x509 -in temp.pem -out real.pem
+RUN keytool -importcert -file real.pem -keystore "$JAVA_HOME"/lib/security/cacerts -alias httpcat -storepass changeit --noprompt
+RUN rm -f real.pem temp.pem
 
 RUN adduser --no-create-home --disabled-password tron
 RUN chmod +x ./*.sh && chown -R tron /app
