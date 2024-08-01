@@ -14,7 +14,13 @@ public class BieRabbitService implements AmqpMessageSender {
 
   @Override
   public void send(final String exchange, final String routingKey, final Object payload) {
+    long transactionStartTime = System.nanoTime();
     rabbitTemplate.convertAndSend(exchange, routingKey, payload);
-    log.info("event=messageSent exchange={} topic={} msg={}", exchange, routingKey, payload);
+    log.info(
+        "event=messageSent exchange={} topic={} msg={}, duration={}",
+        exchange,
+        routingKey,
+        payload,
+        (System.nanoTime() - transactionStartTime));
   }
 }
