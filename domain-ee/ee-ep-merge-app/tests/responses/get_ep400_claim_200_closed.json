@@ -5,6 +5,10 @@
     "claimId": 2,
     "endProductCode": "400",
     "tempStationOfJurisdiction": "111",
-    "claimLifecycleStatus": "Open"
+    "claimLifecycleStatus": "Closed",
+    "benefitClaimType": {
+      "name": "eBenefits 526EZ-Supplemental (400)",
+      "code": "400SUPP"
+    }
   }
 }

@@ -217,6 +217,7 @@ def assert_requests_and_metrics_for_success(
         call(machine.job.job_id, get_pending_contentions_req),
         call(machine.job.job_id, get_ep400_contentions_req),
         call(machine.job.job_id, get_pending_claim_req),
+        call(machine.job.job_id, get_ep400_claim_req),
         call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
     ]
     if not merge_skipped:

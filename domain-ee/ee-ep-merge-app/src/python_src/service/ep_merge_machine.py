@@ -70,13 +70,6 @@ def ep400_has_no_contentions(response: get_contentions.Response) -> bool:
     return not response.contentions
 
 
-def is_claim_open(claim: ClaimDetail) -> bool:
-    """
-    Check if the claim's lifecycle status is in the list of ELIGIBLE_CLAIM_LIFECYCLE_STATUSES
-    """
-    return claim and claim.claim_lifecycle_status and claim.claim_lifecycle_status.lower() in ELIGIBLE_CLAIM_LIFECYCLE_STATUSES
-
-
 class Workflow(str, Enum):
     PROCESS = 'process'
     RESTART = 'resume_restart'
@@ -98,6 +91,8 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
     running_get_ep400_contentions = State(value=JobState.GET_EP400_CLAIM_CONTENTIONS)
     running_check_pending_is_open = State(value=JobState.CHECK_PENDING_EP_IS_OPEN)
     running_check_pending_is_open_failed_remove_special_issue = State(value=JobState.CHECK_PENDING_EP_IS_OPEN_FAILED_REMOVE_SPECIAL_ISSUE)
+    running_check_ep400_is_open = State(value=JobState.CHECK_EP400_IS_OPEN)
+    running_check_ep400_is_open_failed_remove_special_issue = State(value=JobState.CHECK_EP400_IS_OPEN_FAILED_REMOVE_SPECIAL_ISSUE)
     running_set_temp_station_of_jurisdiction = State(value=JobState.SET_TEMP_STATION_OF_JURISDICTION)
     running_set_temp_station_of_jurisdiction_failed_remove_special_issue = State(value=JobState.SET_TEMP_STATION_OF_JURISDICTION_FAILED_REMOVE_SPECIAL_ISSUE)
     running_merge_contentions = State(value=JobState.MERGE_CONTENTIONS)
@@ -129,10 +124,14 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
         | running_get_ep400_contentions.to(running_check_pending_is_open, unless=['has_error', 'is_aborted'])
         | running_get_ep400_contentions.to(aborted, cond='is_aborted')
         | running_get_ep400_contentions.to(completed_error, cond='has_error')
-        | running_check_pending_is_open.to(running_set_temp_station_of_jurisdiction, unless=['has_error', 'is_aborted'])
+        | running_check_pending_is_open.to(running_check_ep400_is_open, unless=['has_error', 'is_aborted'])
         | running_check_pending_is_open.to(aborting, cond='is_aborted')
         | running_check_pending_is_open.to(running_check_pending_is_open_failed_remove_special_issue, cond='has_error')
         | running_check_pending_is_open_failed_remove_special_issue.to(completed_error)
+        | running_check_ep400_is_open.to(running_set_temp_station_of_jurisdiction, unless=['has_error', 'is_aborted'])
+        | running_check_ep400_is_open.to(aborting, cond='is_aborted')
+        | running_check_ep400_is_open.to(running_check_ep400_is_open_failed_remove_special_issue, cond='has_error')
+        | running_check_ep400_is_open_failed_remove_special_issue.to(completed_error)
         | aborting.to(aborted)
         | running_set_temp_station_of_jurisdiction.to(running_merge_contentions, cond='has_contentions_for_merge', unless='has_error')
         | running_set_temp_station_of_jurisdiction.to(running_cancel_ep400_claim, unless=['has_contentions_for_merge', 'has_error'])
@@ -200,30 +199,19 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
 
     @running_get_pending_claim.enter
     def on_get_pending_claim(self, event):
-        request = get_claim.Request(claim_id=self.job.pending_claim_id)
-        response = self.make_request(request=request, hoppy_client=HOPPY.get_client(ClientName.GET_CLAIM), response_type=get_claim.Response)
-
-        if response is not None and response.status_code == 200:
-            if response.claim is None or response.claim.end_product_code is None:
-                self.add_job_error(f'Pending claim #{self.job.pending_claim_id} does not have an end product code')
-            if not is_claim_open(response.claim):
-                self.add_job_error(
-                    f"Pending claim #{self.job.pending_claim_id} does not have an eligible lifecycle status of: "
-                    f"{', '.join(list(ELIGIBLE_CLAIM_LIFECYCLE_STATUSES))}"
-                )
+        claim = self.__get_open_claim(self.job.pending_claim_id, 'Pending')
+        if claim:
+            if claim.end_product_code:
+                self.cancellation_reason = CANCELLATION_REASON_FORMAT.format(ep_code=claim.end_product_code, claim_id=self.job.pending_claim_id)
             else:
-                self.cancellation_reason = CANCELLATION_REASON_FORMAT.format(ep_code=response.claim.end_product_code, claim_id=self.job.pending_claim_id)
-
+                self.add_job_error(f'Pending claim #{self.job.pending_claim_id} does not have an end product code')
         self.send(event=event)
 
     @running_get_ep400_claim.enter
     def on_get_ep400_claim(self, event):
-        request = get_claim.Request(claim_id=self.job.ep400_claim_id)
-        response = self.make_request(request=request, hoppy_client=HOPPY.get_client(ClientName.GET_CLAIM), response_type=get_claim.Response)
-
-        if response is not None and response.status_code == 200:
-            claim = response.claim
-            if claim is None or claim.end_product_code is None:
+        claim = self.__get_open_claim(self.job.ep400_claim_id, 'EP400')
+        if claim:
+            if claim.end_product_code is None:
                 self.add_job_error(f'EP400 claim #{self.job.ep400_claim_id} does not have an end product code')
             elif claim.end_product_code not in EP400_PRODUCT_CODES:
                 self.add_job_error(f"EP400 claim #{self.job.ep400_claim_id} end product code of '{claim.end_product_code}' is not supported")
@@ -232,7 +220,7 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
             elif claim.benefit_claim_type.code not in EP400_BENEFIT_CLAIM_TYPE_CODES:
                 self.add_job_error(f"EP400 claim #{self.job.ep400_claim_id} benefit claim type code of '{claim.benefit_claim_type.code}' is not supported")
             else:
-                self.original_tsoj = response.claim.temp_station_of_jurisdiction
+                self.original_tsoj = claim.temp_station_of_jurisdiction
 
         self.send(event=event)
 
@@ -288,17 +276,30 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
 
     @running_check_pending_is_open.enter
     def on_check_pending_claim_is_open(self, event, pending_contentions_response, ep400_contentions_response):
-        request = get_claim.Request(claim_id=self.job.pending_claim_id)
+        self.__get_open_claim(self.job.pending_claim_id, 'Pending')
+        self.send(event=event, pending_contentions_response=pending_contentions_response, ep400_contentions_response=ep400_contentions_response)
+
+    @running_check_ep400_is_open.enter
+    def on_check_ep400_claim_is_open(self, event, pending_contentions_response, ep400_contentions_response):
+        self.__get_open_claim(self.job.ep400_claim_id, 'EP400')
+        self.send(event=event, pending_contentions_response=pending_contentions_response, ep400_contentions_response=ep400_contentions_response)
+
+    def __get_open_claim(self, claim_id: int, claim_type: str) -> ClaimDetail | None:
+        request = get_claim.Request(claim_id=claim_id)
         response = self.make_request(request=request, hoppy_client=HOPPY.get_client(ClientName.GET_CLAIM), response_type=get_claim.Response)
 
         if response is not None and response.status_code == 200:
-            if not is_claim_open(response.claim):
+            claim = response.claim
+            if not claim:
+                self.add_job_error(f'{claim_type} claim #{claim_id} did not return claim details')
+                return None
+            elif not claim.claim_lifecycle_status or claim.claim_lifecycle_status.lower() not in ELIGIBLE_CLAIM_LIFECYCLE_STATUSES:
                 self.add_job_error(
-                    f"Pending claim #{self.job.pending_claim_id} does not have an eligible lifecycle status of: "
-                    f"{', '.join(list(ELIGIBLE_CLAIM_LIFECYCLE_STATUSES))}"
+                    f"{claim_type} claim #{claim_id} does not have an eligible lifecycle status of: " f"{', '.join(list(ELIGIBLE_CLAIM_LIFECYCLE_STATUSES))}"
                 )
-
-        self.send(event=event, pending_contentions_response=pending_contentions_response, ep400_contentions_response=ep400_contentions_response)
+                return None
+            return claim
+        return None
 
     @running_set_temp_station_of_jurisdiction.enter
     def on_set_temp_station_of_jurisdiction(self, event, pending_contentions_response=None, ep400_contentions_response=None):
@@ -341,6 +342,7 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
     @running_get_pending_contentions_failed_remove_special_issue.enter
     @running_get_ep400_claim_failed_remove_special_issue.enter
     @running_check_pending_is_open_failed_remove_special_issue.enter
+    @running_check_ep400_is_open_failed_remove_special_issue.enter
     @running_set_temp_station_of_jurisdiction_failed_remove_special_issue.enter
     @running_move_contentions_failed_remove_special_issue.enter
     @aborting.enter
