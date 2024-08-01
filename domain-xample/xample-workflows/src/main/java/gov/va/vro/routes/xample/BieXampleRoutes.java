@@ -24,9 +24,10 @@ public class BieXampleRoutes {
       })
   public void handleMessage(BieMessagePayload payload) {
     try {
+      long transactionStartTime = System.nanoTime();
       dbHelper.saveContentionEvent(payload);
       payload.setStatus(200);
-      log.info("Saved Contention Event to DB");
+      log.info("Saved Contention Event to DB. Transaction duration: {}", (System.nanoTime() - transactionStartTime));
 
       String jsonBody = objectMapper.writeValueAsString(payload);
       log.info("ReceivedMessageEventBody: " + jsonBody);
