@@ -120,7 +120,7 @@ public class MetricLoggerService implements IMetricLoggerService {
         createDistributionPointsPayload(METRIC.REQUEST_DURATION, getTimestamp(), elapsedTime, tags);
 
     try {
-      log.info(String.format("duration=%.2f tags=%s", elapsedTime, String.join(",", tags)));
+      log.info(String.format("duration=%s tags=%s", elapsedTime, String.join(",", tags)));
       IntakePayloadAccepted payloadResult = metricsApi.submitDistributionPoints(payload);
       log.info(
           String.format(
