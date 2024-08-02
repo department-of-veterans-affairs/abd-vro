@@ -12,7 +12,6 @@ import java.lang.reflect.Field;
 @Setter
 @Getter
 @Builder(toBuilder = true)
-@ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode
 @JsonIgnoreProperties(ignoreUnknown = true)

@@ -1,5 +1,3 @@
-version: '3.9'
-
 networks:
   # Creates `vro_intranet` network if env variable COMPOSE_PROJECT_NAME=vro
   intranet:
