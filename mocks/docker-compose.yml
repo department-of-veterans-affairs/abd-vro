@@ -40,19 +40,6 @@ services:
     networks:
       - vro_intranet
 
-#  mock-lighthouse-api:
-#    profiles: ["all","lh"]
-#    image: va/vro_mocks-mock-lighthouse-api:latest
-#    <<: [*common-sde-security, *common-security-opt]
-#    ports:
-#      - "20200:20200"
-#    environment:
-#      <<: *common-vars
-#      LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
-#      LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
-#    networks:
-#      - vro_intranet
-
   mock-bie-kafka:
     profiles: ["all","kafka"]
     image: va/vro_mocks-mock-bie-kafka:latest
