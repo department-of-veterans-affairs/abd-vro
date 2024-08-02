@@ -1,5 +1,3 @@
-version: '3.9'
-
 # https://stackoverflow.com/questions/38088279/communication-between-multiple-docker-compose-projects
 networks:
   # Put these mock services on the same `vro_intranet` network as VRO -- see app/src/docker/docker-compose.yml
@@ -42,18 +40,18 @@ services:
     networks:
       - vro_intranet
 
-  mock-lighthouse-api:
-    profiles: ["all","lh"]
-    image: va/vro_mocks-mock-lighthouse-api:latest
-    <<: [*common-sde-security, *common-security-opt]
-    ports:
-      - "20200:20200"
-    environment:
-      <<: *common-vars
-      LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
-      LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
-    networks:
-      - vro_intranet
+#  mock-lighthouse-api:
+#    profiles: ["all","lh"]
+#    image: va/vro_mocks-mock-lighthouse-api:latest
+#    <<: [*common-sde-security, *common-security-opt]
+#    ports:
+#      - "20200:20200"
+#    environment:
+#      <<: *common-vars
+#      LH_PRIVATE_KEY: ${LH_PRIVATE_KEY}
+#      LH_ACCESS_CLIENT_ID: ${LH_ACCESS_CLIENT_ID}
+#    networks:
+#      - vro_intranet
 
   mock-bie-kafka:
     profiles: ["all","kafka"]
