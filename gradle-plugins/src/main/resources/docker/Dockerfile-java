@@ -19,7 +19,7 @@ ARG JAR_FILE
 ENV JAR_FILENAME=${JAR_FILE}
 COPY ${JAR_FILE} fat.jar
 
-# add datadog certificate to keystore
+# add public datadog certificate to truststore
 RUN openssl s_client -showcerts -connect www.ddog-gov.com:443 2>&1 |\
     sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > temp.pem
 RUN openssl x509 -in temp.pem -out real.pem
