@@ -19,6 +19,7 @@ class BaseQueueDeclarer(BaseExchangeDeclarer):
         self.durable_queue = queue_properties.durable
         self.auto_delete_queue = queue_properties.auto_delete
         self.exclusive_queue = queue_properties.exclusive
+        self.arguments = queue_properties.arguments
 
     def _on_exchange_declare_ok(self, _unused_frame):
         super()._on_exchange_declare_ok(_unused_frame)
@@ -30,12 +31,14 @@ class BaseQueueDeclarer(BaseExchangeDeclarer):
                     passive_declare=self.passive_declare_queue,
                     durable=self.durable_queue,
                     exclusive=self.exclusive_queue,
-                    auto_delete=self.auto_delete_exchange)
+                    auto_delete=self.auto_delete_exchange,
+                    arguments=self.arguments)
         self._channel.queue_declare(queue=self.queue_name,
                                     passive=self.passive_declare_queue,
                                     durable=self.durable_queue,
                                     exclusive=self.exclusive_queue,
                                     auto_delete=self.auto_delete_queue,
+                                    arguments=self.arguments,
                                     callback=self._on_queue_declare_ok)
 
     def _on_queue_declare_ok(self, _unused_frame):
@@ -44,7 +47,9 @@ class BaseQueueDeclarer(BaseExchangeDeclarer):
                     passive_declare=self.passive_declare_queue,
                     durable=self.durable_queue,
                     exclusive=self.exclusive_queue,
-                    auto_delete=self.auto_delete_exchange)
+                    auto_delete=self.auto_delete_exchange,
+                    dead_letter_queue=self.dead_letter_queue,
+                    dead_letter_exchange=self.dead_letter_exchange)
         self._debug('bindingQueue',
                     queue=self.queue_name,
                     exchange=self.exchange_name,
