@@ -39,10 +39,12 @@ jobs:
     secrets: inherit
 
   container-healthchecks:
+    needs: nondraft-pr
     uses: ./.github/workflows/container-healthchecks.yml
     secrets: inherit
 
   xample-domain:
+    needs: nondraft-pr
     uses: ./.github/workflows/xample-integration-test.yml
     secrets: inherit
 
@@ -52,6 +54,7 @@ jobs:
     secrets: inherit
 
   svc-bip-api:
+    needs: nondraft-pr
     uses: ./.github/workflows/svc-bip-api-integration-test.yml
     secrets: inherit
 
