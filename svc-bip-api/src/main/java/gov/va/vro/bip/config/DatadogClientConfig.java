@@ -35,7 +35,7 @@ public class DatadogClientConfig {
   }
 
   @Bean
-  public ApiClient apiClient() {
+  public ApiClient apiClient() throws Exception {
     ApiClient apiClient = null;
     try {
       if (site != null && api_key != null) {
