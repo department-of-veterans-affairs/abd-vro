@@ -54,7 +54,9 @@ def add_claim_note_endpoint():
 
 
 def create_mq_endpoint(name):
-    return MqEndpoint(name, EXCHANGES[name], QUEUES[name], REPLY_QUEUES[name])
+    arguments = {"x-dead-letter-exchange", "bipApi.dlx",
+                 "x-dead-letter-routing-key", "bie-events-dlq"}
+    return MqEndpoint(name, EXCHANGES[name], QUEUES[name], REPLY_QUEUES[name], arguments)
 
 
 @pytest_asyncio.fixture(autouse=True, scope='session')

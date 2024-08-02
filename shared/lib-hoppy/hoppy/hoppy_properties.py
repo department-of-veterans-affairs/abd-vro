@@ -17,3 +17,4 @@ class QueueProperties:
     durable: bool = True
     auto_delete: bool = True
     exclusive: bool = False
+    arguments: dict = {}
