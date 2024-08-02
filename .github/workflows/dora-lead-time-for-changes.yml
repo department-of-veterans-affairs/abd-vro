@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Calculate Lead Time
-        uses: actions/github-script@v7
+        uses: actions/github-script@v6
         env:
           DATADOG_API_KEY_FOR_LEAD_TIME_METRIC: ${{ secrets.DATADOG_API_KEY_FOR_LEAD_TIME_METRIC }}
           DATADOG_APP_KEY_FOR_LEAD_TIME_METRIC: ${{ secrets.DATADOG_APP_KEY_FOR_LEAD_TIME_METRIC }}
