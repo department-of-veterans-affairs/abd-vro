@@ -23,7 +23,7 @@ COPY ${JAR_FILE} fat.jar
 RUN openssl s_client -showcerts -connect www.ddog-gov.com:443 2>&1 |\
     sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > temp.pem
 RUN openssl x509 -in temp.pem -out real.pem
-RUN keytool -importcert -file real.pem -keystore "$JAVA_HOME"/lib/security/cacerts -alias httpcat -storepass changeit --noprompt
+RUN keytool -importcert -alias ddog -file real.pem -cacerts -storepass changeit --noprompt
 RUN rm -f real.pem temp.pem
 
 RUN adduser --no-create-home --disabled-password tron
