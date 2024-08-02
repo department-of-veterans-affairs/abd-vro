@@ -35,7 +35,7 @@ public class DatadogClientConfig {
   }
 
   @Bean
-  public ApiClient apiClient() throws Exception {
+  public ApiClient apiClient(){
     ApiClient apiClient = null;
     try {
       if (site != null && api_key != null) {
@@ -55,18 +55,22 @@ public class DatadogClientConfig {
         apiClient = ApiClient.getDefaultApiClient();
         log.info("initializing default Datadog API Client");
       }
-
-      AuthenticationValidationResponse authValidation =
-          (new AuthenticationApi(apiClient)).validate();
-      if (Boolean.FALSE.equals(authValidation.getValid())) {
-        log.warn(String.format("api key validation failed: %s", authValidation.toString()));
-      }
-
       apiClient.setRetry(new RetryConfig(true, 2, 2, 3));
     } catch (Exception e) {
       log.warn(String.format("error initializing Datadog API Client: %s", e.getMessage()));
       throw e;
     }
+    
+    try {
+      AuthenticationValidationResponse authValidation =
+          (new AuthenticationApi(apiClient)).validate();
+      if (Boolean.FALSE.equals(authValidation.getValid())) {
+        throw new Exception("validation failed");
+      }
+    } catch (Exception e){
+      log.warn(String.format("api key validation failed: %s", e.getMessage));
+    }
+    
     return apiClient;
   }
 }
