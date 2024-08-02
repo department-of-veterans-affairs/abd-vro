@@ -1,4 +1,4 @@
-package gov.va.vro.bip.config;
+package gov.va.vro.metricslogging;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Condition;

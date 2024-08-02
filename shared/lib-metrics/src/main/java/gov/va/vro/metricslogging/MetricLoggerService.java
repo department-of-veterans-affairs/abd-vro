@@ -1,8 +1,7 @@
-package gov.va.vro.bip.service;
+package gov.va.vro.metricslogging;
 
 import com.datadog.api.client.v1.api.MetricsApi;
 import com.datadog.api.client.v1.model.*;
-import gov.va.vro.bip.config.NonLocalEnvironmentCondition;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

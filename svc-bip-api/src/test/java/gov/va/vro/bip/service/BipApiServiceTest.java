@@ -27,6 +27,7 @@ import gov.va.vro.bip.model.lifecycle.PutClaimLifecycleRequest;
 import gov.va.vro.bip.model.lifecycle.PutClaimLifecycleResponse;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionRequest;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionResponse;
+import gov.va.vro.metricslogging.MetricLoggerService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;

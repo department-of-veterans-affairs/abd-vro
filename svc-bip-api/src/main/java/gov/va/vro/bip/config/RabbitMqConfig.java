@@ -1,7 +1,7 @@
 package gov.va.vro.bip.config;
 
-import gov.va.vro.bip.service.IMetricLoggerService;
 import gov.va.vro.bip.service.InvalidPayloadRejectingFatalExceptionStrategy;
+import gov.va.vro.metricslogging.IMetricLoggerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.DirectExchange;

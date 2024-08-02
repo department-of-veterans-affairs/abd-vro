@@ -1,5 +1,7 @@
 package gov.va.vro.bip.service;
 
+import gov.va.vro.metricslogging.IMetricLoggerService;
+import gov.va.vro.metricslogging.MetricLoggerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;

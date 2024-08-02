@@ -14,6 +14,8 @@ import gov.va.vro.bip.model.lifecycle.PutClaimLifecycleRequest;
 import gov.va.vro.bip.model.lifecycle.PutClaimLifecycleResponse;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionRequest;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionResponse;
+import gov.va.vro.metricslogging.IMetricLoggerService;
+import gov.va.vro.metricslogging.MetricLoggerService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.NonNull;

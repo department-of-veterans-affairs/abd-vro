@@ -1,4 +1,4 @@
-package gov.va.vro.bip.service;
+package gov.va.vro.metricslogging;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -7,6 +7,7 @@ import com.datadog.api.client.v1.api.MetricsApi;
 import com.datadog.api.client.v1.model.DistributionPointItem;
 import com.datadog.api.client.v1.model.DistributionPointsPayload;
 import com.datadog.api.client.v1.model.MetricsPayload;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.OffsetDateTime;
@@ -64,11 +65,12 @@ public class MetricLoggerServiceTest {
     MetricsPayload mp =
         mls.createMetricsPayload(
             MetricLoggerService.METRIC.RESPONSE_COMPLETE, 14.0, new String[] {"zone:purple"});
-    assertEquals("count", mp.getSeries().get(0).getType());
-    assertEquals(1, mp.getSeries().size());
-    assertEquals("vro_bip.response_complete", mp.getSeries().get(0).getMetric());
-    assertEquals(14.0, mp.getSeries().get(0).getPoints().get(0).get(1));
-    assertTrue(Objects.requireNonNull(mp.getSeries().get(0).getTags()).contains("zone:purple"));
+    Assertions.assertEquals("count", mp.getSeries().get(0).getType());
+    Assertions.assertEquals(1, mp.getSeries().size());
+    Assertions.assertEquals("vro_bip.response_complete", mp.getSeries().get(0).getMetric());
+    Assertions.assertEquals(14.0, mp.getSeries().get(0).getPoints().get(0).get(1));
+    Assertions.assertTrue(
+        Objects.requireNonNull(mp.getSeries().get(0).getTags()).contains("zone:purple"));
   }
 
   @Test
@@ -94,14 +96,15 @@ public class MetricLoggerServiceTest {
             timestamp,
             1523,
             new String[] {"food:pizza"});
-    assertEquals(1, dpl.getSeries().size());
-    assertEquals("vro_bip.request_duration", dpl.getSeries().get(0).getMetric());
-    assertEquals(
+    Assertions.assertEquals(1, dpl.getSeries().size());
+    Assertions.assertEquals("vro_bip.request_duration", dpl.getSeries().get(0).getMetric());
+    Assertions.assertEquals(
         new DistributionPointItem(timestamp), dpl.getSeries().get(0).getPoints().get(0).get(0));
-    assertEquals(
+    Assertions.assertEquals(
         new DistributionPointItem(List.of(1523.0)),
         dpl.getSeries().get(0).getPoints().get(0).get(1));
-    assertTrue(Objects.requireNonNull(dpl.getSeries().get(0).getTags()).contains("food:pizza"));
+    Assertions.assertTrue(
+        Objects.requireNonNull(dpl.getSeries().get(0).getTags()).contains("food:pizza"));
     mls.submitCount(
         MetricLoggerService.METRIC.RESPONSE_COMPLETE,
         new String[] {"isTest:true", "source:ci-test"});
