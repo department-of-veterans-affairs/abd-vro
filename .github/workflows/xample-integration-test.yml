@@ -17,6 +17,8 @@ jobs:
       - name: "Checkout source code"
         uses: actions/checkout@v4
 
+      - uses: ./.github/actions/install-docker-compose
+
       - name: "Build the images"
         uses: ./.github/actions/build-images
 
