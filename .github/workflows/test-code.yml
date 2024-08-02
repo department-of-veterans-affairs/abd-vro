@@ -33,7 +33,7 @@ jobs:
           configuration: --profile black
           requirementsFiles: "**/requirements.txt \
                               **/dev-requirements.txt"
-                              
+
       - name: "Run tests and checks"
         # `check` runs all checks, including spectralLint, hadolint, and shellcheck
         run: |
@@ -103,7 +103,7 @@ jobs:
       - name: "Get changed Ruby files"
         id: changed-files-specific
         if: '! inputs.run_all_tests'
-        uses: tj-actions/changed-files@v44
+        uses: tj-actions/changed-files@v41
         with:
           files: svc-bgs-api/**
 
@@ -140,14 +140,14 @@ jobs:
       - name: "Get changed files"
         if: '! inputs.run_all_tests'
         id: changed-files-specific
-        uses: tj-actions/changed-files@v44
+        uses: tj-actions/changed-files@v41
         with:
           files: domain-cc/**
 
       - name: "Get changed domain-ee files"
         if: '! inputs.run_all_tests'
         id: ee-changed-files-specific
-        uses: tj-actions/changed-files@v44
+        uses: tj-actions/changed-files@v41
         with:
           files: domain-ee/**
 
