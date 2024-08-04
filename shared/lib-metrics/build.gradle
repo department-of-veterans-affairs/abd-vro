@@ -2,6 +2,14 @@ plugins {
   id 'local.std.java.library-conventions'
 }
 
+ext {
+  jacocoExclude = [
+          '**/DatadogClientConfig.*',
+          '**/IMetricLoggerService.*',
+          '**/NoopMetricLoggerService.*'
+  ]
+}
+
 dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-amqp'
   implementation "jakarta.validation:jakarta.validation-api"
