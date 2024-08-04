@@ -105,9 +105,6 @@ public class MetricLoggerServiceTest {
         dpl.getSeries().get(0).getPoints().get(0).get(1));
     Assertions.assertTrue(
         Objects.requireNonNull(dpl.getSeries().get(0).getTags()).contains("food:pizza"));
-    mls.submitCount(
-        MetricLoggerService.METRIC.RESPONSE_COMPLETE,
-        new String[] {"isTest:true", "source:ci-test"});
   }
 
   @Test
