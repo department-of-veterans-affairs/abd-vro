@@ -8,6 +8,8 @@ from src.python_src.api import JOB_RUNNER
 from src.python_src.schema.merge_job import JobState, MergeJob
 from src.python_src.service.job_store import JOB_STORE
 
+from .conftest import assert_job, reset_claim
+
 PENDING_CLAIM_ID = 10000
 EP400_WITH_DUPLICATE = 10001
 EP400_WITH_DIFFERENT_CONTENTION_TYPE_CODE = 10002
@@ -27,20 +29,6 @@ CLAIM_ID_ERROR_AT_CREATE_CONTENTIONS = 5006
 NOW = datetime.now()
 
 
-def assert_job(job_id, pending_claim_id, ep400_claim_id, expected_state: JobState, expected_error_state: JobState | None = None, expected_num_errors: int = 0):
-    job = JOB_STORE.get_merge_job(job_id)
-    assert job is not None
-    assert job.pending_claim_id == pending_claim_id
-    assert job.ep400_claim_id == ep400_claim_id
-    assert job.state == expected_state
-    assert job.error_state == expected_error_state
-
-    if expected_num_errors == 0:
-        assert job.messages is None
-    else:
-        assert len(job.messages) == expected_num_errors
-
-
 @pytest.mark.parametrize(
     'starting_state',
     [state for state in JobState.incomplete_states() if state not in [JobState.CANCEL_EP400_CLAIM, JobState.ADD_CLAIM_NOTE_TO_EP400]],
@@ -54,7 +42,7 @@ class TestRestart:
                 pytest.param(PENDING_CLAIM_ID, EP400_WITH_NO_CONTENTIONS, JobState.GET_EP400_CLAIM_CONTENTIONS, 1, id='ep400 claim has zero contentions'),
             ],
         )
-        async def test(self, starting_state, pending_claim_id, ep400_claim_id, expected_error_state, expected_num_errors):
+        async def test(self, starting_state, pending_claim_id, ep400_claim_id, expected_error_state, expected_num_errors, lifecycle_endpoint):
             job_id = uuid4()
             job = MergeJob(
                 job_id=job_id, pending_claim_id=pending_claim_id, ep400_claim_id=ep400_claim_id, state=starting_state, created_at=NOW, updated_at=NOW
@@ -62,7 +50,10 @@ class TestRestart:
             JOB_STORE.submit_merge_job(job)
 
             await asyncio.get_event_loop().run_in_executor(None, JOB_RUNNER.resume_job, job)
-            assert_job(job_id, pending_claim_id, ep400_claim_id, JobState.ABORTED, expected_error_state, expected_num_errors)
+            try:
+                assert_job(job_id, pending_claim_id, ep400_claim_id, JobState.ABORTED, expected_error_state, expected_num_errors)
+            finally:
+                await reset_claim(ep400_claim_id, lifecycle_endpoint)
 
     class TestSuccess:
         @pytest.mark.asyncio(scope='session')
@@ -76,7 +67,7 @@ class TestRestart:
                 pytest.param(PENDING_CLAIM_ID, EP400_WITH_MULTI_CONTENTION_NO_DUPLICATES, id='with with no duplicates'),
             ],
         )
-        async def test(self, starting_state, pending_claim_id, ep400_claim_id):
+        async def test(self, starting_state, pending_claim_id, ep400_claim_id, lifecycle_endpoint):
             job_id = uuid4()
             job = MergeJob(
                 job_id=job_id, pending_claim_id=pending_claim_id, ep400_claim_id=ep400_claim_id, state=starting_state, created_at=NOW, updated_at=NOW
@@ -84,7 +75,10 @@ class TestRestart:
             JOB_STORE.submit_merge_job(job)
 
             await asyncio.get_event_loop().run_in_executor(None, JOB_RUNNER.resume_job, job)
-            assert_job(job_id, pending_claim_id, ep400_claim_id, JobState.COMPLETED_SUCCESS)
+            try:
+                assert_job(job_id, pending_claim_id, ep400_claim_id, JobState.COMPLETED_SUCCESS)
+            finally:
+                await reset_claim(ep400_claim_id, lifecycle_endpoint)
 
     class TestError:
         @pytest.mark.asyncio(scope='session')
@@ -144,7 +138,7 @@ class TestRestart:
                 ),
             ],
         )
-        async def test(self, starting_state, pending_claim_id, ep400_claim_id, expected_error_state, expected_num_errors):
+        async def test(self, starting_state, pending_claim_id, ep400_claim_id, expected_error_state, expected_num_errors, lifecycle_endpoint):
             job_id = uuid4()
             job = MergeJob(
                 job_id=job_id, pending_claim_id=pending_claim_id, ep400_claim_id=ep400_claim_id, state=starting_state, created_at=NOW, updated_at=NOW
@@ -152,4 +146,7 @@ class TestRestart:
             JOB_STORE.submit_merge_job(job)
 
             await asyncio.get_event_loop().run_in_executor(None, JOB_RUNNER.resume_job, job)
-            assert_job(job_id, pending_claim_id, ep400_claim_id, JobState.COMPLETED_ERROR, expected_error_state, expected_num_errors)
+            try:
+                assert_job(job_id, pending_claim_id, ep400_claim_id, JobState.COMPLETED_ERROR, expected_error_state, expected_num_errors)
+            finally:
+                await reset_claim(ep400_claim_id, lifecycle_endpoint)

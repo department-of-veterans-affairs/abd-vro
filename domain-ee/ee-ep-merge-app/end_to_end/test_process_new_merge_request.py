@@ -5,7 +5,8 @@ from httpx import AsyncClient
 
 from src.python_src.api import app
 from src.python_src.schema.merge_job import JobState
-from src.python_src.service.job_store import JOB_STORE
+
+from .conftest import assert_job, assert_response, reset_claim
 
 ACCEPTABLE_JOB_PROCESSING_DURATION = 0.2
 
@@ -24,47 +25,6 @@ CLAIM_ID_ERROR_AT_GET_PENDING_CONTENTIONS = 5004
 CLAIM_ID_ERROR_AT_GET_EP400_CONTENTIONS = 50041
 CLAIM_ID_ERROR_AT_UPDATE_CONTENTIONS = 5005
 CLAIM_ID_ERROR_AT_CREATE_CONTENTIONS = 5006
-
-
-def assert_response(
-    response,
-    pending_claim_id,
-    ep400_claim_id,
-    expected_state: JobState,
-    expected_error_state: JobState | None = None,
-    expected_num_errors: int = 0,
-    status_code: int = 200,
-):
-    assert response.status_code == status_code
-    response_json = response.json()
-    assert response_json is not None
-    job = response_json['job']
-    assert job['pending_claim_id'] == pending_claim_id
-    assert job['ep400_claim_id'] == ep400_claim_id
-    assert job['state'] == expected_state
-    if expected_error_state is None:
-        assert 'error_state' not in job
-    else:
-        assert job['error_state'] == expected_error_state
-    if expected_num_errors == 0:
-        assert 'messages' not in job
-    else:
-        assert len(job['messages']) == expected_num_errors
-    return response_json
-
-
-def assert_job(job_id, pending_claim_id, ep400_claim_id, expected_state: JobState, expected_error_state: JobState | None = None, expected_num_errors: int = 0):
-    job = JOB_STORE.get_merge_job(job_id)
-    assert job is not None
-    assert job.pending_claim_id == pending_claim_id
-    assert job.ep400_claim_id == ep400_claim_id
-    assert job.state == expected_state
-    assert job.error_state == expected_error_state
-
-    if expected_num_errors == 0:
-        assert job.messages is None
-    else:
-        assert len(job.messages) == expected_num_errors
 
 
 def assert_response_and_job(
@@ -103,18 +63,21 @@ class TestAbort:
             pytest.param(PENDING_CLAIM_ID, EP400_WITH_NO_CONTENTIONS, JobState.GET_EP400_CLAIM_CONTENTIONS, 1, id='ep400 claim has zero contentions'),
         ],
     )
-    async def test(self, pending_claim_id, ep400_claim_id, expected_error_state, expected_num_errors):
-        async with AsyncClient(app=app, base_url='http://test') as client:
-            response = await submit_request_and_process(client, pending_claim_id, ep400_claim_id)
-            assert_response_and_job(
-                response,
-                pending_claim_id=pending_claim_id,
-                ep400_claim_id=ep400_claim_id,
-                expected_state=JobState.ABORTED,
-                expected_error_state=expected_error_state,
-                expected_num_errors=expected_num_errors,
-                status_code=200,
-            )
+    async def test(self, pending_claim_id, ep400_claim_id, expected_error_state, expected_num_errors, lifecycle_endpoint):
+        try:
+            async with AsyncClient(app=app, base_url='http://test') as client:
+                response = await submit_request_and_process(client, pending_claim_id, ep400_claim_id)
+                assert_response_and_job(
+                    response,
+                    pending_claim_id=pending_claim_id,
+                    ep400_claim_id=ep400_claim_id,
+                    expected_state=JobState.ABORTED,
+                    expected_error_state=expected_error_state,
+                    expected_num_errors=expected_num_errors,
+                    status_code=200,
+                )
+        finally:
+            await reset_claim(ep400_claim_id, lifecycle_endpoint)
 
 
 class TestSuccess:
@@ -129,10 +92,13 @@ class TestSuccess:
             pytest.param(PENDING_CLAIM_ID, EP400_WITH_MULTI_CONTENTION_NO_DUPLICATES, id='with with no duplicates'),
         ],
     )
-    async def test(self, pending_claim_id, ep400_claim_id):
-        async with AsyncClient(app=app, base_url='http://test') as client:
-            response = await submit_request_and_process(client, pending_claim_id, ep400_claim_id)
-            assert_response_and_job(response, pending_claim_id, ep400_claim_id, JobState.COMPLETED_SUCCESS)
+    async def test(self, pending_claim_id, ep400_claim_id, lifecycle_endpoint):
+        try:
+            async with AsyncClient(app=app, base_url='http://test') as client:
+                response = await submit_request_and_process(client, pending_claim_id, ep400_claim_id)
+                assert_response_and_job(response, pending_claim_id, ep400_claim_id, JobState.COMPLETED_SUCCESS)
+        finally:
+            await reset_claim(ep400_claim_id, lifecycle_endpoint)
 
 
 class TestError:
@@ -189,15 +155,18 @@ class TestError:
             ),
         ],
     )
-    async def test(self, pending_claim_id, ep400_claim_id, expected_error_state, expected_num_errors):
-        async with AsyncClient(app=app, base_url='http://test') as client:
-            response = await submit_request_and_process(client, pending_claim_id, ep400_claim_id)
-            assert_response_and_job(
-                response,
-                pending_claim_id=pending_claim_id,
-                ep400_claim_id=ep400_claim_id,
-                expected_state=JobState.COMPLETED_ERROR,
-                expected_error_state=expected_error_state,
-                expected_num_errors=expected_num_errors,
-                status_code=200,
-            )
+    async def test(self, pending_claim_id, ep400_claim_id, expected_error_state, expected_num_errors, lifecycle_endpoint):
+        try:
+            async with AsyncClient(app=app, base_url='http://test') as client:
+                response = await submit_request_and_process(client, pending_claim_id, ep400_claim_id)
+                assert_response_and_job(
+                    response,
+                    pending_claim_id=pending_claim_id,
+                    ep400_claim_id=ep400_claim_id,
+                    expected_state=JobState.COMPLETED_ERROR,
+                    expected_error_state=expected_error_state,
+                    expected_num_errors=expected_num_errors,
+                    status_code=200,
+                )
+        finally:
+            await reset_claim(ep400_claim_id, lifecycle_endpoint)
