@@ -18,9 +18,6 @@ import java.util.*;
 @Conditional(NonLocalEnvironmentCondition.class)
 public class MetricLoggerService implements IMetricLoggerService {
 
-  @Value("${bip.env}")
-  public String env;
-
   private static final String APP_PREFIX = "vro_bip";
   private static final String SERVICE_TAG = "service:vro-svc-bip-api";
 
@@ -47,7 +44,6 @@ public class MetricLoggerService implements IMetricLoggerService {
     // a "key:value" format, while not required, can be convenient with querying metrics in the
     // datadog dashboard
     ArrayList<String> tags = new ArrayList<>();
-    tags.add(String.format("environment:%s", env));
     tags.add(SERVICE_TAG);
     if (customTags != null) {
       tags.addAll(Arrays.asList(customTags));

@@ -48,16 +48,14 @@ public class MetricLoggerServiceTest {
     assertTrue(tags.contains("source:integration-test"));
     assertTrue(tags.contains("version:2.1"));
     assertTrue(tags.contains("service:vro-svc-bip-api"));
-    assertTrue(tags.contains(String.format("environment:%s", System.getenv("env"))));
-    assertEquals(tags.size(), 4);
+    assertEquals(tags.size(), 3);
   }
 
   @Test
   void getTagsForSubmissionNoCustomTags() {
     List<String> tags = mls.getTagsForSubmission(null);
     assertTrue(tags.contains("service:vro-svc-bip-api"));
-    assertTrue(tags.contains(String.format("environment:%s", System.getenv("env"))));
-    assertEquals(2, tags.size());
+    assertEquals(1, tags.size());
   }
 
   @Test
