@@ -69,7 +69,7 @@ jobs:
         # This takes about 1 minute, so don't run on PRs
         # if: github.event_name != 'pull_request'
         id: jacoco_reporter
-        uses: PavanMudigonda/jacoco-reporter@v5.0
+        uses: PavanMudigonda/jacoco-reporter@v5.1
         # Skip if Dependabot created the PR due to check-runs permission error
         if: github.actor != 'dependabot[bot]'
         with:
@@ -103,7 +103,7 @@ jobs:
       - name: "Get changed Ruby files"
         id: changed-files-specific
         if: '! inputs.run_all_tests'
-        uses: tj-actions/changed-files@v41
+        uses: tj-actions/changed-files@v44
         with:
           files: svc-bgs-api/**
 
@@ -140,14 +140,14 @@ jobs:
       - name: "Get changed files"
         if: '! inputs.run_all_tests'
         id: changed-files-specific
-        uses: tj-actions/changed-files@v41
+        uses: tj-actions/changed-files@v44
         with:
           files: domain-cc/**
 
       - name: "Get changed domain-ee files"
         if: '! inputs.run_all_tests'
         id: ee-changed-files-specific
-        uses: tj-actions/changed-files@v41
+        uses: tj-actions/changed-files@v44
         with:
           files: domain-ee/**
 

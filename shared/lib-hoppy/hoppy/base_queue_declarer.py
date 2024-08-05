@@ -48,8 +48,7 @@ class BaseQueueDeclarer(BaseExchangeDeclarer):
                     durable=self.durable_queue,
                     exclusive=self.exclusive_queue,
                     auto_delete=self.auto_delete_exchange,
-                    dead_letter_queue=self.dead_letter_queue,
-                    dead_letter_exchange=self.dead_letter_exchange)
+                    arguments=self.arguments)
         self._debug('bindingQueue',
                     queue=self.queue_name,
                     exchange=self.exchange_name,
