@@ -5,7 +5,6 @@ import com.datadog.api.client.v1.model.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +21,10 @@ public class MetricLoggerService implements IMetricLoggerService {
   private static final String SERVICE_TAG = "service:vro-svc-bip-api";
 
   private final MetricsApi metricsApi;
+
+  public MetricLoggerService() {
+    this.metricsApi = new MetricsApi();
+  }
 
   public static double getTimestamp() {
     return Long.valueOf(OffsetDateTime.now().toInstant().getEpochSecond()).doubleValue();
