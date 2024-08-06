@@ -23,11 +23,16 @@ class HoppyService:
         req_queue = QUEUES[name]
         reply_queue = REPLY_QUEUES[name]
         type = 'direct'
+        arguments = {"x-dead-letter-exchange", "bipApi.dlx",
+                     "x-dead-letter-routing-key", "bip-events-dlq"}
         if (name == ClientName.DEAD_LETTER):
             type = 'fanout'
+        else:
+            arguments = {}
+
         exchange_props = ExchangeProperties(name=exchange, passive_declare=False, type=type)
-        request_queue_props = QueueProperties(name=req_queue, passive_declare=False)
-        reply_queue_props = QueueProperties(name=reply_queue, passive_declare=False)
+        request_queue_props = QueueProperties(name=req_queue, passive_declare=False, arguments=arguments)
+        reply_queue_props = QueueProperties(name=reply_queue, passive_declare=False, arguments=arguments)
         client = RetryableAsyncHoppyClient(
             name=name.value,
             app_id=config['app_id'],
