@@ -22,7 +22,10 @@ class HoppyService:
         exchange = EXCHANGES[name]
         req_queue = QUEUES[name]
         reply_queue = REPLY_QUEUES[name]
-        exchange_props = ExchangeProperties(name=exchange, passive_declare=False)
+        type = 'direct'
+        if (name == ClientName.DEAD_LETTER):
+            type = 'fanout'
+        exchange_props = ExchangeProperties(name=exchange, passive_declare=False, type)
         request_queue_props = QueueProperties(name=req_queue, passive_declare=False)
         reply_queue_props = QueueProperties(name=reply_queue, passive_declare=False)
         client = RetryableAsyncHoppyClient(
