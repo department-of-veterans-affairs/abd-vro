@@ -86,7 +86,7 @@ public class RabbitMqConfig implements RabbitListenerConfigurer {
         "Creating dead letter queue with name={} and properties={}",
         props.getDeadLetterQueueName(),
         props.getDeadLetterQueueArgs());
-    return QueueBuilder.durable(props.getDeadLetterQueueName()).build();
+    return QueueBuilder.durable(props.getDeadLetterQueueName()).autoDelete().build();
   }
 
   @Bean
