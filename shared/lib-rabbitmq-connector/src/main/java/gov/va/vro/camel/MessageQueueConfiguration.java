@@ -130,7 +130,7 @@ public class MessageQueueConfiguration {
 
   @Bean
   FanoutExchange deadLetterExchange() {
-    return new FanoutExchange(DLX_EXCHANGE_MESSAGES, false, true);
+    return new FanoutExchange(DLX_EXCHANGE_MESSAGES, true, true);
   }
 
   @Bean
