@@ -25,7 +25,7 @@ class HoppyService:
         type = 'direct'
         if (name == ClientName.DEAD_LETTER):
             type = 'fanout'
-        exchange_props = ExchangeProperties(name=exchange, passive_declare=False, type)
+        exchange_props = ExchangeProperties(name=exchange, passive_declare=False, type=type)
         request_queue_props = QueueProperties(name=req_queue, passive_declare=False)
         reply_queue_props = QueueProperties(name=reply_queue, passive_declare=False)
         client = RetryableAsyncHoppyClient(
