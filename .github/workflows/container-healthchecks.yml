@@ -28,6 +28,8 @@ jobs:
           repository: 'department-of-veterans-affairs/abd-vro-dev-secrets'
           path: "${{ env.VRO_DEV_SECRETS_FOLDER }}"
 
+      - uses: ./.github/actions/install-docker-compose
+
       - name: "Docker build"
         uses: ./.github/actions/build-images
 
