@@ -6,8 +6,7 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 
 public class NonLocalEnvironmentCondition implements Condition {
 
-  protected LocalEnvironmentCondition localEnvironmentCondition =
-      new LocalEnvironmentCondition();
+  protected LocalEnvironmentCondition localEnvironmentCondition = new LocalEnvironmentCondition();
 
   @Override
   public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
