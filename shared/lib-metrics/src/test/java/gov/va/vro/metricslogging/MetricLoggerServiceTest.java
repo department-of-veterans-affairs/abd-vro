@@ -1,7 +1,7 @@
 package gov.va.vro.metricslogging;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import com.datadog.api.client.v1.api.MetricsApi;
 import com.datadog.api.client.v1.model.DistributionPointItem;
@@ -9,6 +9,7 @@ import com.datadog.api.client.v1.model.DistributionPointsPayload;
 import com.datadog.api.client.v1.model.MetricsPayload;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -17,6 +18,16 @@ import java.util.Objects;
 public class MetricLoggerServiceTest {
 
   private MetricLoggerService mls = new MetricLoggerService(new MetricsApi());
+
+  @Test
+  void testConstructors() {
+    try {
+      new MetricLoggerService();
+      new MetricLoggerService(new MetricsApi());
+    } catch (Exception e) {
+      fail("Constructor failed", e);
+    }
+  }
 
   @Test
   void testGetFullMetricString() {
@@ -103,6 +114,32 @@ public class MetricLoggerServiceTest {
         dpl.getSeries().get(0).getPoints().get(0).get(1));
     Assertions.assertTrue(
         Objects.requireNonNull(dpl.getSeries().get(0).getTags()).contains("food:pizza"));
+  }
+
+  @Test
+  void testSubmitCountCallsApiWithPayload() {
+    MetricsApi metricsApi = mock(MetricsApi.class);
+    MetricLoggerService mls = new MetricLoggerService(metricsApi);
+    mls.submitCount(IMetricLoggerService.METRIC.RESPONSE_COMPLETE, null);
+    mls.submitCount(IMetricLoggerService.METRIC.RESPONSE_COMPLETE, 3.0, null);
+    try {
+      verify(metricsApi, times(2)).submitMetrics(ArgumentMatchers.any(MetricsPayload.class));
+    } catch (Exception e) {
+      fail(e);
+    }
+  }
+
+  @Test
+  void testSubmitRequestDurationCallsApiWithPayload() {
+    MetricsApi metricsApi = mock(MetricsApi.class);
+    MetricLoggerService mls = new MetricLoggerService(metricsApi);
+    mls.submitRequestDuration(100, 200, null);
+    try {
+      verify(metricsApi, times(1))
+          .submitDistributionPoints(ArgumentMatchers.any(DistributionPointsPayload.class));
+    } catch (Exception e) {
+      fail(e);
+    }
   }
 
   @Test
