@@ -4,6 +4,7 @@ import json
 from hoppy import async_consumer, async_publisher
 from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
 from pika import BasicProperties
+from src.python_src.config import ClientName
 
 
 class MqEndpointConsumerException(Exception):
@@ -15,13 +16,16 @@ class MqEndpoint:
         self.name = name
         self.index = 0
         self.auto_response_files = []
+        type = 'direct'
+        if (name == ClientName.DEAD_LETTER):
+            type = 'fanout'
 
-        exchange_props = ExchangeProperties(name=exchange, auto_delete=True, passive_declare=False)
+        exchange_props = ExchangeProperties(name=exchange, auto_delete=True, passive_declare=False, type=type)
         queue_props = QueueProperties(name=req_queue, auto_delete=True, passive_declare=False, arguments=arguments)
         self.consumer = async_consumer.AsyncConsumer(
             exchange_properties=exchange_props, queue_properties=queue_props, routing_key=req_queue, reply_callback=self._on_message
         )
-        if response_queue and response_queue != '':
+        if name != ClientName.DEAD_LETTER:
             reply_props = QueueProperties(name=response_queue, passive_declare=False, auto_delete=True)
             self.publisher = async_publisher.AsyncPublisher(exchange_properties=exchange_props, queue_properties=reply_props, routing_key=response_queue)
 
