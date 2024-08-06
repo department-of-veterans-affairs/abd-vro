@@ -77,7 +77,7 @@ public class RabbitMqConfig implements RabbitListenerConfigurer {
   @Bean
   FanoutExchange deadLetterExchange() {
     log.info("Creating dead letter exchange with name={}", props.getDeadLetterExchangeName());
-    return new FanoutExchange(props.getDeadLetterExchangeName());
+    return new FanoutExchange(props.getDeadLetterExchangeName(), false, true);
   }
 
   @Bean
