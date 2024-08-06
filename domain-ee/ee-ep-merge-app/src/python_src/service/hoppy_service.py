@@ -9,6 +9,7 @@ class HoppyService:
     clients: dict[ClientName, AsyncHoppyClient] = {}
 
     def __init__(self) -> None:
+        self.create_client(ClientName.DEAD_LETTER)
         self.create_client(ClientName.GET_CLAIM)
         self.create_client(ClientName.GET_CLAIM_CONTENTIONS)
         self.create_client(ClientName.PUT_TSOJ)
@@ -16,7 +17,6 @@ class HoppyService:
         self.create_client(ClientName.UPDATE_CLAIM_CONTENTIONS)
         self.create_client(ClientName.CANCEL_CLAIM)
         self.create_client(ClientName.BGS_ADD_CLAIM_NOTE)
-        self.create_client(ClientName.DEAD_LETTER)
 
     def create_client(self, name: ClientName) -> None:
         exchange = EXCHANGES[name]
