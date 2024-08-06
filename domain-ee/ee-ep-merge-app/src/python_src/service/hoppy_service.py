@@ -35,7 +35,7 @@ class HoppyService:
 
         exchange_props = ExchangeProperties(name=exchange, passive_declare=False, type=type)
         request_queue_props = QueueProperties(name=req_queue, passive_declare=False, arguments=arguments)
-        reply_queue_props = QueueProperties(name=reply_queue, passive_declare=False, arguments=arguments)
+        reply_queue_props = QueueProperties(name=reply_queue, passive_declare=False)
         client = RetryableAsyncHoppyClient(
             name=name.value,
             app_id=config['app_id'],
