@@ -15,7 +15,6 @@ import gov.va.vro.bip.model.lifecycle.PutClaimLifecycleResponse;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionRequest;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionResponse;
 import gov.va.vro.metricslogging.IMetricLoggerService;
-import gov.va.vro.metricslogging.MetricLoggerService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.NonNull;
@@ -145,7 +144,7 @@ public class BipApiService implements IBipApiService {
       HttpEntity<Object> httpEntity = new HttpEntity<>(requestBody, getBipHeader());
       log.info("event=requestSent url={} method={}", url, method);
       metricLogger.submitCount(
-          MetricLoggerService.METRIC.REQUEST_START,
+          IMetricLoggerService.METRIC.REQUEST_START,
           new String[] {
             String.format("expectedResponse:%s", expectedResponse.getSimpleName()),
             "source:bipApiService",
@@ -178,7 +177,7 @@ public class BipApiService implements IBipApiService {
       }
 
       metricLogger.submitCount(
-          MetricLoggerService.METRIC.RESPONSE_COMPLETE,
+          IMetricLoggerService.METRIC.RESPONSE_COMPLETE,
           new String[] {
             String.format("expectedResponse:%s", expectedResponse.getSimpleName()),
             "source:bipApiService",
@@ -207,7 +206,7 @@ public class BipApiService implements IBipApiService {
           e.getMessage());
 
       metricLogger.submitCount(
-          MetricLoggerService.METRIC.RESPONSE_ERROR,
+          IMetricLoggerService.METRIC.RESPONSE_ERROR,
           new String[] {
             String.format("expectedResponse:%s", expectedResponse.getSimpleName()),
             "source:bipApiService",
