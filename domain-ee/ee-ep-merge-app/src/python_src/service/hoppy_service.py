@@ -24,11 +24,11 @@ class HoppyService:
         reply_queue = REPLY_QUEUES[name]
         if (name == ClientName.DEAD_LETTER):
             type = 'fanout'
-            arguments = {key: value for key, value in []}
+            arguments = {}
         else:
             type = 'direct'
-            arguments = {"x-dead-letter-exchange", "bipApi.dlx",
-                         "x-dead-letter-routing-key", "bip-events-dlq"}
+            arguments = {'x-dead-letter-exchange': 'bipApi.dlx',
+                         'x-dead-letter-routing-key': 'bip-events-dlq'}
 
         exchange_props = ExchangeProperties(name=exchange, passive_declare=False, type=type)
         request_queue_props = QueueProperties(name=req_queue, passive_declare=False, arguments=arguments)
