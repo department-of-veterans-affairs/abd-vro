@@ -6,7 +6,7 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 
 public class NonLocalEnvironmentCondition implements Condition {
 
-  private final LocalEnvironmentCondition localEnvironmentCondition =
+  protected LocalEnvironmentCondition localEnvironmentCondition =
       new LocalEnvironmentCondition();
 
   @Override

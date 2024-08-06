@@ -1,44 +1,49 @@
 package gov.va.vro.metricslogging;
 
-import gov.va.vro.metricslogging.stubs.StubConditionContext;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import gov.va.vro.metricslogging.stubs.StubConditionContext;
+import gov.va.vro.metricslogging.stubs.TestableLocalEnvironmentCondition;
+import org.junit.jupiter.api.Test;
+
 public class LocalEnvironmentConditionTest {
 
-    @Test
-    void testReturnsTrueForLocalEnv() {
-        LocalEnvironmentCondition condition = new LocalEnvironmentCondition();
-        assertTrue(condition.matches(new StubConditionContext("local"), null));
-    }
+  @Test
+  void testReturnsTrueForLocalEnv() {
+    TestableLocalEnvironmentCondition condition = new TestableLocalEnvironmentCondition("local");
+    assertTrue(condition.matches(new StubConditionContext(), null));
+  }
 
-    @Test
-    void testReturnsTrueForTestEnv() {
-        LocalEnvironmentCondition condition = new LocalEnvironmentCondition();
-        assertTrue(condition.matches(new StubConditionContext("test"), null));
-    }
+  @Test
+  void testReturnsTrueForTestEnv() {
+    TestableLocalEnvironmentCondition condition = new TestableLocalEnvironmentCondition("test");
+    assertTrue(condition.matches(new StubConditionContext(), null));
+  }
 
-    @Test
-    void testReturnsFalseForBlankEnv() {
-        LocalEnvironmentCondition condition = new LocalEnvironmentCondition();
-        assertFalse(condition.matches(new StubConditionContext(""), null));
-    }
+  @Test
+  void testReturnsTrueForBlankEnv() {
+    TestableLocalEnvironmentCondition condition = new TestableLocalEnvironmentCondition("");
+    assertTrue(condition.matches(new StubConditionContext(), null));
+  }
 
-    @Test
-    void testReturnsFalseForPreprodNamespaces() {
-        LocalEnvironmentCondition condition = new LocalEnvironmentCondition();
-        assertFalse(condition.matches(new StubConditionContext("dev"), null));
-        assertFalse(condition.matches(new StubConditionContext("qa"), null));
-        assertFalse(condition.matches(new StubConditionContext("sandbox"), null));
-    }
+  @Test
+  void testReturnsFalseForPreprodEnvironments() {
+    String[] preprodEnvironments = new String[] {"dev", "qa", "sandbox"};
 
-    @Test
-    void testReturnsFalseForProdNamespaces() {
-        LocalEnvironmentCondition condition = new LocalEnvironmentCondition();
-        assertFalse(condition.matches(new StubConditionContext("prod-test"), null));
-        assertFalse(condition.matches(new StubConditionContext("prod"), null));
-        assertFalse(condition.matches(new StubConditionContext("production"), null));
+    for (String env : preprodEnvironments) {
+      TestableLocalEnvironmentCondition condition = new TestableLocalEnvironmentCondition(env);
+      assertFalse(condition.matches(new StubConditionContext(), null));
     }
+  }
+
+  @Test
+  void testReturnsFalseForProdEnvironments() {
+    String[] prodEnvironments = new String[] {"prod-test", "prod", "production"};
+
+    for (String env : prodEnvironments) {
+      TestableLocalEnvironmentCondition condition = new TestableLocalEnvironmentCondition(env);
+      assertFalse(condition.matches(new StubConditionContext(), null));
+    }
+  }
 }

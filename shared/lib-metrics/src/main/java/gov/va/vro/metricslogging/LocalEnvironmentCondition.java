@@ -13,12 +13,16 @@ public class LocalEnvironmentCondition implements Condition {
 
   @Override
   public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-    String env = context.getEnvironment().getProperty("bip.env");
+    String env = getEnvironment();
 
     if (StringUtils.isBlank(env)) {
-      return false;
+      return true;
     }
 
     return Stream.of(LOCAL_ENVS).anyMatch(e -> StringUtils.equals(e, env));
+  }
+
+  public String getEnvironment() {
+    return System.getenv("ENV");
   }
 }
