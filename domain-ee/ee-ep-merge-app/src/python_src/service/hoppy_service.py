@@ -27,8 +27,8 @@ class HoppyService:
             arguments = {}
         else:
             type = 'direct'
-            arguments = {'x-dead-letter-exchange': 'bipApi.dlx',
-                         'x-dead-letter-routing-key': 'bip-events-dlq'}
+            arguments = {'x-dead-letter-exchange': EXCHANGES[ClientName.DEAD_LETTER],
+                         'x-dead-letter-routing-key': ClientName.DEAD_LETTER}
 
         exchange_props = ExchangeProperties(name=exchange, passive_declare=False, type=type)
         request_queue_props = QueueProperties(name=req_queue, passive_declare=False, arguments=arguments)

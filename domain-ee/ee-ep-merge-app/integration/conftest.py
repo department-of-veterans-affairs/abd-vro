@@ -62,8 +62,8 @@ def create_mq_endpoint_no_dlq(name):
     return MqEndpoint(name, EXCHANGES[name], QUEUES[name], REPLY_QUEUES[name])
 
 def create_mq_endpoint(name):
-    arguments = {'x-dead-letter-exchange': 'bipApi.dlx',
-                 'x-dead-letter-routing-key': 'bip-events-dlq'}
+    arguments = {'x-dead-letter-exchange': EXCHANGES[ClientName.DEAD_LETTER],
+                 'x-dead-letter-routing-key': ClientName.DEAD_LETTER}
     return MqEndpoint(name, EXCHANGES[name], QUEUES[name], REPLY_QUEUES[name], arguments)
 
 
