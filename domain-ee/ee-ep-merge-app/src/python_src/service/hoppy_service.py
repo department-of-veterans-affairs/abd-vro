@@ -3,6 +3,7 @@ import asyncio
 from config import EXCHANGES, QUEUES, REPLY_QUEUES, ClientName, config
 from hoppy.async_hoppy_client import AsyncHoppyClient, RetryableAsyncHoppyClient
 from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
+from typing import Dict
 
 
 class HoppyService:
