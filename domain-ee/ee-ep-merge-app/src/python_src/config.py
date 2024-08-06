@@ -56,6 +56,7 @@ REPLY_QUEUES = {
     ClientName.UPDATE_CLAIM_CONTENTIONS: os.environ.get('UPDATE_CLAIM_CONTENTIONS_RESPONSE') or 'updateClaimContentionsResponseQueue',
     ClientName.CANCEL_CLAIM: os.environ.get('CANCEL_CLAIM_RESPONSE') or 'cancelClaimResponseQueue',
     ClientName.BGS_ADD_CLAIM_NOTE: os.environ.get('ADD_CLAIM_NOTE_RESPONSE') or 'add-note-response',
+    ClientName.DEAD_LETTER: '',
 }
 
 EP_MERGE_SPECIAL_ISSUE_CODE = os.environ.get('EP_MERGE_SPECIAL_ISSUE_CODE') or 'EMP'
