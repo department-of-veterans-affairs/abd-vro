@@ -19,10 +19,12 @@ class ClientName(str, Enum):
     UPDATE_CLAIM_CONTENTIONS = 'updateClaimContentionsClient'
     CANCEL_CLAIM = 'cancelClaimClient'
     BGS_ADD_CLAIM_NOTE = 'addClaimNoteClient'
+    DEAD_LETTER = 'bipDeadLetterQueue'
 
 
 BIP_EXCHANGE = 'bipApiExchange'
 BGS_EXCHANGE = 'bgs-api'
+DLQ_EXCHANGE = 'bipApi.dlx'
 
 EXCHANGES = {
     ClientName.GET_CLAIM: os.environ.get('BIP_API_EXCHANGE') or BIP_EXCHANGE,
@@ -32,6 +34,7 @@ EXCHANGES = {
     ClientName.UPDATE_CLAIM_CONTENTIONS: os.environ.get('BIP_API_EXCHANGE') or BIP_EXCHANGE,
     ClientName.CANCEL_CLAIM: os.environ.get('BIP_API_EXCHANGE') or BIP_EXCHANGE,
     ClientName.BGS_ADD_CLAIM_NOTE: os.environ.get('BGS_API_EXCHANGE') or BGS_EXCHANGE,
+    ClientName.DEAD_LETTER: os.environ.get('BIP_API_DLQ_EXCHANGE') or DLQ_EXCHANGE,
 }
 
 QUEUES = {
@@ -42,6 +45,7 @@ QUEUES = {
     ClientName.UPDATE_CLAIM_CONTENTIONS: os.environ.get('UPDATE_CLAIM_CONTENTIONS_REQUEST') or 'updateClaimContentionsQueue',
     ClientName.CANCEL_CLAIM: os.environ.get('CANCEL_CLAIM_REQUEST') or 'cancelClaimQueue',
     ClientName.BGS_ADD_CLAIM_NOTE: os.environ.get('ADD_CLAIM_NOTE_REQUEST') or 'add-note',
+    ClientName.DEAD_LETTER: os.environ.get('BIP_DEAD_LETTER') or 'bipDeadLetterQueue',
 }
 
 REPLY_QUEUES = {
