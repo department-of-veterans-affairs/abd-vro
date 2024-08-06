@@ -23,12 +23,11 @@ class HoppyService:
         exchange = EXCHANGES[name]
         req_queue = QUEUES[name]
         reply_queue = REPLY_QUEUES[name]
+        arguments: Dict[str, str] = {}
         if name == ClientName.DEAD_LETTER:
             type = 'fanout'
-            arguments: Dict[str, str] = {}
         elif name == ClientName.BGS_ADD_CLAIM_NOTE:
             type = 'direct'
-            arguments: Dict[str, str] = {}
         else:
             type = 'direct'
             arguments = {'x-dead-letter-exchange': EXCHANGES[ClientName.DEAD_LETTER],
