@@ -24,7 +24,7 @@ class HoppyService:
         reply_queue = REPLY_QUEUES[name]
         if (name == ClientName.DEAD_LETTER):
             type = 'fanout'
-            arguments = {}
+            arguments = {key: value for key, value in []}
         else:
             type = 'direct'
             arguments = {"x-dead-letter-exchange", "bipApi.dlx",
