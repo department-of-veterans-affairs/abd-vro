@@ -4,9 +4,9 @@ plugins {
 
 ext {
   jacocoExclude = [
-          '**/DatadogClientConfig.*',
-          '**/IMetricLoggerService.*',
-          '**/NoopMetricLoggerService.*'
+    '**/DatadogClientConfig.*',
+    '**/IMetricLoggerService.*',
+    '**/NoopMetricLoggerService.*'
   ]
 }
 
