@@ -25,9 +25,7 @@ import org.springframework.stereotype.Component;
 public class KafkaConsumer {
   private final AmqpMessageSender amqpMessageSender;
   private final BieProperties bieProperties;
-
-  private IMetricLoggerService metricLogger;
-
+  final IMetricLoggerService metricLogger;
   final String[] metricTagsSendToQueue = new String[] {"type:sendRecordToMq", "source:svcBieKafka"};
 
   @KafkaListener(topics = "#{bieProperties.topicNames()}")
@@ -62,7 +60,7 @@ public class KafkaConsumer {
           MetricLoggerService.METRIC.RESPONSE_COMPLETE, metricTagsWithTopicName);
     } catch (Exception e) {
       log.error("Exception occurred while processing message: " + e.getMessage());
-      metricLogger.submitCount(MetricLoggerService.METRIC.RESPONSE_ERROR, metricTagsSendToQueue);
+      metricLogger.submitCount(MetricLoggerService.METRIC.RESPONSE_COMPLETE, metricTagsSendToQueue);
     }
   }
 
@@ -88,9 +86,5 @@ public class KafkaConsumer {
     payload.setNotifiedAt(record.timestamp());
 
     return payload;
-  }
-
-  public void setMetricLogger(IMetricLoggerService metricLogger) {
-    this.metricLogger = metricLogger;
   }
 }
