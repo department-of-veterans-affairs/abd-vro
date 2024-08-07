@@ -13,6 +13,7 @@ import org.springframework.amqp.rabbit.listener.ConditionalRejectingErrorHandler
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
 import org.springframework.validation.Validator;
@@ -21,6 +22,7 @@ import org.springframework.validation.beanvalidation.OptionalValidatorFactoryBea
 @Configuration
 @Slf4j
 @RequiredArgsConstructor
+@ComponentScan("gov.va.vro.metricslogging")
 public class RabbitMqConfig implements RabbitListenerConfigurer {
 
   private final RabbitMqConfigProperties props;

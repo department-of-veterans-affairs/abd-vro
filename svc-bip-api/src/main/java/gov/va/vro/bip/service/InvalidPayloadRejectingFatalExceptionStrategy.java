@@ -9,12 +9,14 @@ import org.springframework.amqp.rabbit.listener.FatalExceptionStrategy;
 import org.springframework.amqp.rabbit.listener.adapter.ReplyFailureException;
 import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
 import org.springframework.amqp.support.converter.MessageConversionException;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@ComponentScan("gov.va.vro.metricslogging")
 public class InvalidPayloadRejectingFatalExceptionStrategy implements FatalExceptionStrategy {
 
   private final IMetricLoggerService metricLoggerService;

@@ -14,12 +14,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
+@ComponentScan("gov.va.vro.metricslogging")
 public class KafkaConsumer {
   private final AmqpMessageSender amqpMessageSender;
   private final BieProperties bieProperties;

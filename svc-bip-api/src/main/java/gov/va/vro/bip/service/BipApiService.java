@@ -21,6 +21,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -47,6 +48,7 @@ import javax.crypto.spec.SecretKeySpec;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@ComponentScan("gov.va.vro.metricslogging")
 public class BipApiService implements IBipApiService {
   static final String CLAIM_DETAILS = "/claims/%s";
   static final String CANCEL_CLAIM = "/claims/%s/cancel";
