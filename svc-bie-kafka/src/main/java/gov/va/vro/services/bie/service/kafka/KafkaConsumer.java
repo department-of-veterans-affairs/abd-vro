@@ -60,7 +60,7 @@ public class KafkaConsumer {
           MetricLoggerService.METRIC.RESPONSE_COMPLETE, metricTagsWithTopicName);
     } catch (Exception e) {
       log.error("Exception occurred while processing message: " + e.getMessage());
-      metricLogger.submitCount(MetricLoggerService.METRIC.RESPONSE_COMPLETE, metricTagsSendToQueue);
+      metricLogger.submitCount(MetricLoggerService.METRIC.RESPONSE_ERROR, metricTagsSendToQueue);
     }
   }
 
