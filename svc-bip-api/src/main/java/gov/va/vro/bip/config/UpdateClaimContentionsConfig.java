@@ -4,7 +4,6 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,11 +11,18 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class UpdateClaimContentionsConfig {
 
-  @Value("${updateClaimContentionsQueue}")
-  String updateClaimContentionsQueue;
+  final String updateClaimContentionsQueue;
+  final DirectExchange bipApiExchange;
+  final RabbitMqConfigProperties props;
 
-  @Autowired DirectExchange bipApiExchange;
-  @Autowired RabbitMqConfigProperties props;
+  public UpdateClaimContentionsConfig(
+      @Value("${updateClaimContentionsQueue}") final String updateClaimContentionsQueue,
+      final DirectExchange bipApiExchange,
+      final RabbitMqConfigProperties props) {
+    this.updateClaimContentionsQueue = updateClaimContentionsQueue;
+    this.bipApiExchange = bipApiExchange;
+    this.props = props;
+  }
 
   @Bean
   Queue updateClaimContentionsQueue() {

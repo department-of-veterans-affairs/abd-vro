@@ -17,7 +17,7 @@ class MqEndpoint:
         self.index = 0
         self.auto_response_files = []
         type = 'direct'
-        if (name == ClientName.DEAD_LETTER):
+        if (name == ClientName.BIP_DEAD_LETTER):
             type = 'fanout'
 
         exchange_props = ExchangeProperties(name=exchange, auto_delete=True, passive_declare=False, type=type)
@@ -25,7 +25,7 @@ class MqEndpoint:
         self.consumer = async_consumer.AsyncConsumer(
             exchange_properties=exchange_props, queue_properties=queue_props, routing_key=req_queue, reply_callback=self._on_message
         )
-        if name != ClientName.DEAD_LETTER:
+        if name != ClientName.BIP_DEAD_LETTER:
             reply_props = QueueProperties(name=response_queue, passive_declare=False, auto_delete=True)
             self.publisher = async_publisher.AsyncPublisher(exchange_properties=exchange_props, queue_properties=reply_props, routing_key=response_queue)
 

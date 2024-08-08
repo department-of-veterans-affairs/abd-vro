@@ -10,7 +10,7 @@ class HoppyService:
     clients: dict[ClientName, AsyncHoppyClient] = {}
 
     def __init__(self) -> None:
-        self.create_client(ClientName.DEAD_LETTER)
+        self.create_client(ClientName.BIP_DEAD_LETTER)
         self.create_client(ClientName.GET_CLAIM)
         self.create_client(ClientName.GET_CLAIM_CONTENTIONS)
         self.create_client(ClientName.PUT_TSOJ)
@@ -24,14 +24,14 @@ class HoppyService:
         req_queue = QUEUES[name]
         reply_queue = REPLY_QUEUES[name]
         arguments: Dict[str, str] = {}
-        if name == ClientName.DEAD_LETTER:
+        if name == ClientName.BIP_DEAD_LETTER:
             type = 'fanout'
         elif name == ClientName.BGS_ADD_CLAIM_NOTE:
             type = 'direct'
         else:
             type = 'direct'
-            arguments = {'x-dead-letter-exchange': EXCHANGES[ClientName.DEAD_LETTER],
-                         'x-dead-letter-routing-key': ClientName.DEAD_LETTER}
+            arguments = {'x-dead-letter-exchange': EXCHANGES[ClientName.BIP_DEAD_LETTER],
+                         'x-dead-letter-routing-key': ClientName.BIP_DEAD_LETTER}
 
         exchange_props = ExchangeProperties(name=exchange, passive_declare=False, type=type)
         request_queue_props = QueueProperties(name=req_queue, passive_declare=False, arguments=arguments)
