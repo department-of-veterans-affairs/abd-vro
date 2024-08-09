@@ -66,7 +66,7 @@ public class BieXampleRoutes {
     } catch (JsonProcessingException jsonException) {
       log.error("Error converting failed message to JSON", jsonException);
     } catch (Exception exception) {
-      log.error(exception.toString());
+      log.error("Error processing exception", exception);
     }
   }
 }
