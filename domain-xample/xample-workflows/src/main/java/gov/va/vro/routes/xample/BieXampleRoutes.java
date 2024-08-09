@@ -3,21 +3,21 @@ package gov.va.vro.routes.xample;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.metricslogging.IMetricLoggerService;
-import gov.va.vro.metricslogging.MetricLoggerService;
 import gov.va.vro.model.biekafka.BieMessagePayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@ComponentScan("gov.va.vro.metricslogging")
 public class BieXampleRoutes {
   private final DbHelper dbHelper;
   private final ObjectMapper objectMapper;
-
-  final IMetricLoggerService metricLogger = new MetricLoggerService();
+  private final IMetricLoggerService metricLogger;
 
   private final String[] metricTagsSaveContentionEvent =
       new String[] {"type:saveContentionEvent", "source:xampleWorkflows"};
@@ -32,9 +32,8 @@ public class BieXampleRoutes {
       })
   public void handleMessage(BieMessagePayload payload) {
     try {
-
       metricLogger.submitCount(
-          MetricLoggerService.METRIC.REQUEST_START, metricTagsSaveContentionEvent);
+          IMetricLoggerService.METRIC.REQUEST_START, metricTagsSaveContentionEvent);
       long transactionStartTime = System.nanoTime();
 
       dbHelper.saveContentionEvent(payload);
