@@ -122,7 +122,7 @@ public class MetricLoggerServiceTest {
     mls.submitCount(IMetricLoggerService.METRIC.RESPONSE_COMPLETE, null);
     mls.submitCount(IMetricLoggerService.METRIC.RESPONSE_COMPLETE, 3.0, null);
     try {
-      verify(metricsApi, times(2)).submitMetrics(ArgumentMatchers.any(MetricsPayload.class));
+      verify(metricsApi, times(2)).submitMetricsAsync(ArgumentMatchers.any(MetricsPayload.class));
     } catch (Exception e) {
       fail(e);
     }
@@ -135,7 +135,7 @@ public class MetricLoggerServiceTest {
     mls.submitRequestDuration(100, 200, null);
     try {
       verify(metricsApi, times(1))
-          .submitDistributionPoints(ArgumentMatchers.any(DistributionPointsPayload.class));
+          .submitDistributionPointsAsync(ArgumentMatchers.any(DistributionPointsPayload.class));
     } catch (Exception e) {
       fail(e);
     }
