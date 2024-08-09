@@ -1,12 +1,10 @@
-package gov.va.vro.bip.service;
+package gov.va.vro.metricslogging;
 
 import com.datadog.api.client.v1.api.MetricsApi;
 import com.datadog.api.client.v1.model.*;
-import gov.va.vro.bip.config.NonLocalEnvironmentCondition;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +16,6 @@ import java.util.*;
 @RequiredArgsConstructor
 @Conditional(NonLocalEnvironmentCondition.class)
 public class MetricLoggerService implements IMetricLoggerService {
-
-  @Value("${bip.env}")
-  public String env;
 
   private static final String APP_PREFIX = "vro_bip";
   private static final String SERVICE_TAG = "service:vro-svc-bip-api";
@@ -48,7 +43,6 @@ public class MetricLoggerService implements IMetricLoggerService {
     // a "key:value" format, while not required, can be convenient with querying metrics in the
     // datadog dashboard
     ArrayList<String> tags = new ArrayList<>();
-    tags.add(String.format("environment:%s", env));
     tags.add(SERVICE_TAG);
     if (customTags != null) {
       tags.addAll(Arrays.asList(customTags));
@@ -78,16 +72,18 @@ public class MetricLoggerService implements IMetricLoggerService {
     MetricsPayload payload = createMetricsPayload(metric, value, tags);
 
     try {
-      IntakePayloadAccepted payloadResult = metricsApi.submitMetrics(payload);
-      log.info(
-          String.format(
-              "submitted %s: %s",
-              payload.getSeries().get(0).getMetric(), payloadResult.getStatus()));
+      metricsApi
+          .submitMetricsAsync(payload)
+          .whenComplete(
+              (payloadAccepted, ex) -> {
+                if (ex != null) {
+                  log.warn(String.format("exception submitting %s: %s", metric, ex.getMessage()));
+                } else {
+                  log.info(String.format("submitted %s: %s", metric, payloadAccepted.getStatus()));
+                }
+              });
     } catch (Exception e) {
-      log.warn(
-          String.format(
-              "exception submitting %s: %s",
-              payload.getSeries().get(0).getMetric(), e.getMessage()));
+      log.warn(String.format("exception submitting %s: %s", metric, e.getMessage()));
     }
   }
 
@@ -121,16 +117,24 @@ public class MetricLoggerService implements IMetricLoggerService {
             tags);
 
     try {
-      IntakePayloadAccepted payloadResult = metricsApi.submitDistributionPoints(payload);
-      log.info(
-          String.format(
-              "submitted %s: %s",
-              payload.getSeries().get(0).getMetric(), payloadResult.getStatus()));
+      metricsApi
+          .submitDistributionPointsAsync(payload)
+          .whenComplete(
+              (payloadAccepted, ex) -> {
+                if (ex != null) {
+                  log.warn(
+                      String.format(
+                          "exception submitting %s: %s", METRIC.REQUEST_DURATION, ex.getMessage()));
+                } else {
+                  log.info(
+                      String.format(
+                          "submitted %s: %s",
+                          METRIC.REQUEST_DURATION, payloadAccepted.getStatus()));
+                }
+              });
     } catch (Exception e) {
       log.warn(
-          String.format(
-              "exception submitting %s: %s",
-              payload.getSeries().get(0).getMetric(), e.getMessage()));
+          String.format("exception submitting %s: %s", METRIC.REQUEST_DURATION, e.getMessage()));
     }
   }
 }

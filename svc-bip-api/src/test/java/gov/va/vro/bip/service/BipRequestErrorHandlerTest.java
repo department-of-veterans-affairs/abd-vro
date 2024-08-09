@@ -11,6 +11,7 @@ import com.datadog.api.client.v1.api.MetricsApi;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.bip.model.BipPayloadResponse;
+import gov.va.vro.metricslogging.MetricLoggerService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;

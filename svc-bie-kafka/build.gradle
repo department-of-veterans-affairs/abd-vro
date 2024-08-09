@@ -24,6 +24,7 @@ jacocoTestReport {
 
 dependencies {
   implementation project(":shared:lib-bie-kafka")
+  implementation project(':shared:lib-metrics')
 
   // avro schema and kafka
   implementation 'org.apache.avro:avro:1.12.0'
