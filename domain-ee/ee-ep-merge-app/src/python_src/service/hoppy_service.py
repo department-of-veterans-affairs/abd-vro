@@ -10,7 +10,6 @@ class HoppyService:
     clients: dict[ClientName, AsyncHoppyClient] = {}
 
     def __init__(self) -> None:
-        self.create_client(ClientName.BIP_DEAD_LETTER)
         self.create_client(ClientName.GET_CLAIM)
         self.create_client(ClientName.GET_CLAIM_CONTENTIONS)
         self.create_client(ClientName.PUT_TSOJ)
