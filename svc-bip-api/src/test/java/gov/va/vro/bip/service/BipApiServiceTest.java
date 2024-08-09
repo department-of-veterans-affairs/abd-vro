@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -184,6 +186,7 @@ public class BipApiServiceTest {
 
       GetClaimResponse result = service.getClaimDetails(GOOD_CLAIM_ID);
       assertResponseIsSuccess(result, HttpStatus.OK);
+      verifyMetricsAreLogged();
     }
 
     @ParameterizedTest(name = "testGetClaimDetails_{0}")
@@ -198,6 +201,7 @@ public class BipApiServiceTest {
       Exception ex =
           Assertions.assertThrows(test.ex.getClass(), () -> service.getClaimDetails(test.claimId));
       assertResponseExceptionWithStatus(ex, test.status);
+      verifyMetricIsLoggedForExceptions(test);
     }
   }
 
@@ -215,6 +219,7 @@ public class BipApiServiceTest {
       GetClaimContentionsResponse result = service.getClaimContentions(GOOD_CLAIM_ID);
       assertResponseIsSuccess(result, HttpStatus.OK);
       assertEquals(1, result.getContentions().size());
+      verifyMetricsAreLogged();
     }
 
     @Test
@@ -229,6 +234,7 @@ public class BipApiServiceTest {
       GetClaimContentionsResponse result = service.getClaimContentions(GOOD_CLAIM_ID);
       assertResponseIsSuccess(result, HttpStatus.NO_CONTENT);
       assertNull(result.getContentions());
+      verifyMetricsAreLogged();
     }
 
     @ParameterizedTest(name = "testGetClaimContentions_{0}")
@@ -244,6 +250,7 @@ public class BipApiServiceTest {
           Assertions.assertThrows(
               test.ex.getClass(), () -> service.getClaimContentions(test.claimId));
       assertResponseExceptionWithStatus(ex, test.status);
+      verifyMetricIsLoggedForExceptions(test);
     }
   }
 
@@ -274,6 +281,7 @@ public class BipApiServiceTest {
       assertNotNull(response.getContentionIds());
       assertEquals(1, response.getContentionIds().size());
       assertEquals(1, response.getContentionIds().get(0));
+      verifyMetricsAreLogged();
     }
 
     @ParameterizedTest(name = "testCreateClaimContentions_{0}")
@@ -300,6 +308,7 @@ public class BipApiServiceTest {
           Assertions.assertThrows(
               test.ex.getClass(), () -> service.createClaimContentions(request));
       assertResponseExceptionWithStatus(ex, test.status);
+      verifyMetricIsLoggedForExceptions(test);
     }
   }
 
@@ -328,6 +337,7 @@ public class BipApiServiceTest {
 
       UpdateClaimContentionsResponse response = service.updateClaimContentions(request);
       assertResponseIsSuccess(response, HttpStatus.OK);
+      verifyMetricsAreLogged();
     }
 
     @ParameterizedTest(name = "testUpdateClaimContentions_{0}")
@@ -354,6 +364,7 @@ public class BipApiServiceTest {
           Assertions.assertThrows(
               test.ex.getClass(), () -> service.updateClaimContentions(request));
       assertResponseExceptionWithStatus(ex, test.status);
+      verifyMetricIsLoggedForExceptions(test);
     }
   }
 
@@ -370,6 +381,7 @@ public class BipApiServiceTest {
               .build();
       CancelClaimResponse response = service.cancelClaim(request);
       assertResponseIsSuccess(response, HttpStatus.OK);
+      verifyMetricsAreLogged();
     }
 
     @ParameterizedTest(name = "testCancelClaim_{0}")
@@ -389,6 +401,7 @@ public class BipApiServiceTest {
       Exception ex =
           Assertions.assertThrows(test.ex.getClass(), () -> service.cancelClaim(request));
       assertResponseExceptionWithStatus(ex, test.status);
+      verifyMetricIsLoggedForExceptions(test);
     }
   }
 
@@ -410,6 +423,7 @@ public class BipApiServiceTest {
               .build();
       PutClaimLifecycleResponse response = service.putClaimLifecycleStatus(request);
       assertResponseIsSuccess(response, HttpStatus.OK);
+      verifyMetricsAreLogged();
     }
 
     @ParameterizedTest(name = "testPutLifecycleStatus_{0}")
@@ -429,11 +443,12 @@ public class BipApiServiceTest {
           Assertions.assertThrows(
               test.ex.getClass(), () -> service.putClaimLifecycleStatus(request));
       assertResponseExceptionWithStatus(ex, test.status);
+      verifyMetricIsLoggedForExceptions(test);
     }
   }
 
   @Nested
-  public class PutTemporaryStationOfJursidiction {
+  public class PutTemporaryStationOfJurisdiction {
     @ParameterizedTest
     @NullAndEmptySource
     @CsvSource(value = {"398"})
@@ -452,6 +467,7 @@ public class BipApiServiceTest {
               .build();
       PutTempStationOfJurisdictionResponse result = service.putTempStationOfJurisdiction(request);
       assertResponseIsSuccess(result, HttpStatus.OK);
+      verifyMetricsAreLogged();
     }
 
     @ParameterizedTest(name = "testPutTemporaryStationOfJurisdiction_{0}")
@@ -472,6 +488,7 @@ public class BipApiServiceTest {
           Assertions.assertThrows(
               test.ex.getClass(), () -> service.putTempStationOfJurisdiction(request));
       assertResponseExceptionWithStatus(ex, test.status);
+      verifyMetricIsLoggedForExceptions(test);
     }
   }
 
@@ -512,6 +529,21 @@ public class BipApiServiceTest {
     assertEquals(status.value(), response.getStatusCode());
     assertEquals(status.name(), response.getStatusMessage());
     assertNull(response.getMessages());
+  }
+
+  private void verifyMetricsAreLogged() {
+    verify(metricLoggerService, times(2))
+        .submitCount(ArgumentMatchers.any(), ArgumentMatchers.any(String[].class));
+    verify(metricLoggerService, times(1))
+        .submitRequestDuration(
+            ArgumentMatchers.anyLong(),
+            ArgumentMatchers.anyLong(),
+            ArgumentMatchers.any(String[].class));
+  }
+
+  private void verifyMetricIsLoggedForExceptions(TestCase testCase) {
+    verify(metricLoggerService, times(testCase == TestCase.BIP_INTERNAL ? 2 : 1))
+        .submitCount(ArgumentMatchers.any(), ArgumentMatchers.any(String[].class));
   }
 
   private void assertResponseExceptionWithStatus(Exception ex, HttpStatus expected)
