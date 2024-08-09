@@ -19,11 +19,6 @@ def pytest_collection_modifyitems(items):
 
 
 @pytest.fixture(autouse=True, scope='session')
-def get_dead_letter_endpoint():
-    return create_mq_endpoint_no_dlq(ClientName.BIP_DEAD_LETTER)
-
-
-@pytest.fixture(autouse=True, scope='session')
 def get_claim_endpoint():
     return create_mq_endpoint(ClientName.GET_CLAIM)
 
@@ -62,8 +57,7 @@ def create_mq_endpoint_no_dlq(name):
     return MqEndpoint(name, EXCHANGES[name], QUEUES[name], REPLY_QUEUES[name])
 
 def create_mq_endpoint(name):
-    arguments = {'x-dead-letter-exchange': EXCHANGES[ClientName.BIP_DEAD_LETTER],
-                 'x-dead-letter-routing-key': ClientName.BIP_DEAD_LETTER}
+    arguments = {'x-dead-letter-exchange': EXCHANGES[ClientName.BIP_DEAD_LETTER]}
     return MqEndpoint(name, EXCHANGES[name], QUEUES[name], REPLY_QUEUES[name], arguments)
 
 

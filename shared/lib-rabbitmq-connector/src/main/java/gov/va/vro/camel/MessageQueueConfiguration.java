@@ -34,11 +34,7 @@ public class MessageQueueConfiguration {
   private final String QUEUE_MESSAGES_DLQ = "bipDeadLetterQueue";
   private final String DLX_EXCHANGE_MESSAGES = "bipApi.dlx";
   private final Map<String, Object> DLQ_ARGS =
-      Map.of(
-          "x-dead-letter-exchange",
-          DLX_EXCHANGE_MESSAGES,
-          "x-dead-letter-routing-key",
-          QUEUE_MESSAGES_DLQ);
+      Map.of("x-dead-letter-exchange", DLX_EXCHANGE_MESSAGES);
 
   @Bean
   ConnectionFactory rabbitmqConnectionFactory() {

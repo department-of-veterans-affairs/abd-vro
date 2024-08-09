@@ -36,8 +36,6 @@ public class RabbitMqConfigProperties {
   private String deadLetterExchangeName;
 
   Map<String, Object> getDeadLetterQueueArgs() {
-    return Map.ofEntries(
-        entry("x-dead-letter-exchange", deadLetterExchangeName),
-        entry("x-dead-letter-routing-key", deadLetterQueueName));
+    return Map.ofEntries(entry("x-dead-letter-exchange", deadLetterExchangeName));
   }
 }

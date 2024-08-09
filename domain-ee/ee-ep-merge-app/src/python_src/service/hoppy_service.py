@@ -24,8 +24,7 @@ class HoppyService:
         reply_queue = REPLY_QUEUES[name]
         arguments: Dict[str, str] = {}
         if name != ClientName.BGS_ADD_CLAIM_NOTE:
-            arguments = {'x-dead-letter-exchange': EXCHANGES[ClientName.BIP_DEAD_LETTER],
-                         'x-dead-letter-routing-key': ClientName.BIP_DEAD_LETTER}
+            arguments = {'x-dead-letter-exchange': EXCHANGES[ClientName.BIP_DEAD_LETTER]}
 
         exchange_props = ExchangeProperties(name=exchange, passive_declare=False)
         request_queue_props = QueueProperties(name=req_queue, passive_declare=False, arguments=arguments)
