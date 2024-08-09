@@ -40,6 +40,19 @@ class DotGraphMachine:
         node.set_fillcolor('black')
         return node
 
+    def _final_node(self):
+        node = pydot.Node(
+            'f',
+            shape='circle',
+            style='invis',
+            color='red',
+            fontsize='1pt',
+            fixedsize='true',
+            width=0.2,
+            height=0.2,
+        )
+        return node
+
     def _initial_edge(self):
         return pydot.Edge(
             'i',
@@ -51,14 +64,16 @@ class DotGraphMachine:
         )
 
     def _state_as_node(self, state):
-        if 'failed' in state.name or 'failed' in state.name or 'error' in state.name:
+        if 'failed' in state.name or 'error' in state.name:
             color = ERROR
+        elif 'Abort' in state.name:
+            color = 'black'
         else:
             color = SUCCESS
 
         node = pydot.Node(
             state.id,
-            label=f'{state.name}',
+            label=f'{state.name.upper()}',
             shape='rectangle',
             style='rounded, filled',
             fontname=self.font_name,
@@ -76,6 +91,8 @@ class DotGraphMachine:
 
         if 'failed' in transition.source.name or 'failed' in transition.target.name or 'error' in transition.target.name:
             color = ERROR
+        elif 'Abort' in transition.source.name or 'Abort' in transition.target.name:
+            color = 'black'
         else:
             color = SUCCESS
 
@@ -92,25 +109,31 @@ class DotGraphMachine:
         graph.add_node(self._initial_node())
         graph.add_edge(self._initial_edge())
 
+        all_edges = []
         for state in self.machine.states:
             node = self._state_as_node(state)
             if node:
-                if 'Completed success' == state.name:
+                edges = []
+                for transition in state.transitions:
+                    if transition.internal:
+                        continue
+                    edge = self._transition_as_edge(transition)
+                    if edge:
+                        edges.append(edge)
+                if edges:
                     graph.add_node(node)
-                elif 'Completed error' == state.name:
-                    graph.add_node(node)
-                else:
-                    edges = []
-                    for transition in state.transitions:
-                        if transition.internal:
-                            continue
-                        edge = self._transition_as_edge(transition)
-                        if edge:
-                            edges.append(edge)
-                    if edges:
-                        graph.add_node(node)
-                        for edge in edges:
-                            graph.add_edge(edge)
+                    for edge in edges:
+                        graph.add_edge(edge)
+                    all_edges.extend(edges)
+
+        # Show only final nodes that have edges connected to them
+        for state in [s for s in self.machine.states if s.final]:
+            node = self._state_as_node(state)
+            if [e for e in all_edges if state.id in [e.get_source(), e.get_destination()]]:
+                graph.add_node(node)
+                graph.add_edge(pydot.Edge(state.id, 'f', style='invis'))
+
+        graph.add_node(self._final_node())
         return graph
 
     def __call__(self):

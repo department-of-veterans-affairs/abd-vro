@@ -1,13 +1,12 @@
 # pyproject.toml
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "-ra --no-cov"
-#addopts = "-ra --cov=./src --cov-fail-under=80 --no-cov-on-fail --cov-report=term:skip-covered --cov-report=html:build/reports/coverage --cov-branch"
+addopts = "-ra --cov=./src --cov-fail-under=80 --no-cov-on-fail --cov-report=term:skip-covered --cov-report=html:build/reports/coverage --cov-branch"
 testpaths = [
     "tests"
 ]
 env = [
-    "REQUEST_TIMEOUT = 2",
+    "RESPONSE_TIMEOUT=3",
     "REQUEST_RETRIES = 1",
     "EP_MERGE_SPECIAL_ISSUE_CODE = TEST",
     "EP400_CONTENTION_RETRIES = 2",

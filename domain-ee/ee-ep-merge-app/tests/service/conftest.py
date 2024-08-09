@@ -21,6 +21,7 @@ from service.ep_merge_machine import (
     EP400_CFI_CONTENTIONS_METRIC,
     EP400_NEW_CONTENTIONS_METRIC,
     ERROR_STATES_TO_LOG_METRICS,
+    JOB_ABORTED_METRIC,
     JOB_DURATION_METRIC,
     JOB_ERROR_METRIC_PREFIX,
     JOB_FAILURE_METRIC,
@@ -186,7 +187,8 @@ def assert_metrics_called(
             increment_metrics.append(CountMetric(JOB_SKIPPED_MERGE_METRIC))
 
     else:
-        increment_metrics.extend([CountMetric(JOB_FAILURE_METRIC), CountMetric(f'{JOB_ERROR_METRIC_PREFIX}.{expected_error_state}')])
+        completion_metric = JOB_FAILURE_METRIC if expected_completed_state == JobState.COMPLETED_ERROR else JOB_ABORTED_METRIC
+        increment_metrics.extend([CountMetric(completion_metric), CountMetric(f'{JOB_ERROR_METRIC_PREFIX}.{expected_error_state}')])
         if expected_error_state in ERROR_STATES_TO_LOG_METRICS:
             distribution_metrics.extend(contention_metrics)
             if expected_merge_skip:
@@ -215,6 +217,7 @@ def assert_requests_and_metrics_for_success(
         call(machine.job.job_id, get_pending_contentions_req),
         call(machine.job.job_id, get_ep400_contentions_req),
         call(machine.job.job_id, get_pending_claim_req),
+        call(machine.job.job_id, get_ep400_claim_req),
         call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
     ]
     if not merge_skipped:
