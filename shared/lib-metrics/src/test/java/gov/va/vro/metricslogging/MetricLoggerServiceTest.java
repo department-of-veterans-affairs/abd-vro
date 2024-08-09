@@ -22,7 +22,6 @@ public class MetricLoggerServiceTest {
   @Test
   void testConstructors() {
     try {
-      new MetricLoggerService();
       new MetricLoggerService(new MetricsApi());
     } catch (Exception e) {
       fail("Constructor failed", e);

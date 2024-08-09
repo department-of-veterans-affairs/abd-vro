@@ -22,10 +22,6 @@ public class MetricLoggerService implements IMetricLoggerService {
 
   private final MetricsApi metricsApi;
 
-  public MetricLoggerService() {
-    this.metricsApi = new MetricsApi();
-  }
-
   public static double getTimestamp() {
     return Long.valueOf(OffsetDateTime.now().toInstant().getEpochSecond()).doubleValue();
   }
