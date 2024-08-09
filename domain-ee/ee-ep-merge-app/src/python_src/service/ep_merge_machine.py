@@ -503,10 +503,10 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
         return None
 
     def has_error(self) -> bool:
-        return self.job.state == JobState.COMPLETED_ERROR  # type: ignore[no-any-return]
+        return bool(self.job.state == JobState.COMPLETED_ERROR)
 
     def is_aborted(self) -> bool:
-        return self.job.state == JobState.ABORTED  # type: ignore[no-any-return]
+        return bool(self.job.state == JobState.ABORTED)
 
     def has_contentions_for_merge(
         self, pending_contentions_response: get_contentions.Response, ep400_contentions_response: get_contentions.Response
@@ -528,7 +528,7 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
         errors = {'state': self.job.state, 'error': message}
 
         # if job was resumed from either of these points, the contentions were already moved over, and the job should end in error instead of aborting
-        if self.main_event == Workflow.RESUME_CANCEL_EP400 or self.main_event == Workflow.RESUME_ADD_NOTE:
+        if self.main_event in (Workflow.RESUME_CANCEL_EP400, Workflow.RESUME_ADD_NOTE):
             logging.warning(f'event=jobError job_id={self.job.job_id} error={jsonable_encoder(errors)}')
             self.job.error(errors)
         else:
