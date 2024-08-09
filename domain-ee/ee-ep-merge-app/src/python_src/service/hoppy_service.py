@@ -23,16 +23,11 @@ class HoppyService:
         req_queue = QUEUES[name]
         reply_queue = REPLY_QUEUES[name]
         arguments: Dict[str, str] = {}
-        if name == ClientName.BIP_DEAD_LETTER:
-            type = 'fanout'
-        elif name == ClientName.BGS_ADD_CLAIM_NOTE:
-            type = 'direct'
-        else:
-            type = 'direct'
+        if name != ClientName.BGS_ADD_CLAIM_NOTE:
             arguments = {'x-dead-letter-exchange': EXCHANGES[ClientName.BIP_DEAD_LETTER],
                          'x-dead-letter-routing-key': ClientName.BIP_DEAD_LETTER}
 
-        exchange_props = ExchangeProperties(name=exchange, passive_declare=False, type=type)
+        exchange_props = ExchangeProperties(name=exchange, passive_declare=False)
         request_queue_props = QueueProperties(name=req_queue, passive_declare=False, arguments=arguments)
         reply_queue_props = QueueProperties(name=reply_queue, passive_declare=False)
         client = RetryableAsyncHoppyClient(
