@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class CreateClaimContentionsConfig {
 
-  String createClaimContentionsQueue;
+  final String createClaimContentionsQueue;
   final DirectExchange bipApiExchange;
   final RabbitMqConfigProperties props;
 
