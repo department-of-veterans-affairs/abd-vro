@@ -1,4 +1,4 @@
-package gov.va.vro.bip.service;
+package gov.va.vro.metricslogging;
 
 import com.datadog.api.client.v1.model.DistributionPointsPayload;
 import com.datadog.api.client.v1.model.MetricsPayload;

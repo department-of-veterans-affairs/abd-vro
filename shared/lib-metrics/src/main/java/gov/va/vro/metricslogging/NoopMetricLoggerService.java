@@ -1,8 +1,7 @@
-package gov.va.vro.bip.service;
+package gov.va.vro.metricslogging;
 
 import com.datadog.api.client.v1.model.DistributionPointsPayload;
 import com.datadog.api.client.v1.model.MetricsPayload;
-import gov.va.vro.bip.config.LocalEnvironmentCondition;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Service;
 

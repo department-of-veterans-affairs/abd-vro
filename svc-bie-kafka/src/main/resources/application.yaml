@@ -30,6 +30,10 @@ spring:
         truststore-location: "file:${TRUSTSTORE_FILE}"
         truststore-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
         trust-store-type: "PKCS12"
+  datadog:
+    site: ${DD_SITE:ddog-gov.com}
+    api_key: ${DD_API_KEY:secret-api-key}
+    app_key: ${DD_APP_KEY:secret-app-key}
 
 ## Specify bie properties
 bie:

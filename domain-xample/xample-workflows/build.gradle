@@ -15,6 +15,7 @@ dependencies {
   implementation project(':domain-xample:xample-shared')
   implementation project(':shared:lib-rabbitmq-connector')
   implementation project(':shared:lib-bie-kafka')
+  implementation project(':shared:lib-metrics')
   implementation project(':shared:persistence-model')
 
   // Needed for *Repository classes to save to DB

@@ -3,7 +3,7 @@ package gov.va.vro.bip.config;
 import com.datadog.api.client.v1.api.MetricsApi;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.bip.service.BipRequestErrorHandler;
-import gov.va.vro.bip.service.MetricLoggerService;
+import gov.va.vro.metricslogging.MetricLoggerService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.core.DirectExchange;
