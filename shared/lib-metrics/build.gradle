@@ -15,7 +15,7 @@ dependencies {
   implementation "jakarta.validation:jakarta.validation-api"
   implementation 'net.datafaker:datafaker:2.3.1'
   implementation "com.google.guava:guava"
-  implementation 'org.apache.commons:commons-lang3:3.12.0'
+  implementation 'org.apache.commons:commons-lang3:3.16.0'
 
   // Datadog API
   implementation 'com.datadoghq:datadog-api-client:2.26.0'
