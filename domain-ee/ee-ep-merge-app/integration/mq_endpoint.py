@@ -4,7 +4,6 @@ import json
 from hoppy import async_consumer, async_publisher
 from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
 from pika import BasicProperties
-from src.python_src.config import ClientName
 
 
 class MqEndpointConsumerException(Exception):
