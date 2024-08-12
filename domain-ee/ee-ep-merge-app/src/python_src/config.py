@@ -19,7 +19,7 @@ class ClientName(str, Enum):
     UPDATE_CLAIM_CONTENTIONS = 'updateClaimContentionsClient'
     CANCEL_CLAIM = 'cancelClaimClient'
     BGS_ADD_CLAIM_NOTE = 'addClaimNoteClient'
-    BIP_DEAD_LETTER = 'bipDeadLetterQueue'
+    BIP_DEAD_LETTER = 'vroDeadLetterQueue'
 
 
 BIP_EXCHANGE = 'bipApiExchange'

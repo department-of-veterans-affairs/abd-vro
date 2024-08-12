@@ -29,7 +29,7 @@ public class RabbitMqConfigProperties {
   @Value("${spring.rabbitmq.password:bitnami}")
   private String password;
 
-  @Value("${deadLetterQueueName:bipDeadLetterQueue}")
+  @Value("${deadLetterQueueName:vroDeadLetterQueue}")
   private String deadLetterQueueName;
 
   @Value("${deadLetterExchangeName:bipApi.dlx}")
