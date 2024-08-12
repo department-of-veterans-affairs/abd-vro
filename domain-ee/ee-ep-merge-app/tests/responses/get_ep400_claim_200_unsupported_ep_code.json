@@ -3,7 +3,7 @@
   "statusMessage": "OK",
   "claim": {
     "claimId": 2,
-    "endProductCode": "400",
+    "endProductCode": "410",
     "tempStationOfJurisdiction": "111",
     "claimLifecycleStatus": "Open",
     "benefitClaimType": {
