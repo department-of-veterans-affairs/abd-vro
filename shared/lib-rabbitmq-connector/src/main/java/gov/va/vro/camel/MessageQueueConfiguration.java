@@ -32,7 +32,7 @@ public class MessageQueueConfiguration {
   private final String BIE_EVENTS_CONTENTION_DELETED = "bie-events-contention-deleted";
   private final String SAVE_TO_DB_PREFIX = "saveToDB-";
   private final String QUEUE_MESSAGES_DLQ = "vroDeadLetterQueue";
-  private final String DLX_EXCHANGE_MESSAGES = "bipApi.dlx";
+  private final String DLX_EXCHANGE_MESSAGES = "vro.dlx";
   private final Map<String, Object> DLQ_ARGS =
       Map.of("x-dead-letter-exchange", DLX_EXCHANGE_MESSAGES);
 

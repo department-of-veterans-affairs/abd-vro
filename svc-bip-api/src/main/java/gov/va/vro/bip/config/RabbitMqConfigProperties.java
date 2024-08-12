@@ -32,7 +32,7 @@ public class RabbitMqConfigProperties {
   @Value("${deadLetterQueueName:vroDeadLetterQueue}")
   private String deadLetterQueueName;
 
-  @Value("${deadLetterExchangeName:bipApi.dlx}")
+  @Value("${deadLetterExchangeName:vro.dlx}")
   private String deadLetterExchangeName;
 
   Map<String, Object> getDeadLetterQueueArgs() {

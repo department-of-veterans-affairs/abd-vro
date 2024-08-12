@@ -24,7 +24,7 @@ class ClientName(str, Enum):
 
 BIP_EXCHANGE = 'bipApiExchange'
 BGS_EXCHANGE = 'bgs-api'
-DLQ_EXCHANGE = 'bipApi.dlx'
+DLQ_EXCHANGE = 'vro.dlx'
 
 EXCHANGES = {
     ClientName.GET_CLAIM: os.environ.get('BIP_API_EXCHANGE') or BIP_EXCHANGE,
