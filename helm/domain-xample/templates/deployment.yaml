@@ -28,7 +28,7 @@ spec:
             {{- include "vro.commonEnvVars" . | nindent 12 }}
             {{- include "vro.dbClient.envVars" . | nindent 12 }}
             {{- include "vro.mqClient.envVars" . | nindent 12 }}
-            {{ - include "vro.datadog.envVars" . | nindent 12 }}
+            {{- include "vro.datadog.envVars" . | nindent 12 }}
           resources:
             requests:
               cpu: 150m
