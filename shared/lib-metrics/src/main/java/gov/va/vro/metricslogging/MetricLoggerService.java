@@ -17,8 +17,6 @@ import java.util.*;
 @Conditional(NonLocalEnvironmentCondition.class)
 public class MetricLoggerService implements IMetricLoggerService {
 
-  private static final String SERVICE_TAG = "service:vro-svc-bip-api";
-
   private final MetricsApi metricsApi;
 
   public static double getTimestamp() {
@@ -42,7 +40,6 @@ public class MetricLoggerService implements IMetricLoggerService {
     // a "key:value" format, while not required, can be convenient with querying metrics in the
     // datadog dashboard
     ArrayList<String> tags = new ArrayList<>();
-    tags.add(SERVICE_TAG);
     if (customTags != null) {
       tags.addAll(Arrays.asList(customTags));
     }
