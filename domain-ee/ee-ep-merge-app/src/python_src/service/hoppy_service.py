@@ -3,6 +3,7 @@ import asyncio
 from config import EXCHANGES, QUEUES, REPLY_QUEUES, ClientName, config
 from hoppy.async_hoppy_client import AsyncHoppyClient, RetryableAsyncHoppyClient
 from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
+from typing import Dict
 
 
 class HoppyService:
@@ -21,8 +22,12 @@ class HoppyService:
         exchange = EXCHANGES[name]
         req_queue = QUEUES[name]
         reply_queue = REPLY_QUEUES[name]
+        arguments: Dict[str, str] = {}
+        if name != ClientName.BGS_ADD_CLAIM_NOTE:
+            arguments = {'x-dead-letter-exchange': EXCHANGES[ClientName.BIP_DEAD_LETTER]}
+
         exchange_props = ExchangeProperties(name=exchange, passive_declare=False)
-        request_queue_props = QueueProperties(name=req_queue, passive_declare=False)
+        request_queue_props = QueueProperties(name=req_queue, passive_declare=False, arguments=arguments)
         reply_queue_props = QueueProperties(name=reply_queue, passive_declare=False)
         client = RetryableAsyncHoppyClient(
             name=name.value,

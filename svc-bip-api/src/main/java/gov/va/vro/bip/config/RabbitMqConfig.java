@@ -4,7 +4,7 @@ import gov.va.vro.bip.service.InvalidPayloadRejectingFatalExceptionStrategy;
 import gov.va.vro.metricslogging.IMetricLoggerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -74,5 +74,25 @@ public class RabbitMqConfig implements RabbitListenerConfigurer {
   @Bean
   DirectExchange bipApiExchange() {
     return new DirectExchange(exchangeName, true, true);
+  }
+
+  @Bean
+  FanoutExchange deadLetterExchange() {
+    log.info("Creating dead letter exchange with name={}", props.getDeadLetterExchangeName());
+    return new FanoutExchange(props.getDeadLetterExchangeName(), true, false);
+  }
+
+  @Bean
+  Queue deadLetterQueue() {
+    log.info(
+        "Creating dead letter queue with name={} and properties={}",
+        props.getDeadLetterQueueName(),
+        props.getDeadLetterQueueArgs());
+    return QueueBuilder.durable(props.getDeadLetterQueueName()).autoDelete().build();
+  }
+
+  @Bean
+  Binding deadLetterBinding() {
+    return BindingBuilder.bind(deadLetterQueue()).to(deadLetterExchange());
   }
 }
