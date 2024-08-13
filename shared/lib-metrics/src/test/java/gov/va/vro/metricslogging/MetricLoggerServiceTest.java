@@ -18,6 +18,7 @@ import java.util.Objects;
 public class MetricLoggerServiceTest {
 
   private MetricLoggerService mls = new MetricLoggerService(new MetricsApi());
+  private static final String METRICS_PREFIX = "vro_short_app_name";
 
   @Test
   void testConstructors() {
@@ -31,24 +32,29 @@ public class MetricLoggerServiceTest {
   @Test
   void testGetFullMetricString() {
     assertEquals(
-        "vro_bip.request_start",
-        MetricLoggerService.getFullMetricString(MetricLoggerService.METRIC.REQUEST_START));
-    assertEquals(
-        "vro_bip.request_duration",
-        MetricLoggerService.getFullMetricString(MetricLoggerService.METRIC.REQUEST_DURATION));
-    assertEquals(
-        "vro_bip.response_complete",
-        MetricLoggerService.getFullMetricString(MetricLoggerService.METRIC.RESPONSE_COMPLETE));
-    assertEquals(
-        "vro_bip.response_error",
-        MetricLoggerService.getFullMetricString(MetricLoggerService.METRIC.RESPONSE_ERROR));
-    assertEquals(
-        "vro_bip.listener_error",
-        MetricLoggerService.getFullMetricString(MetricLoggerService.METRIC.LISTENER_ERROR));
-    assertEquals(
-        "vro_bip.message_conversion_error",
+        String.format("%s.request_start", METRICS_PREFIX),
         MetricLoggerService.getFullMetricString(
-            MetricLoggerService.METRIC.MESSAGE_CONVERSION_ERROR));
+            METRICS_PREFIX, MetricLoggerService.METRIC.REQUEST_START));
+    assertEquals(
+        String.format("%s.request_duration", METRICS_PREFIX),
+        MetricLoggerService.getFullMetricString(
+            METRICS_PREFIX, MetricLoggerService.METRIC.REQUEST_DURATION));
+    assertEquals(
+        String.format("%s.response_complete", METRICS_PREFIX),
+        MetricLoggerService.getFullMetricString(
+            METRICS_PREFIX, MetricLoggerService.METRIC.RESPONSE_COMPLETE));
+    assertEquals(
+        String.format("%s.response_error", METRICS_PREFIX),
+        MetricLoggerService.getFullMetricString(
+            METRICS_PREFIX, MetricLoggerService.METRIC.RESPONSE_ERROR));
+    assertEquals(
+        String.format("%s.listener_error", METRICS_PREFIX),
+        MetricLoggerService.getFullMetricString(
+            METRICS_PREFIX, MetricLoggerService.METRIC.LISTENER_ERROR));
+    assertEquals(
+        String.format("%s.message_conversion_error", METRICS_PREFIX),
+        MetricLoggerService.getFullMetricString(
+            METRICS_PREFIX, MetricLoggerService.METRIC.MESSAGE_CONVERSION_ERROR));
   }
 
   @Test
@@ -57,25 +63,27 @@ public class MetricLoggerServiceTest {
         mls.getTagsForSubmission(new String[] {"source:integration-test", "version:2.1"});
     assertTrue(tags.contains("source:integration-test"));
     assertTrue(tags.contains("version:2.1"));
-    assertTrue(tags.contains("service:vro-svc-bip-api"));
-    assertEquals(tags.size(), 3);
+    assertEquals(tags.size(), 2);
   }
 
   @Test
   void getTagsForSubmissionNoCustomTags() {
     List<String> tags = mls.getTagsForSubmission(null);
-    assertTrue(tags.contains("service:vro-svc-bip-api"));
-    assertEquals(1, tags.size());
+    assertEquals(0, tags.size());
   }
 
   @Test
   void testCreateMetricsPayload() {
     MetricsPayload mp =
         mls.createMetricsPayload(
-            MetricLoggerService.METRIC.RESPONSE_COMPLETE, 14.0, new String[] {"zone:purple"});
+            METRICS_PREFIX,
+            MetricLoggerService.METRIC.RESPONSE_COMPLETE,
+            14.0,
+            new String[] {"zone:purple"});
     Assertions.assertEquals("count", mp.getSeries().get(0).getType());
     Assertions.assertEquals(1, mp.getSeries().size());
-    Assertions.assertEquals("vro_bip.response_complete", mp.getSeries().get(0).getMetric());
+    Assertions.assertEquals(
+        String.format("%s.response_complete", METRICS_PREFIX), mp.getSeries().get(0).getMetric());
     Assertions.assertEquals(14.0, mp.getSeries().get(0).getPoints().get(0).get(1));
     Assertions.assertTrue(
         Objects.requireNonNull(mp.getSeries().get(0).getTags()).contains("zone:purple"));
@@ -100,12 +108,14 @@ public class MetricLoggerServiceTest {
 
     DistributionPointsPayload dpl =
         mls.createDistributionPointsPayload(
+            METRICS_PREFIX,
             MetricLoggerService.METRIC.REQUEST_DURATION,
             timestamp,
             1523,
             new String[] {"food:pizza"});
     Assertions.assertEquals(1, dpl.getSeries().size());
-    Assertions.assertEquals("vro_bip.request_duration", dpl.getSeries().get(0).getMetric());
+    Assertions.assertEquals(
+        String.format("%s.request_duration", METRICS_PREFIX), dpl.getSeries().get(0).getMetric());
     Assertions.assertEquals(
         new DistributionPointItem(timestamp), dpl.getSeries().get(0).getPoints().get(0).get(0));
     Assertions.assertEquals(
@@ -119,8 +129,8 @@ public class MetricLoggerServiceTest {
   void testSubmitCountCallsApiWithPayload() {
     MetricsApi metricsApi = mock(MetricsApi.class);
     MetricLoggerService mls = new MetricLoggerService(metricsApi);
-    mls.submitCount(IMetricLoggerService.METRIC.RESPONSE_COMPLETE, null);
-    mls.submitCount(IMetricLoggerService.METRIC.RESPONSE_COMPLETE, 3.0, null);
+    mls.submitCount(METRICS_PREFIX, IMetricLoggerService.METRIC.RESPONSE_COMPLETE, null);
+    mls.submitCount(METRICS_PREFIX, IMetricLoggerService.METRIC.RESPONSE_COMPLETE, 3.0, null);
     try {
       verify(metricsApi, times(2)).submitMetricsAsync(ArgumentMatchers.any(MetricsPayload.class));
     } catch (Exception e) {
@@ -132,7 +142,7 @@ public class MetricLoggerServiceTest {
   void testSubmitRequestDurationCallsApiWithPayload() {
     MetricsApi metricsApi = mock(MetricsApi.class);
     MetricLoggerService mls = new MetricLoggerService(metricsApi);
-    mls.submitRequestDuration(100, 200, null);
+    mls.submitRequestDuration("app_name_placeholder", 100, 200, null);
     try {
       verify(metricsApi, times(1))
           .submitDistributionPointsAsync(ArgumentMatchers.any(DistributionPointsPayload.class));
