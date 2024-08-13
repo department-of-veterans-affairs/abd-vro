@@ -1,0 +1,10 @@
+{
+  "statusCode": 200,
+  "statusMessage": "OK",
+  "claim": {
+    "claimId": 1,
+    "endProductCode": "010",
+    "tempStationOfJurisdiction": "111",
+    "claimLifecycleStatus": "Closed"
+  }
+}

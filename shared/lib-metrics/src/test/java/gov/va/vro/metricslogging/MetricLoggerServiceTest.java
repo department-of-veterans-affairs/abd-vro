@@ -1,13 +1,15 @@
-package gov.va.vro.bip.service;
+package gov.va.vro.metricslogging;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import com.datadog.api.client.v1.api.MetricsApi;
 import com.datadog.api.client.v1.model.DistributionPointItem;
 import com.datadog.api.client.v1.model.DistributionPointsPayload;
 import com.datadog.api.client.v1.model.MetricsPayload;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -16,6 +18,15 @@ import java.util.Objects;
 public class MetricLoggerServiceTest {
 
   private MetricLoggerService mls = new MetricLoggerService(new MetricsApi());
+
+  @Test
+  void testConstructors() {
+    try {
+      new MetricLoggerService(new MetricsApi());
+    } catch (Exception e) {
+      fail("Constructor failed", e);
+    }
+  }
 
   @Test
   void testGetFullMetricString() {
@@ -47,16 +58,14 @@ public class MetricLoggerServiceTest {
     assertTrue(tags.contains("source:integration-test"));
     assertTrue(tags.contains("version:2.1"));
     assertTrue(tags.contains("service:vro-svc-bip-api"));
-    assertTrue(tags.contains(String.format("environment:%s", System.getenv("env"))));
-    assertEquals(tags.size(), 4);
+    assertEquals(tags.size(), 3);
   }
 
   @Test
   void getTagsForSubmissionNoCustomTags() {
     List<String> tags = mls.getTagsForSubmission(null);
     assertTrue(tags.contains("service:vro-svc-bip-api"));
-    assertTrue(tags.contains(String.format("environment:%s", System.getenv("env"))));
-    assertEquals(2, tags.size());
+    assertEquals(1, tags.size());
   }
 
   @Test
@@ -64,11 +73,12 @@ public class MetricLoggerServiceTest {
     MetricsPayload mp =
         mls.createMetricsPayload(
             MetricLoggerService.METRIC.RESPONSE_COMPLETE, 14.0, new String[] {"zone:purple"});
-    assertEquals("count", mp.getSeries().get(0).getType());
-    assertEquals(1, mp.getSeries().size());
-    assertEquals("vro_bip.response_complete", mp.getSeries().get(0).getMetric());
-    assertEquals(14.0, mp.getSeries().get(0).getPoints().get(0).get(1));
-    assertTrue(Objects.requireNonNull(mp.getSeries().get(0).getTags()).contains("zone:purple"));
+    Assertions.assertEquals("count", mp.getSeries().get(0).getType());
+    Assertions.assertEquals(1, mp.getSeries().size());
+    Assertions.assertEquals("vro_bip.response_complete", mp.getSeries().get(0).getMetric());
+    Assertions.assertEquals(14.0, mp.getSeries().get(0).getPoints().get(0).get(1));
+    Assertions.assertTrue(
+        Objects.requireNonNull(mp.getSeries().get(0).getTags()).contains("zone:purple"));
   }
 
   @Test
@@ -94,17 +104,41 @@ public class MetricLoggerServiceTest {
             timestamp,
             1523,
             new String[] {"food:pizza"});
-    assertEquals(1, dpl.getSeries().size());
-    assertEquals("vro_bip.request_duration", dpl.getSeries().get(0).getMetric());
-    assertEquals(
+    Assertions.assertEquals(1, dpl.getSeries().size());
+    Assertions.assertEquals("vro_bip.request_duration", dpl.getSeries().get(0).getMetric());
+    Assertions.assertEquals(
         new DistributionPointItem(timestamp), dpl.getSeries().get(0).getPoints().get(0).get(0));
-    assertEquals(
+    Assertions.assertEquals(
         new DistributionPointItem(List.of(1523.0)),
         dpl.getSeries().get(0).getPoints().get(0).get(1));
-    assertTrue(Objects.requireNonNull(dpl.getSeries().get(0).getTags()).contains("food:pizza"));
-    mls.submitCount(
-        MetricLoggerService.METRIC.RESPONSE_COMPLETE,
-        new String[] {"isTest:true", "source:ci-test"});
+    Assertions.assertTrue(
+        Objects.requireNonNull(dpl.getSeries().get(0).getTags()).contains("food:pizza"));
+  }
+
+  @Test
+  void testSubmitCountCallsApiWithPayload() {
+    MetricsApi metricsApi = mock(MetricsApi.class);
+    MetricLoggerService mls = new MetricLoggerService(metricsApi);
+    mls.submitCount(IMetricLoggerService.METRIC.RESPONSE_COMPLETE, null);
+    mls.submitCount(IMetricLoggerService.METRIC.RESPONSE_COMPLETE, 3.0, null);
+    try {
+      verify(metricsApi, times(2)).submitMetricsAsync(ArgumentMatchers.any(MetricsPayload.class));
+    } catch (Exception e) {
+      fail(e);
+    }
+  }
+
+  @Test
+  void testSubmitRequestDurationCallsApiWithPayload() {
+    MetricsApi metricsApi = mock(MetricsApi.class);
+    MetricLoggerService mls = new MetricLoggerService(metricsApi);
+    mls.submitRequestDuration(100, 200, null);
+    try {
+      verify(metricsApi, times(1))
+          .submitDistributionPointsAsync(ArgumentMatchers.any(DistributionPointsPayload.class));
+    } catch (Exception e) {
+      fail(e);
+    }
   }
 
   @Test

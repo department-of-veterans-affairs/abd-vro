@@ -1,4 +1,4 @@
-package gov.va.vro.bip.config;
+package gov.va.vro.metricslogging;
 
 import com.datadog.api.client.ApiClient;
 import com.datadog.api.client.RetryConfig;
