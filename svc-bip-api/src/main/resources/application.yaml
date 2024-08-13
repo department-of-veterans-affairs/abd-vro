@@ -40,6 +40,8 @@ createClaimContentionsQueue: createClaimContentionsQueue
 updateClaimContentionsQueue: updateClaimContentionsQueue
 putTempStationOfJurisdictionQueue: putTempStationOfJurisdictionQueue
 exchangeName: bipApiExchange
+deadLetterQueueName: vroDeadLetterQueue
+deadLetterExchangeName: vro.dlx
 
 # Actuator for health check, liveness, and readiness
 management:

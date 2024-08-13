@@ -11,13 +11,13 @@ class MqEndpointConsumerException(Exception):
 
 
 class MqEndpoint:
-    def __init__(self, name, exchange, req_queue, response_queue):
+    def __init__(self, name, exchange, req_queue, response_queue, arguments = {}):
         self.name = name
         self.index = 0
         self.auto_response_files = []
 
         exchange_props = ExchangeProperties(name=exchange, auto_delete=True, passive_declare=False)
-        queue_props = QueueProperties(name=req_queue, auto_delete=True, passive_declare=False)
+        queue_props = QueueProperties(name=req_queue, auto_delete=True, passive_declare=False, arguments=arguments)
         self.consumer = async_consumer.AsyncConsumer(
             exchange_properties=exchange_props, queue_properties=queue_props, routing_key=req_queue, reply_callback=self._on_message
         )
