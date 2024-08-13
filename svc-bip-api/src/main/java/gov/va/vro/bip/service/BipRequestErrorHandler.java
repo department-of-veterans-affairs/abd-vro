@@ -67,6 +67,7 @@ public class BipRequestErrorHandler implements RabbitListenerErrorHandler {
       }
 
       metricLoggerService.submitCount(
+          BipApiService.METRICS_PREFIX,
           MetricLoggerService.METRIC.LISTENER_ERROR,
           new String[] {
             "event:statusCodeException",
@@ -97,6 +98,7 @@ public class BipRequestErrorHandler implements RabbitListenerErrorHandler {
                   .build());
 
       metricLoggerService.submitCount(
+          BipApiService.METRICS_PREFIX,
           MetricLoggerService.METRIC.LISTENER_ERROR,
           new String[] {
             "event:unexpectedError",

@@ -29,6 +29,7 @@ import gov.va.vro.bip.model.lifecycle.PutClaimLifecycleRequest;
 import gov.va.vro.bip.model.lifecycle.PutClaimLifecycleResponse;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionRequest;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionResponse;
+import gov.va.vro.metricslogging.IMetricLoggerService;
 import gov.va.vro.metricslogging.MetricLoggerService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -524,6 +525,50 @@ public class BipApiServiceTest {
     }
   }
 
+  @Test
+  public void testMetricsUsesBipPrefix() throws Exception {
+
+    mock2xxResponse(
+        HttpMethod.PUT,
+        TEMP_STATION_OF_JURISDICTION,
+        HttpStatus.OK,
+        PutTempStationOfJurisdictionResponse.class,
+        null);
+
+    PutTempStationOfJurisdictionRequest request =
+        PutTempStationOfJurisdictionRequest.builder()
+            .claimId(GOOD_CLAIM_ID)
+            .tempStationOfJurisdiction("lorem")
+            .build();
+
+    PutTempStationOfJurisdictionResponse result = service.putTempStationOfJurisdiction(request);
+    assertResponseIsSuccess(result, HttpStatus.OK);
+    verify(metricLoggerService, times(1))
+        .submitCount(
+            "vro_bip",
+            IMetricLoggerService.METRIC.REQUEST_START,
+            new String[] {
+              "expectedResponse:PutTempStationOfJurisdictionResponse",
+              "source:bipApiService",
+              "method:PUT"
+            });
+    verify(metricLoggerService, times(1))
+        .submitRequestDuration(
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyLong(),
+            ArgumentMatchers.anyLong(),
+            ArgumentMatchers.any());
+    verify(metricLoggerService, times(1))
+        .submitCount(
+            "vro_bip",
+            IMetricLoggerService.METRIC.RESPONSE_COMPLETE,
+            new String[] {
+              "expectedResponse:PutTempStationOfJurisdictionResponse",
+              "source:bipApiService",
+              "method:PUT"
+            });
+  }
+
   private void assertResponseIsSuccess(BipPayloadResponse response, HttpStatus status) {
     assertNotNull(response);
     assertEquals(status.value(), response.getStatusCode());
@@ -533,9 +578,13 @@ public class BipApiServiceTest {
 
   private void verifyMetricsAreLogged() {
     verify(metricLoggerService, times(2))
-        .submitCount(ArgumentMatchers.any(), ArgumentMatchers.any(String[].class));
+        .submitCount(
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.any(),
+            ArgumentMatchers.any(String[].class));
     verify(metricLoggerService, times(1))
         .submitRequestDuration(
+            ArgumentMatchers.anyString(),
             ArgumentMatchers.anyLong(),
             ArgumentMatchers.anyLong(),
             ArgumentMatchers.any(String[].class));
@@ -543,7 +592,10 @@ public class BipApiServiceTest {
 
   private void verifyMetricIsLoggedForExceptions(TestCase testCase) {
     verify(metricLoggerService, times(testCase == TestCase.BIP_INTERNAL ? 2 : 1))
-        .submitCount(ArgumentMatchers.any(), ArgumentMatchers.any(String[].class));
+        .submitCount(
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.any(),
+            ArgumentMatchers.any(String[].class));
   }
 
   private void assertResponseExceptionWithStatus(Exception ex, HttpStatus expected)

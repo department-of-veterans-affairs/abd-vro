@@ -47,12 +47,21 @@ class BieXampleRoutesTest {
 
     // Verify metrics logging
     verify(metricLoggerService, times(1))
-        .submitCount(IMetricLoggerService.METRIC.REQUEST_START, metricTagsSaveContentionEvent);
+        .submitCount(
+            "vro_xample_workflows",
+            IMetricLoggerService.METRIC.REQUEST_START,
+            metricTagsSaveContentionEvent);
     verify(metricLoggerService, times(1))
         .submitRequestDuration(
-            ArgumentMatchers.anyLong(), ArgumentMatchers.anyLong(), ArgumentMatchers.any());
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyLong(),
+            ArgumentMatchers.anyLong(),
+            ArgumentMatchers.any());
     verify(metricLoggerService, times(1))
-        .submitCount(IMetricLoggerService.METRIC.RESPONSE_COMPLETE, metricTagsSaveContentionEvent);
+        .submitCount(
+            "vro_xample_workflows",
+            IMetricLoggerService.METRIC.RESPONSE_COMPLETE,
+            metricTagsSaveContentionEvent);
   }
 
   @Test
@@ -77,7 +86,10 @@ class BieXampleRoutesTest {
 
     // Verify metrics logging
     verify(metricLoggerService, times(1))
-        .submitCount(IMetricLoggerService.METRIC.RESPONSE_ERROR, metricTagsSaveContentionEvent);
+        .submitCount(
+            "vro_xample_workflows",
+            IMetricLoggerService.METRIC.RESPONSE_ERROR,
+            metricTagsSaveContentionEvent);
   }
 
   private BieMessagePayload createSamplePayload() {

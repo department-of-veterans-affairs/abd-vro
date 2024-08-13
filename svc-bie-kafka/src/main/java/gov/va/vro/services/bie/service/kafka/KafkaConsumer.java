@@ -26,6 +26,8 @@ public class KafkaConsumer {
   private final AmqpMessageSender amqpMessageSender;
   private final BieProperties bieProperties;
   final IMetricLoggerService metricLogger;
+  private static final String METRICS_PREFIX = "vro_bie_kafka";
+
   final String[] metricTagsSendToQueue = new String[] {"type:sendRecordToMq", "source:svcBieKafka"};
 
   @KafkaListener(topics = "#{bieProperties.topicNames()}")
@@ -49,18 +51,20 @@ public class KafkaConsumer {
         log.info("Sending String BieMessagePayload to Amqp Message Sender: {}", payload);
       }
 
-      metricLogger.submitCount(MetricLoggerService.METRIC.REQUEST_START, metricTagsWithTopicName);
+      metricLogger.submitCount(
+          METRICS_PREFIX, MetricLoggerService.METRIC.REQUEST_START, metricTagsWithTopicName);
       long transactionStartTime = System.nanoTime();
 
       amqpMessageSender.send(ContentionEvent.rabbitMqExchangeName(topicName), topicName, payload);
 
       metricLogger.submitRequestDuration(
-          transactionStartTime, System.nanoTime(), metricTagsWithTopicName);
+          METRICS_PREFIX, transactionStartTime, System.nanoTime(), metricTagsWithTopicName);
       metricLogger.submitCount(
-          MetricLoggerService.METRIC.RESPONSE_COMPLETE, metricTagsWithTopicName);
+          METRICS_PREFIX, MetricLoggerService.METRIC.RESPONSE_COMPLETE, metricTagsWithTopicName);
     } catch (Exception e) {
       log.error("Exception occurred while processing message: " + e.getMessage());
-      metricLogger.submitCount(MetricLoggerService.METRIC.RESPONSE_ERROR, metricTagsSendToQueue);
+      metricLogger.submitCount(
+          METRICS_PREFIX, MetricLoggerService.METRIC.RESPONSE_ERROR, metricTagsSendToQueue);
     }
   }
 

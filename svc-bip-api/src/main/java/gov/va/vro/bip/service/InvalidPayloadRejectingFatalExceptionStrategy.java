@@ -32,6 +32,7 @@ public class InvalidPayloadRejectingFatalExceptionStrategy implements FatalExcep
           ((ListenerExecutionFailedException) t).getFailedMessage());
 
       metricLoggerService.submitCount(
+          BipApiService.METRICS_PREFIX,
           MetricLoggerService.METRIC.MESSAGE_CONVERSION_ERROR,
           new String[] {
             "event:fatalMessageConversionError",
