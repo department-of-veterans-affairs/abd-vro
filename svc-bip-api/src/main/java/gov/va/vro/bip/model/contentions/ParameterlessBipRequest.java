@@ -12,4 +12,4 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
-public class ParameterlessBipRequest implements BipPayloadRequest {}
+public final class ParameterlessBipRequest implements BipPayloadRequest {}

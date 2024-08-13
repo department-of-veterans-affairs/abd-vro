@@ -6,10 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import gov.va.vro.bip.model.BipPayloadRequest;
 import gov.va.vro.bip.model.contentions.GetSpecialIssueTypesResponse;
 import gov.va.vro.bip.model.contentions.ParameterlessBipRequest;
-import gov.va.vro.bip.service.MetricLoggerService;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.RestTemplate;
@@ -20,7 +18,8 @@ public class SpecialIssueTypesTest extends BaseIntegrationTest {
 
   @MockBean private RestTemplate restTemplate;
 
-  @Test // g :svc-bip-api:integrationTest --tests gov.va.vro.bip.SpecialIssueTypesTest.testGetSpecialIssueTypes_200
+  @Test // g :svc-bip-api:integrationTest --tests
+  // gov.va.vro.bip.SpecialIssueTypesTest.testGetSpecialIssueTypes_200
   void testGetSpecialIssueTypes_200() {
     BipPayloadRequest request = ParameterlessBipRequest.builder().build();
     GetSpecialIssueTypesResponse response = sendAndReceive(getSpecialIssueTypesQueue, request);
