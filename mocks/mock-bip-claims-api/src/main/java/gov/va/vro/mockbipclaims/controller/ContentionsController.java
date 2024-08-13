@@ -143,7 +143,7 @@ public class ContentionsController extends BaseController implements Contentions
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
-  /** Not fully implemented. Only used for connectivity testing. */
+  /** Responds with the json in file: mocks/mock-bip-claims-api/src/main/resources/mock-special-issues.json*/
   @Override
   public ResponseEntity<SpecialIssueTypesResponse> getSpecialIssueTypes() {
     log.info("Returning mock special issue types...");
