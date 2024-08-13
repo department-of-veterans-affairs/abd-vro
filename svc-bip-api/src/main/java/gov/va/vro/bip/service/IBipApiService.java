@@ -6,6 +6,7 @@ import gov.va.vro.bip.model.claim.GetClaimResponse;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
+import gov.va.vro.bip.model.contentions.GetSpecialIssueTypesResponse;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsResponse;
 import gov.va.vro.bip.model.lifecycle.PutClaimLifecycleRequest;
@@ -83,4 +84,13 @@ public interface IBipApiService {
    */
   PutTempStationOfJurisdictionResponse putTempStationOfJurisdiction(
       PutTempStationOfJurisdictionRequest request);
+
+  /**
+   * Gets a list of all special issue types.
+   *
+   * @param request request
+   * @return response
+   * @throws BipException error occurs
+   */
+  GetSpecialIssueTypesResponse getSpecialIssueTypes();
 }

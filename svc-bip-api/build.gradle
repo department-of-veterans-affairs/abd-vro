@@ -52,6 +52,7 @@ testing {
         implementation "io.jsonwebtoken:jjwt-api:${jjwt_version}"
         implementation "io.jsonwebtoken:jjwt-impl:${jjwt_version}"
         implementation "io.jsonwebtoken:jjwt-jackson:${jjwt_version}"
+        implementation 'org.apache.commons:commons-lang3:3.12.0'
       }
     }
   }

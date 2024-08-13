@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ClaimsBuilder;
 import io.jsonwebtoken.Jwts;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -18,6 +19,7 @@ import java.util.Date;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = "bip")
+@NoArgsConstructor
 public class BipApiProps {
 
   static final String HTTPS = "https://";
@@ -49,6 +51,11 @@ public class BipApiProps {
     }
     return baseUrl + path;
   }
+
+  public String getAvailabilityUrl() {
+    return getClaimRequestUrl(BipApiService.SPECIAL_ISSUE_TYPES);
+  }
+
   /**
    * Creates common Jwt claims.
    *

@@ -55,6 +55,10 @@ public class BipApiConfig {
   public BipApiProps getBipApiProps() {
     return new BipApiProps();
   }
+  // @Bean
+  // public BipApiProps getBipSpecialInterestService() {
+  //   return new SpecialIssueStateService();
+  // }
 
   private KeyStore getKeyStore(String base64, String password)
       throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {

@@ -66,33 +66,30 @@ import java.util.Objects;
 @ExtendWith(MockitoExtension.class)
 @Slf4j
 public class BipApiServiceTest {
-  private static final ObjectMapper MAPPER = new ObjectMapper();
-  private static final long GOOD_CLAIM_ID = 9666959L;
-  private static final long NOT_FOUND_CLAIM_ID = 9234567L;
-  private static final long INTERNAL_SERVER_ERROR_CLAIM_ID = 9345678L;
-  private static final String RESPONSE_500 = "bip-test-data/response_500.json";
-  private static final String CONTENTION_RESPONSE_200 =
-      "bip-test-data/contention_response_200.json";
-  private static final String CONTENTION_RESPONSE_201 =
-      "bip-test-data/contention_response_201.json";
-  private static final String CLAIM_RESPONSE_404 = "bip-test-data/claim_response_404.json";
-  private static final String CLAIM_RESPONSE_200 = "bip-test-data/claim_response_200.json";
-  private static final String CLAIM_DETAILS = "/claims/%s";
-  private static final String CLAIM_LIFECYCLE_STATUS = "/claims/%s/lifecycle_status";
-  private static final String CANCEL_CLAIM = "/claims/%s/cancel";
-  private static final String CONTENTION = "/claims/%s/contentions";
-  private static final String TEMP_STATION_OF_JURISDICTION =
-      "/claims/%s/temporary_station_of_jurisdiction";
-  private static final String HTTPS = "https://";
-  private static final String CLAIM_URL = "claims.bip.va.gov";
-  private static final String CLAIM_SECRET = "thesecretissecurenowthatitislongenough2184vnrwma";
-  private static final String CLAIM_USERID = "userid";
-  private static final String CLAIM_ISSUER = "issuer";
-  private static final String STATION_ID = "280";
-  private static final String APP_ID = "bip";
+  static final ObjectMapper MAPPER = new ObjectMapper();
+  static final long GOOD_CLAIM_ID = 9666959L;
+  static final long NOT_FOUND_CLAIM_ID = 9234567L;
+  static final long INTERNAL_SERVER_ERROR_CLAIM_ID = 9345678L;
+  static final String RESPONSE_500 = "bip-test-data/response_500.json";
+  static final String CONTENTION_RESPONSE_200 = "bip-test-data/contention_response_200.json";
+  static final String CONTENTION_RESPONSE_201 = "bip-test-data/contention_response_201.json";
+  static final String CLAIM_RESPONSE_404 = "bip-test-data/claim_response_404.json";
+  static final String CLAIM_RESPONSE_200 = "bip-test-data/claim_response_200.json";
+  static final String CLAIM_DETAILS = "/claims/%s";
+  static final String CLAIM_LIFECYCLE_STATUS = "/claims/%s/lifecycle_status";
+  static final String CANCEL_CLAIM = "/claims/%s/cancel";
+  static final String CONTENTION = "/claims/%s/contentions";
+  static final String TEMP_STATION_OF_JURISDICTION = "/claims/%s/temporary_station_of_jurisdiction";
+  static final String HTTPS = "https://";
+  static final String CLAIM_URL = "claims.bip.va.gov";
+  static final String CLAIM_SECRET = "thesecretissecurenowthatitislongenough2184vnrwma";
+  static final String CLAIM_USERID = "userid";
+  static final String CLAIM_ISSUER = "issuer";
+  static final String STATION_ID = "280";
+  static final String APP_ID = "bip";
   // TODO get sample response
-  private static final String API_RESPONSE_200 = "{\"mock response\"}";
-  private static final String SPECIAL_ISSUE_TYPES = "/contentions/special_issue_types";
+  static final String API_RESPONSE_200 = "{\"mock response\"}";
+  static final String SPECIAL_ISSUE_TYPES = "/contentions/special_issue_types";
 
   private BipApiService service;
 

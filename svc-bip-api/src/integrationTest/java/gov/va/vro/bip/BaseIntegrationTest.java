@@ -60,6 +60,9 @@ public class BaseIntegrationTest {
   @Value("${createClaimContentionsQueue}")
   protected String createClaimContentionsQueue;
 
+  @Value("${getSpecialIssueTypesQueue}")
+  protected String getSpecialIssueTypesQueue;
+
   @BeforeEach
   public void resetMock() {
     resetMockController.resetClaim(CLAIM_ID_200);
