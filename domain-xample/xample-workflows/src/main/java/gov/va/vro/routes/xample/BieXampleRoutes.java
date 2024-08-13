@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @ComponentScan("gov.va.vro.metricslogging")
 public class BieXampleRoutes {
+
+  private static final String METRICS_PREFIX = "vro_xample_workflows";
   private final DbHelper dbHelper;
   private final ObjectMapper objectMapper;
   private final IMetricLoggerService metricLogger;
@@ -33,15 +35,17 @@ public class BieXampleRoutes {
   public void handleMessage(BieMessagePayload payload) {
     try {
       metricLogger.submitCount(
-          IMetricLoggerService.METRIC.REQUEST_START, metricTagsSaveContentionEvent);
+          METRICS_PREFIX, IMetricLoggerService.METRIC.REQUEST_START, metricTagsSaveContentionEvent);
       long transactionStartTime = System.nanoTime();
 
       dbHelper.saveContentionEvent(payload);
 
       metricLogger.submitRequestDuration(
-          transactionStartTime, System.nanoTime(), metricTagsSaveContentionEvent);
+          METRICS_PREFIX, transactionStartTime, System.nanoTime(), metricTagsSaveContentionEvent);
       metricLogger.submitCount(
-          IMetricLoggerService.METRIC.RESPONSE_COMPLETE, metricTagsSaveContentionEvent);
+          METRICS_PREFIX,
+          IMetricLoggerService.METRIC.RESPONSE_COMPLETE,
+          metricTagsSaveContentionEvent);
 
       log.info("Saved Contention Event to DB");
       payload.setStatus(200);
@@ -61,7 +65,9 @@ public class BieXampleRoutes {
       log.error("FailedMessageEventBody: " + jsonBody);
 
       metricLogger.submitCount(
-          IMetricLoggerService.METRIC.RESPONSE_ERROR, metricTagsSaveContentionEvent);
+          METRICS_PREFIX,
+          IMetricLoggerService.METRIC.RESPONSE_ERROR,
+          metricTagsSaveContentionEvent);
     } catch (JsonProcessingException jsonException) {
       log.error("Error converting failed message to JSON", jsonException);
     } catch (Exception exception) {
