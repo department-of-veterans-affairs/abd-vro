@@ -7,11 +7,10 @@ from hoppy.async_hoppy_client import AsyncHoppyClient
 from hoppy.hoppy_properties import ExchangeProperties, QueueProperties
 
 from src.python_src.api import on_shut_down, start_hoppy, start_job_runner
-from src.python_src.config import BIP_EXCHANGE
+from src.python_src.config import BIP_EXCHANGE, EXCHANGES, ClientName
 from src.python_src.schema.merge_job import JobState
 from src.python_src.schema.response import GeneralResponse
 from src.python_src.service.job_store import JOB_STORE
-from src.python_src.config import EXCHANGES, ClientName
 
 
 @pytest.fixture(scope='session')
