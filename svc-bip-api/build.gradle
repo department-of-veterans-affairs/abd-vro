@@ -13,8 +13,6 @@ dependencies {
   implementation project(':domain-xample:xample-shared')
   implementation project(":shared:lib-metrics")
 
-  implementation "org.springdoc:springdoc-openapi-starter-webmvc-api:${spring_doc_version}"
-  implementation 'org.apache.httpcomponents:httpclient:4.5.14'
   implementation 'org.apache.httpcomponents.client5:httpclient5:5.3.1'
 
   implementation "com.fasterxml.jackson.core:jackson-core"
@@ -23,8 +21,6 @@ dependencies {
 
   def jjwt_version = "0.12.6"
   implementation "io.jsonwebtoken:jjwt-api:${jjwt_version}"
-  implementation "io.jsonwebtoken:jjwt-impl:${jjwt_version}"
-  implementation "io.jsonwebtoken:jjwt-jackson:${jjwt_version}"
 
   // RabbitMQ
   implementation 'org.springframework.boot:spring-boot-starter-amqp'
@@ -34,7 +30,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
   // Datadog API
-  implementation 'com.datadoghq:datadog-api-client:2.27.0'
+  testImplementation 'com.datadoghq:datadog-api-client:2.27.0'
 }
 
 // https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html#sec:jvm_test_suite_usage
@@ -50,8 +46,6 @@ testing {
 
         def jjwt_version = "0.12.3"
         implementation "io.jsonwebtoken:jjwt-api:${jjwt_version}"
-        implementation "io.jsonwebtoken:jjwt-impl:${jjwt_version}"
-        implementation "io.jsonwebtoken:jjwt-jackson:${jjwt_version}"
       }
     }
   }
