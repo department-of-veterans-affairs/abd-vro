@@ -142,7 +142,7 @@ public class BipApiService implements IBipApiService {
   @Override
   public GetSpecialIssueTypesResponse getSpecialIssueTypes() {
     String url = bipApiProps.getClaimRequestUrl(SPECIAL_ISSUE_TYPES);
-    return makeRequest(url, HttpMethod.PUT, null, GetSpecialIssueTypesResponse.class);
+    return makeRequest(url, HttpMethod.GET, null, GetSpecialIssueTypesResponse.class);
   }
 
   @SuppressWarnings("unchecked")
