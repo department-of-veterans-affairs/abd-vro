@@ -35,6 +35,9 @@ public class RabbitMqConfigProperties {
   @Value("${deadLetterExchangeName:vro.dlx}")
   private String deadLetterExchangeName;
 
+  @Value("${deadLetterMaxQueueLength:1000}")
+  private Long deadLetterMaxQueueLength;
+
   Map<String, Object> getDeadLetterQueueArgs() {
     return Map.ofEntries(entry("x-dead-letter-exchange", deadLetterExchangeName));
   }

@@ -42,6 +42,7 @@ putTempStationOfJurisdictionQueue: putTempStationOfJurisdictionQueue
 exchangeName: bipApiExchange
 deadLetterQueueName: vroDeadLetterQueue
 deadLetterExchangeName: vro.dlx
+deadLetterMaxQueueLength: 1000
 
 # Actuator for health check, liveness, and readiness
 management:

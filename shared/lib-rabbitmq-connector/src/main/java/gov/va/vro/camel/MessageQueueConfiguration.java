@@ -33,6 +33,7 @@ public class MessageQueueConfiguration {
   private final String SAVE_TO_DB_PREFIX = "saveToDB-";
   private final String QUEUE_MESSAGES_DLQ = "vroDeadLetterQueue";
   private final String DLX_EXCHANGE_MESSAGES = "vro.dlx";
+  private final Long DEAD_LETTER_MAX_LENGTH = 1000L;
   private final Map<String, Object> DLQ_ARGS =
       Map.of("x-dead-letter-exchange", DLX_EXCHANGE_MESSAGES);
 
@@ -171,7 +172,7 @@ public class MessageQueueConfiguration {
 
   @Bean
   Queue deadLetterQueue() {
-    return QueueBuilder.durable(QUEUE_MESSAGES_DLQ).build();
+    return QueueBuilder.durable(QUEUE_MESSAGES_DLQ).maxLength(DEAD_LETTER_MAX_LENGTH).build();
   }
 
   @Bean
