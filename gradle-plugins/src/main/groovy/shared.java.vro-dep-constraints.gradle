@@ -9,10 +9,10 @@ plugins {
 
 ext {
     mapstruct_version="1.4.2.Final"
-    spring_framework_version="6.1.+"
+    spring_framework_version="6.1.12"
     snakeyaml_version="2.2"
     jackson_databind_version="2.16"
-    spring_core_version="6.1.+"
+    spring_core_version="6.1.12"
 }
 
 afterEvaluate {
@@ -30,7 +30,7 @@ dependencies {
         // for starter-bom
         implementation "org.springframework.boot:spring-boot-dependencies:${spring_boot_version}"
         implementation "org.springframework:spring-webmvc:${spring_framework_version}"
-        implementation 'org.springframework:spring-web:6.1.+'
+        implementation 'org.springframework:spring-web:6.1.12'
         implementation "org.springframework:spring-beans:${spring_framework_version}"
         implementation "org.springframework:spring-core:${spring_core_version}"
         implementation "io.github.classgraph:classgraph:4.8.149"
