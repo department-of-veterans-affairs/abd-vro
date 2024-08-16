@@ -146,7 +146,7 @@ public class BipApiService implements IBipApiService {
   }
 
   @SuppressWarnings("unchecked")
-  protected <T extends BipPayloadResponse> T makeRequest(
+  private <T extends BipPayloadResponse> T makeRequest(
       String url, HttpMethod method, Object requestBody, Class<T> expectedResponse) {
 
     try {
