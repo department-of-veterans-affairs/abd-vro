@@ -8,15 +8,11 @@ import gov.va.vro.bip.model.contentions.GetSpecialIssueTypesResponse;
 import gov.va.vro.bip.model.contentions.ParameterlessBipRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 
 public class SpecialIssueTypesTest extends BaseIntegrationTest {
-
-  @MockBean private RestTemplate restTemplate;
 
   @Test // g :svc-bip-api:integrationTest --tests
   // gov.va.vro.bip.SpecialIssueTypesTest.testGetSpecialIssueTypes_200
