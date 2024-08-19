@@ -4,6 +4,22 @@
       "name": "/"
     }
   ],
+  "users": [
+    {
+      "name": "${RABBITMQ_USER_VALUE}",
+      "password": "${RABBITMQ_PASSWORD}",
+      "tags": "administrator"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "${RABBITMQ_USER_VALUE}",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
   "policies": [
     {
       "vhost": "/",

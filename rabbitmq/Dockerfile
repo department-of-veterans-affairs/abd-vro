@@ -9,6 +9,9 @@ USER root
 RUN chown 1001 /tmp/rabbitmq.conf  \
     && chmod g+w /tmp/rabbitmq.conf
 
+RUN chown 1001 /tmp/definitions.json  \
+    && chmod g+w /tmp/definitions.json
+
 USER 1001
 
 ## Copy the entrypoint script
