@@ -2,6 +2,7 @@
 FROM bitnami/rabbitmq:3.12
 
 COPY rabbitmq.conf /tmp/rabbitmq.conf
+COPY definitions.json /tmp/definitions.json
 
 USER root
 

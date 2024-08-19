@@ -1,7 +1,5 @@
 package gov.va.vro.bip.config;
 
-import static java.util.Map.entry;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Collections;
 import java.util.Map;
 
 @Data
@@ -29,13 +28,16 @@ public class RabbitMqConfigProperties {
   @Value("${spring.rabbitmq.password:bitnami}")
   private String password;
 
+  @Value("${exchangeName}")
+  String exchangeName;
+
   @Value("${deadLetterQueueName:vroDeadLetterQueue}")
   private String deadLetterQueueName;
 
   @Value("${deadLetterExchangeName:vro.dlx}")
   private String deadLetterExchangeName;
 
-  Map<String, Object> getDeadLetterQueueArgs() {
-    return Map.ofEntries(entry("x-dead-letter-exchange", deadLetterExchangeName));
+  Map<String, Object> getGlobalQueueArgs() {
+    return Collections.emptyMap();
   }
 }

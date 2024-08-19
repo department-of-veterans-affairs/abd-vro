@@ -1,0 +1,19 @@
+{
+  "vhosts": [
+    {
+      "name": "/"
+    }
+  ],
+  "policies": [
+    {
+      "vhost": "/",
+      "name": "DLX",
+      "pattern": ".*",
+      "apply-to": "queues",
+      "definition": {
+        "dead-letter-exchange": "vro.dlx"
+      },
+      "priority": 0
+    }
+  ]
+}

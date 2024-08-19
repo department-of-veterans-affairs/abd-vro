@@ -27,7 +27,7 @@ public class PutTempStationOfJurisdictionConfig {
   @Bean
   Queue putTempStationOfJurisdictionQueue() {
     return new Queue(
-        putTempStationOfJurisdictionQueue, true, false, true, props.getDeadLetterQueueArgs());
+        putTempStationOfJurisdictionQueue, true, false, true, props.getGlobalQueueArgs());
   }
 
   @Bean

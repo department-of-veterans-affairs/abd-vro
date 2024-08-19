@@ -9,13 +9,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ConfigForGetClaimDetails {
+public class GetClaimDetailsConfig {
 
   final String getClaimDetailsQueue;
   final DirectExchange bipApiExchange;
   final RabbitMqConfigProperties props;
 
-  public ConfigForGetClaimDetails(
+  public GetClaimDetailsConfig(
       @Value("${getClaimDetailsQueue}") final String getClaimDetailsQueue,
       final DirectExchange bipApiExchange,
       final RabbitMqConfigProperties props) {
@@ -26,7 +26,7 @@ public class ConfigForGetClaimDetails {
 
   @Bean
   Queue getClaimDetailsQueue() {
-    return new Queue(getClaimDetailsQueue, true, false, true, props.getDeadLetterQueueArgs());
+    return new Queue(getClaimDetailsQueue, true, false, true, props.getGlobalQueueArgs());
   }
 
   @Bean

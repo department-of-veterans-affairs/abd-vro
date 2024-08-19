@@ -26,8 +26,7 @@ public class UpdateClaimContentionsConfig {
 
   @Bean
   Queue updateClaimContentionsQueue() {
-    return new Queue(
-        updateClaimContentionsQueue, true, false, true, props.getDeadLetterQueueArgs());
+    return new Queue(updateClaimContentionsQueue, true, false, true, props.getGlobalQueueArgs());
   }
 
   @Bean

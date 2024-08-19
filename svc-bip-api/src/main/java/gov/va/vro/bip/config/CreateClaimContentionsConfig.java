@@ -26,8 +26,7 @@ public class CreateClaimContentionsConfig {
 
   @Bean
   Queue createClaimContentionsQueue() {
-    return new Queue(
-        createClaimContentionsQueue, true, false, true, props.getDeadLetterQueueArgs());
+    return new Queue(createClaimContentionsQueue, true, false, true, props.getGlobalQueueArgs());
   }
 
   @Bean

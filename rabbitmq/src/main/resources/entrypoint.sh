@@ -20,5 +20,6 @@ sed -i "s/^default_pass .*/default_pass = ${RABBITMQ_PASSWORD}/" $CONFIG_FILE
 
 
 cp /tmp/rabbitmq.conf /etc/rabbitmq/rabbitmq.conf
+cp /tmp/definitions.json /etc/rabbitmq/definitions.json
 
 exec /opt/bitnami/scripts/rabbitmq/entrypoint.sh /opt/bitnami/scripts/rabbitmq/run.sh
