@@ -15,6 +15,7 @@ dependencies {
   implementation project(':domain-xample:xample-shared')
   implementation project(':shared:lib-rabbitmq-connector')
   implementation project(':shared:lib-bie-kafka')
+  implementation project(':shared:lib-metrics')
   implementation project(':shared:persistence-model')
 
   // Needed for *Repository classes to save to DB
@@ -27,7 +28,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
   implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
-  testImplementation "com.github.fppt:jedis-mock:1.1.2"
+  testImplementation "com.github.fppt:jedis-mock:1.1.3"
 
   // To fix jackson error: Java 8 date/time type `java.time.LocalDateTime` not supported by default
   // in order to convert ClaimEntity.createdAt into JSON.

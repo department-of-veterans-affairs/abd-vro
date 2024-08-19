@@ -1,10 +1,10 @@
 package gov.va.vro.bip.config;
 
-import gov.va.vro.bip.service.IMetricLoggerService;
 import gov.va.vro.bip.service.InvalidPayloadRejectingFatalExceptionStrategy;
+import gov.va.vro.metricslogging.IMetricLoggerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -13,6 +13,7 @@ import org.springframework.amqp.rabbit.listener.ConditionalRejectingErrorHandler
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
 import org.springframework.validation.Validator;
@@ -21,6 +22,7 @@ import org.springframework.validation.beanvalidation.OptionalValidatorFactoryBea
 @Configuration
 @Slf4j
 @RequiredArgsConstructor
+@ComponentScan("gov.va.vro.metricslogging")
 public class RabbitMqConfig implements RabbitListenerConfigurer {
 
   private final RabbitMqConfigProperties props;
@@ -72,5 +74,22 @@ public class RabbitMqConfig implements RabbitListenerConfigurer {
   @Bean
   DirectExchange bipApiExchange() {
     return new DirectExchange(exchangeName, true, true);
+  }
+
+  @Bean
+  FanoutExchange deadLetterExchange() {
+    log.info("Creating dead letter exchange with name={}", props.getDeadLetterExchangeName());
+    return new FanoutExchange(props.getDeadLetterExchangeName(), true, false);
+  }
+
+  @Bean
+  Queue deadLetterQueue() {
+    log.info("Creating dead letter queue with name={}", props.getDeadLetterQueueName());
+    return QueueBuilder.durable(props.getDeadLetterQueueName()).build();
+  }
+
+  @Bean
+  Binding deadLetterBinding() {
+    return BindingBuilder.bind(deadLetterQueue()).to(deadLetterExchange());
   }
 }

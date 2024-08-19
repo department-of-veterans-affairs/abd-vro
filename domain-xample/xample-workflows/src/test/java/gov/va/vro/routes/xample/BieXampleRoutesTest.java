@@ -4,10 +4,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.metricslogging.IMetricLoggerService;
 import gov.va.vro.model.biekafka.BieMessagePayload;
 import gov.va.vro.model.biekafka.ContentionEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -16,6 +18,10 @@ class BieXampleRoutesTest {
   @Mock private DbHelper dbHelper;
 
   @Mock private ObjectMapper objectMapper;
+
+  @Mock private IMetricLoggerService metricLoggerService;
+  private final String[] metricTagsSaveContentionEvent =
+      new String[] {"type:saveContentionEvent", "source:xampleWorkflows"};
 
   @InjectMocks private BieXampleRoutes bieXampleRoutes;
 
@@ -38,6 +44,24 @@ class BieXampleRoutesTest {
     verify(dbHelper, times(1)).saveContentionEvent(payload);
     verify(objectMapper, times(1)).writeValueAsString(payload);
     assertEquals(200, payload.getStatus());
+
+    // Verify metrics logging
+    verify(metricLoggerService, times(1))
+        .submitCount(
+            "vro_xample_workflows",
+            IMetricLoggerService.METRIC.REQUEST_START,
+            metricTagsSaveContentionEvent);
+    verify(metricLoggerService, times(1))
+        .submitRequestDuration(
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyLong(),
+            ArgumentMatchers.anyLong(),
+            ArgumentMatchers.any());
+    verify(metricLoggerService, times(1))
+        .submitCount(
+            "vro_xample_workflows",
+            IMetricLoggerService.METRIC.RESPONSE_COMPLETE,
+            metricTagsSaveContentionEvent);
   }
 
   @Test
@@ -59,6 +83,13 @@ class BieXampleRoutesTest {
     verify(objectMapper, times(1)).writeValueAsString(payload);
     assertEquals(500, payload.getStatus());
     assertEquals(testException.toString(), payload.getStatusMessage());
+
+    // Verify metrics logging
+    verify(metricLoggerService, times(1))
+        .submitCount(
+            "vro_xample_workflows",
+            IMetricLoggerService.METRIC.RESPONSE_ERROR,
+            metricTagsSaveContentionEvent);
   }
 
   private BieMessagePayload createSamplePayload() {

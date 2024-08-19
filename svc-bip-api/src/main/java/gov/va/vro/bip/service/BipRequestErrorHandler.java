@@ -4,11 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.bip.model.BipMessage;
 import gov.va.vro.bip.model.BipPayloadResponse;
+import gov.va.vro.metricslogging.IMetricLoggerService;
+import gov.va.vro.metricslogging.MetricLoggerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.listener.api.RabbitListenerErrorHandler;
 import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,6 +28,7 @@ import java.util.Optional;
 @Primary
 @Component
 @RequiredArgsConstructor
+@ComponentScan("gov.va.vro.metricslogging")
 public class BipRequestErrorHandler implements RabbitListenerErrorHandler {
 
   private final ObjectMapper mapper;
@@ -63,6 +67,7 @@ public class BipRequestErrorHandler implements RabbitListenerErrorHandler {
       }
 
       metricLoggerService.submitCount(
+          BipApiService.METRICS_PREFIX,
           MetricLoggerService.METRIC.LISTENER_ERROR,
           new String[] {
             "event:statusCodeException",
@@ -93,6 +98,7 @@ public class BipRequestErrorHandler implements RabbitListenerErrorHandler {
                   .build());
 
       metricLoggerService.submitCount(
+          BipApiService.METRICS_PREFIX,
           MetricLoggerService.METRIC.LISTENER_ERROR,
           new String[] {
             "event:unexpectedError",

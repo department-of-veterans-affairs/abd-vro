@@ -1,8 +1,8 @@
-package gov.va.vro.bip.service;
+package gov.va.vro.metricslogging;
 
 import com.datadog.api.client.v1.model.DistributionPointsPayload;
 import com.datadog.api.client.v1.model.MetricsPayload;
-import gov.va.vro.bip.config.LocalEnvironmentCondition;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Service;
 
@@ -18,23 +18,28 @@ public class NoopMetricLoggerService implements IMetricLoggerService {
   }
 
   @Override
-  public MetricsPayload createMetricsPayload(METRIC metric, double value, String[] tags) {
+  public MetricsPayload createMetricsPayload(
+      @NotNull String metricPrefix, METRIC metric, double value, String[] tags) {
     return new MetricsPayload();
   }
 
   @Override
-  public void submitCount(METRIC metric, String[] tags) {}
+  public void submitCount(@NotNull String metricPrefix, METRIC metric, String[] tags) {}
 
   @Override
-  public void submitCount(METRIC metric, double value, String[] tags) {}
+  public void submitCount(
+      @NotNull String metricPrefix, METRIC metric, double value, String[] tags) {}
 
   @Override
   public DistributionPointsPayload createDistributionPointsPayload(
-      METRIC metric, double timestamp, double value, String[] tags) {
+      @NotNull String metricPrefix, METRIC metric, double timestamp, double value, String[] tags) {
     return new DistributionPointsPayload();
   }
 
   @Override
   public void submitRequestDuration(
-      long requestStartNanoseconds, long requestEndNanoseconds, String[] tags) {}
+      @NotNull String metricPrefix,
+      long requestStartNanoseconds,
+      long requestEndNanoseconds,
+      String[] tags) {}
 }

@@ -12,6 +12,10 @@ spring:
     generate-ddl: false
     hibernate:
       ddl-auto: none
+  datadog:
+    site: ${DD_SITE:ddog-gov.com}
+    api_key: ${DD_API_KEY:secret-api-key}
+    app_key: ${DD_APP_KEY:secret-app-key}
 
 # Spring's RabbitHealthIndicator needs a connection to RabbitMQ:
   rabbitmq:

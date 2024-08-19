@@ -1,8 +1,10 @@
-package gov.va.vro.bip.config;
+package gov.va.vro.metricslogging;
 
 import com.datadog.api.client.ApiClient;
 import com.datadog.api.client.RetryConfig;
+import com.datadog.api.client.v1.api.AuthenticationApi;
 import com.datadog.api.client.v1.api.MetricsApi;
+import com.datadog.api.client.v1.model.AuthenticationValidationResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -51,13 +53,24 @@ public class DatadogClientConfig {
         log.info("initialized Datadog API Client");
       } else {
         apiClient = ApiClient.getDefaultApiClient();
-        log.info("initializing default Datadog default API Client");
+        log.info("initializing default Datadog API Client");
       }
       apiClient.setRetry(new RetryConfig(true, 2, 2, 3));
     } catch (Exception e) {
       log.warn(String.format("error initializing Datadog API Client: %s", e.getMessage()));
       throw e;
     }
+
+    try {
+      AuthenticationValidationResponse authValidation =
+          (new AuthenticationApi(apiClient)).validate();
+      if (Boolean.FALSE.equals(authValidation.getValid())) {
+        throw new Exception("validation failed");
+      }
+    } catch (Exception e) {
+      log.warn(String.format("api key validation failed: %s", e.getMessage()));
+    }
+
     return apiClient;
   }
 }

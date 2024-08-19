@@ -32,6 +32,8 @@ jobs:
       - name: 'Check disk space'
         uses: ./.github/actions/check-disk-space
 
+      - uses: ./.github/actions/install-docker-compose
+
       - name: 'Build the images'
         uses: ./.github/actions/build-images
 

@@ -13,8 +13,14 @@ response_404 = f'{RESPONSE_DIR}/404_response.json'
 response_400 = f'{RESPONSE_DIR}/400_response.json'
 response_500 = f'{RESPONSE_DIR}/500_response.json'
 pending_claim_200 = f'{RESPONSE_DIR}/get_pending_claim_200.json'
+pending_claim_200_closed = f'{RESPONSE_DIR}/get_pending_claim_200_closed.json'
 pending_contentions_200 = f'{RESPONSE_DIR}/claim_contentions_increase_tendinitis_200.json'
 ep400_claim_200 = f'{RESPONSE_DIR}/get_ep400_claim_200.json'
+ep400_claim_200_closed = f'{RESPONSE_DIR}/get_ep400_claim_200_closed.json'
+ep400_claim_200_missing_ep_code = f'{RESPONSE_DIR}/get_ep400_claim_200_missing_ep_code.json'
+ep400_claim_200_unsupported_ep_code = f'{RESPONSE_DIR}/get_ep400_claim_200_unsupported_ep_code.json'
+ep400_claim_200_missing_claim_type_code = f'{RESPONSE_DIR}/get_ep400_claim_200_missing_claim_type_code.json'
+ep400_claim_200_unsupported_claim_type_code = f'{RESPONSE_DIR}/get_ep400_claim_200_unsupported_claim_type_code.json'
 ep400_contentions_200 = f'{RESPONSE_DIR}/claim_contentions_increase_tinnitus_200.json'
 ep400_duplicate_contentions_200 = f'{RESPONSE_DIR}/claim_contentions_increase_tendinitis_200.json'
 
@@ -38,6 +44,12 @@ def assert_successful_response(response_json):
 
 def assert_error_response(response_json, expected_error_state):
     response_json = assert_response(response_json, JobState.COMPLETED_ERROR)
+    assert response_json['job']['error_state'] == expected_error_state
+    return response_json
+
+
+def assert_abort_response(response_json, expected_error_state):
+    response_json = assert_response(response_json, JobState.ABORTED)
     assert response_json['job']['error_state'] == expected_error_state
     return response_json
 
@@ -69,7 +81,7 @@ class TestSuccess(TestMergeRequestBase):
         cancel_claim_endpoint: MqEndpoint,
         add_claim_note_endpoint: MqEndpoint,
     ):
-        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200])
+        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200, ep400_claim_200])
         get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_contentions_200])
         put_tsoj_endpoint.set_responses([response_200])
         create_claim_contentions_endpoint.set_responses([response_201])
@@ -90,7 +102,7 @@ class TestSuccess(TestMergeRequestBase):
         cancel_claim_endpoint: MqEndpoint,
         add_claim_note_endpoint: MqEndpoint,
     ):
-        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200])
+        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200, ep400_claim_200])
         get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_duplicate_contentions_200])
         put_tsoj_endpoint.set_responses([response_200])
         cancel_claim_endpoint.set_responses([response_200])
@@ -110,7 +122,7 @@ class TestSuccess(TestMergeRequestBase):
         cancel_claim_endpoint: MqEndpoint,
         add_claim_note_endpoint: MqEndpoint,
     ):
-        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200])
+        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200, ep400_claim_200])
         get_claim_contentions_endpoint.set_responses([pending_contentions_200, response_204, ep400_contentions_200])
         put_tsoj_endpoint.set_responses([response_200])
         create_claim_contentions_endpoint.set_responses([response_201])
@@ -124,7 +136,7 @@ class TestSuccess(TestMergeRequestBase):
 
 class TestErrorAtGetPendingClaim(TestMergeRequestBase):
     @pytest.mark.asyncio(scope='session')
-    async def test(self, get_claim_endpoint: MqEndpoint, get_claim_contentions_endpoint: MqEndpoint, update_claim_contentions_endpoint: MqEndpoint):
+    async def test_500(self, get_claim_endpoint: MqEndpoint, get_claim_contentions_endpoint: MqEndpoint, update_claim_contentions_endpoint: MqEndpoint):
         get_claim_endpoint.set_responses([response_500])
 
         # Needed after get claim failure
@@ -161,6 +173,49 @@ class TestErrorAtGetPendingClaim(TestMergeRequestBase):
         async with AsyncClient(app=app, base_url='http://test') as client:
             response = await submit_request_and_process(client)
             assert_error_response(response, JobState.GET_PENDING_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE)
+
+
+class TestAbortAtGetPendingClaim(TestMergeRequestBase):
+    @pytest.mark.asyncio(scope='session')
+    async def test_claim_not_open(
+        self, get_claim_endpoint: MqEndpoint, get_claim_contentions_endpoint: MqEndpoint, update_claim_contentions_endpoint: MqEndpoint
+    ):
+        get_claim_endpoint.set_responses([pending_claim_200_closed])
+
+        # Needed after get claim failure
+        get_claim_contentions_endpoint.set_responses([ep400_contentions_200])
+        update_claim_contentions_endpoint.set_responses([response_200])
+
+        async with AsyncClient(app=app, base_url='http://test') as client:
+            response = await submit_request_and_process(client)
+            assert_abort_response(response, JobState.GET_PENDING_CLAIM)
+
+    @pytest.mark.asyncio(scope='session')
+    async def test_error_at_remove_special_issue_fail_to_get_ep400_contentions(
+        self, get_claim_endpoint: MqEndpoint, get_claim_contentions_endpoint: MqEndpoint, update_claim_contentions_endpoint: MqEndpoint
+    ):
+        get_claim_endpoint.set_responses([pending_claim_200_closed])
+
+        # Needed after get claim failure
+        get_claim_contentions_endpoint.set_responses([response_500])
+
+        async with AsyncClient(app=app, base_url='http://test') as client:
+            response = await submit_request_and_process(client)
+            assert_abort_response(response, JobState.ABORTING)
+
+    @pytest.mark.asyncio(scope='session')
+    async def test_error_at_remove_special_issue_fail_to_update_ep400_contentions(
+        self, get_claim_endpoint: MqEndpoint, get_claim_contentions_endpoint: MqEndpoint, update_claim_contentions_endpoint: MqEndpoint
+    ):
+        get_claim_endpoint.set_responses([pending_claim_200_closed])
+
+        # Needed after get claim failure
+        get_claim_contentions_endpoint.set_responses([ep400_contentions_200])
+        update_claim_contentions_endpoint.set_responses([response_500])
+
+        async with AsyncClient(app=app, base_url='http://test') as client:
+            response = await submit_request_and_process(client)
+            assert_abort_response(response, JobState.ABORTING)
 
 
 class TestErrorAtGetEP400Claim(TestMergeRequestBase):
@@ -202,6 +257,57 @@ class TestErrorAtGetEP400Claim(TestMergeRequestBase):
         async with AsyncClient(app=app, base_url='http://test') as client:
             response = await submit_request_and_process(client)
             assert_error_response(response, JobState.GET_EP400_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE)
+
+
+@pytest.mark.parametrize(
+    'response',
+    [
+        pytest.param(ep400_claim_200_closed, id='claim is closed'),
+        pytest.param(ep400_claim_200_missing_ep_code, id='missing ep code'),
+        pytest.param(ep400_claim_200_unsupported_ep_code, id='unsupported ep code'),
+        pytest.param(ep400_claim_200_missing_claim_type_code, id='missing claim type code'),
+        pytest.param(ep400_claim_200_unsupported_claim_type_code, id='unsupported claim type code'),
+    ],
+)
+class TestAbortAtGetEP400Claim(TestMergeRequestBase):
+    @pytest.mark.asyncio(scope='session')
+    async def test(self, get_claim_endpoint: MqEndpoint, get_claim_contentions_endpoint: MqEndpoint, update_claim_contentions_endpoint: MqEndpoint, response):
+        get_claim_endpoint.set_responses([pending_claim_200, response])
+
+        # Needed after get claim failure
+        get_claim_contentions_endpoint.set_responses([ep400_contentions_200])
+        update_claim_contentions_endpoint.set_responses([response_200])
+
+        async with AsyncClient(app=app, base_url='http://test') as client:
+            response = await submit_request_and_process(client)
+            assert_abort_response(response, JobState.GET_EP400_CLAIM)
+
+    @pytest.mark.asyncio(scope='session')
+    async def test_error_at_remove_special_issue_fail_to_get_ep400_contentions(
+        self, get_claim_endpoint: MqEndpoint, get_claim_contentions_endpoint: MqEndpoint, update_claim_contentions_endpoint: MqEndpoint, response
+    ):
+        get_claim_endpoint.set_responses([pending_claim_200, response])
+
+        # Needed after get claim failure
+        get_claim_contentions_endpoint.set_responses([response_500])
+
+        async with AsyncClient(app=app, base_url='http://test') as client:
+            response = await submit_request_and_process(client)
+            assert_abort_response(response, JobState.ABORTING)
+
+    @pytest.mark.asyncio(scope='session')
+    async def test_error_at_remove_special_issue_fail_to_update_ep400_contentions(
+        self, get_claim_endpoint: MqEndpoint, get_claim_contentions_endpoint: MqEndpoint, update_claim_contentions_endpoint: MqEndpoint, response
+    ):
+        get_claim_endpoint.set_responses([pending_claim_200, response])
+
+        # Needed after get claim failure
+        get_claim_contentions_endpoint.set_responses([ep400_contentions_200])
+        update_claim_contentions_endpoint.set_responses([response_500])
+
+        async with AsyncClient(app=app, base_url='http://test') as client:
+            response = await submit_request_and_process(client)
+            assert_abort_response(response, JobState.ABORTING)
 
 
 class TestErrorAtGetPendingClaimContentions(TestMergeRequestBase):
@@ -254,6 +360,8 @@ class TestErrorAtGetEp400ClaimContentions(TestMergeRequestBase):
             response = await submit_request_and_process(client)
             assert_error_response(response, JobState.GET_EP400_CLAIM_CONTENTIONS)
 
+
+class TestAbortAtGetEp400ClaimContentions(TestMergeRequestBase):
     @pytest.mark.asyncio(scope='session')
     async def test_no_contentions_found(self, get_claim_endpoint: MqEndpoint, get_claim_contentions_endpoint: MqEndpoint):
         get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200])
@@ -262,7 +370,143 @@ class TestErrorAtGetEp400ClaimContentions(TestMergeRequestBase):
 
         async with AsyncClient(app=app, base_url='http://test') as client:
             response = await submit_request_and_process(client)
-            assert_error_response(response, JobState.GET_EP400_CLAIM_CONTENTIONS)
+            assert_abort_response(response, JobState.GET_EP400_CLAIM_CONTENTIONS)
+
+
+class TestErrorAtCheckPendingIsOpen(TestMergeRequestBase):
+    @pytest.mark.asyncio(scope='session')
+    async def test(
+        self,
+        get_claim_endpoint: MqEndpoint,
+        get_claim_contentions_endpoint: MqEndpoint,
+        put_tsoj_endpoint: MqEndpoint,
+        update_claim_contentions_endpoint: MqEndpoint,
+    ):
+        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, response_500])
+        get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_contentions_200])
+        update_claim_contentions_endpoint.set_responses([response_200])
+
+        async with AsyncClient(app=app, base_url='http://test') as client:
+            response = await submit_request_and_process(client)
+            assert_error_response(response, JobState.CHECK_PENDING_EP_IS_OPEN)
+
+    @pytest.mark.asyncio(scope='session')
+    async def test_error_at_remove_special_issue_fail_to_update_ep400_contentions(
+        self,
+        get_claim_endpoint: MqEndpoint,
+        get_claim_contentions_endpoint: MqEndpoint,
+        put_tsoj_endpoint: MqEndpoint,
+        update_claim_contentions_endpoint: MqEndpoint,
+    ):
+        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, response_500])
+        get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_contentions_200])
+        update_claim_contentions_endpoint.set_responses([response_500])
+
+        async with AsyncClient(app=app, base_url='http://test') as client:
+            response = await submit_request_and_process(client)
+            assert_error_response(response, JobState.CHECK_PENDING_EP_IS_OPEN_FAILED_REMOVE_SPECIAL_ISSUE)
+
+
+class TestAbortAtCheckPendingIsOpen(TestMergeRequestBase):
+    @pytest.mark.asyncio(scope='session')
+    async def test(
+        self,
+        get_claim_endpoint: MqEndpoint,
+        get_claim_contentions_endpoint: MqEndpoint,
+        put_tsoj_endpoint: MqEndpoint,
+        update_claim_contentions_endpoint: MqEndpoint,
+    ):
+        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200_closed])
+        get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_contentions_200])
+        update_claim_contentions_endpoint.set_responses([response_200])
+
+        async with AsyncClient(app=app, base_url='http://test') as client:
+            response = await submit_request_and_process(client)
+            assert_abort_response(response, JobState.CHECK_PENDING_EP_IS_OPEN)
+
+    @pytest.mark.asyncio(scope='session')
+    async def test_error_at_remove_special_issue_fail_to_update_ep400_contentions(
+        self,
+        get_claim_endpoint: MqEndpoint,
+        get_claim_contentions_endpoint: MqEndpoint,
+        put_tsoj_endpoint: MqEndpoint,
+        update_claim_contentions_endpoint: MqEndpoint,
+    ):
+        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200_closed])
+        get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_contentions_200])
+        update_claim_contentions_endpoint.set_responses([response_500])
+
+        async with AsyncClient(app=app, base_url='http://test') as client:
+            response = await submit_request_and_process(client)
+            assert_abort_response(response, JobState.ABORTING)
+
+
+class TestErrorAtCheckEp400IsOpen(TestMergeRequestBase):
+    @pytest.mark.asyncio(scope='session')
+    async def test(
+        self,
+        get_claim_endpoint: MqEndpoint,
+        get_claim_contentions_endpoint: MqEndpoint,
+        put_tsoj_endpoint: MqEndpoint,
+        update_claim_contentions_endpoint: MqEndpoint,
+    ):
+        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200, response_500])
+        get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_contentions_200])
+        update_claim_contentions_endpoint.set_responses([response_200])
+
+        async with AsyncClient(app=app, base_url='http://test') as client:
+            response = await submit_request_and_process(client)
+            assert_error_response(response, JobState.CHECK_EP400_IS_OPEN)
+
+    @pytest.mark.asyncio(scope='session')
+    async def test_error_at_remove_special_issue_fail_to_update_ep400_contentions(
+        self,
+        get_claim_endpoint: MqEndpoint,
+        get_claim_contentions_endpoint: MqEndpoint,
+        put_tsoj_endpoint: MqEndpoint,
+        update_claim_contentions_endpoint: MqEndpoint,
+    ):
+        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200, response_500])
+        get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_contentions_200])
+        update_claim_contentions_endpoint.set_responses([response_500])
+
+        async with AsyncClient(app=app, base_url='http://test') as client:
+            response = await submit_request_and_process(client)
+            assert_error_response(response, JobState.CHECK_EP400_IS_OPEN_FAILED_REMOVE_SPECIAL_ISSUE)
+
+
+class TestAbortAtCheckEp400IsOpen(TestMergeRequestBase):
+    @pytest.mark.asyncio(scope='session')
+    async def test(
+        self,
+        get_claim_endpoint: MqEndpoint,
+        get_claim_contentions_endpoint: MqEndpoint,
+        put_tsoj_endpoint: MqEndpoint,
+        update_claim_contentions_endpoint: MqEndpoint,
+    ):
+        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200, ep400_claim_200_closed])
+        get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_contentions_200])
+        update_claim_contentions_endpoint.set_responses([response_200])
+
+        async with AsyncClient(app=app, base_url='http://test') as client:
+            response = await submit_request_and_process(client)
+            assert_abort_response(response, JobState.CHECK_EP400_IS_OPEN)
+
+    @pytest.mark.asyncio(scope='session')
+    async def test_error_at_remove_special_issue_fail_to_update_ep400_contentions(
+        self,
+        get_claim_endpoint: MqEndpoint,
+        get_claim_contentions_endpoint: MqEndpoint,
+        put_tsoj_endpoint: MqEndpoint,
+        update_claim_contentions_endpoint: MqEndpoint,
+    ):
+        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200, ep400_claim_200_closed])
+        get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_contentions_200])
+        update_claim_contentions_endpoint.set_responses([response_500])
+
+        async with AsyncClient(app=app, base_url='http://test') as client:
+            response = await submit_request_and_process(client)
+            assert_abort_response(response, JobState.ABORTING)
 
 
 class TestErrorAtSetTemporaryStationOfJurisdiction(TestMergeRequestBase):
@@ -274,7 +518,7 @@ class TestErrorAtSetTemporaryStationOfJurisdiction(TestMergeRequestBase):
         put_tsoj_endpoint: MqEndpoint,
         update_claim_contentions_endpoint: MqEndpoint,
     ):
-        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200])
+        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200, ep400_claim_200])
         get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_contentions_200])
         put_tsoj_endpoint.set_responses([response_500])
         update_claim_contentions_endpoint.set_responses([response_200])
@@ -291,7 +535,7 @@ class TestErrorAtSetTemporaryStationOfJurisdiction(TestMergeRequestBase):
         put_tsoj_endpoint: MqEndpoint,
         update_claim_contentions_endpoint: MqEndpoint,
     ):
-        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200])
+        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200, ep400_claim_200])
         get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_contentions_200])
         put_tsoj_endpoint.set_responses([response_500])
         update_claim_contentions_endpoint.set_responses([response_500])
@@ -311,7 +555,7 @@ class TestErrorAtMoveContentionsToPendingClaim(TestMergeRequestBase):
         create_claim_contentions_endpoint: MqEndpoint,
         update_claim_contentions_endpoint: MqEndpoint,
     ):
-        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200])
+        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200, ep400_claim_200])
         get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_contentions_200])
         put_tsoj_endpoint.set_responses([response_200, response_200])  # Second response is to revert the tsoj
         create_claim_contentions_endpoint.set_responses([response_500])
@@ -330,7 +574,7 @@ class TestErrorAtMoveContentionsToPendingClaim(TestMergeRequestBase):
         create_claim_contentions_endpoint: MqEndpoint,
         update_claim_contentions_endpoint: MqEndpoint,
     ):
-        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200])
+        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200, ep400_claim_200])
         get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_contentions_200])
         put_tsoj_endpoint.set_responses([response_200, response_200])
         create_claim_contentions_endpoint.set_responses([response_500])
@@ -349,7 +593,7 @@ class TestErrorAtMoveContentionsToPendingClaim(TestMergeRequestBase):
         create_claim_contentions_endpoint: MqEndpoint,
         update_claim_contentions_endpoint: MqEndpoint,
     ):
-        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200])
+        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200, ep400_claim_200])
         get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_contentions_200])
         put_tsoj_endpoint.set_responses([response_200, response_500])  # Note the 500 on second response
         create_claim_contentions_endpoint.set_responses([response_500])
@@ -370,7 +614,7 @@ class TestErrorAtCancelClaim(TestMergeRequestBase):
         create_claim_contentions_endpoint: MqEndpoint,
         cancel_claim_endpoint: MqEndpoint,
     ):
-        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200])
+        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200, ep400_claim_200])
         get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_contentions_200])
         put_tsoj_endpoint.set_responses([response_200, response_200])  # Note the 200 to revert tsoj
         create_claim_contentions_endpoint.set_responses([response_201])
@@ -389,7 +633,7 @@ class TestErrorAtCancelClaim(TestMergeRequestBase):
         create_claim_contentions_endpoint: MqEndpoint,
         cancel_claim_endpoint: MqEndpoint,
     ):
-        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200])
+        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200, ep400_claim_200])
         get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_contentions_200])
         put_tsoj_endpoint.set_responses([response_200, response_500])  # Note the 500 on second response
         create_claim_contentions_endpoint.set_responses([response_201])
@@ -412,7 +656,7 @@ class TestErrorAtAddClaimNote(TestMergeRequestBase):
         add_claim_note_endpoint: MqEndpoint,
         update_claim_contentions_endpoint: MqEndpoint,
     ):
-        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200])
+        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200, ep400_claim_200])
         get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_contentions_200])
         put_tsoj_endpoint.set_responses([response_200])
         create_claim_contentions_endpoint.set_responses([response_201])
@@ -435,7 +679,7 @@ class TestErrorAtAddClaimNote(TestMergeRequestBase):
         add_claim_note_endpoint: MqEndpoint,
         update_claim_contentions_endpoint: MqEndpoint,
     ):
-        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200])
+        get_claim_endpoint.set_responses([pending_claim_200, ep400_claim_200, pending_claim_200, ep400_claim_200])
         get_claim_contentions_endpoint.set_responses([pending_contentions_200, ep400_contentions_200])
         put_tsoj_endpoint.set_responses([response_200])
         create_claim_contentions_endpoint.set_responses([response_201])

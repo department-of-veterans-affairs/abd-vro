@@ -50,11 +50,15 @@ def cancel_claim_endpoint():
 
 @pytest.fixture(autouse=True, scope='session')
 def add_claim_note_endpoint():
-    return create_mq_endpoint(ClientName.BGS_ADD_CLAIM_NOTE)
+    return create_mq_endpoint_no_dlq(ClientName.BGS_ADD_CLAIM_NOTE)
 
+
+def create_mq_endpoint_no_dlq(name):
+    return MqEndpoint(name, EXCHANGES[name], QUEUES[name], REPLY_QUEUES[name])
 
 def create_mq_endpoint(name):
-    return MqEndpoint(name, EXCHANGES[name], QUEUES[name], REPLY_QUEUES[name])
+    arguments = {'x-dead-letter-exchange': EXCHANGES[ClientName.BIP_DEAD_LETTER]}
+    return MqEndpoint(name, EXCHANGES[name], QUEUES[name], REPLY_QUEUES[name], arguments)
 
 
 @pytest_asyncio.fixture(autouse=True, scope='session')
