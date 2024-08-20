@@ -23,6 +23,8 @@ spec:
               {{- include "vro.valueFromSecret.rabbitmqUser" . | nindent 14 }}
             - name: RABBITMQ_PASSWORD
               {{- include "vro.valueFromSecret.rabbitmqPwd" . | nindent 14 }}
+            - name: RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS
+              value: "-rabbitmq_prometheus"
           ports:
             - containerPort: {{ .Values.service.mq.sourcePort }}
               protocol: TCP
