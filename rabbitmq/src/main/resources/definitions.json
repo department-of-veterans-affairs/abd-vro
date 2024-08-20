@@ -23,11 +23,12 @@
   "policies": [
     {
       "vhost": "/",
-      "name": "DLX",
+      "name": "VRO-GLOBAL-QUEUES",
       "pattern": ".*",
       "apply-to": "queues",
       "definition": {
-        "dead-letter-exchange": "vro.dlx"
+        "dead-letter-exchange": "vro.dlx",
+        "max-length": 1000
       },
       "priority": 0
     }
