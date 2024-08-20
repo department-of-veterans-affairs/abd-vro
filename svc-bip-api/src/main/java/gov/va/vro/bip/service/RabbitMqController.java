@@ -74,9 +74,6 @@ public class RabbitMqController {
 
   @RabbitListener(queues = "getSpecialIssueTypesQueue", errorHandler = "bipRequestErrorHandler")
   GetSpecialIssueTypesResponse getSpecialIssueTypesEndpoint() {
-    var response = service.getSpecialIssueTypes();
-    // force lazy loading to occur prior to serializing the response and shipping it back to
-    response.get();
-    return response;
+    return service.getSpecialIssueTypes();
   }
 }

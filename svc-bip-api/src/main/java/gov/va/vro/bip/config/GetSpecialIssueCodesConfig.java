@@ -26,7 +26,7 @@ public class GetSpecialIssueCodesConfig {
 
   @Bean
   Queue getSpecialIssueTypesQueue() {
-    return new Queue(queue, true, false, true, props.getDeadLetterQueueArgs());
+    return new Queue(queue, true, false, true, props.getGlobalQueueArgs());
   }
 
   @Bean
