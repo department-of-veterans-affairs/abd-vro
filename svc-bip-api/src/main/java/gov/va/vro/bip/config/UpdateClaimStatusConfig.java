@@ -26,8 +26,7 @@ public class UpdateClaimStatusConfig {
 
   @Bean
   Queue putClaimLifecycleStatusQueue() {
-    return new Queue(
-        putClaimLifecycleStatusQueue, true, false, true, props.getDeadLetterQueueArgs());
+    return new Queue(putClaimLifecycleStatusQueue, true, false, true, props.getGlobalQueueArgs());
   }
 
   @Bean

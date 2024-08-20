@@ -26,7 +26,7 @@ public class CancelClaimConfig {
 
   @Bean
   Queue cancelClaimQueue() {
-    return new Queue(cancelClaimQueue, true, false, true, props.getDeadLetterQueueArgs());
+    return new Queue(cancelClaimQueue, true, false, true, props.getGlobalQueueArgs());
   }
 
   @Bean
