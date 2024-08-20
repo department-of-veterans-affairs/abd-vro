@@ -11,7 +11,6 @@ from src.python_src.config import BIP_EXCHANGE
 from src.python_src.schema.merge_job import JobState
 from src.python_src.schema.response import GeneralResponse
 from src.python_src.service.job_store import JOB_STORE
-from src.python_src.config import EXCHANGES, ClientName
 
 
 @pytest.fixture(scope='session')
@@ -21,10 +20,9 @@ def lifecycle_endpoint():
         app_id='EP_MERGE',
         config={},
         exchange_properties=ExchangeProperties(name=BIP_EXCHANGE, passive_declare=False),
-        request_queue_properties=QueueProperties(name='putClaimLifecycleStatusQueue', passive_declare=False,
-                                                 arguments={'x-dead-letter-exchange': EXCHANGES[ClientName.BIP_DEAD_LETTER]}),
+        request_queue_properties=QueueProperties(name='putClaimLifecycleStatusQueue', passive_declare=False),
         request_routing_key='putClaimLifecycleStatusQueue',
-        reply_queue_properties=QueueProperties(name='putClaimLifecycleStatusResponseQueue', auto_delete=False, passive_declare=False),
+        reply_queue_properties=QueueProperties(name='putClaimLifecycleStatusResponseQueue', passive_declare=False),
         reply_routing_key='putClaimLifecycleStatusResponseQueue',
         request_message_ttl=0,
         response_max_latency=3,

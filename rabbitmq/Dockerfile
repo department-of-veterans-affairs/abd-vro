@@ -2,11 +2,15 @@
 FROM bitnami/rabbitmq:3.12
 
 COPY rabbitmq.conf /tmp/rabbitmq.conf
+COPY definitions.json /tmp/definitions.json
 
 USER root
 
 RUN chown 1001 /tmp/rabbitmq.conf  \
     && chmod g+w /tmp/rabbitmq.conf
+
+RUN chown 1001 /tmp/definitions.json  \
+    && chmod g+w /tmp/definitions.json
 
 USER 1001
 

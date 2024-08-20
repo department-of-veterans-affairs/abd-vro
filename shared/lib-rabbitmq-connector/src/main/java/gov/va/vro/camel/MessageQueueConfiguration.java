@@ -5,7 +5,12 @@ import gov.va.vro.camel.config.MessageQueueProperties;
 import gov.va.vro.model.xample.RabbitMqConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.AmqpAdmin;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -16,7 +21,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Collections;
-import java.util.Map;
 
 @Slf4j
 @EnableRabbit
@@ -31,10 +35,6 @@ public class MessageQueueConfiguration {
   private final String BIE_EVENTS_CONTENTION_COMPLETED = "bie-events-contention-completed";
   private final String BIE_EVENTS_CONTENTION_DELETED = "bie-events-contention-deleted";
   private final String SAVE_TO_DB_PREFIX = "saveToDB-";
-  private final String QUEUE_MESSAGES_DLQ = "vroDeadLetterQueue";
-  private final String DLX_EXCHANGE_MESSAGES = "vro.dlx";
-  private final Map<String, Object> DLQ_ARGS =
-      Map.of("x-dead-letter-exchange", DLX_EXCHANGE_MESSAGES);
 
   @Bean
   ConnectionFactory rabbitmqConnectionFactory() {
@@ -125,11 +125,6 @@ public class MessageQueueConfiguration {
   }
 
   @Bean
-  FanoutExchange deadLetterExchange() {
-    return new FanoutExchange(DLX_EXCHANGE_MESSAGES, true, false);
-  }
-
-  @Bean
   Queue queuePostResource() {
     return new Queue(RabbitMqConstants.POST_RESOURCE_QUEUE, true, false, true);
   }
@@ -141,37 +136,27 @@ public class MessageQueueConfiguration {
 
   @Bean
   Queue queueSaveToDbBieAssociated() {
-    return new Queue(
-        SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_ASSOCIATED, true, false, false, DLQ_ARGS);
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_ASSOCIATED, true, false, false);
   }
 
   @Bean
   Queue queueSaveToDbBieUpdated() {
-    return new Queue(
-        SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_UPDATED, true, false, false, DLQ_ARGS);
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_UPDATED, true, false, false);
   }
 
   @Bean
   Queue queueSaveToDbBieClassified() {
-    return new Queue(
-        SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_CLASSIFIED, true, false, false, DLQ_ARGS);
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_CLASSIFIED, true, false, false);
   }
 
   @Bean
   Queue queueSaveToDbBieCompleted() {
-    return new Queue(
-        SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_COMPLETED, true, false, false, DLQ_ARGS);
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_COMPLETED, true, false, false);
   }
 
   @Bean
   Queue queueSaveToDbBieDeleted() {
-    return new Queue(
-        SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_DELETED, true, false, false, DLQ_ARGS);
-  }
-
-  @Bean
-  Queue deadLetterQueue() {
-    return QueueBuilder.durable(QUEUE_MESSAGES_DLQ).build();
+    return new Queue(SAVE_TO_DB_PREFIX + BIE_EVENTS_CONTENTION_DELETED, true, false, false);
   }
 
   @Bean
@@ -202,10 +187,5 @@ public class MessageQueueConfiguration {
   Binding bindingExchangeBieAssociated() {
     return BindingBuilder.bind(queueSaveToDbBieAssociated())
         .to(fanoutExchangeBieEventsContentionAssociated());
-  }
-
-  @Bean
-  Binding deadLetterBinding() {
-    return BindingBuilder.bind(deadLetterQueue()).to(deadLetterExchange());
   }
 }
