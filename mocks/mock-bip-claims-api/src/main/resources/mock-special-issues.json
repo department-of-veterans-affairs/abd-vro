@@ -1,0 +1,453 @@
+[
+  {
+    "name": "Sarcoidosis",
+    "code": "SARCO",
+    "description": "ALL"
+  },
+  {
+    "name": "Asbestos",
+    "code": "ASB",
+    "description": "ALL"
+  },
+  {
+    "name": "Hepatitis C",
+    "code": "HEPC",
+    "description": "ALL"
+  },
+  {
+    "name": "HIV",
+    "code": "HIV",
+    "description": "ALL"
+  },
+  {
+    "name": "Mustard Gas",
+    "code": "MG",
+    "description": "ALL"
+  },
+  {
+    "name": "Radiation",
+    "code": "RDN",
+    "description": "ALL"
+  },
+  {
+    "name": "POW",
+    "code": "POW",
+    "description": "ALL"
+  },
+  {
+    "name": "38 USC 1151",
+    "code": "38USC1151",
+    "description": "ALL"
+  },
+  {
+    "name": "Environmental Hazard in Gulf War",
+    "code": "GW",
+    "description": "ALL"
+  },
+  {
+    "name": "ChemBio",
+    "code": "CB"
+  },
+  {
+    "name": "SHAD",
+    "code": "SHAD"
+  },
+  {
+    "name": "RO Special issue 1",
+    "code": "ROSI1"
+  },
+  {
+    "name": "RO Special issue 2",
+    "code": "ROSI2"
+  },
+  {
+    "name": "VACO Special issue 1",
+    "code": "COSI1"
+  },
+  {
+    "name": "VACO Special issue 2",
+    "code": "COSI2"
+  },
+  {
+    "name": "Amyotrophic Lateral Sclerosis (ALS)",
+    "code": "ALS"
+  },
+  {
+    "name": "Medical Foster Home",
+    "code": "MFH"
+  },
+  {
+    "name": "Enhanced Disability Severance Pay",
+    "code": "EDSP"
+  },
+  {
+    "name": "Pilot Program Fully Dev Claim",
+    "code": "PPFDC",
+    "deactiveDate": "2010-05-04T13:45:16-05:00"
+  },
+  {
+    "name": "Pilot Prog Not Fully Dev Claim-Not rcvd full dev",
+    "code": "PPNFDNRFD",
+    "deactiveDate": "2010-05-04T13:45:16-05:00"
+  },
+  {
+    "name": "Pilot Prog Not Fully Dev Claim-Resched VAE",
+    "code": "PPNFDRVAE",
+    "deactiveDate": "2010-05-04T13:45:16-05:00"
+  },
+  {
+    "name": "Pilot Prog Not Fully Dev Claim-Addl dev after init",
+    "code": "PPNFDADAPI",
+    "deactiveDate": "2010-05-04T13:45:16-05:00"
+  },
+  {
+    "name": "Pilot Prog Not Fully Dev Claim-Other delay",
+    "code": "PPNFDOD",
+    "deactiveDate": "2010-05-04T13:45:16-05:00"
+  },
+  {
+    "name": "Fully Developed Claim",
+    "code": "FDC"
+  },
+  {
+    "name": "Agent Orange - Vietnam",
+    "code": "AOIV"
+  },
+  {
+    "name": "Agent Orange",
+    "code": "AO",
+    "description": "ALL",
+    "deactiveDate": "2010-05-06T15:05:58-05:00"
+  },
+  {
+    "name": "RO Special Issue 3",
+    "code": "ROSPISTHR"
+  },
+  {
+    "name": "RO Special Issue 4",
+    "code": "ROSPISFOR"
+  },
+  {
+    "name": "VACO Special Issue 3",
+    "code": "VACSPISTHR"
+  },
+  {
+    "name": "VACO Special Issue 4",
+    "code": "VACSPISFOR"
+  },
+  {
+    "name": "PTSD - Combat",
+    "code": "PTSD/1"
+  },
+  {
+    "name": "PTSD - Non-Combat",
+    "code": "PTSD/2"
+  },
+  {
+    "name": "Non-PTSD Personal Trauma",
+    "code": "PTSD/4"
+  },
+  {
+    "name": "PTSD",
+    "code": "PTSD",
+    "description": "ALL",
+    "deactiveDate": "2010-08-12T09:50:44-05:00"
+  },
+  {
+    "name": "Personal Trauma PTSD",
+    "code": "TRM",
+    "description": "ALL",
+    "deactiveDate": "2010-08-12T09:50:44-05:00"
+  },
+  {
+    "name": "PTSD - Personal Trauma",
+    "code": "PTSD/3"
+  },
+  {
+    "name": "Environmental Hazard - Camp Lejeune",
+    "code": "EHCL"
+  },
+  {
+    "name": "Gulf War Presumptive",
+    "code": "GWP"
+  },
+  {
+    "name": "Combat Related Death",
+    "code": "CRD"
+  },
+  {
+    "name": "Military Sexual Trauma (MST)",
+    "code": "MST"
+  },
+  {
+    "name": "Express Claim Excluded-Additional Evidence",
+    "code": "EXPCLMXADE",
+    "deactiveDate": "2011-05-17T11:33:21-05:00"
+  },
+  {
+    "name": "Express Claim Excluded-Failed to Report for Exam",
+    "code": "EXPCLMXFRE",
+    "deactiveDate": "2011-05-17T11:33:21-05:00"
+  },
+  {
+    "name": "Washington RO Burial Processing",
+    "code": "WROBP",
+    "deactiveDate": "2011-05-19T14:07:43-05:00"
+  },
+  {
+    "name": "Rapid Eval",
+    "code": "RPDEVL",
+    "deactiveDate": "2011-05-19T14:08:09-05:00"
+  },
+  {
+    "name": "Walk in Pilot - Immediate Decision",
+    "code": "WLKIPIMMD",
+    "deactiveDate": "2011-05-19T14:08:31-05:00"
+  },
+  {
+    "name": "Walk in Pilot - Interim Decision",
+    "code": "WLKIPINTD",
+    "deactiveDate": "2011-05-19T14:08:31-05:00"
+  },
+  {
+    "name": "Walk in Pilot - Dev Required",
+    "code": "WLKIPDR",
+    "deactiveDate": "2011-05-19T14:08:31-05:00"
+  },
+  {
+    "name": "Walk in Pilot Term - Time Limit Expired",
+    "code": "WLKIPTTLE",
+    "deactiveDate": "2011-05-19T14:08:31-05:00"
+  },
+  {
+    "name": "Walk in Pilot Term - Seq Claim",
+    "code": "WLKIPTSQC",
+    "deactiveDate": "2011-05-19T14:08:31-05:00"
+  },
+  {
+    "name": "Walk in Pilot Term - Other Rsn",
+    "code": "WLKIPTOR",
+    "deactiveDate": "2011-05-19T14:08:31-05:00"
+  },
+  {
+    "name": "Disability Benefits Questionnaire",
+    "code": "DBBENQNRE",
+    "deactiveDate": "2011-10-05T07:23:15-05:00"
+  },
+  {
+    "name": "Disability Benefits Questionnaire - Private",
+    "code": "DBQP"
+  },
+  {
+    "name": "Disability Benefits Questionnaire - VA",
+    "code": "DBQV"
+  },
+  {
+    "name": "FDC Excluded - Additional Evidence",
+    "code": "FDCEXAE",
+    "deactiveDate": "2011-10-05T09:15:32-05:00"
+  },
+  {
+    "name": "FDC Excluded - Failed to Report for Exam",
+    "code": "FDCEXFRE",
+    "deactiveDate": "2011-10-05T09:15:32-05:00"
+  },
+  {
+    "name": "FDC Excluded - Needs Non-Fed Evidence Development",
+    "code": "FDCNED"
+  },
+  {
+    "name": "FDC Excluded - Evidence Received After FDC CEST",
+    "code": "FDCEFC"
+  },
+  {
+    "name": "FDC Excluded - Claimant Declined FDC Processing",
+    "code": "FDCCFP"
+  },
+  {
+    "name": "Indy - Express Team",
+    "code": "IET",
+    "deactiveDate": "2011-11-15T12:29:34-06:00"
+  },
+  {
+    "name": "Indy - Core Team",
+    "code": "ICT",
+    "deactiveDate": "2011-11-15T12:29:34-06:00"
+  },
+  {
+    "name": "Indy - Select Team",
+    "code": "IST",
+    "deactiveDate": "2011-11-15T12:29:34-06:00"
+  },
+  {
+    "name": "Indy - Special Ops Team",
+    "code": "ISOT",
+    "deactiveDate": "2011-11-15T12:29:34-06:00"
+  },
+  {
+    "name": "Indy - Non-Rating Team",
+    "code": "INRT",
+    "deactiveDate": "2011-11-15T12:29:34-06:00"
+  },
+  {
+    "name": "Indy - Appeals Team",
+    "code": "IAT",
+    "deactiveDate": "2011-11-15T12:29:34-06:00"
+  },
+  {
+    "name": "VONAPP Direct Connect",
+    "code": "VDC",
+    "description": "E-Benefits"
+  },
+  {
+    "name": "Brokered - Internal",
+    "code": "BRKINT"
+  },
+  {
+    "name": "Nehmer Phase II",
+    "code": "NP"
+  },
+  {
+    "name": "AMC NOD Brokering Project",
+    "code": "ANBP"
+  },
+  {
+    "name": "Development Resource Center Case",
+    "code": "DRCC",
+    "deactiveDate": "2012-11-16T18:52:58-06:00"
+  },
+  {
+    "name": "Jurisdiction Change",
+    "code": "JC",
+    "deactiveDate": "2012-11-16T18:52:58-06:00"
+  },
+  {
+    "name": "OCR - Old Claim Review",
+    "code": "OCR",
+    "deactiveDate": "2013-07-23T00:00:00-05:00"
+  },
+  {
+    "name": "ABA Election",
+    "code": "AE"
+  },
+  {
+    "name": "Upfront Verification",
+    "code": "UV"
+  },
+  {
+    "name": "Nehmer AO Peripheral Neuropathy",
+    "code": "NAPN"
+  },
+  {
+    "name": "Non-Nehmer AO Peripheral Neuropathy",
+    "code": "NNAPN"
+  },
+  {
+    "name": "Hardship-IRH",
+    "code": "HARDI",
+    "deactiveDate": "2013-12-12T00:00:00-06:00"
+  },
+  {
+    "name": "Hardship-Financial",
+    "code": "HARDF",
+    "deactiveDate": "2013-12-12T00:00:00-06:00"
+  },
+  {
+    "name": "Homeless Veteran",
+    "code": "HOMEV",
+    "deactiveDate": "2013-12-12T00:00:00-06:00"
+  },
+  {
+    "name": "Homeless",
+    "code": "HOME",
+    "deactiveDate": "2013-12-12T00:00:00-06:00"
+  },
+  {
+    "name": "Hardship",
+    "code": "HARD",
+    "deactiveDate": "2013-12-12T00:00:00-06:00"
+  },
+  {
+    "name": "NLA Pilot",
+    "code": "NLAP",
+    "deactiveDate": "2014-02-24T00:00:00-06:00"
+  },
+  {
+    "name": "RO Special Issue 5",
+    "code": "RSI5"
+  },
+  {
+    "name": "RO Special Issue 6",
+    "code": "RSI6"
+  },
+  {
+    "name": "RO Special Issue 7",
+    "code": "RSI7"
+  },
+  {
+    "name": "FDC Excluded - FDC Certification Incomplete",
+    "code": "FEFCI"
+  },
+  {
+    "name": "FDC Excluded - Additional Claim Submitted",
+    "code": "FEACS"
+  },
+  {
+    "name": "FDC Excluded - Claim Pending",
+    "code": "FECP"
+  },
+  {
+    "name": "FDC Excluded - Appeal Pending",
+    "code": "FEAP"
+  },
+  {
+    "name": "FDC Excluded - Necessary Form(s) not Submitted",
+    "code": "FENS"
+  },
+  {
+    "name": "FDC Excluded - FTR to Examination",
+    "code": "FEFTE"
+  },
+  {
+    "name": "FDC Excluded - VBA Administrative Reason",
+    "code": "FDCEXVBAAR",
+    "deactiveDate": "2014-05-12T00:00:00-05:00"
+  },
+  {
+    "name": "Unadjudicated Claim Discovered",
+    "code": "UCD",
+    "deactiveDate": "2014-08-15T15:34:36-05:00"
+  },
+  {
+    "name": "FDC Excluded - requires INDPT VRFCTN of FTI",
+    "code": "FERIVF"
+  },
+  {
+    "name": "Administrative Decision Review - Level 1",
+    "code": "ADRL1"
+  },
+  {
+    "name": "Administrative Decision Review - Level 2",
+    "code": "ADRL2"
+  },
+  {
+    "name": "Rating Decision Review - Level 1",
+    "code": "RDR1"
+  },
+  {
+    "name": "Rating Decision Review - Level 2",
+    "code": "RDR2"
+  },
+  {
+    "name": "Local Mentor Review",
+    "code": "LMR"
+  },
+  {
+    "name": "Non-ADL Notification Letter",
+    "code": "NANL"
+  },
+  {
+    "name": "EP400 Merge Project",
+    "code": "EMP"
+  }
+]

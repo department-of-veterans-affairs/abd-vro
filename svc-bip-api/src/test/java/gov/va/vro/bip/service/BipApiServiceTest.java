@@ -23,6 +23,7 @@ import gov.va.vro.bip.model.contentions.CreateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.ExistingContention;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
+import gov.va.vro.bip.model.contentions.GetSpecialIssueTypesResponse;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsResponse;
 import gov.va.vro.bip.model.lifecycle.PutClaimLifecycleRequest;
@@ -90,9 +91,10 @@ public class BipApiServiceTest {
   private static final String CLAIM_ISSUER = "issuer";
   private static final String STATION_ID = "280";
   private static final String APP_ID = "bip";
-  // TODO get sample response
   private static final String API_RESPONSE_200 = "{\"mock response\"}";
   private static final String SPECIAL_ISSUE_TYPES = "/contentions/special_issue_types";
+  private static final String SPECIAL_ISSUE_TYPES_RESPONSE_200 =
+      "bip-test-data/special_issue_types_response_200.json";
 
   private BipApiService service;
 
@@ -118,6 +120,10 @@ public class BipApiServiceTest {
   private String formatClaimUrl(String format, Long claimId) {
     String baseUrl = HTTPS + CLAIM_URL;
     return baseUrl + String.format(format, claimId);
+  }
+
+  private String formatUrl(String url) {
+    return HTTPS + CLAIM_URL + url;
   }
 
   private static String getTestData(String dataFile) throws Exception {
@@ -488,6 +494,40 @@ public class BipApiServiceTest {
       Exception ex =
           Assertions.assertThrows(
               test.ex.getClass(), () -> service.putTempStationOfJurisdiction(request));
+      assertResponseExceptionWithStatus(ex, test.status);
+      verifyMetricIsLoggedForExceptions(test);
+    }
+  }
+
+  @Nested
+  public class GetSpecialIssueTypes {
+    @Test
+    public void testGetSpecialIssueTypes_200() throws Exception {
+      mock2xxResponse(
+          HttpMethod.GET,
+          SPECIAL_ISSUE_TYPES,
+          HttpStatus.OK,
+          GetSpecialIssueTypesResponse.class,
+          SPECIAL_ISSUE_TYPES_RESPONSE_200);
+
+      GetSpecialIssueTypesResponse result = service.getSpecialIssueTypes();
+      assertResponseIsSuccess(result, HttpStatus.OK);
+      verifyMetricsAreLogged();
+    }
+
+    @ParameterizedTest(name = "testGetSpecialIssueTypes_{0}")
+    @EnumSource(
+        value = TestCase.class,
+        names = {"DOWNSTREAM_ERROR", "BIP_INTERNAL"})
+    public void testGetSpecialIssueTypes_non2xx(TestCase test) throws Exception {
+      mockExceptionResponse(
+          test.ex,
+          formatUrl(SPECIAL_ISSUE_TYPES),
+          HttpMethod.GET,
+          GetSpecialIssueTypesResponse.class);
+
+      Exception ex =
+          Assertions.assertThrows(test.ex.getClass(), () -> service.getSpecialIssueTypes());
       assertResponseExceptionWithStatus(ex, test.status);
       verifyMetricIsLoggedForExceptions(test);
     }

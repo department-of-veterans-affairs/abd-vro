@@ -8,6 +8,7 @@ import gov.va.vro.bip.model.claim.GetClaimResponse;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
+import gov.va.vro.bip.model.contentions.GetSpecialIssueTypesResponse;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsResponse;
 import gov.va.vro.bip.model.lifecycle.PutClaimLifecycleRequest;
@@ -41,21 +42,14 @@ import java.util.Objects;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * BIP claim API service.
- *
- * @author warren @Date 10/31/22
+ * BipApiService offers an implementation of IBipApiService as an extension of the BIP Claims REST
+ * API Service
  */
 @Service
-@RequiredArgsConstructor
 @Slf4j
 @ComponentScan("gov.va.vro.metricslogging")
+@RequiredArgsConstructor
 public class BipApiService implements IBipApiService {
-  static final String CLAIM_DETAILS = "/claims/%s";
-  static final String CANCEL_CLAIM = "/claims/%s/cancel";
-  static final String TEMP_STATION_OF_JURISDICTION = "/claims/%s/temporary_station_of_jurisdiction";
-  static final String CLAIM_LIFECYCLE_STATUS = "/claims/%s/lifecycle_status";
-  static final String CONTENTION = "/claims/%s/contentions";
-  static final String SPECIAL_ISSUE_TYPES = "/contentions/special_issue_types";
 
   @Qualifier("bipCERestTemplate")
   @NonNull
@@ -67,6 +61,13 @@ public class BipApiService implements IBipApiService {
 
   final IMetricLoggerService metricLogger;
   public static final String METRICS_PREFIX = "vro_bip";
+
+  static final String CLAIM_DETAILS = "/claims/%s";
+  static final String CANCEL_CLAIM = "/claims/%s/cancel";
+  static final String TEMP_STATION_OF_JURISDICTION = "/claims/%s/temporary_station_of_jurisdiction";
+  static final String CLAIM_LIFECYCLE_STATUS = "/claims/%s/lifecycle_status";
+  static final String CONTENTION = "/claims/%s/contentions";
+  static final String SPECIAL_ISSUE_TYPES = "/contentions/special_issue_types";
 
   @Override
   public GetClaimResponse getClaimDetails(long claimId) {
@@ -136,6 +137,12 @@ public class BipApiService implements IBipApiService {
 
     return makeRequest(
         url, HttpMethod.PUT, requestBody, PutTempStationOfJurisdictionResponse.class);
+  }
+
+  @Override
+  public GetSpecialIssueTypesResponse getSpecialIssueTypes() {
+    String url = bipApiProps.getClaimRequestUrl(SPECIAL_ISSUE_TYPES);
+    return makeRequest(url, HttpMethod.GET, null, GetSpecialIssueTypesResponse.class);
   }
 
   @SuppressWarnings("unchecked")
@@ -232,8 +239,8 @@ public class BipApiService implements IBipApiService {
    * @return true if the API responds with OK status and response.
    */
   public boolean isApiFunctioning() {
-    String url = bipApiProps.getClaimRequestUrl(SPECIAL_ISSUE_TYPES);
-    log.info("Call {} to get special_issue_types", url);
+    String url = bipApiProps.getAvailabilityUrl();
+    log.info("Call {} to confirm service availability", url);
 
     HttpHeaders headers = getBipHeader();
     HttpEntity<Void> httpEntity = new HttpEntity<>(headers);

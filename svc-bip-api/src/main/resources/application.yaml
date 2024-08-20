@@ -39,6 +39,7 @@ getClaimContentionsQueue: getClaimContentionsQueue
 createClaimContentionsQueue: createClaimContentionsQueue
 updateClaimContentionsQueue: updateClaimContentionsQueue
 putTempStationOfJurisdictionQueue: putTempStationOfJurisdictionQueue
+getSpecialIssueTypesQueue: getSpecialIssueTypesQueue
 exchangeName: bipApiExchange
 deadLetterQueueName: vroDeadLetterQueue
 deadLetterExchangeName: vro.dlx

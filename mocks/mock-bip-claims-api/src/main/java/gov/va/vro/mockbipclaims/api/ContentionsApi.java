@@ -5,6 +5,7 @@ import gov.va.vro.mockbipclaims.model.bip.request.CreateContentionsRequest;
 import gov.va.vro.mockbipclaims.model.bip.request.UpdateContentionsRequest;
 import gov.va.vro.mockbipclaims.model.bip.response.ContentionSummariesResponse;
 import gov.va.vro.mockbipclaims.model.bip.response.CreateContentionsResponse;
+import gov.va.vro.mockbipclaims.model.bip.response.SpecialIssueTypesResponse;
 import gov.va.vro.mockbipclaims.model.bip.response.UpdateContentionsResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -324,7 +325,9 @@ public interface ContentionsApi {
   /**
    * GET /contentions/special_issue_types : Returns special issue types.
    *
-   * <p>Not fully implemented in mock since only used for connectivity testing.
+   * <p>Now a fully implemented mock since EP Merge project required a Special Issue Type lookup
+   * mechanism. For the purposes of the mock, getSpecialIssueTypes is going to respond with the json
+   * file: mocks/mock-bip-claims-api/src/main/resources/mock-special-issues.json.
    */
   @Operation(
       operationId = "getSpecialIssueTypes",
@@ -336,10 +339,10 @@ public interface ContentionsApi {
             content = {
               @Content(
                   mediaType = "application/json",
-                  schema = @Schema(implementation = UpdateContentionsResponse.class)),
+                  schema = @Schema(implementation = SpecialIssueTypesResponse.class)),
               @Content(
                   mediaType = "application/problem+json",
-                  schema = @Schema(implementation = UpdateContentionsResponse.class))
+                  schema = @Schema(implementation = SpecialIssueTypesResponse.class))
             }),
         @ApiResponse(
             responseCode = "401",
@@ -375,5 +378,5 @@ public interface ContentionsApi {
       method = RequestMethod.GET,
       value = "/contentions/special_issue_types",
       produces = {"application/json", "application/problem+json"})
-  ResponseEntity<String> getSpecialIssueTypes();
+  ResponseEntity<SpecialIssueTypesResponse> getSpecialIssueTypes();
 }

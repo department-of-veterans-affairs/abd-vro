@@ -14,9 +14,11 @@ import gov.va.vro.mockbipclaims.model.bip.request.CreateContentionsRequest;
 import gov.va.vro.mockbipclaims.model.bip.request.UpdateContentionsRequest;
 import gov.va.vro.mockbipclaims.model.bip.response.ContentionSummariesResponse;
 import gov.va.vro.mockbipclaims.model.bip.response.CreateContentionsResponse;
+import gov.va.vro.mockbipclaims.model.bip.response.SpecialIssueTypesResponse;
 import gov.va.vro.mockbipclaims.model.bip.response.UpdateContentionsResponse;
 import gov.va.vro.mockbipclaims.model.store.ClaimStore;
 import gov.va.vro.mockbipclaims.model.store.ClaimStoreItem;
+import gov.va.vro.mockbipclaims.model.store.SpecialIssueTypesStore;
 import gov.va.vro.mockbipclaims.model.store.UpdatesStore;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -35,6 +37,8 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class ContentionsController extends BaseController implements ContentionsApi {
   private final ClaimStore claimStore;
+
+  private final SpecialIssueTypesStore typesStore;
 
   private final UpdatesStore actionStore;
 
@@ -139,10 +143,15 @@ public class ContentionsController extends BaseController implements Contentions
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
-  /** Not fully implemented. Only used for connectivity testing. */
+  /**
+   * Responds with the json in file:
+   * mocks/mock-bip-claims-api/src/main/resources/mock-special-issues.json
+   */
   @Override
-  public ResponseEntity<String> getSpecialIssueTypes() {
-    log.info("Returning an empty array as special issues...");
-    return new ResponseEntity<>("[]", HttpStatus.OK);
+  public ResponseEntity<SpecialIssueTypesResponse> getSpecialIssueTypes() {
+    log.info("Returning mock special issue types...");
+    SpecialIssueTypesResponse response = new SpecialIssueTypesResponse();
+    response.setCodeNamePairs(typesStore.all());
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 }

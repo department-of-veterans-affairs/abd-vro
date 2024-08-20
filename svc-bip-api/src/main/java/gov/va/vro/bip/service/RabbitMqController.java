@@ -8,6 +8,7 @@ import gov.va.vro.bip.model.contentions.CreateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
+import gov.va.vro.bip.model.contentions.GetSpecialIssueTypesResponse;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsResponse;
 import gov.va.vro.bip.model.lifecycle.PutClaimLifecycleRequest;
@@ -69,5 +70,10 @@ public class RabbitMqController {
   PutTempStationOfJurisdictionResponse putTempStationOfJurisdictionEndpoint(
       @Valid @Payload PutTempStationOfJurisdictionRequest request) {
     return service.putTempStationOfJurisdiction(request);
+  }
+
+  @RabbitListener(queues = "getSpecialIssueTypesQueue", errorHandler = "bipRequestErrorHandler")
+  GetSpecialIssueTypesResponse getSpecialIssueTypesEndpoint() {
+    return service.getSpecialIssueTypes();
   }
 }
