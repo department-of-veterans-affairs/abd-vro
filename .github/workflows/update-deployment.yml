@@ -9,6 +9,7 @@ on:
         required: true
         default: 'dev'
         type: choice
+        options:
         - sandbox
         - prod-test
         - prod
