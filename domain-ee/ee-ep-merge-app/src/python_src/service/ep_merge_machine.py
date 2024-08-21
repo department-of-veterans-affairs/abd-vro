@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import os
+from datetime import datetime
 from enum import Enum
 from typing import Any, Callable, Type
 from uuid import UUID
@@ -16,6 +17,7 @@ from schema import (
     create_contentions,
     get_claim,
     get_contentions,
+    get_special_issue_types,
     update_contentions,
 )
 from schema import update_temp_station_of_jurisdiction as tsoj
@@ -199,7 +201,7 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
 
     @running_get_pending_claim.enter
     def on_get_pending_claim(self, event):
-        claim = self.__get_open_claim(self.job.pending_claim_id, 'Pending')
+        claim = self.get_open_claim(self.job.pending_claim_id, 'Pending')
         if claim:
             if claim.end_product_code:
                 self.cancellation_reason = CANCELLATION_REASON_FORMAT.format(ep_code=claim.end_product_code, claim_id=self.job.pending_claim_id)
@@ -209,7 +211,7 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
 
     @running_get_ep400_claim.enter
     def on_get_ep400_claim(self, event):
-        claim = self.__get_open_claim(self.job.ep400_claim_id, 'EP400')
+        claim = self.get_open_claim(self.job.ep400_claim_id, 'EP400')
         if claim:
             if claim.end_product_code is None:
                 self.add_job_error(f'EP400 claim #{self.job.ep400_claim_id} does not have an end product code')
@@ -260,11 +262,14 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
             will_retry_condition=ep400_has_no_contentions,
         )
         if response and response.status_code in expected_responses:
-            if not response.contentions:
+            ep400_contentions = response.contentions
+            if not ep400_contentions:
                 self.add_job_error(f'EP400 claim #{self.job.ep400_claim_id} does not have any contentions')
+            else:
+                self.verify_ep400_contention_special_issue_codes(ep400_contentions, pending_contentions_response.contentions)
 
-            num_ep_new_contentions = sum(c.contention_type_code == NEW_CONTENTION_TYPE_CODE for c in response.contentions or [])
-            num_ep_cfi_contentions = sum(c.contention_type_code == INCREASE_CONTENTION_TYPE_CODE for c in response.contentions or [])
+            num_ep_new_contentions = sum(c.contention_type_code == NEW_CONTENTION_TYPE_CODE for c in ep400_contentions or [])
+            num_ep_cfi_contentions = sum(c.contention_type_code == INCREASE_CONTENTION_TYPE_CODE for c in ep400_contentions or [])
             self.ep_metrics.extend(
                 [
                     DistributionMetric(EP400_NEW_CONTENTIONS_METRIC, num_ep_new_contentions),
@@ -274,17 +279,49 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
 
         self.send(event=event, pending_contentions_response=pending_contentions_response, ep400_contentions_response=response)
 
+    def verify_ep400_contention_special_issue_codes(self, ep400_contentions: list[ContentionSummary], pending_contentions: list[ContentionSummary]) -> None:
+        request = get_special_issue_types.Request()
+        response = self.make_request(
+            request=request, hoppy_client=HOPPY.get_client(ClientName.GET_SPECIAL_ISSUE_TYPES), response_type=get_special_issue_types.Response
+        )
+
+        if response and response.status_code == 200:
+            deactive_special_issue_codes = [
+                special_issue.code
+                for special_issue in response.code_name_pairs or []
+                if special_issue.deactive_date and special_issue.deactive_date < datetime.now(special_issue.deactive_date.tzinfo)
+            ]
+            if deactive_special_issue_codes:
+                mergeable_contentions = ContentionsUtil.new_contentions(pending_contentions, ep400_contentions)
+                deactive_codes_on_mergeable_contentions = [
+                    code
+                    for contention in (mergeable_contentions or [])
+                    for code in (contention.special_issue_codes or [])
+                    if code in deactive_special_issue_codes
+                ]
+
+                if deactive_codes_on_mergeable_contentions:
+                    self.add_job_error(
+                        f'EP400 claim #{self.job.ep400_claim_id} has contentions to merge that have the following deactive special issue codes: '
+                        f'{", ".join(deactive_codes_on_mergeable_contentions)}'
+                    )
+            else:
+                self.add_job_error(
+                    f'Could not retrieve special issue codes to verify EP400 claim #{self.job.ep400_claim_id} does not contain contentions with '
+                    f'deactive special issue codes'
+                )
+
     @running_check_pending_is_open.enter
     def on_check_pending_claim_is_open(self, event, pending_contentions_response, ep400_contentions_response):
-        self.__get_open_claim(self.job.pending_claim_id, 'Pending')
+        self.get_open_claim(self.job.pending_claim_id, 'Pending')
         self.send(event=event, pending_contentions_response=pending_contentions_response, ep400_contentions_response=ep400_contentions_response)
 
     @running_check_ep400_is_open.enter
     def on_check_ep400_claim_is_open(self, event, pending_contentions_response, ep400_contentions_response):
-        self.__get_open_claim(self.job.ep400_claim_id, 'EP400')
+        self.get_open_claim(self.job.ep400_claim_id, 'EP400')
         self.send(event=event, pending_contentions_response=pending_contentions_response, ep400_contentions_response=ep400_contentions_response)
 
-    def __get_open_claim(self, claim_id: int, claim_type: str) -> ClaimDetail | None:
+    def get_open_claim(self, claim_id: int, claim_type: str) -> ClaimDetail | None:
         request = get_claim.Request(claim_id=claim_id)
         response = self.make_request(request=request, hoppy_client=HOPPY.get_client(ClientName.GET_CLAIM), response_type=get_claim.Response)
 
