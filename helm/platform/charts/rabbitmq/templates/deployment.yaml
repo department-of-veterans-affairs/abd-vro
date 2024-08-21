@@ -44,4 +44,3 @@ spec:
                 command: ["/bin/sh", "-c", "rabbitmq-plugins enable rabbitmq_prometheus"]
       volumes:
         {{- include "vro.volumes.tracking" . | nindent 8 }}
-
