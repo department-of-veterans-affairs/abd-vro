@@ -7,7 +7,7 @@ on:
       target_env:
         description: 'Target LHDI environment'
         required: true
-        default: 'dev'
+        default: 'prod-test'
         type: choice
         options:
         - prod-test
