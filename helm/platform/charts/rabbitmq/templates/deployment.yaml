@@ -38,9 +38,5 @@ spec:
           # This volume is available for RabbitMQ messages to be persisted
           volumeMounts:
             {{- include "vro.volumeMounts.tracking" . | nindent 12 }}
-          lifecycle:
-            postStart:
-              exec:
-                command: ["/bin/sh", "-c", "rabbitmq-plugins enable rabbitmq_prometheus"]
       volumes:
         {{- include "vro.volumes.tracking" . | nindent 8 }}
