@@ -17,7 +17,11 @@ bashVarPrefix() {
 
 # These names must match the images specified in Helm configs
 prodImageName() {
-  echo "vro-$1"
+  if [ "$1" == "rabbitmq" ]; then
+    echo "rabbitmq"
+  else
+    echo "vro-$1"
+  fi
 }
 
 # These names should match directory names.
