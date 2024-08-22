@@ -10,7 +10,6 @@ on:
         default: 'dev'
         type: choice
         options:
-        - sandbox
         - prod-test
         - prod
 
