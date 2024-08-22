@@ -72,6 +72,15 @@ def ep400_has_no_contentions(response: get_contentions.Response) -> bool:
     return not response.contentions
 
 
+def get_deactive_special_issue_codes(code_name_pairs: list[get_special_issue_types.SpecialIssueType]) -> list[str]:
+    deactive_special_issue_codes = [
+        special_issue.code
+        for special_issue in code_name_pairs or []
+        if special_issue.deactive_date and special_issue.deactive_date < datetime.now(special_issue.deactive_date.tzinfo)
+    ]
+    return deactive_special_issue_codes
+
+
 class Workflow(str, Enum):
     PROCESS = 'process'
     RESTART = 'resume_restart'
@@ -266,7 +275,7 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
             if not ep400_contentions:
                 self.add_job_error(f'EP400 claim #{self.job.ep400_claim_id} does not have any contentions')
             else:
-                self.verify_ep400_contention_special_issue_codes(ep400_contentions, pending_contentions_response.contentions)
+                self.verify_ep400_contention_special_issue_codes(ContentionsUtil.new_contentions(pending_contentions_response.contentions, ep400_contentions))
 
             num_ep_new_contentions = sum(c.contention_type_code == NEW_CONTENTION_TYPE_CODE for c in ep400_contentions or [])
             num_ep_cfi_contentions = sum(c.contention_type_code == INCREASE_CONTENTION_TYPE_CODE for c in ep400_contentions or [])
@@ -279,37 +288,31 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
 
         self.send(event=event, pending_contentions_response=pending_contentions_response, ep400_contentions_response=response)
 
-    def verify_ep400_contention_special_issue_codes(self, ep400_contentions: list[ContentionSummary], pending_contentions: list[ContentionSummary]) -> None:
+    def verify_ep400_contention_special_issue_codes(self, mergeable_contentions: list[ContentionSummary]) -> None:
         request = get_special_issue_types.Request()
         response = self.make_request(
             request=request, hoppy_client=HOPPY.get_client(ClientName.GET_SPECIAL_ISSUE_TYPES), response_type=get_special_issue_types.Response
         )
 
-        if response and response.status_code == 200:
-            deactive_special_issue_codes = [
-                special_issue.code
-                for special_issue in response.code_name_pairs or []
-                if special_issue.deactive_date and special_issue.deactive_date < datetime.now(special_issue.deactive_date.tzinfo)
-            ]
-            if deactive_special_issue_codes:
-                mergeable_contentions = ContentionsUtil.new_contentions(pending_contentions, ep400_contentions)
-                deactive_codes_on_mergeable_contentions = [
-                    code
-                    for contention in (mergeable_contentions or [])
-                    for code in (contention.special_issue_codes or [])
-                    if code in deactive_special_issue_codes
-                ]
+        if not response or response.status_code != 200:
+            return
 
-                if deactive_codes_on_mergeable_contentions:
-                    self.add_job_error(
-                        f'EP400 claim #{self.job.ep400_claim_id} has contentions to merge that have the following deactive special issue codes: '
-                        f'{", ".join(deactive_codes_on_mergeable_contentions)}'
-                    )
-            else:
-                self.add_job_error(
-                    f'Could not retrieve special issue codes to verify EP400 claim #{self.job.ep400_claim_id} does not contain contentions with '
-                    f'deactive special issue codes'
-                )
+        deactive_special_issue_codes = get_deactive_special_issue_codes(response.code_name_pairs)
+        if not deactive_special_issue_codes:
+            self.add_job_error(
+                f'Could not retrieve special issue codes to verify EP400 claim #{self.job.ep400_claim_id} does not contain contentions with '
+                f'deactive special issue codes'
+            )
+            return
+
+        deactive_codes_on_contentions = [
+            code for contention in mergeable_contentions or [] for code in contention.special_issue_codes or [] if code in deactive_special_issue_codes
+        ]
+        if deactive_codes_on_contentions:
+            self.add_job_error(
+                f'EP400 claim #{self.job.ep400_claim_id} has contentions to merge that have the following deactive special issue codes: '
+                f'{", ".join(deactive_codes_on_contentions)}'
+            )
 
     @running_check_pending_is_open.enter
     def on_check_pending_claim_is_open(self, event, pending_contentions_response, ep400_contentions_response):
