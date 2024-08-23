@@ -22,11 +22,14 @@ from conftest import (
     get_ep400_contentions_200,
     get_ep400_contentions_204,
     get_ep400_contentions_req,
+    get_ep400_contentions_with_deactive_special_issues_200,
     get_pending_claim_200,
     get_pending_claim_req,
     get_pending_contentions_200,
     get_pending_contentions_increase_tinnitus_200,
     get_pending_contentions_req,
+    get_special_issue_types_200,
+    get_special_issue_types_req,
     load_response,
     mock_async_responses,
     pending_contentions_increase_tendinitis_200,
@@ -49,6 +52,7 @@ from schema import (
     create_contentions,
     get_claim,
     get_contentions,
+    get_special_issue_types,
     update_contentions,
 )
 from schema import update_temp_station_of_jurisdiction as tsoj
@@ -574,6 +578,61 @@ class TestUpToGetEp400Contentions:
         )
         assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.ABORTED, JobState.GET_EP400_CLAIM_CONTENTIONS)
 
+    @pytest.mark.parametrize(
+        'valid_request',
+        [
+            pytest.param(get_special_issue_types_200, id='Deactivated special issue code'),
+            pytest.param(get_special_issue_types.Response(status_code=200, status_message='OK'), id='Implicit Empty special issue codes'),
+            pytest.param(get_special_issue_types.Response(status_code=200, status_message='OK', codeNamePairs=[]), id='Explicit Empty special issue codes'),
+        ],
+    )
+    def test_valid_request_but_ep400_contentions_have_deactive_special_issue_codes(
+        self, machine, mock_hoppy_async_client, metric_logger_distribution, metric_logger_increment, valid_request
+    ):
+        mock_async_responses(
+            mock_hoppy_async_client,
+            [get_pending_claim_200, get_ep400_claim_200, get_pending_contentions_200, get_ep400_contentions_with_deactive_special_issues_200, valid_request],
+        )
+        process_and_assert(machine, JobState.ABORTED, JobState.GET_EP400_CLAIM_CONTENTIONS, 1)
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
+            [
+                call(machine.job.job_id, get_pending_claim_req),
+                call(machine.job.job_id, get_ep400_claim_req),
+                call(machine.job.job_id, get_pending_contentions_req),
+                call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_special_issue_types_req),
+            ],
+        )
+        assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.ABORTED, JobState.GET_EP400_CLAIM_CONTENTIONS)
+
+    @pytest.mark.parametrize(
+        'invalid_request',
+        [
+            pytest.param(get_special_issue_types.Response(status_code=400, status_message='NOPE'), id='400 response'),
+            pytest.param(get_special_issue_types.Response(status_code=500, status_message='NOPE'), id='500 response'),
+        ],
+    )
+    def test_invalid_request_at_get_special_issue_types(
+        self, machine, mock_hoppy_async_client, metric_logger_distribution, metric_logger_increment, invalid_request
+    ):
+        mock_async_responses(
+            mock_hoppy_async_client,
+            [get_pending_claim_200, get_ep400_claim_200, get_pending_contentions_200, get_ep400_contentions_with_deactive_special_issues_200, invalid_request],
+        )
+        process_and_assert(machine, JobState.COMPLETED_ERROR, JobState.GET_EP400_CLAIM_CONTENTIONS, 1)
+        assert_hoppy_requests(
+            mock_hoppy_async_client,
+            [
+                call(machine.job.job_id, get_pending_claim_req),
+                call(machine.job.job_id, get_ep400_claim_req),
+                call(machine.job.job_id, get_pending_contentions_req),
+                call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_special_issue_types_req),
+            ],
+        )
+        assert_metrics_called(metric_logger_distribution, metric_logger_increment, JobState.COMPLETED_ERROR, JobState.GET_EP400_CLAIM_CONTENTIONS)
+
 
 class TestUpToCheckPendingIsOpen:
     @pytest.mark.parametrize(
@@ -593,6 +652,7 @@ class TestUpToCheckPendingIsOpen:
                 get_ep400_claim_200,
                 get_pending_contentions_200,
                 get_ep400_contentions_200,
+                get_special_issue_types_200,
                 invalid_request,
                 update_contentions_on_ep400_200,
             ],
@@ -605,6 +665,7 @@ class TestUpToCheckPendingIsOpen:
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_special_issue_types_req),
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, update_contentions_on_ep400_req),
             ],
@@ -640,6 +701,7 @@ class TestUpToCheckPendingIsOpen:
                 get_ep400_claim_200,
                 get_pending_contentions_200,
                 get_ep400_contentions_200,
+                get_special_issue_types_200,
                 ineligible_request,
                 update_contentions_on_ep400_200,
             ],
@@ -652,6 +714,7 @@ class TestUpToCheckPendingIsOpen:
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_special_issue_types_req),
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, update_contentions_on_ep400_req),
             ],
@@ -677,6 +740,7 @@ class TestUpToCheckPendingIsOpen:
                 get_ep400_claim_200,
                 get_pending_contentions_200,
                 get_ep400_contentions_200,
+                get_special_issue_types_200,
                 ResponseException('Oops'),
                 invalid_request,
             ],
@@ -689,6 +753,7 @@ class TestUpToCheckPendingIsOpen:
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_special_issue_types_req),
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, update_contentions_on_ep400_req),
             ],
@@ -716,6 +781,7 @@ class TestUpToCheckEP400IsOpen:
                 get_ep400_claim_200,
                 get_pending_contentions_200,
                 get_ep400_contentions_200,
+                get_special_issue_types_200,
                 get_pending_claim_200,
                 invalid_request,
                 update_contentions_on_ep400_200,
@@ -729,6 +795,7 @@ class TestUpToCheckEP400IsOpen:
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_special_issue_types_req),
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, update_contentions_on_ep400_req),
@@ -765,6 +832,7 @@ class TestUpToCheckEP400IsOpen:
                 get_ep400_claim_200,
                 get_pending_contentions_200,
                 get_ep400_contentions_200,
+                get_special_issue_types_200,
                 get_pending_claim_200,
                 ineligible_request,
                 update_contentions_on_ep400_200,
@@ -778,6 +846,7 @@ class TestUpToCheckEP400IsOpen:
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_special_issue_types_req),
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, update_contentions_on_ep400_req),
@@ -804,6 +873,7 @@ class TestUpToCheckEP400IsOpen:
                 get_ep400_claim_200,
                 get_pending_contentions_200,
                 get_ep400_contentions_200,
+                get_special_issue_types_200,
                 get_pending_claim_200,
                 ResponseException('Oops'),
                 invalid_request,
@@ -817,6 +887,7 @@ class TestUpToCheckEP400IsOpen:
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_special_issue_types_req),
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, update_contentions_on_ep400_req),
@@ -845,6 +916,7 @@ class TestUpToSetTemporaryStationOfJurisdiction:
                 get_ep400_claim_200,
                 get_pending_contentions_200,
                 get_ep400_contentions_200,
+                get_special_issue_types_200,
                 get_pending_claim_200,
                 get_ep400_claim_200,
                 invalid_request,
@@ -859,6 +931,7 @@ class TestUpToSetTemporaryStationOfJurisdiction:
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_special_issue_types_req),
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
@@ -886,6 +959,7 @@ class TestUpToSetTemporaryStationOfJurisdiction:
                 get_ep400_claim_200,
                 get_pending_contentions_200,
                 get_ep400_contentions_200,
+                get_special_issue_types_200,
                 get_pending_claim_200,
                 get_ep400_claim_200,
                 ResponseException('Oops'),
@@ -900,6 +974,7 @@ class TestUpToSetTemporaryStationOfJurisdiction:
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_special_issue_types_req),
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
@@ -939,6 +1014,7 @@ class TestUpToMoveContentionsToPendingClaim:
                 get_ep400_claim_200,
                 get_pending_contentions_200,
                 get_ep400_contentions_200,
+                get_special_issue_types_200,
                 get_pending_claim_200,
                 get_ep400_claim_200,
                 update_temporary_station_of_jurisdiction_200,
@@ -955,6 +1031,7 @@ class TestUpToMoveContentionsToPendingClaim:
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_special_issue_types_req),
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
@@ -984,6 +1061,7 @@ class TestUpToMoveContentionsToPendingClaim:
                 get_ep400_claim_200,
                 get_pending_contentions_200,
                 get_ep400_contentions_200,
+                get_special_issue_types_200,
                 get_pending_claim_200,
                 get_ep400_claim_200,
                 update_temporary_station_of_jurisdiction_200,
@@ -1000,6 +1078,7 @@ class TestUpToMoveContentionsToPendingClaim:
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_special_issue_types_req),
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
@@ -1031,6 +1110,7 @@ class TestUpToMoveContentionsToPendingClaim:
                 get_ep400_claim_200,
                 get_pending_contentions_200,
                 get_ep400_contentions_200,
+                get_special_issue_types_200,
                 get_pending_claim_200,
                 get_ep400_claim_200,
                 update_temporary_station_of_jurisdiction_200,
@@ -1047,6 +1127,7 @@ class TestUpToMoveContentionsToPendingClaim:
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_special_issue_types_req),
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
@@ -1090,6 +1171,7 @@ class TestUpToCancelClaim:
                 get_ep400_claim_200,
                 get_pending_contentions_200,
                 get_ep400_contentions_200,
+                get_special_issue_types_200,
                 get_pending_claim_200,
                 get_ep400_claim_200,
                 update_temporary_station_of_jurisdiction_200,
@@ -1106,6 +1188,7 @@ class TestUpToCancelClaim:
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_special_issue_types_req),
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
@@ -1148,6 +1231,7 @@ class TestUpToCancelClaim:
                 get_ep400_claim_200,
                 get_pending_contentions_200,
                 get_ep400_contentions_200,
+                get_special_issue_types_200,
                 get_pending_claim_200,
                 get_ep400_claim_200,
                 update_temporary_station_of_jurisdiction_200,
@@ -1164,6 +1248,7 @@ class TestUpToCancelClaim:
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_special_issue_types_req),
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
@@ -1207,6 +1292,7 @@ class TestUpToAddClaimNote:
                 get_ep400_claim_200,
                 get_pending_contentions_200,
                 get_ep400_contentions_200,
+                get_special_issue_types_200,
                 get_pending_claim_200,
                 get_ep400_claim_200,
                 update_temporary_station_of_jurisdiction_200,
@@ -1223,6 +1309,7 @@ class TestUpToAddClaimNote:
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, get_pending_contentions_req),
                 call(machine.job.job_id, get_ep400_contentions_req),
+                call(machine.job.job_id, get_special_issue_types_req),
                 call(machine.job.job_id, get_pending_claim_req),
                 call(machine.job.job_id, get_ep400_claim_req),
                 call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
@@ -1285,6 +1372,7 @@ class TestSuccess:
                 get_ep400_claim_200,
                 pending_contentions_response,
                 ep400_contentions_response,
+                get_special_issue_types_200,
                 get_pending_claim_200,
                 get_ep400_claim_200,
                 update_temporary_station_of_jurisdiction_200,
@@ -1306,6 +1394,7 @@ class TestSuccess:
                 get_ep400_claim_200,
                 get_pending_contentions_increase_tinnitus_200,
                 get_ep400_contentions_200,
+                get_special_issue_types_200,
                 get_pending_claim_200,
                 get_ep400_claim_200,
                 update_temporary_station_of_jurisdiction_200,
@@ -1366,6 +1455,7 @@ class TestSuccess:
                     get_ep400_claim_200,
                     pending_contentions_response,
                     ep400_contentions_response,
+                    get_special_issue_types_200,
                     get_pending_claim_200,
                     get_ep400_claim_200,
                     update_temporary_station_of_jurisdiction_200,
