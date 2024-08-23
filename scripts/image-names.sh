@@ -42,7 +42,7 @@ for INDEX in "${!IMAGES[@]}"; do
   echo "[$INDEX]: ${IMAGES[$INDEX]}"
 done
 
-SRC_FILE=image_vars.src
+SRC_FILE=scripts/image_vars.src
 echo
 echo "=== Overwriting $SRC_FILE"
 # shellcheck disable=SC2145,SC2016
