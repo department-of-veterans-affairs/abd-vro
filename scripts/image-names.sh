@@ -15,7 +15,10 @@ bashVarPrefix() {
   echo "${1//-/}"
 }
 
-# These names must match the images specified in Helm configs
+# These names must match the images specified in Helm configs; with the exception of rabbitmq.
+# Specifically, this condition ensures that our RabbitMQ image is named "rabbitmq" instead of "vro-rabbitmq", while 
+# all other images retain the "vro-" prefix. This adjustment will allow LHDI Datadog agent's autodiscovery feature to correctly 
+# match our rabbitmq container image name thereby resulting in the capturing of metrics.
 prodImageName() {
   if [ "$1" == "rabbitmq" ]; then
     echo "rabbitmq"
