@@ -1,5 +1,5 @@
 # Use the official AWS CLI image for the first stage
-FROM amazon/aws-cli:2.17.35 as awscli
+FROM amazon/aws-cli:2.17.36 as awscli
 
 # Use the bitnami/minideb:bookworm as the base image for the second stage
 FROM bitnami/minideb:bookworm
