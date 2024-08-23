@@ -50,7 +50,7 @@ export postgres_GRADLE_IMG="va/abd_vro-postgres"
 export postgres_IMG="vro-postgres"
 
 export rabbitmq_GRADLE_IMG="va/abd_vro-rabbitmq"
-export rabbitmq_IMG="vro-rabbitmq"
+export rabbitmq_IMG="rabbitmq"
 
 export dbinit_GRADLE_IMG="va/abd_vro-db-init"
 export dbinit_IMG="vro-db-init"
@@ -78,3 +78,4 @@ export eemaxcfiapp_IMG="vro-ee-max-cfi-app"
 
 export eeepmergeapp_GRADLE_IMG="va/abd_vro-ee-ep-merge-app"
 export eeepmergeapp_IMG="vro-ee-ep-merge-app"
+
