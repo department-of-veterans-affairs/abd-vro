@@ -52,7 +52,7 @@ services:
   # Containers with the `mock-` prefix are used for development and testing.
 
   rabbitmq-service:
-    image: va/abd_rabbitmq
+    image: abd_vro-rabbitmq
     <<: *image-platform
     healthcheck:
       test: rabbitmq-diagnostics check_port_connectivity
