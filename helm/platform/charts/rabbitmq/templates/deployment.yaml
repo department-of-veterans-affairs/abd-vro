@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vro-rabbitmq
+  name: rabbitmq
   labels: {{- toYaml .Values.labels | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
@@ -23,8 +23,8 @@ spec:
               {{- include "vro.valueFromSecret.rabbitmqUser" . | nindent 14 }}
             - name: RABBITMQ_PASSWORD
               {{- include "vro.valueFromSecret.rabbitmqPwd" . | nindent 14 }}
-            - name: RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS
-              value: "-rabbitmq_prometheus"
+            - name: RABBITMQ_PLUGINS
+              value: rabbitmq_management, rabbitmq_peer_discovery_k8s, rabbitmq_auth_backend_ldap, rabbitmq_prometheus
           ports:
             - containerPort: {{ .Values.service.mq.sourcePort }}
               protocol: TCP
