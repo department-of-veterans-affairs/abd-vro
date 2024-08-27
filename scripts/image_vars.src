@@ -49,7 +49,7 @@ imageTagExists(){
 export postgres_GRADLE_IMG="va/abd_vro-postgres"
 export postgres_IMG="vro-postgres"
 
-export rabbitmq_GRADLE_IMG="va/abd_rabbitmq"
+export rabbitmq_GRADLE_IMG="va/abd_vro-rabbitmq"
 export rabbitmq_IMG="rabbitmq"
 
 export dbinit_GRADLE_IMG="va/abd_vro-db-init"
