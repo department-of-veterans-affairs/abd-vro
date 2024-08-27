@@ -54,3 +54,8 @@ bip:
   # TODO: Consider moving these URL settings to application-*.yml files
   bipClaimUrl:    claims-uat.stage.bip.va.gov/api/v1
   bipEvidenceUrl: vefs-claimevidence-uat.stage.bip.va.gov/api/v1/rest
+
+secrets:
+  rabbitmq:
+    name: vro-dd-rabbitmq-pass
+    key: rabbitmq_pass

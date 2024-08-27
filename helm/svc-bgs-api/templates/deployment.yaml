@@ -36,7 +36,7 @@ spec:
             - name: DD_RABBITMQ_PASS
               valueFrom:
                 secretKeyRef:
-                  name: vro-dd-rabbitmq-pass
-                  key: rabbitmq_pass
+                  name: {{ .Values.secrets.rabbitmq.name }}
+                  key: {{ .Values.secrets.rabbitmq.key }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

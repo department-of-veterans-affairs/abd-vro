@@ -2,3 +2,8 @@
 bip:
   bipClaimUrl: claims-prodtest.prod.bip.va.gov/api/v1
   bipEvidenceUrl: vefs-claimevidence-prodtest.prod.bip.va.gov/api/v1/rest
+
+secrets:
+  rabbitmq:
+    name: vro-dd-rabbitmq-pass
+    key: rabbitmq_pass
