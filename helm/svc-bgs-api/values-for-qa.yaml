@@ -7,3 +7,4 @@ secrets:
   rabbitmq:
     name: vro-dd-rabbitmq-pass
     key: rabbitmq_pass
+    
