@@ -95,5 +95,4 @@ jobs:
                <https://github.com/${{ github.repository }}/pkgs/container/${{ github.event.repository.name }}%2F${{ env.TARGET_IMAGE }}|the package> \
                is associated with repo `${{ github.repository }}` and is set to `Inherit access from source repository` as instructed by \
                <https://animated-carnival-57b3e7f5.pages.github.io/starterkits/java/development-guide/#changing-published-package-visibility|LHDI doc>; \
-               also see <https://github.com/department-of-veterans-affairs/abd-vro/wiki/Docker-containers#packages|VRO wiki docs>.\n\
-            2. Add it to the Helm configuration; mimic files under the `helm/charts` folders\n"
+               also see <https://github.com/department-of-veterans-affairs/abd-vro/wiki/Docker-containers#packages|VRO wiki docs>.\n\""

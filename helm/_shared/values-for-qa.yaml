@@ -1,5 +1,0 @@
-
-global:
-  lhdiCluster: nonprod
-  environment: qa
-  endpoint: qa.lighthouse.va.gov
