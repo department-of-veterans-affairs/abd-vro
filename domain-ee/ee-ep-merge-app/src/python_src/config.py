@@ -11,7 +11,7 @@ config = {
 }
 
 
-BIP_EXCHANGE = os.environ.get('BIP_API_EXCHANGE') or 'bipApiExchange'
+BIP_EXCHANGE = os.environ.get('BIP_API_EXCHANGE') or 'svc_bip_api.requests'
 BGS_EXCHANGE = os.environ.get('BGS_API_EXCHANGE') or 'svc_bgs_api.requests'
 
 
@@ -36,36 +36,38 @@ class ClientQueue:
 CLIENTS: dict[ClientName, ClientQueue] = {
     ClientName.GET_CLAIM: ClientQueue(
         BIP_EXCHANGE,
-        os.environ.get('GET_CLAIM_DETAILS_REQUEST') or 'getClaimDetailsQueue',
-        os.environ.get('GET_CLAIM_DETAILS_RESPONSE') or 'getClaimDetailsResponseQueue',
+        os.environ.get('GET_CLAIM_DETAILS_REQUEST') or 'svc_bip_api.get_claim_details',
+        os.environ.get('GET_CLAIM_DETAILS_RESPONSE') or 'ep_merge.get_claim_details_response',
     ),
     ClientName.GET_CLAIM_CONTENTIONS: ClientQueue(
         BIP_EXCHANGE,
-        os.environ.get('GET_CLAIM_CONTENTIONS_REQUEST') or 'getClaimContentionsQueue',
-        os.environ.get('GET_CLAIM_CONTENTIONS_RESPONSE') or 'getClaimContentionsResponseQueue',
+        os.environ.get('GET_CLAIM_CONTENTIONS_REQUEST') or 'svc_bip_api.get_claim_contentions',
+        os.environ.get('GET_CLAIM_CONTENTIONS_RESPONSE') or 'ep_merge.get_claim_contentions_response',
     ),
     ClientName.GET_SPECIAL_ISSUE_TYPES: ClientQueue(
         BIP_EXCHANGE,
-        os.environ.get('GET_SPECIAL_ISSUE_TYPES_REQUEST') or 'getSpecialIssueTypesQueue',
-        os.environ.get('GET_SPECIAL_ISSUE_TYPES_RESPONSE') or 'getSpecialIssueTypesResponseQueue',
+        os.environ.get('GET_SPECIAL_ISSUE_TYPES_REQUEST') or 'svc_bip_api.get_special_issue_types',
+        os.environ.get('GET_SPECIAL_ISSUE_TYPES_RESPONSE') or 'ep_merge.get_special_issue_types_response',
     ),
     ClientName.PUT_TSOJ: ClientQueue(
         BIP_EXCHANGE,
-        os.environ.get('PUT_TSOJ_REQUEST') or 'putTempStationOfJurisdictionQueue',
-        os.environ.get('PUT_TSOJ_RESPONSE') or 'putTempStationOfJurisdictionResponseQueue',
+        os.environ.get('PUT_TSOJ_REQUEST') or 'svc_bip_api.put_temp_station_of_jurisdiction',
+        os.environ.get('PUT_TSOJ_RESPONSE') or 'ep_merge.put_temp_station_of_jurisdiction_response',
     ),
     ClientName.CREATE_CLAIM_CONTENTIONS: ClientQueue(
         BIP_EXCHANGE,
-        os.environ.get('CREATE_CLAIM_CONTENTIONS_REQUEST') or 'createClaimContentionsQueue',
-        os.environ.get('CREATE_CLAIM_CONTENTIONS_RESPONSE') or 'createClaimContentionsResponseQueue',
+        os.environ.get('CREATE_CLAIM_CONTENTIONS_REQUEST') or 'svc_bip_api.create_claim_contentions',
+        os.environ.get('CREATE_CLAIM_CONTENTIONS_RESPONSE') or 'ep_merge.create_claim_contentions_response',
     ),
     ClientName.UPDATE_CLAIM_CONTENTIONS: ClientQueue(
         BIP_EXCHANGE,
-        os.environ.get('UPDATE_CLAIM_CONTENTIONS_REQUEST') or 'updateClaimContentionsQueue',
-        os.environ.get('UPDATE_CLAIM_CONTENTIONS_RESPONSE') or 'updateClaimContentionsResponseQueue',
+        os.environ.get('UPDATE_CLAIM_CONTENTIONS_REQUEST') or 'svc_bip_api.update_claim_contentions',
+        os.environ.get('UPDATE_CLAIM_CONTENTIONS_RESPONSE') or 'ep_merge.update_claim_contentions_response',
     ),
     ClientName.CANCEL_CLAIM: ClientQueue(
-        BIP_EXCHANGE, os.environ.get('CANCEL_CLAIM_REQUEST') or 'cancelClaimQueue', os.environ.get('CANCEL_CLAIM_RESPONSE') or 'cancelClaimResponseQueue'
+        BIP_EXCHANGE,
+        os.environ.get('CANCEL_CLAIM_REQUEST') or 'svc_bip_api.cancel_claim',
+        os.environ.get('CANCEL_CLAIM_RESPONSE') or 'ep_merge.cancel_claim_response',
     ),
     ClientName.BGS_ADD_CLAIM_NOTE: ClientQueue(
         BGS_EXCHANGE,
