@@ -27,10 +27,14 @@ begin
 
   # Check healthcheck reply_queue
   delivery_info, properties, payload = reply_queue.pop
-  raise "svc-bgs-api healthcheck failed: no response" if payload.nil?
+
+  # Return if all three are nil because that means queue was empty
+  return if delivery_info.nil? and properties.nil? and payload.nil?
+
+  raise "svc-bgs-api healthcheck failed: no response payload=#{payload}" if payload.nil?
 
   json = JSON.parse(payload)
-  raise "svc-bgs-api healthcheck failed: #{payload}" if json["statusCode"] != 200
+  raise "svc-bgs-api healthcheck failed: payload=#{payload}" if json["statusCode"] != 200
 
 ensure
   channel.close
