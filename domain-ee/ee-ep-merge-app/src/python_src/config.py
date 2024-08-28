@@ -70,7 +70,7 @@ CLIENTS: dict[ClientName, ClientQueue] = {
     ClientName.BGS_ADD_CLAIM_NOTE: ClientQueue(
         BGS_EXCHANGE,
         os.environ.get('ADD_CLAIM_NOTE_REQUEST') or 'svc_bgs_api.add_note',
-        os.environ.get('ADD_CLAIM_NOTE_RESPONSE') or 'svc_bgs_api.add_note_response',
+        os.environ.get('ADD_CLAIM_NOTE_RESPONSE') or 'ep_merge.add_note_response',
     ),
 }
 
