@@ -6,16 +6,16 @@ require 'json'
 require_relative '../config/constants'
 
 # Constants used by integration tests
-ADD_NOTE_REPLY_QUEUE = "add-note-response"
+ADD_NOTE_REPLY_QUEUE = "svc_bgs_api.add_note_response"
 ADD_NOTE_PAYLOAD = "{\\\"veteranNote\\\":\\\"test\\\",\\\"veteranParticipantId\\\":111}"
 CORRELATION_ID = "1234"
 
 
 def test_successful_add_note(ch)
-    x = ch.direct(BGS_EXCHANGE_NAME, CAMEL_MQ_PROPERTIES)
-    r = ch.queue(ADD_NOTE_REPLY_QUEUE, CAMEL_MQ_PROPERTIES).bind(x, :routing_key => ADD_NOTE_REPLY_QUEUE)
+    x = ch.direct(REQUESTS_EXCHANGE, EXCHANGE_PROPERTIES)
+    r = ch.queue(ADD_NOTE_REPLY_QUEUE, { durable: true, auto_delete: true }).bind(x, :routing_key => ADD_NOTE_REPLY_QUEUE)
 
-    q = ch.queue(ADD_NOTE_QUEUE, CAMEL_MQ_PROPERTIES)
+    q = ch.queue(ADD_NOTE_QUEUE, ADD_NOTE_QUEUE_PROPERTIES)
     q.publish(ADD_NOTE_PAYLOAD, :reply_to => ADD_NOTE_REPLY_QUEUE, :delivery_mode => 1, :correlation_id => CORRELATION_ID, :payload_encoding => "string")
 
     delivery_info, properties, payload = r.pop

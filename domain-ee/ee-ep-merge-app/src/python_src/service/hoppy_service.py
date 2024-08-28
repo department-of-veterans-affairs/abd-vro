@@ -20,8 +20,8 @@ class HoppyService:
 
     def create_client(self, name: ClientName) -> None:
         client_queue = CLIENTS[name]
-        exchange_props = ExchangeProperties(name=client_queue.exchange, passive_declare=False)
-        request_queue_props = QueueProperties(name=client_queue.request_queue, passive_declare=False)
+        exchange_props = ExchangeProperties(name=client_queue.exchange, passive_declare=True)
+        request_queue_props = QueueProperties(name=client_queue.request_queue, passive_declare=True)
         reply_queue_props = QueueProperties(name=client_queue.response_queue, passive_declare=False)
         client = RetryableAsyncHoppyClient(
             name=name.value,

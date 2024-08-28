@@ -5,21 +5,34 @@ require 'json'
 
 require_relative '../config/constants'
 
-HEALTHCHECK_REPLY_QUEUE = "healthcheck-reply"
-
 conn = Bunny.new(BUNNY_ARGS)
 conn.start
 
-ch = conn.create_channel
-x = ch.direct(BGS_EXCHANGE_NAME, CAMEL_MQ_PROPERTIES)
+channel = conn.create_channel
 
-r = ch.queue(HEALTHCHECK_REPLY_QUEUE, CAMEL_MQ_PROPERTIES).bind(x, :routing_key => HEALTHCHECK_REPLY_QUEUE)
+# Create healthcheck exchange
+exchange = channel.direct(HEALTHCHECK_EXCHANGE, HEALTHCHECK_EXCHANGE_PROPERTIES)
 
-q = ch.queue(HEALTHCHECK_QUEUE, CAMEL_MQ_PROPERTIES).bind(x, :routing_key => HEALTHCHECK_QUEUE)
-q.publish('{"health": "check"}', :reply_to => HEALTHCHECK_REPLY_QUEUE)
+# Create healthcheck reply_queue queue with auto generated name
+reply_queue = channel.queue('', { auto_delete: true, exclusive: true })
+reply_queue.bind(exchange, :routing_key => reply_queue.name)
 
-delivery_info, properties, payload = r.pop
+# Create healthcheck queue
+request_queue = channel.queue(HEALTHCHECK_QUEUE, HEALTHCHECK_QUEUE_PROPERTIES).bind(exchange, :routing_key => HEALTHCHECK_QUEUE)
 
-if JSON.parse(payload)["statusCode"] != 200 then
-    raise "svc-bgs-api healthcheck failed"
+# Publish healthcheck message
+request_queue.publish('{"health": "check"}', :reply_to => reply_queue.name)
+
+# Check healthcheck reply_queue
+delivery_info, properties, payload = reply_queue.pop
+if payload.nil?
+    raise "svc-bgs-api healthcheck failed: no response"
+else
+  json = JSON.parse(payload)
+  if json["statusCode"] != 200
+      raise "svc-bgs-api healthcheck failed: #{payload}"
+  end
 end
+
+channel.close
+conn.close
