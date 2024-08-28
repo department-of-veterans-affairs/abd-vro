@@ -71,5 +71,4 @@ public class RabbitMqConfig implements RabbitListenerConfigurer {
   DirectExchange bipApiExchange() {
     return new DirectExchange(props.getExchangeName(), true, false);
   }
-
 }

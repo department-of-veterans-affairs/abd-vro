@@ -36,7 +36,9 @@ public class RabbitMqController {
     return service.getClaimDetails(request.getClaimId());
   }
 
-  @RabbitListener(queues = "#{@putClaimLifecycleStatusQueue}", errorHandler = "bipRequestErrorHandler")
+  @RabbitListener(
+      queues = "#{@putClaimLifecycleStatusQueue}",
+      errorHandler = "bipRequestErrorHandler")
   PutClaimLifecycleResponse updateClaimStatus(@Valid @Payload PutClaimLifecycleRequest request) {
     return service.putClaimLifecycleStatus(request);
   }
@@ -47,13 +49,17 @@ public class RabbitMqController {
     return service.getClaimContentions(request.getClaimId());
   }
 
-  @RabbitListener(queues = "#{@createClaimContentionsQueue}", errorHandler = "bipRequestErrorHandler")
+  @RabbitListener(
+      queues = "#{@createClaimContentionsQueue}",
+      errorHandler = "bipRequestErrorHandler")
   CreateClaimContentionsResponse createClaimContentions(
       @Valid @Payload CreateClaimContentionsRequest request) {
     return service.createClaimContentions(request);
   }
 
-  @RabbitListener(queues = "#{@updateClaimContentionsQueue}", errorHandler = "bipRequestErrorHandler")
+  @RabbitListener(
+      queues = "#{@updateClaimContentionsQueue}",
+      errorHandler = "bipRequestErrorHandler")
   UpdateClaimContentionsResponse updateClaimContentions(
       @Valid @Payload UpdateClaimContentionsRequest request) {
     return service.updateClaimContentions(request);
