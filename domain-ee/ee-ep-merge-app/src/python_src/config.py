@@ -12,7 +12,7 @@ config = {
 
 
 BIP_EXCHANGE = os.environ.get('BIP_API_EXCHANGE') or 'bipApiExchange'
-BGS_EXCHANGE = os.environ.get('BGS_API_EXCHANGE') or 'bgs-api'
+BGS_EXCHANGE = os.environ.get('BGS_API_EXCHANGE') or 'svc_bgs_api.requests'
 
 
 class ClientName(str, Enum):
@@ -68,7 +68,9 @@ CLIENTS: dict[ClientName, ClientQueue] = {
         BIP_EXCHANGE, os.environ.get('CANCEL_CLAIM_REQUEST') or 'cancelClaimQueue', os.environ.get('CANCEL_CLAIM_RESPONSE') or 'cancelClaimResponseQueue'
     ),
     ClientName.BGS_ADD_CLAIM_NOTE: ClientQueue(
-        BGS_EXCHANGE, os.environ.get('ADD_CLAIM_NOTE_REQUEST') or 'add-note', os.environ.get('ADD_CLAIM_NOTE_RESPONSE') or 'add-note-response'
+        BGS_EXCHANGE,
+        os.environ.get('ADD_CLAIM_NOTE_REQUEST') or 'svc_bgs_api.add_note',
+        os.environ.get('ADD_CLAIM_NOTE_RESPONSE') or 'ep_merge.add_note_response',
     ),
 }
 
