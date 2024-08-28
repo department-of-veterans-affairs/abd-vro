@@ -10,29 +10,29 @@ conn.start
 
 channel = conn.create_channel
 
-# Create healthcheck exchange
-exchange = channel.direct(HEALTHCHECK_EXCHANGE, HEALTHCHECK_EXCHANGE_PROPERTIES)
+begin
+  # Create healthcheck exchange
 
-# Create healthcheck reply_queue queue with auto generated name
-reply_queue = channel.queue('', { auto_delete: true, exclusive: true })
-reply_queue.bind(exchange, :routing_key => reply_queue.name)
+  exchange = channel.direct(HEALTHCHECK_EXCHANGE, HEALTHCHECK_EXCHANGE_PROPERTIES)
 
-# Create healthcheck queue
-request_queue = channel.queue(HEALTHCHECK_QUEUE, HEALTHCHECK_QUEUE_PROPERTIES).bind(exchange, :routing_key => HEALTHCHECK_QUEUE)
+  # Create healthcheck reply_queue queue with auto generated name
+  reply_queue = channel.queue('', { auto_delete: true, exclusive: true })
+  reply_queue.bind(exchange, :routing_key => reply_queue.name)
 
-# Publish healthcheck message
-request_queue.publish('{"health": "check"}', :reply_to => reply_queue.name)
+  # Create healthcheck queue
+  request_queue = channel.queue(HEALTHCHECK_QUEUE, HEALTHCHECK_QUEUE_PROPERTIES).bind(exchange, :routing_key => HEALTHCHECK_QUEUE)
 
-# Check healthcheck reply_queue
-delivery_info, properties, payload = reply_queue.pop
-if payload.nil?
-    raise "svc-bgs-api healthcheck failed: no response"
-else
+  # Publish healthcheck message
+  request_queue.publish('{"health": "check"}', :reply_to => reply_queue.name)
+
+  # Check healthcheck reply_queue
+  delivery_info, properties, payload = reply_queue.pop
+  raise "svc-bgs-api healthcheck failed: no response" if payload.nil?
+
   json = JSON.parse(payload)
-  if json["statusCode"] != 200
-      raise "svc-bgs-api healthcheck failed: #{payload}"
-  end
-end
+  raise "svc-bgs-api healthcheck failed: #{payload}" if json["statusCode"] != 200
 
-channel.close
-conn.close
+ensure
+  channel.close
+  conn.close
+end
