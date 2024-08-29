@@ -32,17 +32,15 @@ spring:
     api_key: ${DD_API_KEY:secret-api-key}
     app_key: ${DD_APP_KEY:secret-app-key}
 
-getClaimDetailsQueue: getClaimDetailsQueue
-putClaimLifecycleStatusQueue: putClaimLifecycleStatusQueue
-cancelClaimQueue: cancelClaimQueue
-getClaimContentionsQueue: getClaimContentionsQueue
-createClaimContentionsQueue: createClaimContentionsQueue
-updateClaimContentionsQueue: updateClaimContentionsQueue
-putTempStationOfJurisdictionQueue: putTempStationOfJurisdictionQueue
-getSpecialIssueTypesQueue: getSpecialIssueTypesQueue
-exchangeName: bipApiExchange
-deadLetterQueueName: vroDeadLetterQueue
-deadLetterExchangeName: vro.dlx
+exchangeName: svc_bip_api.requests
+getClaimDetailsQueue: svc_bip_api.get_claim_details
+putClaimLifecycleStatusQueue: svc_bip_api.put_claim_lifecycle_status
+cancelClaimQueue: svc_bip_api.cancel_claim
+getClaimContentionsQueue: svc_bip_api.get_claim_contentions
+createClaimContentionsQueue: svc_bip_api.create_claim_contentions
+updateClaimContentionsQueue: svc_bip_api.update_claim_contentions
+putTempStationOfJurisdictionQueue: svc_bip_api.put_temp_station_of_jurisdiction
+getSpecialIssueTypesQueue: svc_bip_api.get_special_issue_types
 
 # Actuator for health check, liveness, and readiness
 management:

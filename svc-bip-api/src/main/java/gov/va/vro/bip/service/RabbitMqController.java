@@ -31,48 +31,54 @@ public class RabbitMqController {
 
   final BipApiService service;
 
-  @RabbitListener(queues = "getClaimDetailsQueue", errorHandler = "bipRequestErrorHandler")
+  @RabbitListener(queues = "#{@getClaimDetailsQueue}", errorHandler = "bipRequestErrorHandler")
   GetClaimResponse getClaimDetails(@Valid @Payload GetClaimRequest request) {
     return service.getClaimDetails(request.getClaimId());
   }
 
-  @RabbitListener(queues = "putClaimLifecycleStatusQueue", errorHandler = "bipRequestErrorHandler")
+  @RabbitListener(
+      queues = "#{@putClaimLifecycleStatusQueue}",
+      errorHandler = "bipRequestErrorHandler")
   PutClaimLifecycleResponse updateClaimStatus(@Valid @Payload PutClaimLifecycleRequest request) {
     return service.putClaimLifecycleStatus(request);
   }
 
-  @RabbitListener(queues = "getClaimContentionsQueue", errorHandler = "bipRequestErrorHandler")
+  @RabbitListener(queues = "#{@getClaimContentionsQueue}", errorHandler = "bipRequestErrorHandler")
   GetClaimContentionsResponse getClaimContentions(
       @Valid @Payload GetClaimContentionsRequest request) {
     return service.getClaimContentions(request.getClaimId());
   }
 
-  @RabbitListener(queues = "createClaimContentionsQueue", errorHandler = "bipRequestErrorHandler")
+  @RabbitListener(
+      queues = "#{@createClaimContentionsQueue}",
+      errorHandler = "bipRequestErrorHandler")
   CreateClaimContentionsResponse createClaimContentions(
       @Valid @Payload CreateClaimContentionsRequest request) {
     return service.createClaimContentions(request);
   }
 
-  @RabbitListener(queues = "updateClaimContentionsQueue", errorHandler = "bipRequestErrorHandler")
+  @RabbitListener(
+      queues = "#{@updateClaimContentionsQueue}",
+      errorHandler = "bipRequestErrorHandler")
   UpdateClaimContentionsResponse updateClaimContentions(
       @Valid @Payload UpdateClaimContentionsRequest request) {
     return service.updateClaimContentions(request);
   }
 
-  @RabbitListener(queues = "cancelClaimQueue", errorHandler = "bipRequestErrorHandler")
+  @RabbitListener(queues = "#{@cancelClaimQueue}", errorHandler = "bipRequestErrorHandler")
   CancelClaimResponse cancelClaim(@Valid @Payload CancelClaimRequest cancelRequest) {
     return service.cancelClaim(cancelRequest);
   }
 
   @RabbitListener(
-      queues = "putTempStationOfJurisdictionQueue",
+      queues = "#{@putTempStationOfJurisdictionQueue}",
       errorHandler = "bipRequestErrorHandler")
   PutTempStationOfJurisdictionResponse putTempStationOfJurisdictionEndpoint(
       @Valid @Payload PutTempStationOfJurisdictionRequest request) {
     return service.putTempStationOfJurisdiction(request);
   }
 
-  @RabbitListener(queues = "getSpecialIssueTypesQueue", errorHandler = "bipRequestErrorHandler")
+  @RabbitListener(queues = "#{@getSpecialIssueTypesQueue}", errorHandler = "bipRequestErrorHandler")
   GetSpecialIssueTypesResponse getSpecialIssueTypesEndpoint() {
     return service.getSpecialIssueTypes();
   }
