@@ -31,12 +31,6 @@ public class RabbitMqConfigProperties {
   @Value("${exchangeName}")
   String exchangeName;
 
-  @Value("${deadLetterQueueName:vroDeadLetterQueue}")
-  private String deadLetterQueueName;
-
-  @Value("${deadLetterExchangeName:vro.dlx}")
-  private String deadLetterExchangeName;
-
   Map<String, Object> getGlobalQueueArgs() {
     return Collections.emptyMap();
   }
