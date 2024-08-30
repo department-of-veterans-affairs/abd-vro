@@ -16,7 +16,7 @@ class MqEndpoint:
         self.index = 0
         self.auto_response_files = []
 
-        exchange_props = ExchangeProperties(name=exchange, auto_delete=True, passive_declare=False)
+        exchange_props = ExchangeProperties(name=exchange, auto_delete=False, passive_declare=False)
         queue_props = QueueProperties(name=req_queue, auto_delete=True, passive_declare=False)
         self.consumer = async_consumer.AsyncConsumer(
             exchange_properties=exchange_props, queue_properties=queue_props, routing_key=req_queue, reply_callback=self._on_message
