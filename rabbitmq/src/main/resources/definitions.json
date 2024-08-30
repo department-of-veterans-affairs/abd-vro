@@ -31,6 +31,16 @@
         "max-length": 1000
       },
       "priority": 0
+    },
+    {
+      "vhost": "/",
+      "name": "VRO-GLOBAL-MESSAGE-TTL",
+      "pattern": ".*",
+      "apply-to": "queues",
+      "definition": {
+        "message-ttl": 1500000
+      },
+      "priority": 0
     }
   ]
 }
