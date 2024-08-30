@@ -33,6 +33,7 @@
       "priority": 0
     },
     {
+      "vhost": "/",
       "name": "healthcheck.queues",
       "pattern": ".*healthcheck.*",
       "apply-to": "queues",
