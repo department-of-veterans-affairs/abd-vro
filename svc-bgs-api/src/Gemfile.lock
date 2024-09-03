@@ -83,7 +83,7 @@ GEM
     racc (1.8.0)
     rack (2.2.9)
     rbtree (0.4.6)
-    rexml (3.3.4)
+    rexml (3.3.6)
       strscan
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
@@ -132,7 +132,7 @@ DEPENDENCIES
   bunny (>= 2.13.0)
   cgi (~> 0.3.6)
   datadog_api_client (>= 2.23.0)
-  rexml (~> 3.3, >= 3.3.4)
+  rexml (~> 3.3, >= 3.3.6)
   rspec
 
 RUBY VERSION
