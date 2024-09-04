@@ -34,20 +34,18 @@ class RabbitSubscriber
     @connection.close
   end
 
-  CAMEL_MQ_PROPERTIES = { durable: true, auto_delete: true }
-
-  def setup_queue(exchange_name:, queue_name:)
+  def setup_queue(exchange_name:, exchange_properties:, queue_name:, queue_properties:)
     channel = @connection.create_channel
     # Exchange and queue properties must match those set up in Camel
     # http://rubybunny.info/articles/exchanges.html
-    exchange = channel.direct(exchange_name, CAMEL_MQ_PROPERTIES)
+    exchange = channel.direct(exchange_name, exchange_properties)
     @exchanges[exchange_name] = exchange
     # in case message cannot be delivered
     exchange.on_return do |return_info, properties, content|
       $logger.info "Got a returned message: #{content}"
     end
 
-    channel.queue(queue_name, CAMEL_MQ_PROPERTIES).tap do |queue|
+    channel.queue(queue_name, queue_properties).tap do |queue|
       @queues[queue_name] = queue
       # https://www.baeldung.com/java-rabbitmq-exchanges-queues-bindings
       queue.bind(exchange_name, routing_key: queue_name)

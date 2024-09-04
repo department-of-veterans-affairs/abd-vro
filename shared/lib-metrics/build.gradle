@@ -1,0 +1,25 @@
+plugins {
+  id 'local.std.java.library-conventions'
+}
+
+ext {
+  jacocoExclude = [
+    '**/DatadogClientConfig.*',
+    '**/IMetricLoggerService.*',
+    '**/NoopMetricLoggerService.*'
+  ]
+}
+
+dependencies {
+  implementation 'org.springframework.boot:spring-boot-starter-amqp'
+  implementation "jakarta.validation:jakarta.validation-api"
+  implementation 'net.datafaker:datafaker:2.3.1'
+  implementation "com.google.guava:guava"
+  implementation 'org.apache.commons:commons-lang3:3.17.0'
+
+  // Datadog API
+  implementation 'com.datadoghq:datadog-api-client:2.27.0'
+
+  testImplementation platform('org.junit:junit-bom:5.11.0')
+  testImplementation 'org.junit.jupiter:junit-jupiter'
+}

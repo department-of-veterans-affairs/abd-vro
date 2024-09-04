@@ -1,18 +1,28 @@
 package gov.va.vro.routes.xample;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.metricslogging.IMetricLoggerService;
 import gov.va.vro.model.biekafka.BieMessagePayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@ComponentScan("gov.va.vro.metricslogging")
 public class BieXampleRoutes {
+
+  private static final String METRICS_PREFIX = "vro_xample_workflows";
   private final DbHelper dbHelper;
   private final ObjectMapper objectMapper;
+  private final IMetricLoggerService metricLogger;
+
+  private final String[] metricTagsSaveContentionEvent =
+      new String[] {"type:saveContentionEvent", "source:xampleWorkflows"};
 
   @RabbitListener(
       queues = {
@@ -24,10 +34,21 @@ public class BieXampleRoutes {
       })
   public void handleMessage(BieMessagePayload payload) {
     try {
-      dbHelper.saveContentionEvent(payload);
-      payload.setStatus(200);
-      log.info("Saved Contention Event to DB");
+      metricLogger.submitCount(
+          METRICS_PREFIX, IMetricLoggerService.METRIC.REQUEST_START, metricTagsSaveContentionEvent);
+      long transactionStartTime = System.nanoTime();
 
+      dbHelper.saveContentionEvent(payload);
+
+      metricLogger.submitRequestDuration(
+          METRICS_PREFIX, transactionStartTime, System.nanoTime(), metricTagsSaveContentionEvent);
+      metricLogger.submitCount(
+          METRICS_PREFIX,
+          IMetricLoggerService.METRIC.RESPONSE_COMPLETE,
+          metricTagsSaveContentionEvent);
+
+      log.info("Saved Contention Event to DB");
+      payload.setStatus(200);
       String jsonBody = objectMapper.writeValueAsString(payload);
       log.info("ReceivedMessageEventBody: " + jsonBody);
     } catch (Exception e) {
@@ -42,8 +63,15 @@ public class BieXampleRoutes {
     try {
       String jsonBody = objectMapper.writeValueAsString(payload);
       log.error("FailedMessageEventBody: " + jsonBody);
-    } catch (Exception jsonException) {
+
+      metricLogger.submitCount(
+          METRICS_PREFIX,
+          IMetricLoggerService.METRIC.RESPONSE_ERROR,
+          metricTagsSaveContentionEvent);
+    } catch (JsonProcessingException jsonException) {
       log.error("Error converting failed message to JSON", jsonException);
+    } catch (Exception exception) {
+      log.error("Error processing exception", exception);
     }
   }
 }

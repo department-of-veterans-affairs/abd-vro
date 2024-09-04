@@ -150,7 +150,9 @@ export POSTGRES_DOMAIN_CC_PW=domain_cc_password
 # Credentials for RabbitMQ and shared across containers
 export RABBITMQ_USERNAME=user
 export RABBITMQ_PASSWORD=bitnami
-
+# create basic auth token for RabbitMQ and export to github environment
+RABBITMQ_BASIC_AUTH="$(echo "${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}" | base64)"
+export RABBITMQ_BASIC_AUTH
 ###
 ### Slack notifications ###
 

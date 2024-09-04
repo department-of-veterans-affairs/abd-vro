@@ -7,21 +7,31 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Collections;
+import java.util.Map;
+
 @Data
 @Configuration
 @NoArgsConstructor
 @AllArgsConstructor
 @ConfigurationProperties(prefix = "spring.rabbitmq")
 public class RabbitMqConfigProperties {
-  @Value("${spring.rabbitmq.host}")
+  @Value("${spring.rabbitmq.host:localhost}")
   private String host;
 
-  @Value("${spring.rabbitmq.port}")
+  @Value("${spring.rabbitmq.port:5672}")
   private int port;
 
-  @Value("${spring.rabbitmq.username}")
+  @Value("${spring.rabbitmq.username:user}")
   private String username;
 
-  @Value("${spring.rabbitmq.password}")
+  @Value("${spring.rabbitmq.password:bitnami}")
   private String password;
+
+  @Value("${exchangeName}")
+  String exchangeName;
+
+  Map<String, Object> getGlobalQueueArgs() {
+    return Collections.emptyMap();
+  }
 }

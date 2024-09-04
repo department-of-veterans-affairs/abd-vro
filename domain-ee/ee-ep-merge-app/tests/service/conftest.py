@@ -11,6 +11,7 @@ from schema import (
     create_contentions,
     get_claim,
     get_contentions,
+    get_special_issue_types,
     update_contentions,
 )
 from schema import update_temp_station_of_jurisdiction as tsoj
@@ -21,6 +22,7 @@ from service.ep_merge_machine import (
     EP400_CFI_CONTENTIONS_METRIC,
     EP400_NEW_CONTENTIONS_METRIC,
     ERROR_STATES_TO_LOG_METRICS,
+    JOB_ABORTED_METRIC,
     JOB_DURATION_METRIC,
     JOB_ERROR_METRIC_PREFIX,
     JOB_FAILURE_METRIC,
@@ -56,6 +58,8 @@ ep400_contentions_increase_tinnitus_without_special_issues_200 = f'{RESPONSE_DIR
 pending_contentions_increase_tinnitus_200 = f'{RESPONSE_DIR}/claim_contentions_increase_tinnitus_200.json'
 ep400_contentions_new_tinnitus_200 = f'{RESPONSE_DIR}/claim_contentions_new_tinnitus_200.json'
 ep400_contentions_increase_multicontention_200 = f'{RESPONSE_DIR}/claim_contentions_increase_multicontention_200.json'
+ep400_contentions_deactive_special_issue_code_200 = f'{RESPONSE_DIR}/claim_contentions_deactive_special_issue_code_200.json'
+special_issue_types_200 = f'{RESPONSE_DIR}/get_special_issue_types_200.json'
 
 
 def load_response(file, response_type):
@@ -78,7 +82,10 @@ get_ep400_contentions_200 = load_response(ep400_contentions_increase_tinnitus_20
 # Add special issue code to contention from config
 get_ep400_contentions_200.contentions[0].special_issue_codes.append(EP_MERGE_SPECIAL_ISSUE_CODE)
 get_ep400_contentions_204 = load_response(response_204, get_contentions.Response)
+get_ep400_contentions_with_deactive_special_issues_200 = load_response(ep400_contentions_deactive_special_issue_code_200, get_contentions.Response)
 get_ep400_contentions_without_special_issues_200 = load_response(ep400_contentions_increase_tinnitus_200, get_contentions.Response)
+get_special_issue_types_req = get_special_issue_types.Request().model_dump(by_alias=True)
+get_special_issue_types_200 = load_response(special_issue_types_200, get_special_issue_types.Response)
 update_temporary_station_of_jurisdiction_req = tsoj.Request(claim_id=EP400_CLAIM_ID, temp_station_of_jurisdiction='398').model_dump(by_alias=True)
 revert_temporary_station_of_jurisdiction_req = tsoj.Request(claim_id=EP400_CLAIM_ID, temp_station_of_jurisdiction='111').model_dump(by_alias=True)
 update_temporary_station_of_jurisdiction_200 = load_response(response_200, tsoj.Response)
@@ -186,7 +193,8 @@ def assert_metrics_called(
             increment_metrics.append(CountMetric(JOB_SKIPPED_MERGE_METRIC))
 
     else:
-        increment_metrics.extend([CountMetric(JOB_FAILURE_METRIC), CountMetric(f'{JOB_ERROR_METRIC_PREFIX}.{expected_error_state}')])
+        completion_metric = JOB_FAILURE_METRIC if expected_completed_state == JobState.COMPLETED_ERROR else JOB_ABORTED_METRIC
+        increment_metrics.extend([CountMetric(completion_metric), CountMetric(f'{JOB_ERROR_METRIC_PREFIX}.{expected_error_state}')])
         if expected_error_state in ERROR_STATES_TO_LOG_METRICS:
             distribution_metrics.extend(contention_metrics)
             if expected_merge_skip:
@@ -214,7 +222,9 @@ def assert_requests_and_metrics_for_success(
         call(machine.job.job_id, get_ep400_claim_req),
         call(machine.job.job_id, get_pending_contentions_req),
         call(machine.job.job_id, get_ep400_contentions_req),
+        call(machine.job.job_id, get_special_issue_types_req),
         call(machine.job.job_id, get_pending_claim_req),
+        call(machine.job.job_id, get_ep400_claim_req),
         call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
     ]
     if not merge_skipped:

@@ -8,18 +8,21 @@ import gov.va.vro.bip.model.claim.GetClaimResponse;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
+import gov.va.vro.bip.model.contentions.GetSpecialIssueTypesResponse;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsResponse;
 import gov.va.vro.bip.model.lifecycle.PutClaimLifecycleRequest;
 import gov.va.vro.bip.model.lifecycle.PutClaimLifecycleResponse;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionRequest;
 import gov.va.vro.bip.model.tsoj.PutTempStationOfJurisdictionResponse;
+import gov.va.vro.metricslogging.IMetricLoggerService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -39,20 +42,14 @@ import java.util.Objects;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * BIP claim API service.
- *
- * @author warren @Date 10/31/22
+ * BipApiService offers an implementation of IBipApiService as an extension of the BIP Claims REST
+ * API Service
  */
 @Service
-@RequiredArgsConstructor
 @Slf4j
+@ComponentScan("gov.va.vro.metricslogging")
+@RequiredArgsConstructor
 public class BipApiService implements IBipApiService {
-  static final String CLAIM_DETAILS = "/claims/%s";
-  static final String CANCEL_CLAIM = "/claims/%s/cancel";
-  static final String TEMP_STATION_OF_JURISDICTION = "/claims/%s/temporary_station_of_jurisdiction";
-  static final String CLAIM_LIFECYCLE_STATUS = "/claims/%s/lifecycle_status";
-  static final String CONTENTION = "/claims/%s/contentions";
-  static final String SPECIAL_ISSUE_TYPES = "/contentions/special_issue_types";
 
   @Qualifier("bipCERestTemplate")
   @NonNull
@@ -63,6 +60,14 @@ public class BipApiService implements IBipApiService {
   final ObjectMapper mapper;
 
   final IMetricLoggerService metricLogger;
+  public static final String METRICS_PREFIX = "vro_bip";
+
+  static final String CLAIM_DETAILS = "/claims/%s";
+  static final String CANCEL_CLAIM = "/claims/%s/cancel";
+  static final String TEMP_STATION_OF_JURISDICTION = "/claims/%s/temporary_station_of_jurisdiction";
+  static final String CLAIM_LIFECYCLE_STATUS = "/claims/%s/lifecycle_status";
+  static final String CONTENTION = "/claims/%s/contentions";
+  static final String SPECIAL_ISSUE_TYPES = "/contentions/special_issue_types";
 
   @Override
   public GetClaimResponse getClaimDetails(long claimId) {
@@ -134,6 +139,12 @@ public class BipApiService implements IBipApiService {
         url, HttpMethod.PUT, requestBody, PutTempStationOfJurisdictionResponse.class);
   }
 
+  @Override
+  public GetSpecialIssueTypesResponse getSpecialIssueTypes() {
+    String url = bipApiProps.getClaimRequestUrl(SPECIAL_ISSUE_TYPES);
+    return makeRequest(url, HttpMethod.GET, null, GetSpecialIssueTypesResponse.class);
+  }
+
   @SuppressWarnings("unchecked")
   private <T extends BipPayloadResponse> T makeRequest(
       String url, HttpMethod method, Object requestBody, Class<T> expectedResponse) {
@@ -143,7 +154,8 @@ public class BipApiService implements IBipApiService {
       HttpEntity<Object> httpEntity = new HttpEntity<>(requestBody, getBipHeader());
       log.info("event=requestSent url={} method={}", url, method);
       metricLogger.submitCount(
-          MetricLoggerService.METRIC.REQUEST_START,
+          METRICS_PREFIX,
+          IMetricLoggerService.METRIC.REQUEST_START,
           new String[] {
             String.format("expectedResponse:%s", expectedResponse.getSimpleName()),
             "source:bipApiService",
@@ -160,6 +172,7 @@ public class BipApiService implements IBipApiService {
           method,
           bipResponse.getStatusCode().value());
       metricLogger.submitRequestDuration(
+          METRICS_PREFIX,
           requestStartTime,
           System.nanoTime(),
           new String[] {
@@ -176,7 +189,8 @@ public class BipApiService implements IBipApiService {
       }
 
       metricLogger.submitCount(
-          MetricLoggerService.METRIC.RESPONSE_COMPLETE,
+          METRICS_PREFIX,
+          IMetricLoggerService.METRIC.RESPONSE_COMPLETE,
           new String[] {
             String.format("expectedResponse:%s", expectedResponse.getSimpleName()),
             "source:bipApiService",
@@ -205,7 +219,8 @@ public class BipApiService implements IBipApiService {
           e.getMessage());
 
       metricLogger.submitCount(
-          MetricLoggerService.METRIC.RESPONSE_ERROR,
+          METRICS_PREFIX,
+          IMetricLoggerService.METRIC.RESPONSE_ERROR,
           new String[] {
             String.format("expectedResponse:%s", expectedResponse.getSimpleName()),
             "source:bipApiService",
@@ -224,8 +239,8 @@ public class BipApiService implements IBipApiService {
    * @return true if the API responds with OK status and response.
    */
   public boolean isApiFunctioning() {
-    String url = bipApiProps.getClaimRequestUrl(SPECIAL_ISSUE_TYPES);
-    log.info("Call {} to get special_issue_types", url);
+    String url = bipApiProps.getAvailabilityUrl();
+    log.info("Call {} to confirm service availability", url);
 
     HttpHeaders headers = getBipHeader();
     HttpEntity<Void> httpEntity = new HttpEntity<>(headers);

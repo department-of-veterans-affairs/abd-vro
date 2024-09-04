@@ -2,6 +2,8 @@ package gov.va.vro.services.bie.service.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.metricslogging.IMetricLoggerService;
+import gov.va.vro.metricslogging.MetricLoggerService;
 import gov.va.vro.model.biekafka.BieMessagePayload;
 import gov.va.vro.model.biekafka.ContentionEvent;
 import gov.va.vro.services.bie.config.BieProperties;
@@ -10,16 +12,23 @@ import gov.va.vro.services.bie.utils.BieMessageUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
+@ComponentScan("gov.va.vro.metricslogging")
 public class KafkaConsumer {
   private final AmqpMessageSender amqpMessageSender;
   private final BieProperties bieProperties;
+  final IMetricLoggerService metricLogger;
+  private static final String METRICS_PREFIX = "vro_bie_kafka";
+
+  final String[] metricTagsSendToQueue = new String[] {"type:sendRecordToMq", "source:svcBieKafka"};
 
   @KafkaListener(topics = "#{bieProperties.topicNames()}")
   public void consume(ConsumerRecord<String, Object> record) {
@@ -28,6 +37,9 @@ public class KafkaConsumer {
     //  mocks are implemented for testing purposes.
     try {
       String topicName = record.topic();
+      String[] metricTagsWithTopicName =
+          ArrayUtils.addAll(metricTagsSendToQueue, new String[] {"topic:" + topicName});
+
       Object payload = null;
       log.info("Topic name: {}", topicName);
       if (record.value() instanceof GenericRecord) {
@@ -39,9 +51,20 @@ public class KafkaConsumer {
         log.info("Sending String BieMessagePayload to Amqp Message Sender: {}", payload);
       }
 
+      metricLogger.submitCount(
+          METRICS_PREFIX, MetricLoggerService.METRIC.REQUEST_START, metricTagsWithTopicName);
+      long transactionStartTime = System.nanoTime();
+
       amqpMessageSender.send(ContentionEvent.rabbitMqExchangeName(topicName), topicName, payload);
+
+      metricLogger.submitRequestDuration(
+          METRICS_PREFIX, transactionStartTime, System.nanoTime(), metricTagsWithTopicName);
+      metricLogger.submitCount(
+          METRICS_PREFIX, MetricLoggerService.METRIC.RESPONSE_COMPLETE, metricTagsWithTopicName);
     } catch (Exception e) {
       log.error("Exception occurred while processing message: " + e.getMessage());
+      metricLogger.submitCount(
+          METRICS_PREFIX, MetricLoggerService.METRIC.RESPONSE_ERROR, metricTagsSendToQueue);
     }
   }
 

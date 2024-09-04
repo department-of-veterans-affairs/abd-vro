@@ -13,12 +13,19 @@ fi
 
 # Define the path to your configuration file
 CONFIG_FILE="/tmp/rabbitmq.conf"
+DEFINITIONS_FILE="/tmp/definitions.json"
 
 # Replace lines in the config file
 sed -i "s/^default_user .*/default_user = $RABBITMQ_USER_VALUE/" $CONFIG_FILE
 sed -i "s/^default_pass .*/default_pass = ${RABBITMQ_PASSWORD}/" $CONFIG_FILE
 
+# Replace values in the definitions file with the values from the environment variables
+sed -i -e "s/\${RABBITMQ_USER_VALUE}/$RABBITMQ_USER_VALUE/g" \
+    -e "s/\${RABBITMQ_PASSWORD}/${RABBITMQ_PASSWORD}/g" \
+    $DEFINITIONS_FILE
+
 
 cp /tmp/rabbitmq.conf /etc/rabbitmq/rabbitmq.conf
+cp /tmp/definitions.json /etc/rabbitmq/definitions.json
 
 exec /opt/bitnami/scripts/rabbitmq/entrypoint.sh /opt/bitnami/scripts/rabbitmq/run.sh

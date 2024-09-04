@@ -1,0 +1,67 @@
+{
+  "vhosts": [
+    {
+      "name": "/"
+    }
+  ],
+  "users": [
+    {
+      "name": "${RABBITMQ_USER_VALUE}",
+      "password": "${RABBITMQ_PASSWORD}",
+      "tags": "administrator"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "${RABBITMQ_USER_VALUE}",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "policies": [
+    {
+      "vhost": "/",
+      "name": "vro_global_queues",
+      "pattern": ".*",
+      "apply-to": "queues",
+      "definition": {
+        "max-length": 1000
+      },
+      "priority": 0
+    },
+    {
+      "vhost": "/",
+      "name": "healthcheck.queues",
+      "pattern": ".*healthcheck.*",
+      "apply-to": "queues",
+      "definition": {
+        "max-length": 1
+      },
+      "priority": 1
+    },
+    {
+      "vhost": "/",
+      "name": "svc_bgs_api.queues",
+      "pattern": "svc_bgs_api.(?!healthcheck\\b).*",
+      "apply-to": "queues",
+      "definition": {
+        "dead-letter-exchange": "svc_bgs_api.dlx",
+        "max-length": 1000
+      },
+      "priority": 1
+    },
+    {
+      "vhost": "/",
+      "name": "svc_bip_api.queues",
+      "pattern": "svc_bip_api.*",
+      "apply-to": "queues",
+      "definition": {
+        "dead-letter-exchange": "svc_bip_api.dlx",
+        "max-length": 1000
+      },
+      "priority": 1
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "statusCode": 200,
+  "statusMessage": "OK",
+  "codeNamePairs": [
+    {
+      "name": "Active Code",
+      "code": "AC"
+    },
+    {
+      "name": "Deactive Code",
+      "code": "DC",
+      "deactiveDate": "2000-01-01T00:00:00-00:00"
+    }
+  ]
+}

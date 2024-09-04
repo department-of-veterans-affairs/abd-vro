@@ -15,7 +15,6 @@ repos:
       - id: check-shebang-scripts-are-executable
         exclude: ^scripts/.*\.src$
       - id: check-yaml
-        exclude: ^.*helm-.*$
       - id: destroyed-symlinks
       - id: detect-private-key
       - id: end-of-file-fixer # https://stackoverflow.com/questions/2287967/why-is-it-recommended-to-have-empty-line-in-the-end-of-a-source-file

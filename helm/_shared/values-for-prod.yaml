@@ -1,4 +1,0 @@
-global:
-  lhdiCluster: prod
-  environment: prod
-  endpoint: api.lighthouse.va.gov

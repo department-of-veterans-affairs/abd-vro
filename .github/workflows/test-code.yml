@@ -83,7 +83,7 @@ jobs:
           publish_only_summary: false
       - name: "Add JaCoCo Coverage Report as PR comment"
         if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
-        uses: madrapps/jacoco-report@v1.6.1
+        uses: madrapps/jacoco-report@v1.7.0
         with:
           paths: ${{ github.workspace }}/build/reports/jacoco/jacocoAggregatedReport/jacocoAggregatedReport.xml
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -103,7 +103,7 @@ jobs:
       - name: "Get changed Ruby files"
         id: changed-files-specific
         if: '! inputs.run_all_tests'
-        uses: tj-actions/changed-files@v44
+        uses: tj-actions/changed-files@v45
         with:
           files: svc-bgs-api/**
 
@@ -140,14 +140,14 @@ jobs:
       - name: "Get changed files"
         if: '! inputs.run_all_tests'
         id: changed-files-specific
-        uses: tj-actions/changed-files@v44
+        uses: tj-actions/changed-files@v45
         with:
           files: domain-cc/**
 
       - name: "Get changed domain-ee files"
         if: '! inputs.run_all_tests'
         id: ee-changed-files-specific
-        uses: tj-actions/changed-files@v44
+        uses: tj-actions/changed-files@v45
         with:
           files: domain-ee/**
 

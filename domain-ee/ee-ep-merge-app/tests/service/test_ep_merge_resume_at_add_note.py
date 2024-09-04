@@ -23,7 +23,6 @@ from conftest import (
 )
 from hoppy.exception import ResponseException
 from schema import add_claim_note, get_claim, get_contentions, update_contentions
-from schema.claim import ClaimDetail
 from schema.merge_job import JobState, MergeJob
 from service.ep_merge_machine import EpMergeMachine, Workflow
 
@@ -44,10 +43,6 @@ class TestUpToGetPendingClaim:
             pytest.param(load_response(response_400, get_claim.Response), id='400'),
             pytest.param(load_response(response_404, get_claim.Response), id='404'),
             pytest.param(load_response(response_500, get_claim.Response), id='500'),
-            pytest.param(
-                get_claim.Response(statusCode=200, statusMessage='OK', claim=ClaimDetail(claimId=3, claimLifecycleStatus='Open')).model_dump(),
-                id='claim has no endProductCode',
-            ),
         ],
     )
     def test_invalid_request(self, machine, mock_hoppy_async_client, invalid_request):

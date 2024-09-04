@@ -29,17 +29,6 @@ x-common-sde-security: &common-sde-security
 services:
   # Containers with the `mock-` prefix are used for development and testing.
 
-  mock-slack:
-    profiles: ["all","slack"]
-    image: va/vro_mocks-mock-slack:latest
-    <<: [*common-sde-security, *common-security-opt]
-    ports:
-      - "20100:20100"
-    environment:
-      <<: *common-vars
-    networks:
-      - vro_intranet
-
   mock-bie-kafka:
     profiles: ["all","kafka"]
     image: va/vro_mocks-mock-bie-kafka:latest

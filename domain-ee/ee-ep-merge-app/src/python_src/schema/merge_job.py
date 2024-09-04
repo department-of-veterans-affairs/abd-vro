@@ -17,6 +17,7 @@ class JobState(StrEnum):  # type: ignore[misc]
     GET_EP400_CLAIM = auto()
     GET_EP400_CLAIM_CONTENTIONS = auto()
     CHECK_PENDING_EP_IS_OPEN = auto()
+    CHECK_EP400_IS_OPEN = auto()
     SET_TEMP_STATION_OF_JURISDICTION = auto()
     MERGE_CONTENTIONS = auto()
     MOVE_CONTENTIONS_TO_PENDING_CLAIM = auto()
@@ -28,15 +29,19 @@ class JobState(StrEnum):  # type: ignore[misc]
     GET_EP400_CLAIM_FAILED_REMOVE_SPECIAL_ISSUE = auto()
     GET_PENDING_CLAIM_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE = auto()
     CHECK_PENDING_EP_IS_OPEN_FAILED_REMOVE_SPECIAL_ISSUE = auto()
+    CHECK_EP400_IS_OPEN_FAILED_REMOVE_SPECIAL_ISSUE = auto()
     SET_TEMP_STATION_OF_JURISDICTION_FAILED_REMOVE_SPECIAL_ISSUE = auto()
     MOVE_CONTENTIONS_FAILED_REMOVE_SPECIAL_ISSUE = auto()
     MOVE_CONTENTIONS_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION = auto()
     CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION = auto()
     COMPLETED_ERROR = auto()
 
+    ABORTING = auto()
+    ABORTED = auto()
+
     @classmethod
     def incomplete_states(cls) -> list[str]:
-        return [state.name for state in cls if state != JobState.COMPLETED_SUCCESS and state != JobState.COMPLETED_ERROR]  # type: ignore
+        return [state.name for state in cls if state != JobState.ABORTED and state != JobState.COMPLETED_SUCCESS and state != JobState.COMPLETED_ERROR]  # type: ignore
 
     def __str__(self):
         return self.value
@@ -65,6 +70,11 @@ class MergeJob(BaseModel):
     def error(self, message: dict[Any, Any]) -> None:
         self.error_state = self.state
         self.state = JobState.COMPLETED_ERROR  # type: ignore
+        self.add_message(message)
+
+    def abort(self, message: dict[Any, Any]) -> None:
+        self.error_state = self.state
+        self.state = JobState.ABORTED  # type: ignore
         self.add_message(message)
 
     def add_message(self, message: dict[Any, Any]) -> None:

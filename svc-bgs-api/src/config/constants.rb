@@ -6,9 +6,14 @@ BUNNY_ARGS = {
   password: ENV['RABBITMQ_PASSWORD'] || "guest"
 }
 
-CAMEL_MQ_PROPERTIES = { durable: true, auto_delete: true }
+REQUESTS_EXCHANGE = "svc_bgs_api.requests"
+EXCHANGE_PROPERTIES = { durable: true, auto_delete: false }
 
-BGS_EXCHANGE_NAME = "bgs-api"
+ADD_NOTE_QUEUE = "svc_bgs_api.add_note"
+ADD_NOTE_QUEUE_PROPERTIES = { durable: true, auto_delete: true }
 
-HEALTHCHECK_QUEUE = "healthcheck"
-ADD_NOTE_QUEUE = "add-note"
+
+HEALTHCHECK_EXCHANGE = "svc_bgs_api.healthcheck"
+HEALTHCHECK_EXCHANGE_PROPERTIES = { durable: true, auto_delete: true }
+HEALTHCHECK_QUEUE = "svc_bgs_api.healthcheck"
+HEALTHCHECK_QUEUE_PROPERTIES = { durable: true, auto_delete: true}

@@ -13,17 +13,21 @@ public class PutTempStationOfJurisdictionConfig {
 
   final DirectExchange bipApiExchange;
   final String putTempStationOfJurisdictionQueue;
+  final RabbitMqConfigProperties props;
 
   public PutTempStationOfJurisdictionConfig(
       @Value("${putTempStationOfJurisdictionQueue}") final String putTempStationOfJurisdictionQueue,
-      final DirectExchange bipApiExchange) {
+      final DirectExchange bipApiExchange,
+      final RabbitMqConfigProperties props) {
     this.putTempStationOfJurisdictionQueue = putTempStationOfJurisdictionQueue;
     this.bipApiExchange = bipApiExchange;
+    this.props = props;
   }
 
   @Bean
   Queue putTempStationOfJurisdictionQueue() {
-    return new Queue(putTempStationOfJurisdictionQueue, true, false, true);
+    return new Queue(
+        putTempStationOfJurisdictionQueue, true, false, true, props.getGlobalQueueArgs());
   }
 
   @Bean

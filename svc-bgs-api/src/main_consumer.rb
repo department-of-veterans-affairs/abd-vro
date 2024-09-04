@@ -17,8 +17,8 @@ def initialize_subscriber(bgs_client, metric_logger)
   # Setup queue/subscription for healthcheck
   # Expects to receive a valid json-encoded message of any structure
   # Returns a json-encoded message with field "statusCode" set to 200
-  subscriber.setup_queue(exchange_name: BGS_EXCHANGE_NAME, queue_name: HEALTHCHECK_QUEUE)
-  subscriber.subscribe_to(BGS_EXCHANGE_NAME, HEALTHCHECK_QUEUE) do |json|
+  subscriber.setup_queue(exchange_name: HEALTHCHECK_EXCHANGE, exchange_properties: HEALTHCHECK_EXCHANGE_PROPERTIES, queue_name: HEALTHCHECK_QUEUE, queue_properties: HEALTHCHECK_QUEUE_PROPERTIES)
+  subscriber.subscribe_to(HEALTHCHECK_EXCHANGE, HEALTHCHECK_QUEUE) do |json|
     $logger.info "Subscriber received healthcheck request #{json}"
     { statusCode: 200 }
   end
@@ -36,8 +36,8 @@ def initialize_subscriber(bgs_client, metric_logger)
   # To understand the expected response visit
   # https://dvagov.sharepoint.com/:w:/r/sites/OITEPMOIAS/dmdocsite/Legacy%20Systems%20Modernization%20LSM/LSM%20Product/Share%20(SHARE)%20-%20%231589/Benefits%20Gateway%20Services%20(BGS)%20Web%20Services.doc?d=w9e5c89b6cc71432ca4f8800921852e24&csf=1&web=1&e=0LEgjt
   # Note this information requires VA-network access
-  subscriber.setup_queue(exchange_name: BGS_EXCHANGE_NAME, queue_name: ADD_NOTE_QUEUE)
-  subscriber.subscribe_to(BGS_EXCHANGE_NAME, ADD_NOTE_QUEUE) do |json|
+  subscriber.setup_queue(exchange_name: REQUESTS_EXCHANGE, exchange_properties: EXCHANGE_PROPERTIES, queue_name: ADD_NOTE_QUEUE, queue_properties: ADD_NOTE_QUEUE_PROPERTIES)
+  subscriber.subscribe_to(REQUESTS_EXCHANGE, ADD_NOTE_QUEUE) do |json|
     $logger.info "Subscriber received request #{json}"
     begin
       bgs_client.handle_request(json)
