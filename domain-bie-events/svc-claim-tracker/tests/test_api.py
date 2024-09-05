@@ -4,7 +4,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.api import CONNECT_TO_DATABASE_FAILURE
 
-CLAIM = '/claim'
+CLAIM = 'track/v1/claim'
 HEALTHCHECK = '/health'
 
 

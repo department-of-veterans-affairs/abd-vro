@@ -30,12 +30,6 @@ app = FastAPI(
     contact={},
     version='v0.1',
     license={'name': 'CCO 1.0', 'url': 'https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md'},
-    servers=[
-        {
-            'url': '/track',
-            'description': 'Claim Tracker for BIE Claim Events',
-        },
-    ],
     lifespan=lifespan,
 )
 
@@ -53,7 +47,7 @@ async def welcome() -> dict[str, Any]:
         'links': {
             'docs': '/docs',
             'health check': '/health',
-            'track claim': '/track/claim',
+            'track claim': '/track/v1/claim',
         },
     }
 
@@ -83,7 +77,7 @@ def health_check_errors(db: Session) -> list[str]:
     return errors
 
 
-@app.post(path='/claim', summary='Track a Claim', status_code=status.HTTP_202_ACCEPTED, response_model=TrackClaimResponse)
+@app.post(path='/track/v1/claim', summary='Track a Claim', status_code=status.HTTP_202_ACCEPTED, response_model=TrackClaimResponse)
 def track_claim(request: Request, track_request: TrackClaimRequest, db: Session = Depends(get_session)) -> TrackedClaim | JSONResponse:
     errors = health_check_errors(db)
     if errors:

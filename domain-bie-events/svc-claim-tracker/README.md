@@ -1,4 +1,4 @@
-# Max Claim for Increase (CFI) API
+# Claim Tracker Service
 
 `/track/claim` track a claim by events
 
@@ -38,26 +38,29 @@ uvicorn api:app --port 8150 --reload
 
 ## Testing it all together
 
-Run the Python webserver (uvicorn command above). Now you should be able to make a post request to the `track/claim`
+Run the Python webserver (uvicorn command above). Now you should be able to make a post request to the `/track/v1/claim`
 endpoint with a request body of the format:
 
 ```
 {
-    "claim_id": "1",
-    "established_time": "2024-01-01T00:00:00-06:00",
-    "features": [
-      {
-        "name": "feature_under_test",
-        "enabled": true,
-      }
-    ]
+    "claim_id": 123,
+    "established_at": "2024-01-01T00:00:00Z",
+    "feature_name":"feature",
+    "feature_enabled":true
 }
 ```
 
 This should result in a response with the following body:
 
 ```
-
+{
+    "claim_id": 123,
+    "established_at": "2024-01-01T00:00:00",
+    "feature_name": "feature",
+    "feature_enabled": true,
+    "id": "d6c959f8-4106-4067-b65c-077c1a691222",
+    "created_at": "2024-09-05T16:30:15.353744"
+}
 ```
 
 
@@ -101,28 +104,24 @@ python3 src/python_src/pull_api_documentation.py
 ### Build the image
 
 Follow steps for
-[Platform Base + API-Gateway](https://github.com/department-of-veterans-affairs/abd-vro/wiki/Docker-Compose#platform-base)
+[Platform Base](https://github.com/department-of-veterans-affairs/abd-vro/wiki/Docker-Compose#platform-base)
 then run the svc-claim-tracker with the following command from the `abd_vro directory`:
 
 ```
 COMPOSE_PROFILES="all" ./gradlew :domain-bie-events:dockerComposeUp
 ```
 
-### Verify API in API Gateway
+### Verify API
 
-Navigate to [Swagger](http://localhost:8060/webjars/swagger-ui/index.html?urls.primaryName=3.%20Max%20CFI%20API)
+Navigate to [Swagger Docs](http://localhost:8150/docs)
 
 Try to send a request on the post endpoint with the following request body:
 
 ```
 {
-    "claim_id": "1",
-    "established_time": "2024-01-01T00:00:00-06:00",
-    "features": [
-      {
-        "name": "feature_under_test",
-        "enabled": true,
-      }
-    ]
+    "claim_id": 123,
+    "established_at": "2024-01-01T00:00:00Z",
+    "feature_name":"feature",
+    "feature_enabled":true
 }
 ```
