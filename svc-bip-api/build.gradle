@@ -34,7 +34,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
   // Datadog API
-  implementation 'com.datadoghq:datadog-api-client:2.27.0'
+  implementation 'com.datadoghq:datadog-api-client:2.28.0'
 }
 
 // https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html#sec:jvm_test_suite_usage
