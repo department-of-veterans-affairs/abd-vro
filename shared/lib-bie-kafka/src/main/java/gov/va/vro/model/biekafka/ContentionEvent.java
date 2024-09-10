@@ -1,7 +1,12 @@
 package gov.va.vro.model.biekafka;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.util.Arrays;
 
+@Getter
+@RequiredArgsConstructor
 public enum ContentionEvent {
   CONTENTION_ASSOCIATED("BIA_SERVICES_BIE_CATALOG_CONTENTION_ASSOCIATED_TO_CLAIM_V02"),
   CONTENTION_UPDATED("BIA_SERVICES_BIE_CATALOG_CONTENTION_UPDATED_V02"),
@@ -10,14 +15,6 @@ public enum ContentionEvent {
   CONTENTION_DELETED("BIA_SERVICES_BIE_CATALOG_CONTENTION_DELETED_V02");
 
   private final String topicName;
-
-  ContentionEvent(String topicName) {
-    this.topicName = topicName;
-  }
-
-  public String getTopicName() {
-    return topicName;
-  }
 
   public static ContentionEvent mapTopicToEvent(String topic) {
     String subString = "CATALOG_.*?_CONTENTION";
@@ -31,6 +28,6 @@ public enum ContentionEvent {
 
   public static String rabbitMqExchangeName(String topic) {
     return String.format(
-        "bie-events-%s", mapTopicToEvent(topic).toString().toLowerCase().replace("_", "-"));
+        "svc_bie_kafka.bie_events_%s", mapTopicToEvent(topic).toString().toLowerCase());
   }
 }

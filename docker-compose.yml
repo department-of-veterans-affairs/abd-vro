@@ -24,6 +24,13 @@ x-rabbitmq-placeholder-vars: &rabbitmq-placeholder-vars
   RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
   RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
 
+x-postgres-vars: &postgres-vars
+  POSTGRES_URL: postgresql://postgres-service:5432/vro
+  POSTGRES_DB: ${POSTGRES_DB}
+  POSTGRES_USER: ${POSTGRES_USER}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  POSTGRES_SCHEMA: claims
+
 x-datadog-placeholder-vars: &datadog-placeholder-vars
   DD_SITE: ${DD_SITE}
   DD_API_KEY: ${DD_API_KEY}
@@ -158,7 +165,7 @@ services:
     image: va/abd_vro-svc-bie-kafka:latest
     <<: [ *common-sde-security, *common-security-opt ]
     environment:
-      <<: [*rabbitmq-placeholder-vars, *common-vars]
+      <<: [*rabbitmq-placeholder-vars, *postgres-vars, *common-vars]
       BIE_KAFKA_PLACEHOLDERS_BROKERS: mock-bie-kafka:9092
       BIE_KAFKA_PLACEHOLDERS_SCHEMA_REGISTRY: mock-bie-schema-registry:8081
       BIE_KAFKA_KEYSTORE_INBASE64: ${BIE_KAFKA_KEYSTORE_INBASE64}
