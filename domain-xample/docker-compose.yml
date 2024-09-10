@@ -14,13 +14,6 @@ x-common-vars: &common-vars
   # ENV determines which configuration settings to use.
   ENV: ${ENV:-local}
 
-x-postgres-vars: &postgres-vars
-  POSTGRES_URL: postgresql://postgres-service:5432/vro
-  POSTGRES_DB: ${POSTGRES_DB}
-  POSTGRES_USER: ${POSTGRES_USER}
-  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-  POSTGRES_SCHEMA: claims
-
 x-rabbitmq-placeholder-vars: &rabbitmq-placeholder-vars
   RABBITMQ_PLACEHOLDERS_HOST: rabbitmq-service
   RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
@@ -41,17 +34,6 @@ x-common-sde-security: &common-sde-security
 
 services:
   # Containers with the `svc-` prefix are microservices to support domain workflows.
-
-  xample-workflows:
-    image: va/abd_vro-xample-workflows:latest
-    <<: [*common-sde-security, *common-security-opt]
-    environment:
-      <<: [*postgres-vars, *rabbitmq-placeholder-vars]
-    networks:
-      - vro_intranet
-    # Expose healthcheck port for end2end test
-    ports:
-      - "10021:10021"
 
   svc-xample-j:
     image: va/abd_vro-svc-xample-j:latest
