@@ -27,7 +27,8 @@
       "pattern": ".*",
       "apply-to": "queues",
       "definition": {
-        "max-length": 1000
+        "max-length": 1000,
+        "message-ttl": 1500000
       },
       "priority": 0
     },
@@ -37,7 +38,8 @@
       "pattern": ".*healthcheck.*",
       "apply-to": "queues",
       "definition": {
-        "max-length": 1
+        "max-length": 1,
+        "message-ttl": 1500000
       },
       "priority": 1
     },
@@ -48,7 +50,8 @@
       "apply-to": "queues",
       "definition": {
         "dead-letter-exchange": "svc_bgs_api.dlx",
-        "max-length": 1000
+        "max-length": 1000,
+        "message-ttl": 1500000
       },
       "priority": 1
     },
@@ -59,7 +62,8 @@
       "apply-to": "queues",
       "definition": {
         "dead-letter-exchange": "svc_bip_api.dlx",
-        "max-length": 1000
+        "max-length": 1000,
+        "message-ttl": 1500000
       },
       "priority": 1
     }
