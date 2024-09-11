@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -114,7 +115,7 @@ public class BieRecordTransformer {
       Method setterMethod =
           ContentionEventPayload.class.getMethod(setterMethodName, field.getType());
 
-      if (field.getType().isAssignableFrom(value.getClass())) {
+      if (Objects.isNull(value) || field.getType().isAssignableFrom(value.getClass())) {
         setterMethod.invoke(payload, value);
       } else {
         log.warn(
