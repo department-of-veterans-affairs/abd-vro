@@ -4,10 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.bip.model.BipPayloadResponse;
 import gov.va.vro.bip.model.cancel.CancelClaimRequest;
 import gov.va.vro.bip.model.cancel.CancelClaimResponse;
+import gov.va.vro.bip.model.claim.GetClaimRequest;
 import gov.va.vro.bip.model.claim.GetClaimResponse;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
+import gov.va.vro.bip.model.contentions.GetClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
+import gov.va.vro.bip.model.contentions.GetSpecialIssueTypesRequest;
 import gov.va.vro.bip.model.contentions.GetSpecialIssueTypesResponse;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsResponse;
@@ -70,10 +73,15 @@ public class BipApiService implements IBipApiService {
   static final String SPECIAL_ISSUE_TYPES = "/contentions/special_issue_types";
 
   @Override
-  public GetClaimResponse getClaimDetails(long claimId) {
-    String url = bipApiProps.getClaimRequestUrl(String.format(CLAIM_DETAILS, claimId));
+  public GetClaimResponse getClaimDetails(GetClaimRequest request) {
+    String url = bipApiProps.getClaimRequestUrl(String.format(CLAIM_DETAILS, request.getClaimId()));
 
-    return makeRequest(url, HttpMethod.GET, null, GetClaimResponse.class);
+    return makeRequest(
+        url,
+        HttpMethod.GET,
+        null,
+        getBipHeader(request.getExternalUserId(), request.getExternalKey()),
+        GetClaimResponse.class);
   }
 
   @Override
@@ -82,14 +90,24 @@ public class BipApiService implements IBipApiService {
     String url = bipApiProps.getClaimRequestUrl(String.format(CLAIM_LIFECYCLE_STATUS, claimId));
     Map<String, Object> requestBody =
         Map.of("claimLifecycleStatus", request.getClaimLifecycleStatus());
-    return makeRequest(url, HttpMethod.PUT, requestBody, PutClaimLifecycleResponse.class);
+    return makeRequest(
+        url,
+        HttpMethod.PUT,
+        requestBody,
+        getBipHeader(request.getExternalUserId(), request.getExternalKey()),
+        PutClaimLifecycleResponse.class);
   }
 
   @Override
-  public GetClaimContentionsResponse getClaimContentions(long claimId) {
-    String url = bipApiProps.getClaimRequestUrl(String.format(CONTENTION, claimId));
+  public GetClaimContentionsResponse getClaimContentions(GetClaimContentionsRequest request) {
+    String url = bipApiProps.getClaimRequestUrl(String.format(CONTENTION, request.getClaimId()));
 
-    return makeRequest(url, HttpMethod.GET, null, GetClaimContentionsResponse.class);
+    return makeRequest(
+        url,
+        HttpMethod.GET,
+        null,
+        getBipHeader(request.getExternalUserId(), request.getExternalKey()),
+        GetClaimContentionsResponse.class);
   }
 
   @Override
@@ -98,7 +116,12 @@ public class BipApiService implements IBipApiService {
     long claimId = request.getClaimId();
     String url = bipApiProps.getClaimRequestUrl(String.format(CONTENTION, claimId));
     Map<String, Object> requestBody = Map.of("createContentions", request.getCreateContentions());
-    return makeRequest(url, HttpMethod.POST, requestBody, CreateClaimContentionsResponse.class);
+    return makeRequest(
+        url,
+        HttpMethod.POST,
+        requestBody,
+        getBipHeader(request.getExternalUserId(), request.getExternalKey()),
+        CreateClaimContentionsResponse.class);
   }
 
   @Override
@@ -107,7 +130,12 @@ public class BipApiService implements IBipApiService {
     long claimId = request.getClaimId();
     String url = bipApiProps.getClaimRequestUrl(String.format(CONTENTION, claimId));
     Map<String, Object> requestBody = Map.of("updateContentions", request.getUpdateContentions());
-    return makeRequest(url, HttpMethod.PUT, requestBody, UpdateClaimContentionsResponse.class);
+    return makeRequest(
+        url,
+        HttpMethod.PUT,
+        requestBody,
+        getBipHeader(request.getExternalUserId(), request.getExternalKey()),
+        UpdateClaimContentionsResponse.class);
   }
 
   @Override
@@ -122,7 +150,12 @@ public class BipApiService implements IBipApiService {
             "lifecycleStatusReasonCode", lifecycleStatusReasonCode,
             "closeReasonText", closeReasonText);
 
-    return makeRequest(url, HttpMethod.PUT, requestBody, CancelClaimResponse.class);
+    return makeRequest(
+        url,
+        HttpMethod.PUT,
+        requestBody,
+        getBipHeader(request.getExternalUserId(), request.getExternalKey()),
+        CancelClaimResponse.class);
   }
 
   @Override
@@ -136,22 +169,35 @@ public class BipApiService implements IBipApiService {
     requestBody.put("tempStationOfJurisdiction", request.getTempStationOfJurisdiction());
 
     return makeRequest(
-        url, HttpMethod.PUT, requestBody, PutTempStationOfJurisdictionResponse.class);
+        url,
+        HttpMethod.PUT,
+        requestBody,
+        getBipHeader(request.getExternalUserId(), request.getExternalKey()),
+        PutTempStationOfJurisdictionResponse.class);
   }
 
   @Override
-  public GetSpecialIssueTypesResponse getSpecialIssueTypes() {
+  public GetSpecialIssueTypesResponse getSpecialIssueTypes(GetSpecialIssueTypesRequest request) {
     String url = bipApiProps.getClaimRequestUrl(SPECIAL_ISSUE_TYPES);
-    return makeRequest(url, HttpMethod.GET, null, GetSpecialIssueTypesResponse.class);
+    return makeRequest(
+        url,
+        HttpMethod.GET,
+        null,
+        getBipHeader(request.getExternalUserId(), request.getExternalKey()),
+        GetSpecialIssueTypesResponse.class);
   }
 
   @SuppressWarnings("unchecked")
   private <T extends BipPayloadResponse> T makeRequest(
-      String url, HttpMethod method, Object requestBody, Class<T> expectedResponse) {
+      String url,
+      HttpMethod method,
+      Object requestBody,
+      HttpHeaders headers,
+      Class<T> expectedResponse) {
 
     try {
 
-      HttpEntity<Object> httpEntity = new HttpEntity<>(requestBody, getBipHeader());
+      HttpEntity<Object> httpEntity = new HttpEntity<>(requestBody, headers);
       log.info("event=requestSent url={} method={}", url, method);
       metricLogger.submitCount(
           METRICS_PREFIX,
@@ -242,7 +288,7 @@ public class BipApiService implements IBipApiService {
     String url = bipApiProps.getAvailabilityUrl();
     log.info("Call {} to confirm service availability", url);
 
-    HttpHeaders headers = getBipHeader();
+    HttpHeaders headers = getBipHeader(null, null);
     HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
 
     try {
@@ -257,18 +303,11 @@ public class BipApiService implements IBipApiService {
     }
   }
 
-  HttpHeaders getBipHeader() throws BipException {
+  HttpHeaders getBipHeader(String externalUserId, String externalKey) throws BipException {
     HttpHeaders bipHttpHeaders = new HttpHeaders();
     bipHttpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-    String jwt = createJwt();
-    bipHttpHeaders.add("Authorization", "Bearer " + jwt);
-    return bipHttpHeaders;
-  }
-
-  public String createJwt() {
-    // Assuming these methods and variables are correctly defined in your class
-    Claims claims = bipApiProps.toCommonJwtClaims();
+    Claims claims = bipApiProps.toCommonJwtClaims(externalUserId, externalKey);
     String issuer = bipApiProps.getClaimIssuer();
     String secret = bipApiProps.getClaimSecret();
 
@@ -281,16 +320,19 @@ public class BipApiService implements IBipApiService {
     Date expiryDate = new Date(currentTimeMillis + 3600000);
 
     // Build the JWT
-    return Jwts.builder()
-        .claims(claims)
-        .issuer(issuer)
-        .subject("Claim")
-        .issuedAt(new Date(currentTimeMillis))
-        .expiration(expiryDate)
-        .signWith(signingKey)
-        .header()
-        .add("alg", "HS256")
-        .and()
-        .compact();
+    String jwt =
+        Jwts.builder()
+            .claims(claims)
+            .issuer(issuer)
+            .subject("Claim")
+            .issuedAt(new Date(currentTimeMillis))
+            .expiration(expiryDate)
+            .signWith(signingKey)
+            .header()
+            .add("alg", "HS256")
+            .and()
+            .compact();
+    bipHttpHeaders.add("Authorization", "Bearer " + jwt);
+    return bipHttpHeaders;
   }
 }

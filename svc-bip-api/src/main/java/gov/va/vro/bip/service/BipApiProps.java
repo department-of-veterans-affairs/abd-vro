@@ -10,6 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Properties used in BIP API services.
@@ -61,7 +62,7 @@ public class BipApiProps {
    *
    * @return Claims
    */
-  public Claims toCommonJwtClaims() {
+  public Claims toCommonJwtClaims(final String externalUserId, final String externalKey) {
     Calendar cal = Calendar.getInstance();
     cal.add(Calendar.MINUTE, 30);
     Date expired = cal.getTime();
@@ -70,6 +71,13 @@ public class BipApiProps {
             .add("applicationID", applicationId)
             .add("stationID", stationId)
             .add("userID", claimClientId);
+
+    if (Objects.nonNull(externalUserId)) {
+      claimsBuilder.add("externalUserID", externalUserId);
+    }
+    if (Objects.nonNull(externalKey)) {
+      claimsBuilder.add("externalKey", externalKey);
+    }
 
     Date now = cal.getTime();
     claimsBuilder.add("iat", now.getTime()).add("expires", expired.getTime());
