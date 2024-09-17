@@ -1,4 +1,4 @@
-package gov.va.vro.services.bie.service;
+package gov.va.vro.services.bie.service.amqp;
 
 public interface AmqpMessageSender {
 

@@ -1,5 +1,6 @@
-package gov.va.vro.persistence.model;
+package gov.va.vro.persistence.model.bieevents;
 
+import gov.va.vro.persistence.model.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

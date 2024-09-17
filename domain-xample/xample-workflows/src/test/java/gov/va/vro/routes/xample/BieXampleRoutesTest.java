@@ -1,12 +1,16 @@
 package gov.va.vro.routes.xample;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.metricslogging.IMetricLoggerService;
-import gov.va.vro.model.biekafka.BieMessagePayload;
 import gov.va.vro.model.biekafka.ContentionEvent;
+import gov.va.vro.model.biekafka.ContentionEventPayload;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -15,7 +19,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 class BieXampleRoutesTest {
-  @Mock private DbHelper dbHelper;
 
   @Mock private ObjectMapper objectMapper;
 
@@ -33,15 +36,14 @@ class BieXampleRoutesTest {
   @Test
   void handleMessage_SuccessfulProcessing() throws Exception {
     // Arrange
-    BieMessagePayload payload = createSamplePayload();
-    when(objectMapper.writeValueAsString(any(BieMessagePayload.class)))
+    ContentionEventPayload payload = createSamplePayload();
+    when(objectMapper.writeValueAsString(any(ContentionEventPayload.class)))
         .thenReturn("{\"claimId\":123,\"contentionId\":456}");
 
     // Act
     bieXampleRoutes.handleMessage(payload);
 
     // Assert
-    verify(dbHelper, times(1)).saveContentionEvent(payload);
     verify(objectMapper, times(1)).writeValueAsString(payload);
     assertEquals(200, payload.getStatus());
 
@@ -56,7 +58,7 @@ class BieXampleRoutesTest {
             ArgumentMatchers.anyString(),
             ArgumentMatchers.anyLong(),
             ArgumentMatchers.anyLong(),
-            ArgumentMatchers.any());
+            any());
     verify(metricLoggerService, times(1))
         .submitCount(
             "vro_xample_workflows",
@@ -67,11 +69,11 @@ class BieXampleRoutesTest {
   @Test
   void handleMessage_ExceptionThrown() throws Exception {
     // Arrange
-    BieMessagePayload payload = createSamplePayload();
+    ContentionEventPayload payload = createSamplePayload();
     Exception testException = new RuntimeException("Test exception");
 
-    doThrow(testException).when(dbHelper).saveContentionEvent(payload);
-    when(objectMapper.writeValueAsString(any(BieMessagePayload.class)))
+    doThrow(testException).when(metricLoggerService).submitCount(any(), any(), any());
+    when(objectMapper.writeValueAsString(any(ContentionEventPayload.class)))
         .thenReturn(
             "{\"claimId\":123,\"contentionId\":456,\"status\":500,\"statusMessage\":\"java.lang.RuntimeException: Test exception\"}");
 
@@ -79,7 +81,6 @@ class BieXampleRoutesTest {
     bieXampleRoutes.handleMessage(payload);
 
     // Assert
-    verify(dbHelper, times(1)).saveContentionEvent(payload);
     verify(objectMapper, times(1)).writeValueAsString(payload);
     assertEquals(500, payload.getStatus());
     assertEquals(testException.toString(), payload.getStatusMessage());
@@ -92,8 +93,8 @@ class BieXampleRoutesTest {
             metricTagsSaveContentionEvent);
   }
 
-  private BieMessagePayload createSamplePayload() {
-    return BieMessagePayload.builder()
+  private ContentionEventPayload createSamplePayload() {
+    return ContentionEventPayload.builder()
         .claimId(123L)
         .contentionId(456L)
         .eventType(ContentionEvent.CONTENTION_ASSOCIATED)
