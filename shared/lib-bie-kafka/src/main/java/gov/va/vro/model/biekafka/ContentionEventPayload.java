@@ -5,7 +5,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import gov.va.vro.model.biekafka.annotation.Ignore;
 import gov.va.vro.model.biekafka.annotation.NoLogging;
 import gov.va.vro.model.biekafka.annotation.TargetEvents;
-import lombok.*;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.lang.reflect.Field;
 
@@ -15,7 +18,7 @@ import java.lang.reflect.Field;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BieMessagePayload {
+public class ContentionEventPayload {
   // These are VRO fields
   @Ignore private Integer status;
   @Ignore private String statusMessage;

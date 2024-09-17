@@ -30,6 +30,23 @@ spring:
         truststore-location: "file:${TRUSTSTORE_FILE}"
         truststore-password: "${BIE_KAFKA_TRUSTSTORE_PASSWORD}"
         trust-store-type: "PKCS12"
+
+  # Specify where Spring connects to PostgreSQL
+  datasource:
+    url: jdbc:${POSTGRES_URL:postgresql://localhost:5432/vro}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    hikari:
+      jdbc-url: jdbc:${POSTGRES_URL:postgresql://localhost:5432/vro}
+      username: ${POSTGRES_USER}
+      password: ${POSTGRES_PASSWORD}
+      schema: ${POSTGRES_SCHEMA}
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
+  # Specify datadog properties
   datadog:
     site: ${DD_SITE:ddog-gov.com}
     api_key: ${DD_API_KEY:secret-api-key}
