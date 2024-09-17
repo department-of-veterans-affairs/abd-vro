@@ -26,20 +26,16 @@ public class ContentionEventTest {
   @Test
   public void testMapTopicToEvent_unrecognizedTopic() {
     String topic = "prefix_UNKNOWN_TOPIC";
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> {
-          mapTopicToEvent(topic);
-        });
+    assertThrows(IllegalArgumentException.class, () -> mapTopicToEvent(topic));
   }
 
   @ParameterizedTest
   @CsvSource({
-    "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_ASSOCIATED_TO_CLAIM_V02, bie-events-contention-associated",
-    "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_UPDATED_V02, bie-events-contention-updated",
-    "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_CLASSIFIED_V02, bie-events-contention-classified",
-    "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_COMPLETED_V02, bie-events-contention-completed",
-    "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_DELETED_V02, bie-events-contention-deleted"
+    "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_ASSOCIATED_TO_CLAIM_V02, svc_bie_kafka.bie_events_contention_associated",
+    "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_UPDATED_V02, svc_bie_kafka.bie_events_contention_updated",
+    "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_CLASSIFIED_V02, svc_bie_kafka.bie_events_contention_classified",
+    "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_COMPLETED_V02, svc_bie_kafka.bie_events_contention_completed",
+    "BIA_SERVICES_BIE_CATALOG_TST_CONTENTION_DELETED_V02, svc_bie_kafka.bie_events_contention_deleted"
   })
   public void testGenerateRabbitMQChannelName_channelNames(String inputTopic, String bieChannel) {
     assertEquals(bieChannel, ContentionEvent.rabbitMqExchangeName(inputTopic));
@@ -48,10 +44,6 @@ public class ContentionEventTest {
   @Test
   public void testGenerateRabbitMQChannelName_unrecognizedTopic() {
     String topic = "prefix_UNKNOWN_TOPIC";
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> {
-          ContentionEvent.rabbitMqExchangeName(topic);
-        });
+    assertThrows(IllegalArgumentException.class, () -> ContentionEvent.rabbitMqExchangeName(topic));
   }
 }

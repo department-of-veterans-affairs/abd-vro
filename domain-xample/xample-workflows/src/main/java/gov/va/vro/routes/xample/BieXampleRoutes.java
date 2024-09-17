@@ -3,7 +3,7 @@ package gov.va.vro.routes.xample;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.vro.metricslogging.IMetricLoggerService;
-import gov.va.vro.model.biekafka.BieMessagePayload;
+import gov.va.vro.model.biekafka.ContentionEventPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 public class BieXampleRoutes {
 
   private static final String METRICS_PREFIX = "vro_xample_workflows";
-  private final DbHelper dbHelper;
   private final ObjectMapper objectMapper;
   private final IMetricLoggerService metricLogger;
 
@@ -32,13 +31,11 @@ public class BieXampleRoutes {
         "saveToDB-bie-events-contention-completed",
         "saveToDB-bie-events-contention-deleted"
       })
-  public void handleMessage(BieMessagePayload payload) {
+  public void handleMessage(ContentionEventPayload payload) {
     try {
       metricLogger.submitCount(
           METRICS_PREFIX, IMetricLoggerService.METRIC.REQUEST_START, metricTagsSaveContentionEvent);
       long transactionStartTime = System.nanoTime();
-
-      dbHelper.saveContentionEvent(payload);
 
       metricLogger.submitRequestDuration(
           METRICS_PREFIX, transactionStartTime, System.nanoTime(), metricTagsSaveContentionEvent);
@@ -57,7 +54,7 @@ public class BieXampleRoutes {
     }
   }
 
-  private void handleException(BieMessagePayload payload, Exception e) {
+  private void handleException(ContentionEventPayload payload, Exception e) {
     payload.setStatus(500);
     payload.setStatusMessage(e.toString());
     try {

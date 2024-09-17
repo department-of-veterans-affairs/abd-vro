@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class MessageExchangeConfig {
 
   private static final boolean IS_DURABLE = true;
-  private static final boolean IS_AUTO_DELETED = true;
+  private static final boolean IS_AUTO_DELETED = false;
 
   @Bean
   public MessageConverter messageConverter() {
@@ -28,9 +28,9 @@ public class MessageExchangeConfig {
   }
 
   @Bean
-  Declarables topicBindings(final BieProperties bieProperties) {
+  Declarables topicBindings(final BieKafkaProperties bieKafkaProperties) {
     final List<AbstractDeclarable> list =
-        Arrays.stream(bieProperties.topicNames())
+        Arrays.stream(bieKafkaProperties.topicNames())
             .map(
                 topic -> {
                   final FanoutExchange fanoutExchange =
