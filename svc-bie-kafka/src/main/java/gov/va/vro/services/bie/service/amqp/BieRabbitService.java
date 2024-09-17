@@ -1,4 +1,4 @@
-package gov.va.vro.services.bie.service;
+package gov.va.vro.services.bie.service.amqp;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

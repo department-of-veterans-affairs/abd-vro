@@ -2,10 +2,13 @@ package gov.va.vro.bip.service;
 
 import gov.va.vro.bip.model.cancel.CancelClaimRequest;
 import gov.va.vro.bip.model.cancel.CancelClaimResponse;
+import gov.va.vro.bip.model.claim.GetClaimRequest;
 import gov.va.vro.bip.model.claim.GetClaimResponse;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
+import gov.va.vro.bip.model.contentions.GetClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
+import gov.va.vro.bip.model.contentions.GetSpecialIssueTypesRequest;
 import gov.va.vro.bip.model.contentions.GetSpecialIssueTypesResponse;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsResponse;
@@ -24,11 +27,11 @@ public interface IBipApiService {
   /**
    * Gets a claim detail information.
    *
-   * @param collectionId the claim ID
+   * @param request request
    * @return a BipClaim object.
    * @throws BipException error occurs.
    */
-  GetClaimResponse getClaimDetails(long collectionId);
+  GetClaimResponse getClaimDetails(GetClaimRequest request);
 
   /**
    * Updates a claim's lifecycle status.
@@ -42,11 +45,12 @@ public interface IBipApiService {
   /**
    * Gets a list of contention summaries in a claim.
    *
-   * @param claimId claim ID.
+   * @param request request
    * @return response
    * @throws BipException error occurs.
    */
-  GetClaimContentionsResponse getClaimContentions(long claimId) throws BipException;
+  GetClaimContentionsResponse getClaimContentions(GetClaimContentionsRequest request)
+      throws BipException;
 
   /**
    * Create one or more contentions in a claim.
@@ -92,5 +96,5 @@ public interface IBipApiService {
    * @return response
    * @throws BipException error occurs
    */
-  GetSpecialIssueTypesResponse getSpecialIssueTypes();
+  GetSpecialIssueTypesResponse getSpecialIssueTypes(GetSpecialIssueTypesRequest request);
 }

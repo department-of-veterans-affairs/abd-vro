@@ -9,7 +9,12 @@ class GetClaimDetailsTest extends BaseIntegrationTest {
 
   @Test
   void testGetClaim_200() {
-    GetClaimRequest request = GetClaimRequest.builder().claimId(CLAIM_ID_200).build();
+    GetClaimRequest request =
+        GetClaimRequest.builder()
+            .externalKey("test")
+            .externalUserId("testUser")
+            .claimId(CLAIM_ID_200)
+            .build();
     GetClaimResponse response = sendAndReceive(getClaimDetailsQueue, request);
     assertBaseResponseIs2xx(response, HttpStatus.OK);
   }

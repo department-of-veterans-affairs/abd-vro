@@ -8,12 +8,13 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
+@Getter
 @Component
 @ConfigurationProperties(prefix = "bie")
 @Setter
-public class BieProperties {
+public class BieKafkaProperties {
 
-  @Getter String kafkaTopicInfix;
+  private String kafkaTopicInfix;
 
   public String[] topicNames() {
     return Arrays.stream(ContentionEvent.values())

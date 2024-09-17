@@ -4,8 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
-import gov.va.vro.model.biekafka.BieMessagePayload;
+import gov.va.vro.model.biekafka.ContentionEventPayload;
 import gov.va.vro.model.biekafka.test.BieMessagePayloadFactory;
+import gov.va.vro.services.bie.service.amqp.BieRabbitService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -30,18 +31,18 @@ class BieRabbitServiceTest {
   @Nested
   class Send {
 
-    @Captor ArgumentCaptor<BieMessagePayload> messageCaptor;
+    @Captor ArgumentCaptor<ContentionEventPayload> messageCaptor;
 
     @Test
     void shouldConvertAndSendBiePayload() {
       final String exchange = "testExchange";
       final String topic = "testTopic";
-      final BieMessagePayload payload = BieMessagePayloadFactory.create();
+      final ContentionEventPayload payload = BieMessagePayloadFactory.create();
 
       bieRabbitService.send(exchange, topic, payload);
       verify(rabbitTemplate).convertAndSend(eq(exchange), eq(topic), messageCaptor.capture());
 
-      final BieMessagePayload value = messageCaptor.getValue();
+      final ContentionEventPayload value = messageCaptor.getValue();
       assertThat(value.getEventType()).isEqualTo(payload.getEventType());
       assertThat(value.getClaimId()).isEqualTo(payload.getClaimId());
       assertThat(value.getContentionId()).isEqualTo(payload.getContentionId());

@@ -8,6 +8,7 @@ import gov.va.vro.bip.model.contentions.CreateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
+import gov.va.vro.bip.model.contentions.GetSpecialIssueTypesRequest;
 import gov.va.vro.bip.model.contentions.GetSpecialIssueTypesResponse;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsResponse;
@@ -33,7 +34,7 @@ public class RabbitMqController {
 
   @RabbitListener(queues = "#{@getClaimDetailsQueue}", errorHandler = "bipRequestErrorHandler")
   GetClaimResponse getClaimDetails(@Valid @Payload GetClaimRequest request) {
-    return service.getClaimDetails(request.getClaimId());
+    return service.getClaimDetails(request);
   }
 
   @RabbitListener(
@@ -46,7 +47,7 @@ public class RabbitMqController {
   @RabbitListener(queues = "#{@getClaimContentionsQueue}", errorHandler = "bipRequestErrorHandler")
   GetClaimContentionsResponse getClaimContentions(
       @Valid @Payload GetClaimContentionsRequest request) {
-    return service.getClaimContentions(request.getClaimId());
+    return service.getClaimContentions(request);
   }
 
   @RabbitListener(
@@ -79,7 +80,7 @@ public class RabbitMqController {
   }
 
   @RabbitListener(queues = "#{@getSpecialIssueTypesQueue}", errorHandler = "bipRequestErrorHandler")
-  GetSpecialIssueTypesResponse getSpecialIssueTypesEndpoint() {
-    return service.getSpecialIssueTypes();
+  GetSpecialIssueTypesResponse getSpecialIssueTypesEndpoint(GetSpecialIssueTypesRequest request) {
+    return service.getSpecialIssueTypes(request);
   }
 }
