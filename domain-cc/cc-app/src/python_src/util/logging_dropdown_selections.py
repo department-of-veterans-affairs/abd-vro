@@ -7,7 +7,7 @@ path = os.path.join(
     os.path.dirname(__file__),
     "data",
     "condition_dropdown_coverage",
-    f"[Release notes] Auto-suggestions release notes - Suggested Conditions {CONDITION_DROPDOWN_COVERAGE_VERSION} Flat.csv"
+    f"[Release notes] Auto-suggestions release notes - Suggested Conditions {CONDITION_DROPDOWN_COVERAGE_VERSION} Flat.csv",
 )
 
 

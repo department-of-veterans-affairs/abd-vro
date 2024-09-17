@@ -1,0 +1,756 @@
+DIAGNOSTIC_CODE,RATED_ISSUE_NAME,CLASSIFICATION_CODE,CLASSIFICATION_TEXT
+5000,osteomyelitis,9000,Musculoskeletal - Osteomyelitis
+5001,tuberculosis of bones and joints,6890,Tuberculosis
+5002,rheumatoid arthritis,8992,Musculoskeletal - Arthritis
+5004,gonococcal arthritis,8992,Musculoskeletal - Arthritis
+5005,pneumococcal arthritis,8992,Musculoskeletal - Arthritis
+5006,typhoid arthritis,8992,Musculoskeletal - Arthritis
+5007,syphilitic arthritis,8992,Musculoskeletal - Arthritis
+5008,poststreptococcal arthritis,8992,Musculoskeletal - Arthritis
+5009,"arthritis, other types",8992,Musculoskeletal - Arthritis
+5011,decompression illness,8930,Caisson
+5012,malignant growth of the bones,8940,Cancer - Musculoskeletal - Other
+5015,benign growth of the bones,249482,Musculoskeletal - Bones
+5025,fibromyalgia,9007,Neurological other System
+5051,shoulder replacement,9002,Musculoskeletal - Shoulder
+5052,elbow replacement,8993,Musculoskeletal - Elbow
+5053,wrist replacement,9004,Musculoskeletal - Wrist
+5054,hip replacement,8996,Musculoskeletal - Hip
+5055,knee replacement,8997,Musculoskeletal - Knee
+5056,ankle replacement,8991,Musculoskeletal - Ankle
+5104,loss of use of both hands and one foot,8990,Musculoskeletal - Amputations
+5105,loss of use of both feet and one hand,8990,Musculoskeletal - Amputations
+5106,anatomical loss of both hands,8990,Musculoskeletal - Amputations
+5107,anatomical loss of both feet,8990,Musculoskeletal - Amputations
+5108,anatomical loss of one hand and one foot,8990,Musculoskeletal - Amputations
+5120,disarticulation of arm,8990,Musculoskeletal - Amputations
+5121,amputation of arm above insertion of deltoid,8990,Musculoskeletal - Amputations
+5122,amputation of arm below insertion of deltoid,8990,Musculoskeletal - Amputations
+5123,amputation of forearm above pronator teres,8990,Musculoskeletal - Amputations
+5124,amputation of forearm below pronator teres,8990,Musculoskeletal - Amputations
+5125,loss of use of one hand,8990,Musculoskeletal - Amputations
+5126,amputation of five digits of one hand,8990,Musculoskeletal - Amputations
+5127,"amputation thumb, index, middle and ring fingers",8990,Musculoskeletal - Amputations
+5128,"amputation thumb, index, middle and little finger",8990,Musculoskeletal - Amputations
+5129,"amputation thumb, index, ring, and little fingers",8990,Musculoskeletal - Amputations
+5130,"amputation thumb, middle, ring and little fingers",8990,Musculoskeletal - Amputations
+5131,"amputation index, middle, ring and little fingers",8990,Musculoskeletal - Amputations
+5132,"amputation thumb, index, and middle fingers",8990,Musculoskeletal - Amputations
+5133,"amputation thumb, index and ring fingers",8990,Musculoskeletal - Amputations
+5134,"amputation thumb, index and little fingers",8990,Musculoskeletal - Amputations
+5135,"amputation thumb, middle and ring fingers",8990,Musculoskeletal - Amputations
+5136,"amputation thumb, middle and little fingers",8990,Musculoskeletal - Amputations
+5137,"amputation thumb, ring and little fingers",8990,Musculoskeletal - Amputations
+5138,"amputation index, middle and ring fingers",8990,Musculoskeletal - Amputations
+5139,"amputation index, middle and little fingers",8990,Musculoskeletal - Amputations
+5140,"amputation index, ring and little fingers",8990,Musculoskeletal - Amputations
+5141,"amputation middle, ring and little fingers",8990,Musculoskeletal - Amputations
+5142,amputation thumb and index fingers,8990,Musculoskeletal - Amputations
+5143,amputation thumb and middle fingers,8990,Musculoskeletal - Amputations
+5144,amputation thumb and ring fingers,8990,Musculoskeletal - Amputations
+5145,amputation thumb and little fingers,8990,Musculoskeletal - Amputations
+5146,amputation index and middle fingers,8990,Musculoskeletal - Amputations
+5147,amputation index and ring fingers,8990,Musculoskeletal - Amputations
+5148,amputation index and little fingers,8990,Musculoskeletal - Amputations
+5149,amputation middle and ring fingers,8990,Musculoskeletal - Amputations
+5150,amputation middle and little fingers,8990,Musculoskeletal - Amputations
+5151,amputation ring and little fingers,8990,Musculoskeletal - Amputations
+5152,amputation of thumb,8990,Musculoskeletal - Amputations
+5153,amputation of index finger,8990,Musculoskeletal - Amputations
+5154,amputation of middle finger,8990,Musculoskeletal - Amputations
+5155,amputation of ring finger,8990,Musculoskeletal - Amputations
+5156,amputation of little finger,8990,Musculoskeletal - Amputations
+5160,disarticulation of leg,8990,Musculoskeletal - Amputations
+5161,amputation of upper third of the leg,8990,Musculoskeletal - Amputations
+5162,amputation of middle or lower thirds of the leg,8990,Musculoskeletal - Amputations
+5163,amputation of leg with defective stump,8990,Musculoskeletal - Amputations
+5164,amputation of leg - loss of natural knee action,8990,Musculoskeletal - Amputations
+5165,amputation of leg permitting prosthesis,8990,Musculoskeletal - Amputations
+5166,amputation of forefoot,8990,Musculoskeletal - Amputations
+5167,loss of use of a foot,8990,Musculoskeletal - Amputations
+5170,amputation of all toes,9003,Musculoskeletal - Toe Amputations
+5171,amputation of great toe,9003,Musculoskeletal - Toe Amputations
+5172,amputation of a toe other than great,9003,Musculoskeletal - Toe Amputations
+5173,amputation of 3-4 toes other than great,9003,Musculoskeletal - Toe Amputations
+5200,ankylosis of shoulder joint,9002,Musculoskeletal - Shoulder
+5201,limitation of motion of the arm,9002,Musculoskeletal - Shoulder
+5202,impairment of humerus,9002,Musculoskeletal - Shoulder
+5203,impairment of clavicle or scapula,9002,Musculoskeletal - Shoulder
+5205,ankylosis of the elbow,8993,Musculoskeletal - Elbow
+5206,limited flexion of the forearm,8993,Musculoskeletal - Elbow
+5207,limited extension of the forearm,8993,Musculoskeletal - Elbow
+5208,forearm flexion limited to 100; extension to 45,8993,Musculoskeletal - Elbow
+5209,impairment of elbow or flail joint,8993,Musculoskeletal - Elbow
+5210,nonunion of radius and ulna,8993,Musculoskeletal - Elbow
+5211,impairment of ulna,8993,Musculoskeletal - Elbow
+5212,impairment of radius,8993,Musculoskeletal - Elbow
+5213,impaired supination and pronation of forearm,8993,Musculoskeletal - Elbow
+5214,ankylosis of wrist,9004,Musculoskeletal - Wrist
+5215,limited motion of wrist,9004,Musculoskeletal - Wrist
+5216,unfavorable ankylosis of one hand,8995,Musculoskeletal - Hand
+5217,unfavorable ankylosis of four fingers,8995,Musculoskeletal - Hand
+5218,unfavorable ankylosis of three fingers,8995,Musculoskeletal - Hand
+5219,unfavorable ankylosis of two fingers,8995,Musculoskeletal - Hand
+5220,favorable ankylosis of all fingers,8995,Musculoskeletal - Hand
+5221,favorable ankylosis of four fingers,8995,Musculoskeletal - Hand
+5222,favorable ankylosis of three fingers,8995,Musculoskeletal - Hand
+5223,favorable ankylosis of two fingers,8995,Musculoskeletal - Hand
+5224,ankylosis of the thumb,8995,Musculoskeletal - Hand
+5225,ankylosis of the index finger,8995,Musculoskeletal - Hand
+5226,ankylosis of the middle finger,8995,Musculoskeletal - Hand
+5227,ankylosis of the ring or little finger,8995,Musculoskeletal - Hand
+5228,limitation of motion of thumb,8995,Musculoskeletal - Hand
+5229,limitation of motion of index or long finger,8995,Musculoskeletal - Hand
+5230,limitation of motion of ring or little finger,8995,Musculoskeletal - Hand
+5236,sacroiliac injury and weakness,8998,Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine)
+5250,ankylosis of the hip,8996,Musculoskeletal - Hip
+5251,limitation of extension of the thigh,8996,Musculoskeletal - Hip
+5252,limitation of flexion of the thigh,8996,Musculoskeletal - Hip
+5253,general thigh condition,8996,Musculoskeletal - Hip
+5254,hip or flail joint condition,8996,Musculoskeletal - Hip
+5255,impairment of femur,8996,Musculoskeletal - Hip
+5256,ankylosis of the knee,8997,Musculoskeletal - Knee
+5257,other impairment of the knee,8997,Musculoskeletal - Knee
+5258,dislocated semilunar cartilage - knee,8997,Musculoskeletal - Knee
+5259,removal of semilunar cartilage - knee,8997,Musculoskeletal - Knee
+5260,limitation of flexion of the knee,8997,Musculoskeletal - Knee
+5261,limitation of extension of the knee,8997,Musculoskeletal - Knee
+5262,impairment of tibia and fibula - lower leg,8997,Musculoskeletal - Knee
+5263,genu recurvatum - knee condition,8997,Musculoskeletal - Knee
+5269,plantar fasciitis,8994,Musculoskeletal - Foot
+5270,ankylosis of ankle,8991,Musculoskeletal - Ankle
+5271,limitation of motion of the ankle,8991,Musculoskeletal - Ankle
+5272,ankylosis of subastragalar or tarsal joint,8991,Musculoskeletal - Ankle
+5273,malunion of ankle,8991,Musculoskeletal - Ankle
+5274,astragalectomy,8991,Musculoskeletal - Ankle
+5276,"flatfoot, acquired",8994,Musculoskeletal - Foot
+5277,"weak foot condition, bilateral",8994,Musculoskeletal - Foot
+5278,"claw foot (pes cavus), acquired",8994,Musculoskeletal - Foot
+5279,metatarsalgia (foot pain) or Morton's disease,8994,Musculoskeletal - Foot
+5280,hallux valgus - foot,8994,Musculoskeletal - Foot
+5281,hallux rigidus - foot,8994,Musculoskeletal - Foot
+5282,hammer toe,8994,Musculoskeletal - Foot
+5283,malunion of tarsal or metatarsal bones (toes),8994,Musculoskeletal - Foot
+5284,other foot injuries,8994,Musculoskeletal - Foot
+5290,limitation of motion of cervical spine [Removed],8999,Musculoskeletal - Neck/Upper Back (Cervical Spine)
+5291,limitation of motion of dorsal spine [Removed],8998,Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine)
+5292,limitation of motion of lumbar spine [Removed],8998,Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine)
+5295,lumbosacral strain [Removed],8998,Musculoskeletal - Mid/Lower Back (Thoracolumbar Spine)
+5296,loss of part of skull,9001,Musculoskeletal - Other
+5297,removal of rib(s),249482,Musculoskeletal - Bones
+5298,removal of coccyx (tailbone),249482,Musculoskeletal - Bones
+5301,injury to extrinsic muscles (group i) of shoulder,9005,Musculoskeletal and Muscle Injuries
+5302,injury to extrinsic muscles (group ii) of shoulder,9005,Musculoskeletal and Muscle Injuries
+5303,injury to intrinsic muscle (group iii) of shoulder,9005,Musculoskeletal and Muscle Injuries
+5304,injury to intrinsic muscles (group iv) of shoulder,9005,Musculoskeletal and Muscle Injuries
+5305,injury to flexor muscles (group v) of elbow,9005,Musculoskeletal and Muscle Injuries
+5306,injury to extensor muscles (group vi) of elbow,9005,Musculoskeletal and Muscle Injuries
+5307,injury to flexors (group vii) of fingers/thumb,9005,Musculoskeletal and Muscle Injuries
+5308,injury to extensors (group viii) of fingers/thumb,9005,Musculoskeletal and Muscle Injuries
+5309,injury to intrinsic muscles (group ix) of hand,9005,Musculoskeletal and Muscle Injuries
+5310,injury to intrinsic muscles (group x) of foot,9005,Musculoskeletal and Muscle Injuries
+5311,injury affecting propulsion (group xi) of foot,9005,Musculoskeletal and Muscle Injuries
+5312,injury affecting dorsiflexion (group xii) of foot,9005,Musculoskeletal and Muscle Injuries
+5313,injury affecting hip extension and knee flexion,9005,Musculoskeletal and Muscle Injuries
+5314,injury affecting knee extension and hip flexion,9005,Musculoskeletal and Muscle Injuries
+5315,injury to hip adduction; knee and hip flexion,9005,Musculoskeletal and Muscle Injuries
+5316,injury affecting hip flexion,9005,Musculoskeletal and Muscle Injuries
+5317,injury affecting hip extension,9005,Musculoskeletal and Muscle Injuries
+5318,injury to thigh rotation and hip stabilization,9005,Musculoskeletal and Muscle Injuries
+5319,injury to flexion and lateral motion - spine,9005,Musculoskeletal and Muscle Injuries
+5320,injury to extension and lateral motion - spine,9005,Musculoskeletal and Muscle Injuries
+5321,injury to muscles of respiration,9005,Musculoskeletal and Muscle Injuries
+5322,injury to muscles at front of neck,9005,Musculoskeletal and Muscle Injuries
+5323,injury to muscles at side and back of neck,9005,Musculoskeletal and Muscle Injuries
+5324,rupture of diaphragm with herniation,9005,Musculoskeletal and Muscle Injuries
+5325,injury to facial muscles,9005,Musculoskeletal and Muscle Injuries
+5326,muscle hernia,9005,Musculoskeletal and Muscle Injuries
+5327,malignant muscle growth,8941,Cancer - Musculoskeletal and Muscle Injuries
+5328,benign muscle growth,8963,Cyst/Benign Growth - Musculoskeletal and Muscle Injuries
+5329,"soft tissue sarcoma (of muscle, fat or fibrous connective tissue)",9005,Musculoskeletal and Muscle Injuries
+5330,residuals of rhabdomyolysis,9005,Musculoskeletal and Muscle Injuries
+5331,compartment syndrome,9005,Musculoskeletal and Muscle Injuries
+6000,"choroidopathy, including uveitis, iritis, cyclitis, or choroiditis",8974,Eye (Vision)
+6001,keratopathy,8974,Eye (Vision)
+6002,scleritis,8974,Eye (Vision)
+6003,iritis,8974,Eye (Vision)
+6004,cyclitis.,8974,Eye (Vision)
+6005,choroiditis.,8974,Eye (Vision)
+6006,retinopathy or maculopathy,8974,Eye (Vision)
+6007,intraocular hemorrhage,8974,Eye (Vision)
+6008,detachment of retina,8974,Eye (Vision)
+6009,unhealed eye injury,8974,Eye (Vision)
+6010,tuberculosis of the eye,8974,Eye (Vision)
+6011,retinal scars,8974,Eye (Vision)
+6012,angle-closure glaucoma,8974,Eye (Vision)
+6013,open-angle glaucoma,8974,Eye (Vision)
+6014,"malignant neoplasms of the eye, orbit, and adnexa (excluding skin)",8934,Cancer - Eye (Vision)
+6015,"benign neoplasms of the eye, orbit, and adnexa (excluding skin)",8949,Cyst/Benign Growth - Eye (Vision)
+6016,nystagmus (rapid eyeball movement),8974,Eye (Vision)
+6017,"chronic conjunctivitis, trachomatous",8974,Eye (Vision)
+6018,chronic conjunctivitis,8974,Eye (Vision)
+6019,ptosis (drooping eyelid),8974,Eye (Vision)
+6020,ectropion (eversion of eyelid),8974,Eye (Vision)
+6021,entropion(inversion of eyelid),8974,Eye (Vision)
+6022,lagophthalmos (inability to close eye),8974,Eye (Vision)
+6023,loss of eyebrows,8974,Eye (Vision)
+6024,loss of eyelashes,8974,Eye (Vision)
+6025,disorders of the lacrimal apparatus,8974,Eye (Vision)
+6026,optic neuropathy,8974,Eye (Vision)
+6027,"cataract, traumatic",8974,Eye (Vision)
+6028,"cataract. senile, and others",8974,Eye (Vision)
+6029,aphakia (absence of eye lens),8974,Eye (Vision)
+6030,inability to focus eyes,8974,Eye (Vision)
+6031,dacryocystitis,8974,Eye (Vision)
+6032,loss of portion of eyelids,8974,Eye (Vision)
+6033,dislocation of crystalline lens,8974,Eye (Vision)
+6034,pterygium (thickening of membrane),8974,Eye (Vision)
+6035,keratoconus (protrusion of cornea),8974,Eye (Vision)
+6036,status post corneal transplant,8974,Eye (Vision)
+6037,pinguecula,8974,Eye (Vision)
+6040,diabetic retinopathy,8974,Eye (Vision)
+6042,retinal dystrophy,8974,Eye (Vision)
+6046,post-chiasmal disorders,8974,Eye (Vision)
+6061,anatomical loss both eyes,8974,Eye (Vision)
+6062,blindness in both eyes,8974,Eye (Vision)
+6063,loss of 1 eye; vision 5/200 in other,8974,Eye (Vision)
+6064,"loss of 1 eye; vision 10, 15, or 20/200 in other",8974,Eye (Vision)
+6065,"loss of 1 eye; vision 20/100, 70 or 50 in other",8974,Eye (Vision)
+6066,loss of 1 eye; vision 20/40 in other,8974,Eye (Vision)
+6067,blindness in 1 eye + other eye limited acuity,8974,Eye (Vision)
+6068,blindness in 1 eye + other eye limited acuity,8974,Eye (Vision)
+6069,blindness in 1 eye + other eye limited acuity,8974,Eye (Vision)
+6070,blindness in 1 eye + other eye limited acuity,8974,Eye (Vision)
+6071,limited visual acuity,8974,Eye (Vision)
+6072,limited visual acuity,8974,Eye (Vision)
+6073,limited visual acuity,8974,Eye (Vision)
+6074,limited visual acuity,8974,Eye (Vision)
+6075,limited visual acuity,8974,Eye (Vision)
+6076,limited visual acuity,8974,Eye (Vision)
+6077,limited visual acuity,8974,Eye (Vision)
+6078,limited visual acuity,8974,Eye (Vision)
+6079,limited visual acuity,8974,Eye (Vision)
+6080,impairment to field of vision,8974,Eye (Vision)
+6081,scotoma,8974,Eye (Vision)
+6090,diplopia (double vision),8974,Eye (Vision)
+6091,symblepharon (eyelid condition),8974,Eye (Vision)
+6092,"diplopia, limited muscle function",8974,Eye (Vision)
+6100,"hearing loss, other than tinnitus",3140,Hearing Loss
+6200,chronic suppurative otitis media,8969,Ear Disease and Other Sense Organs
+6201,chronic nonsuppurative otitis media,8969,Ear Disease and Other Sense Organs
+6202,otosclerosis,3140,Hearing Loss
+6203,otitis interna,8969,Ear Disease and Other Sense Organs
+6204,labyrinthitis,8969,Ear Disease and Other Sense Organs
+6205,Meniere's syndrome,8969,Ear Disease and Other Sense Organs
+6206,mastoiditis,8969,Ear Disease and Other Sense Organs
+6207,loss or partial loss of ear,8969,Ear Disease and Other Sense Organs
+6208,malignant neoplasm of ear,249468,Cancer - Ear Disease and Other Sense Organs
+6209,benign neoplasms of ear,8947,Cyst/Benign Growth - Ear Disease and Other Sense Organs
+6210,chronic otitis externa,8969,Ear Disease and Other Sense Organs
+6211,perforated eardrum,8969,Ear Disease and Other Sense Organs
+6260,tinnitus,3140,Hearing Loss
+6275,complete loss of sense of smell,8969,Ear Disease and Other Sense Organs
+6276,complete loss of sense of taste,8969,Ear Disease and Other Sense Organs
+6280,[legacy hearing-related DC],8969,Ear Disease and Other Sense Organs
+6293,[legacy hearing-related DC],8969,Ear Disease and Other Sense Organs
+6297,[legacy hearing-related DC],8969,Ear Disease and Other Sense Organs
+6300,"vibriosis (cholera, non-cholera)",8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6301,visceral leishmaniasis (black fever),8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6302,leprosy (Hansen's disease),8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6304,malaria,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6305,lymphatic filariasis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6306,bartonellosis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6307,plague,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6308,relapsing fever,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6309,rheumatic fever,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6310,syphilis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6311,miliary tuberculosis,6890,Tuberculosis
+6312,nontuberculosis mycobacterium infection,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6313,avitaminosis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6314,beriberi,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6315,pellagra,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6316,brucellosis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6317,"rickettsial, ehrlichia, and anaplasma infections.",8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6318,melioidosis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6319,lyme disease,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6320,parasitic disease,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6325,hyperinfection syndrome or disseminated strongyloidiasis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6326,schistosomiasis,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6329,"hemorrhagic fevers, including dengue, yellow fever, and others",8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6330,campylobacter jejuni infection,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6331,coxiella burnetii infection (Q Fever),8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6333,nontyphoid salmonella infections,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6334,shigella infections,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6335,West Nile virus infection,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6350,systemic lupus erythematosus,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6351,HIV-related illness,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6354,chronic fatigue syndrome,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+6501,chronic or atrophic rhinitis [Removed],9012,Respiratory
+6502,deviated septum,9012,Respiratory
+6504,partial loss of the nose (or scars),9014,"Scars (Head, Face, Or Neck)"
+6510,"pansinusitis sinusitis, chronic",9012,Respiratory
+6511,"ethmoid sinusitis, chronic",9012,Respiratory
+6512,"frontal sinusitis, chronic",9012,Respiratory
+6513,"maxillary sinusitis, chronic",9012,Respiratory
+6514,"sphenoid sinusitis, chronic",9012,Respiratory
+6515,"laryngitis, tuberculous (active or inactive)",6890,Tuberculosis
+6516,chronic laryngitis,9012,Respiratory
+6518,total laryngectomy,9012,Respiratory
+6519,aphonia (inability to speak),9012,Respiratory
+6520,stenosis (constriction) of the larynx,9012,Respiratory
+6521,injury to the pharynx,9012,Respiratory
+6522,allergic or vasomotor rhinitis,9012,Respiratory
+6523,bacterial rhinitis,9012,Respiratory
+6524,granulomatous rhinitis,9012,Respiratory
+6600,chronic bronchitis,9012,Respiratory
+6601,bronchiectasis (dilatation of the bronchi),9012,Respiratory
+6602,bronchial asthma,9012,Respiratory
+6603,pulmonary emphysema,9012,Respiratory
+6604,chronic obstructive pulmonary disease,9012,Respiratory
+6701,active pulmonary tuberculosis; far advanced,6890,Tuberculosis
+6702,active pulmonary tuberculosis; moderate,6890,Tuberculosis
+6703,active pulmonary tuberculosis; minimal,6890,Tuberculosis
+6704,active pulmonary tuberculosis; unspecified advance,6890,Tuberculosis
+6721,inactive pulmonary tuberculosis; far advanced,6890,Tuberculosis
+6722,inactive pulmonary tuberculosis; moderate,6890,Tuberculosis
+6723,inactive pulmonary tuberculosis; minimal,6890,Tuberculosis
+6724,inactive pulmonary tuberculosis; unspecified,6890,Tuberculosis
+6730,chronic active pulmonary tuberculosis,6890,Tuberculosis
+6731,chronic inactive pulmonary tuberculosis,6890,Tuberculosis
+6732,"pleurisy, active or inactive",6890,Tuberculosis
+6802,unspecified pneumoconiosis [Removed],9012,Respiratory
+6816,lobectomy [Removed],9012,Respiratory
+6817,pulmonary vascular disease,9012,Respiratory
+6819,malignant growths of the respiratory system,1230,Cancer - Respiratory
+6820,benign growth of the lung,8965,Cyst/Benign Growth - Respiratory
+6822,actinomycosis (lesions of the lymph nodes),9012,Respiratory
+6823,nocardiosis (lung infection),9012,Respiratory
+6824,chronic lung abscess,9012,Respiratory
+6825,diffuse interstitial fibrosis,9012,Respiratory
+6826,desquamative interstitial pneumonitis,9012,Respiratory
+6827,pulmonary alveolar proteinosis,9012,Respiratory
+6828,eosinophilic granuloma of lung,9012,Respiratory
+6829,drug-induced pneumonitis & fibrosis,9012,Respiratory
+6830,radiation-induced pneumonitis & fibrosis,9012,Respiratory
+6831,hypersensitivity pneumonitis,9012,Respiratory
+6832,"pneumoconiosis (silicosis, anthracosis, etc",9012,Respiratory
+6833,asbestosis,9012,Respiratory
+6834,histoplasmosis (infection of lung - from spores,9012,Respiratory
+6835,coccidioidomycosis (fungous disease),9012,Respiratory
+6836,blastomycosis (infection by yeastlike organism),9012,Respiratory
+6837,cryptococcosis (acneiform lesions),9012,Respiratory
+6838,aspergillosis (lesions of the lung),9012,Respiratory
+6839,mucormycosis,9012,Respiratory
+6840,paralysis of the diaphragm,9012,Respiratory
+6841,spinal cord injury with respiratory insufficiency,9012,Respiratory
+6842,kyphoscoliosis (curvature of the sternum),9012,Respiratory
+6843,traumatic chest wall defect,9012,Respiratory
+6844,"post-surgical residual (lobectomy, pneumonectomy)",9012,Respiratory
+6845,pleural effusion or fibrosis,9012,Respiratory
+6846,sarcoidosis,9012,Respiratory
+6847,sleep apnea syndromes,9012,Respiratory
+7000,valvular heart disease,8979,Heart/Veins/Arteries
+7001,endocarditis,8979,Heart/Veins/Arteries
+7002,pericarditis,8979,Heart/Veins/Arteries
+7003,pericardial adhesions,8979,Heart/Veins/Arteries
+7004,syphilitic heart disease,8979,Heart/Veins/Arteries
+7005,arteriosclerotic heart disease,8979,Heart/Veins/Arteries
+7006,myocardial infarction (heart attack),8971,Embolism/Infarction - Heart/Veins/Arteries
+7007,hypertensive heart disease,8979,Heart/Veins/Arteries
+7008,hyperthyroid heart disease,8979,Heart/Veins/Arteries
+7009,bradycardia,8979,Heart/Veins/Arteries
+7010,supraventricular tachycardia,8979,Heart/Veins/Arteries
+7011,ventricular arrhythmias,8979,Heart/Veins/Arteries
+7013,paroxysmal tachycardia [Removed],8979,Heart/Veins/Arteries
+7015,atrioventricular block,8979,Heart/Veins/Arteries
+7016,heart valve replacement,8979,Heart/Veins/Arteries
+7017,coronary bypass surgery,8979,Heart/Veins/Arteries
+7018,implantable cardiac pacemakers,8979,Heart/Veins/Arteries
+7019,cardiac transplantation,8979,Heart/Veins/Arteries
+7020,cardiomyopathy,8979,Heart/Veins/Arteries
+7101,hypertensive vascular disease,8979,Heart/Veins/Arteries
+7110,aortic aneurysm,8979,Heart/Veins/Arteries
+7111,"aneurysm, any large artery",8979,Heart/Veins/Arteries
+7112,"aneurysm, any small artery",8979,Heart/Veins/Arteries
+7113,arteriovenous fistula,8979,Heart/Veins/Arteries
+7114,peripheral arterial disease (arteriosclerosis obliterans),8979,Heart/Veins/Arteries
+7115,thrombo-angiitis obliterans (buerger's disease),8979,Heart/Veins/Arteries
+7117,raynaud's syndrome (secondary Raynaud's),8979,Heart/Veins/Arteries
+7118,angioneurotic edema,8979,Heart/Veins/Arteries
+7119,erythromelalgia,8979,Heart/Veins/Arteries
+7120,varicose veins,8979,Heart/Veins/Arteries
+7121,post-phlebitic syndrome,8979,Heart/Veins/Arteries
+7122,residuals of cold injury,8943,Cold Injury Residuals
+7123,soft-tissue sarcoma (of vascular origin),8979,Heart/Veins/Arteries
+7124,Raynaud's disease (primary Raynaud's),8979,Heart/Veins/Arteries
+7200,"soft tissue injury of the mouth, other than tongue or lips",8967,Dental and Oral
+7201,lip injury,8967,Dental and Oral
+7202,loss of tongue or part of tongue,8967,Dental and Oral
+7203,stricture of esophagus,8968,Digestive
+7204,esophageal motility disorder,8968,Digestive
+7205,diverticulum of the esophagus,8968,Digestive
+7206,gastroesophageal reflux disease (GERD),8968,Digestive
+7207,Barrett's esophagus,8968,Digestive
+7301,"adhesions of the peritoneum due to surgery, trauma, or infection",8920,Adhesions - Digestive
+7303,chronic complications of upper gastrointestinal surgery,8968,Digestive
+7304,peptic ulcer disease,8968,Digestive
+7305,duodenal ulcer,8968,Digestive
+7306,gastrojejunal ulcer,8968,Digestive
+7307,chronic gastritis,8968,Digestive
+7308,postgastrectomy syndromes,8968,Digestive
+7309,stenosis of the stomach,8968,Digestive
+7310,stomach injury,8968,Digestive
+7311,liver injury,8968,Digestive
+7312,cirrhosis of the liver,8968,Digestive
+7314,cholecystitis (inflammation of the gallbladder),8968,Digestive
+7315,cholelithiasis (gallstones),8968,Digestive
+7316,chronic cholangitis,8968,Digestive
+7317,injury of the gallbladder,8968,Digestive
+7318,removal of the gallbladder and complications,8968,Digestive
+7319,irritable bowel syndrome,8968,Digestive
+7321,amebiasis,8968,Digestive
+7322,dysentery,8968,Digestive
+7323,ulcerative colitis,8968,Digestive
+7324,distomiasis,8968,Digestive
+7325,chronic enteritis,8968,Digestive
+7326,Crohn's disease,8968,Digestive
+7327,diverticulitis and diverticulosis.,8968,Digestive
+7328,resection of the small intestine,8968,Digestive
+7329,resection of the large intestine,8968,Digestive
+7330,fistula of the intestine,8968,Digestive
+7331,tuberculous peritonitis,6890,Tuberculosis
+7332,impairment of sphincter control,8968,Digestive
+7333,stricture of rectum/anus,8968,Digestive
+7334,prolapse of rectum,8968,Digestive
+7335,"ano, fistula",8968,Digestive
+7336,hemorrhoids,8968,Digestive
+7337,ani pruritus (anal itching),8968,Digestive
+7338,"hernia, including femoral, inguinal, umbilical, ventral",8968,Digestive
+7339,ventral hernia,8968,Digestive
+7340,femoral hernia,8968,Digestive
+7342,visceroptosis,8968,Digestive
+7343,malignant growths of digestive system,8932,Cancer - Digestive
+7344,benign growths of digestive system,8946,Cyst/Benign Growth - Digestive
+7345,"chronic liver disease, without cirrhosis",8968,Digestive
+7346,hiatal hernia,8968,Digestive
+7347,chronic pancreatitis,8968,Digestive
+7348,vagotomy,8968,Digestive
+7350,liver abscess,8968,Digestive
+7351,liver transplant,8968,Digestive
+7352,pancreas transplant,8968,Digestive
+7354,hepatitis C,8968,Digestive
+7355,celiac disease,8968,Digestive
+7356,gastrointestinal dysmotility syndrome,8968,Digestive
+7357,post pancreatectomy syndrome,8968,Digestive
+7500,removal of kidney,8975,Genitourinary
+7501,abscess of kidney,8975,Genitourinary
+7502,chronic nephritis,8975,Genitourinary
+7504,chronic pyelonephritis,8975,Genitourinary
+7505,tuberculosis of kidney,6890,Tuberculosis
+7507,nephrosclerosis,8975,Genitourinary
+7508,nephrolithiasis (kidney stones),8975,Genitourinary
+7509,hydronephrosis,8975,Genitourinary
+7510,urinary condition [Removed],8975,Genitourinary
+7511,stricture of ureter,8975,Genitourinary
+7512,cystitis,8975,Genitourinary
+7515,calculus in bladder,8975,Genitourinary
+7516,fistula of bladder,8975,Genitourinary
+7517,injury of bladder,8975,Genitourinary
+7518,stricture of the urethra,8975,Genitourinary
+7519,fistula of urethra,8975,Genitourinary
+7520,removal of half or more of the penis,8975,Genitourinary
+7521,removal of glans of penis,8975,Genitourinary
+7522,penile deformity (loss of erectile power),8975,Genitourinary
+7523,complete atrophy of the testis,8975,Genitourinary
+7524,removal of testis,8975,Genitourinary
+7525,"chronic prostatitis, urethritis, epididymitis, orchitis",8975,Genitourinary
+7527,"prostate gland injuries, infections, hypertrophy",8975,Genitourinary
+7528,malignant growths of genitourinary system,8935,Cancer - Genitourinary
+7529,benign growths of genitourinary system,8950,Cyst/Benign Growth - Genitourinary
+7530,chronic renal disease,8975,Genitourinary
+7531,kidney transplant,8975,Genitourinary
+7532,renal tubular disorders,8975,Genitourinary
+7533,cystic diseases of the kidneys,8975,Genitourinary
+7534,artherosclerotic renal disease,8975,Genitourinary
+7535,toxic nephropathy,8975,Genitourinary
+7536,glomerulonephritis,8975,Genitourinary
+7537,interstitial nephritis,8975,Genitourinary
+7538,papillary necrosis,8975,Genitourinary
+7539,renal amyloid disease,8975,Genitourinary
+7540,intravascular kidney disease,8975,Genitourinary
+7541,renal involvement with systemic disease process,8975,Genitourinary
+7542,neurogenic bladder,8975,Genitourinary
+7543,varicocele/Hydrocele,8975,Genitourinary
+7544,"renal disease caused by viral infection such as HIV, hepatitis B, and hepatitis C",8975,Genitourinary
+7545,diverticulum of the bladder,8975,Genitourinary
+7610,disease or injury of the vulva,8978,Gynecological
+7611,disease or injury of the vagina,8978,Gynecological
+7612,disease or injury of the cervix,8978,Gynecological
+7613,disease or injury of the uterus,8978,Gynecological
+7614,disease or injury of the fallopian tube,8978,Gynecological
+7615,disease or injury of the ovary,8978,Gynecological
+7617,removal of uterus and both ovaries,8978,Gynecological
+7618,removal of uterus,8978,Gynecological
+7619,removal of ovary,8978,Gynecological
+7620,complete atrophy of both ovaries,8978,Gynecological
+7621,prolapse of uterus,8978,Gynecological
+7622,displacement of uterus [Removed],8978,Gynecological
+7623,surgical complications of pregnancy [Removed],8978,Gynecological
+7624,rectovaginal fistula,8978,Gynecological
+7625,urethrovaginal fistula,8978,Gynecological
+7626,surgery of breast,8978,Gynecological
+7627,malignant growths of gynecological system,8937,Cancer - Gynecological
+7628,benign growths of gynecological system,8951,Cyst/Benign Growth - Gynecological
+7629,endometriosis,8978,Gynecological
+7630,malignant neoplasms of the breast,8937,Cancer - Gynecological
+7631,benign neoplasms of the breast and other injuries of the breast,8978,Gynecological
+7632,female sexual arousal disorder (FSAD),8978,Gynecological
+7700,anemia [Removed],8981,Hemic and Lymphatic
+7702,acute agranulocytosis,8981,Hemic and Lymphatic
+7703,leukemia,8939,Cancer - Hemic and Lymphatic
+7704,polycythemia,8981,Hemic and Lymphatic
+7705,thrombocytopenia,8981,Hemic and Lymphatic
+7706,splenectomy (removal of spleen),8981,Hemic and Lymphatic
+7707,injury of spleen,8981,Hemic and Lymphatic
+7709,Hodgkin's disease,8939,Cancer - Hemic and Lymphatic
+7710,adenitis,6890,Tuberculosis
+7712,multiple myeloma,8939,Cancer - Hemic and Lymphatic
+7713,arteriovenous fistula [Removed],8973,Endocrine
+7714,sickle cell anemia,8981,Hemic and Lymphatic
+7715,non-Hodgkin's lymphoma,8939,Cancer - Hemic and Lymphatic
+7716,aplastic anemia,8981,Hemic and Lymphatic
+7717,primary (al) amyloidosis,8939,Cancer - Hemic and Lymphatic
+7718,essential thrombocythemia and primary myelofibrosis,8981,Hemic and Lymphatic
+7719,chronic myelogenous leukemia (cml) (chronic myeloid leukemia or chronic granulocytic leukemia),8939,Cancer - Hemic and Lymphatic
+7720,iron deficiency anemia,8981,Hemic and Lymphatic
+7721,folic acid deficiency,8981,Hemic and Lymphatic
+7722,pernicious anemia and vitamin b12 deficiency anemia,8981,Hemic and Lymphatic
+7723,acquired hemolytic anemia,8981,Hemic and Lymphatic
+7724,solitary plasmacytoma,8939,Cancer - Hemic and Lymphatic
+7725,myelodysplastic syndromes,8981,Hemic and Lymphatic
+7800,"scars, head, face or neck",9014,"Scars (Head, Face, Or Neck)"
+7801,"scars, burns (3rd degree)",9013,Scars (Extremities and Trunk)
+7802,"scars, burns (2nd degree)",9013,Scars (Extremities and Trunk)
+7806,eczema,9016,Skin
+7807,"leishmaniasis, americana",9016,Skin
+7808,"leishmaniasis, old world",9016,Skin
+7809,discoid lupus,8986,"Infectious Diseases, Immune Disorders & Nutritional Deficiencies"
+7811,lupus vulgaris (active or inactive),6890,Tuberculosis
+7813,dermatophytosis,9016,Skin
+7814,tinea barbae [Removed],9016,Skin
+7815,pemphigus,9016,Skin
+7816,psoriasis,9016,Skin
+7817,dermatitis,9016,Skin
+7818,malignant growths of the skin,1250,Cancer - Skin
+7819,benign growths of the skin,8966,Cyst/Benign Growth - Skin
+7820,infections of the skin,9016,Skin
+7821,other skin condition (not covered elsewhere),9016,Skin
+7822,papulosquamous disorders,9016,Skin
+7823,vitiligo,9016,Skin
+7824,diseases of keratinization,9016,Skin
+7825,urticaria,9016,Skin
+7826,"vasculitis, primary cutaneous",9016,Skin
+7827,erythema multiforme; toxic epidermal necrolysis,9016,Skin
+7828,acne,9016,Skin
+7829,chloracne,9016,Skin
+7830,scarring alopecia,9016,Skin
+7831,alopecia areata,9016,Skin
+7832,hyperhidrosis,9016,Skin
+7833,malignant melanoma,1250,Cancer - Skin
+7900,hyperthyroidism,8973,Endocrine
+7901,toxic adenoma of thyroid gland,8973,Endocrine
+7902,nontoxic adenoma of thyroid gland,8973,Endocrine
+7903,hypothyroidism,8973,Endocrine
+7904,hyperparathyroidism,8973,Endocrine
+7905,hypoparathyroidism,8973,Endocrine
+7906,thyroiditis,8973,Endocrine
+7907,Cushing's syndrome,8973,Endocrine
+7908,acromegaly,8973,Endocrine
+7909,diabetes insipidus,8973,Endocrine
+7911,addison's disease,8973,Endocrine
+7912,pluriglandular syndrome,8973,Endocrine
+7913,diabetes mellitus,8973,Endocrine
+7914,malignant growth of the endocrine system,8933,Cancer - Endocrine
+7915,benign growth of the endocrine system,8948,Cyst/Benign Growth - Endocrine
+7916,hyperpituitarism,8973,Endocrine
+7917,hyperaldosteronism,8973,Endocrine
+7918,pheochromocytoma,8973,Endocrine
+7919,c-cell hyperplasia of the thyroid,8973,Endocrine
+8000,encephalitis,9007,Neurological other System
+8002,malignant growth of the brain,8942,Cancer - Neurological other System
+8003,benign growth of the brain,8964,Cyst/Benign Growth - Neurological other System
+8004,Parkinson's disease,9007,Neurological other System
+8005,bulbar palsy,9007,Neurological other System
+8007,embolism of the brain,8972,Embolism/Infarction - Neurological other System
+8008,thrombosis of the brain,8972,Embolism/Infarction - Neurological other System
+8009,brain hemorrhage,8972,Embolism/Infarction - Neurological other System
+8010,myelitis (inflammation of the spinal cord),9007,Neurological other System
+8011,poliomyelitis,9007,Neurological other System
+8012,hematomyelia,9007,Neurological other System
+8013,cerebrospinal syphilis,9007,Neurological other System
+8014,meningovascular syphilis,9007,Neurological other System
+8015,degeneration of spinal cord,9007,Neurological other System
+8017,amyotrophic lateral sclerosis,9007,Neurological other System
+8018,multiple sclerosis,9007,Neurological other System
+8019,meningitis,9007,Neurological other System
+8020,abscess of the brain,9007,Neurological other System
+8021,malignant growth of the spinal cord,8942,Cancer - Neurological other System
+8022,benign growth of the spinal cord,8964,Cyst/Benign Growth - Neurological other System
+8023,progressive muscular atrophy,9007,Neurological other System
+8024,syringomyelia,9007,Neurological other System
+8025,myasthenia gravis,9007,Neurological other System
+8045,residuals of traumatic brain injury (TBI),9020,Traumatic Brain Injury
+8046,cerebral arteriosclerosis,9007,Neurological other System
+8100,migraine,9007,Neurological other System
+8103,nervous tic,9007,Neurological other System
+8104,paramyoclonus multiplex,9007,Neurological other System
+8105,sydenham's chorea,9007,Neurological other System
+8106,huntington's chorea,9007,Neurological other System
+8107,athetosis,9007,Neurological other System
+8108,narcolepsy,9007,Neurological other System
+8205,paralysis of the 5th cranial nerve,9007,Neurological other System
+8207,paralysis of the 7th cranial nerve,9007,Neurological other System
+8209,paralysis of the 9th cranial nerve,9007,Neurological other System
+8210,paralysis of the 10th cranial nerve,9007,Neurological other System
+8211,paralysis of the 11th cranial nerve,9007,Neurological other System
+8212,paralysis of the 12th cranial nerve,9007,Neurological other System
+8305,inflammation of the 5th cranial nerve,9007,Neurological other System
+8307,inflammation of the 7th cranial nerve,9007,Neurological other System
+8309,inflammation of the 9th cranial nerve,9007,Neurological other System
+8310,inflammation of the 10th cranial nerve,9007,Neurological other System
+8311,inflammation of the 11th cranial nerve,9007,Neurological other System
+8312,inflammation of the 12th cranial nerve,9007,Neurological other System
+8405,neuralgia of the 5th cranial nerve,9007,Neurological other System
+8407,neuralgia of the 7th cranial nerve,9007,Neurological other System
+8409,neuralgia of the 9th cranial nerve,9007,Neurological other System
+8410,neuralgia of the 10th cranial nerve,9007,Neurological other System
+8411,neuralgia of the 11th cranial nerve,9007,Neurological other System
+8412,neuralgia of the 12th cranial nerve,9007,Neurological other System
+8510,paralysis of the upper radicular nerve group,9006,Neurological - Cranial/Peripheral Nerves
+8511,paralysis of the middle radicular nerve group,9006,Neurological - Cranial/Peripheral Nerves
+8512,paralysis of the lower radicular nerve group,9006,Neurological - Cranial/Peripheral Nerves
+8513,paralysis of all radicular nerve groups,9006,Neurological - Cranial/Peripheral Nerves
+8514,paralysis of the radial nerve,9006,Neurological - Cranial/Peripheral Nerves
+8515,paralysis of the median nerve,9006,Neurological - Cranial/Peripheral Nerves
+8516,paralysis of the ulnar nerve,8929,Arm Condition - Neurological other System
+8517,paralysis of the musculocutaneous nerve,9006,Neurological - Cranial/Peripheral Nerves
+8518,paralysis of the circumflex nerve,9006,Neurological - Cranial/Peripheral Nerves
+8519,paralysis of the long thoracic nerve,9006,Neurological - Cranial/Peripheral Nerves
+8520,paralysis of the sciatic nerve,9006,Neurological - Cranial/Peripheral Nerves
+8521,paralysis of the external popliteal nerve,9006,Neurological - Cranial/Peripheral Nerves
+8522,paralysis of the superficial peroneal nerve,9006,Neurological - Cranial/Peripheral Nerves
+8523,paralysis of the anterior tibial nerve,9006,Neurological - Cranial/Peripheral Nerves
+8524,paralysis of the internal popliteal nerve,9006,Neurological - Cranial/Peripheral Nerves
+8525,paralysis of the posterior tibial nerve,9006,Neurological - Cranial/Peripheral Nerves
+8526,paralysis of the anterior crural nerve,9006,Neurological - Cranial/Peripheral Nerves
+8527,paralysis of the internal saphenous nerve,9006,Neurological - Cranial/Peripheral Nerves
+8528,paralysis of the obturator nerve,9006,Neurological - Cranial/Peripheral Nerves
+8529,paralysis of the external cutaneous nerve - thigh,9006,Neurological - Cranial/Peripheral Nerves
+8530,paralysis of the ilio-inguinal nerve,9006,Neurological - Cranial/Peripheral Nerves
+8540,soft tissue sarcoma (neurogenic origin),8942,Cancer - Neurological other System
+8610,neuritis of upper radicular nerve group,9006,Neurological - Cranial/Peripheral Nerves
+8611,neuritis of middle radicular nerve group,9006,Neurological - Cranial/Peripheral Nerves
+8612,neuritis of lower radicular nerve group,9006,Neurological - Cranial/Peripheral Nerves
+8613,neuritis of all radicular nerve groups,9006,Neurological - Cranial/Peripheral Nerves
+8614,neuritis of the radial nerve,9006,Neurological - Cranial/Peripheral Nerves
+8615,neuritis of the median nerve,9006,Neurological - Cranial/Peripheral Nerves
+8616,neuritis of the ulnar nerve,8929,Arm Condition - Neurological other System
+8617,neuritis of the musculocutaneous nerve,9006,Neurological - Cranial/Peripheral Nerves
+8618,neuritis of the circumflex nerve,9006,Neurological - Cranial/Peripheral Nerves
+8619,neuritis of the long thoracic nerve,9006,Neurological - Cranial/Peripheral Nerves
+8620,neuritis of the sciatic nerve,9006,Neurological - Cranial/Peripheral Nerves
+8621,neuritis of the external popliteal nerve,9006,Neurological - Cranial/Peripheral Nerves
+8622,neuritis of the superficial peroneal nerve,9006,Neurological - Cranial/Peripheral Nerves
+8623,neuritis of the anterior tibial nerve,9006,Neurological - Cranial/Peripheral Nerves
+8624,neuritis of the internal popliteal nerve,9006,Neurological - Cranial/Peripheral Nerves
+8625,neuritis of the posterior tibial nerve,9006,Neurological - Cranial/Peripheral Nerves
+8626,neuritis of the anterior crural nerve,9006,Neurological - Cranial/Peripheral Nerves
+8627,neuritis of the internal saphenous nerve,9006,Neurological - Cranial/Peripheral Nerves
+8628,neuritis of the obturator nerve,9006,Neurological - Cranial/Peripheral Nerves
+8629,neuritis of external cutaneous nerve - thigh,9006,Neurological - Cranial/Peripheral Nerves
+8630,neuritis of the ilio-inguinal nerve,9006,Neurological - Cranial/Peripheral Nerves
+8710,neuralgia of the upper radicular nerve group,9006,Neurological - Cranial/Peripheral Nerves
+8711,neuralgia of the middle radicular nerve group,9006,Neurological - Cranial/Peripheral Nerves
+8712,neuralgia of the lower radicular nerve group,9006,Neurological - Cranial/Peripheral Nerves
+8713,neuralgia of all radicular nerve groups,9006,Neurological - Cranial/Peripheral Nerves
+8714,neuralgia of the radial nerve,9006,Neurological - Cranial/Peripheral Nerves
+8715,neuralgia of the median nerve,9006,Neurological - Cranial/Peripheral Nerves
+8716,neuralgia of the ulnar nerve,8929,Arm Condition - Neurological other System
+8717,neuralgia of the musculocutaneous nerve,9006,Neurological - Cranial/Peripheral Nerves
+8718,neuralgia of the circumflex nerve,9006,Neurological - Cranial/Peripheral Nerves
+8719,neuralgia of the long thoracic nerve,9006,Neurological - Cranial/Peripheral Nerves
+8720,neuralgia of the sciatic nerve,9006,Neurological - Cranial/Peripheral Nerves
+8721,neuralgia of the external popliteal nerve,9006,Neurological - Cranial/Peripheral Nerves
+8722,neuralgia of the superficial peroneal nerve,9006,Neurological - Cranial/Peripheral Nerves
+8723,neuralgia of the anterior tibial nerve,9006,Neurological - Cranial/Peripheral Nerves
+8724,neuralgia of the internal popliteal nerve,9006,Neurological - Cranial/Peripheral Nerves
+8725,neuralgia of the posterior tibial nerve,9006,Neurological - Cranial/Peripheral Nerves
+8726,neuralgia of the anterior crural nerve,9006,Neurological - Cranial/Peripheral Nerves
+8727,neuralgia of the internal saphenous nerve,9006,Neurological - Cranial/Peripheral Nerves
+8728,neuralgia of the obturator nerve,9006,Neurological - Cranial/Peripheral Nerves
+8729,neuralgia of the external cutaneous nerve - thigh,9006,Neurological - Cranial/Peripheral Nerves
+8730,neuralgia of the ilio-inguinal nerve,9006,Neurological - Cranial/Peripheral Nerves
+8894,[psychoneurotic condition],8989,Mental Disorders
+8910,"epilepsy, grand mal",9007,Neurological other System
+8911,epilepsy,9007,Neurological other System
+8912,"epilepsy, jacksonian and focal motor or sensory",9007,Neurological other System
+8913,"epilepsy, diencephalic",9007,Neurological other System
+8914,"epilepsy, psychomotor",9007,Neurological other System
+9201,schizophrenia,8989,Mental Disorders
+9202,"schizophrenia, catatonic type [Removed]",8989,Mental Disorders
+9203,"schizophrenia, paranoid type [Removed]",8989,Mental Disorders
+9204,"schizophrenia, undifferentiated type [Removed]",8989,Mental Disorders
+9205,"schizophrenia, unspecified [Removed]",8989,Mental Disorders
+9206,manic depressive reaction [Removed],8989,Mental Disorders
+9208,delusional disorder [Removed],8989,Mental Disorders
+9209,paranoid reaction (specify) [Removed],8989,Mental Disorders
+9210,atypical psychosis,8989,Mental Disorders
+9211,schizoaffective disorder,8989,Mental Disorders
+9300,delirium,8989,Mental Disorders
+9301,dementia due to infection,8989,Mental Disorders
+9304,dementia due to traumatic brain injury,8989,Mental Disorders
+9305,vascular dementia,8989,Mental Disorders
+9310,"dementia, unknown etiology",8989,Mental Disorders
+9312,"dementia, alzheimer's type",8989,Mental Disorders
+9326,dementia due to general medical conditions,8989,Mental Disorders
+9327,organic mental disorders [Removed],8989,Mental Disorders
+9400,generalized anxiety disorder,8989,Mental Disorders
+9403,simple or social phobia,8989,Mental Disorders
+9404,obsessive compulsive disorder,8989,Mental Disorders
+9410,unspecified neurosis,8989,Mental Disorders
+9411,post-traumatic stress disorder,8989,Mental Disorders
+9412,panic disorder and/or agoraphobia,8989,Mental Disorders
+9413,"anxiety disorder, unspecified",8989,Mental Disorders
+9416,dissociative disorder (multiple personalities),8989,Mental Disorders
+9417,depersonalization disorder,8989,Mental Disorders
+9421,somatization disorder,8989,Mental Disorders
+9422,pain disorder,8989,Mental Disorders
+9423,undifferentiated somatoform disorder,8989,Mental Disorders
+9424,conversion disorder,8989,Mental Disorders
+9425,hypochondriasis,8989,Mental Disorders
+9431,cyclothymic disorder,8989,Mental Disorders
+9432,bipolar disorder,8989,Mental Disorders
+9433,dysthymic disorder,8989,Mental Disorders
+9434,major depressive disorder,8989,Mental Disorders
+9435,unspecified depressive disorder,8989,Mental Disorders
+9440,chronic adjustment disorder,8989,Mental Disorders
+9520,anorexia nervosa,8970,Eating Disorders
+9521,bulimia nervosa,8970,Eating Disorders
+9900,"chronic osteomyelitis, osteonecrosis, or osteoradionecrosis of jaw",8967,Dental and Oral
+9901,complete loss of lower jaw,8967,Dental and Oral
+9902,partial loss of lower jaw,8967,Dental and Oral
+9903,nonunion of lower jaw,8967,Dental and Oral
+9904,malunion of lower jaw,8967,Dental and Oral
+9905,temporomandibular disorder (TMD),249481,Dental and Oral - Musculoskeletal
+9906,loss (full or partial) of upper jaw [Removed],8967,Dental and Oral
+9907,partial loss of upper jaw [Removed],8967,Dental and Oral
+9908,loss of condyloid process of jaw,8967,Dental and Oral
+9909,loss of coronoid process of jaw,8967,Dental and Oral
+9911,loss of hard palate (more than half),8967,Dental and Oral
+9912,loss of hard palate (less than half) [Removed],8967,Dental and Oral
+9913,loss of teeth,8967,Dental and Oral
+9914,"maxilla, loss of more than half",8967,Dental and Oral
+9915,"maxilla, loss of half or less",8967,Dental and Oral
+9916,"maxilla, malunion or nonunion of",8967,Dental and Oral
+9917,"neoplasm, hard and soft tissue, benign (oral)",8967,Dental and Oral
+9918,"neoplasm, hard and soft tissue, malignant (oral)",8931,Cancer - Dental and Oral
