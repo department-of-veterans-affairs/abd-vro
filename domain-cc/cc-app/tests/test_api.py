@@ -110,14 +110,8 @@ def test_v4_table_diagnostic_code(client: TestClient):
 
     response = client.post("/classifier", json=json_post_dict)
     assert response.status_code == 200
-    assert (
-        response.json()["classification_code"]
-        == 8920
-    )
-    assert (
-        response.json()["classification_name"]
-        == 'Adhesions - Digestive'
-    )
+    assert response.json()["classification_code"] == 8920
+    assert response.json()["classification_name"] == "Adhesions - Digestive"
 
 
 def test_v5_diagnostic_code(client: TestClient):
@@ -126,15 +120,15 @@ def test_v5_diagnostic_code(client: TestClient):
         "claim_id": 100,
         "form526_submission_id": 500,
         "contention_text": "uncovered",
-        "claim_type": "claim_for_increase"
+        "claim_type": "claim_for_increase",
     }
     response = client.post("/classifier", json=json_post_dict)
     assert response.status_code == 200
     assert (
-            response.json()["classification_code"]
-            == IMPAIRMENT_OF_FEMUR_CLASSIFICATION["classification_code"]
+        response.json()["classification_code"]
+        == IMPAIRMENT_OF_FEMUR_CLASSIFICATION["classification_code"]
     )
     assert (
-            response.json()["classification_name"]
-            == IMPAIRMENT_OF_FEMUR_CLASSIFICATION["classification_name"]
+        response.json()["classification_name"]
+        == IMPAIRMENT_OF_FEMUR_CLASSIFICATION["classification_name"]
     )

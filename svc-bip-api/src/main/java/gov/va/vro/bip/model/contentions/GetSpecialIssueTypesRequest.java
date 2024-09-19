@@ -3,13 +3,13 @@ package gov.va.vro.bip.model.contentions;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import gov.va.vro.bip.model.BipPayloadRequest;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import lombok.extern.jackson.Jacksonized;
 
 @Getter
-@Builder
+@Jacksonized
+@SuperBuilder(toBuilder = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@NoArgsConstructor
-public final class ParameterlessBipRequest implements BipPayloadRequest {}
+public final class GetSpecialIssueTypesRequest extends BipPayloadRequest {}

@@ -4,16 +4,18 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.va.vro.bip.model.BipPayloadRequest;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
+import lombok.extern.jackson.Jacksonized;
 
 import java.util.List;
 
 @Getter
-@Builder
+@Jacksonized
+@SuperBuilder(toBuilder = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UpdateClaimContentionsRequest implements BipPayloadRequest {
+public class UpdateClaimContentionsRequest extends BipPayloadRequest {
   @JsonProperty("claimId")
   private long claimId;
 

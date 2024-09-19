@@ -69,7 +69,7 @@ public class BipResetMockController {
   }
 
   String createJwt() {
-    Claims claims = bipApiProps.toCommonJwtClaims();
+    Claims claims = bipApiProps.toCommonJwtClaims(null, null);
     Map<String, Object> headerType = new HashMap<>();
     headerType.put("typ", JWT_TYPE);
 

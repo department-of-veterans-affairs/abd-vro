@@ -8,7 +8,7 @@ def test_claim_ids_logged(client: TestClient, caplog):
     }
     client.post("/claim-linker", json=json_post_dict)
     expected_claim_link_json = {
-        'level': 'info',
+        "level": "info",
         "message": "linking claims",
         "va_gov_claim_id": 100,
         "vbms_claim_id": 200,
