@@ -71,7 +71,6 @@ jobs:
         - vro-db-init
         - vro-svc-bgs-api
         - vro-svc-bie-kafka
-        - vro-xample-workflows
         - vro-cc-app
         - vro-ee-max-cfi-app
     runs-on: ubuntu-latest

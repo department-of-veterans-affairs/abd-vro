@@ -43,11 +43,6 @@ jobs:
     uses: ./.github/workflows/container-healthchecks.yml
     secrets: inherit
 
-  xample-domain:
-    needs: nondraft-pr
-    uses: ./.github/workflows/xample-integration-test.yml
-    secrets: inherit
-
   svc-bgs-api:
     needs: nondraft-pr
     uses: ./.github/workflows/svc-bgs-api-integration-test.yml
