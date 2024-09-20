@@ -1,7 +1,8 @@
 import json
 import os
 import uuid
-from unittest.mock import ANY, AsyncMock, call
+from typing import Any
+from unittest.mock import ANY, AsyncMock, PropertyMock, call
 
 import pytest
 from config import EP_MERGE_SPECIAL_ISSUE_CODE
@@ -21,6 +22,7 @@ from service.ep_merge_machine import (
     CANCELLATION_REASON_FORMAT,
     EP400_CFI_CONTENTIONS_METRIC,
     EP400_NEW_CONTENTIONS_METRIC,
+    EP_MERGE_BIP_EXTERNAL_KEY,
     ERROR_STATES_TO_LOG_METRICS,
     JOB_ABORTED_METRIC,
     JOB_DURATION_METRIC,
@@ -70,39 +72,53 @@ def load_response(file, response_type):
         raise e
 
 
-get_pending_claim_req = get_claim.Request(claim_id=PENDING_CLAIM_ID).model_dump(by_alias=True)
+def add_bip_fields_to_request(request: dict[str, Any]):
+    request['externalUserId'] = EP400_CLAIM_ID
+    request['externalKey'] = EP_MERGE_BIP_EXTERNAL_KEY
+    return request
+
+
+get_pending_claim_req = add_bip_fields_to_request(get_claim.Request(claim_id=PENDING_CLAIM_ID).model_dump(by_alias=True))
 get_pending_claim_200 = load_response(pending_claim_200, get_claim.Response)
-get_pending_contentions_req = get_contentions.Request(claim_id=PENDING_CLAIM_ID).model_dump(by_alias=True)
+get_pending_contentions_req = add_bip_fields_to_request(get_contentions.Request(claim_id=PENDING_CLAIM_ID).model_dump(by_alias=True))
 get_pending_contentions_200 = load_response(pending_contentions_increase_tendinitis_200, get_contentions.Response)
 get_pending_contentions_increase_tinnitus_200 = load_response(pending_contentions_increase_tinnitus_200, get_contentions.Response)
-get_ep400_claim_req = get_claim.Request(claim_id=EP400_CLAIM_ID).model_dump(by_alias=True)
+get_ep400_claim_req = add_bip_fields_to_request(get_claim.Request(claim_id=EP400_CLAIM_ID).model_dump(by_alias=True))
 get_ep400_claim_200 = load_response(ep400_claim_200, get_claim.Response)
-get_ep400_contentions_req = get_contentions.Request(claim_id=EP400_CLAIM_ID).model_dump(by_alias=True)
+get_ep400_contentions_req = add_bip_fields_to_request(get_contentions.Request(claim_id=EP400_CLAIM_ID).model_dump(by_alias=True))
 get_ep400_contentions_200 = load_response(ep400_contentions_increase_tinnitus_200, get_contentions.Response)
 # Add special issue code to contention from config
 get_ep400_contentions_200.contentions[0].special_issue_codes.append(EP_MERGE_SPECIAL_ISSUE_CODE)
 get_ep400_contentions_204 = load_response(response_204, get_contentions.Response)
 get_ep400_contentions_with_deactive_special_issues_200 = load_response(ep400_contentions_deactive_special_issue_code_200, get_contentions.Response)
 get_ep400_contentions_without_special_issues_200 = load_response(ep400_contentions_increase_tinnitus_200, get_contentions.Response)
-get_special_issue_types_req = get_special_issue_types.Request().model_dump(by_alias=True)
+get_special_issue_types_req = add_bip_fields_to_request(get_special_issue_types.Request().model_dump(by_alias=True))
 get_special_issue_types_200 = load_response(special_issue_types_200, get_special_issue_types.Response)
-update_temporary_station_of_jurisdiction_req = tsoj.Request(claim_id=EP400_CLAIM_ID, temp_station_of_jurisdiction='398').model_dump(by_alias=True)
-revert_temporary_station_of_jurisdiction_req = tsoj.Request(claim_id=EP400_CLAIM_ID, temp_station_of_jurisdiction='111').model_dump(by_alias=True)
+update_temporary_station_of_jurisdiction_req = add_bip_fields_to_request(
+    tsoj.Request(claim_id=EP400_CLAIM_ID, temp_station_of_jurisdiction='398').model_dump(by_alias=True)
+)
+revert_temporary_station_of_jurisdiction_req = add_bip_fields_to_request(
+    tsoj.Request(claim_id=EP400_CLAIM_ID, temp_station_of_jurisdiction='111').model_dump(by_alias=True)
+)
 update_temporary_station_of_jurisdiction_200 = load_response(response_200, tsoj.Response)
 revert_temporary_station_of_jurisdiction_200 = load_response(response_200, tsoj.Response)
-create_contentions_on_pending_claim_req = create_contentions.Request(
-    claim_id=PENDING_CLAIM_ID,
-    create_contentions=ContentionsUtil.new_contentions(get_pending_contentions_200.contentions, get_ep400_contentions_200.contentions),
-).model_dump(by_alias=True)
+create_contentions_on_pending_claim_req = add_bip_fields_to_request(
+    create_contentions.Request(
+        claim_id=PENDING_CLAIM_ID,
+        create_contentions=ContentionsUtil.new_contentions(get_pending_contentions_200.contentions, get_ep400_contentions_200.contentions),
+    ).model_dump(by_alias=True)
+)
 create_contentions_on_pending_claim_201 = load_response(response_201, create_contentions.Response)
-update_contentions_on_ep400_req = update_contentions.Request(
-    claim_id=EP400_CLAIM_ID, update_contentions=get_ep400_contentions_without_special_issues_200.contentions
-).model_dump(by_alias=True)
+update_contentions_on_ep400_req = add_bip_fields_to_request(
+    update_contentions.Request(claim_id=EP400_CLAIM_ID, update_contentions=get_ep400_contentions_without_special_issues_200.contentions).model_dump(
+        by_alias=True
+    )
+)
 update_contentions_on_ep400_200 = load_response(response_200, update_contentions.Response)
 
-cancel_ep400_claim_req = cancel_claim.Request(
-    claim_id=EP400_CLAIM_ID, lifecycle_status_reason_code=CANCEL_TRACKING_EP, close_reason_text=cancel_reason
-).model_dump(by_alias=True)
+cancel_ep400_claim_req = add_bip_fields_to_request(
+    cancel_claim.Request(claim_id=EP400_CLAIM_ID, lifecycle_status_reason_code=CANCEL_TRACKING_EP, close_reason_text=cancel_reason).model_dump(by_alias=True)
+)
 cancel_claim_200 = load_response(response_200, cancel_claim.Response)
 add_claim_note_req = add_claim_note.Request(vbms_claim_id=EP400_CLAIM_ID, claim_notes=[cancel_reason]).model_dump(by_alias=True)
 add_claim_note_200 = load_response(response_200, add_claim_note.Response)
@@ -113,9 +129,15 @@ def mock_hoppy_async_client(mocker):
     return mocker.patch('hoppy.async_hoppy_client.RetryableAsyncHoppyClient')
 
 
+def get_hoppy_client(mock_hoppy_async_client, name):
+    prop_mock = PropertyMock(return_value=name.value)
+    type(mock_hoppy_async_client).name = prop_mock
+    return mock_hoppy_async_client
+
+
 @pytest.fixture(autouse=True)
 def mock_hoppy_service_get_client(mocker, mock_hoppy_async_client):
-    mocker.patch('src.python_src.service.ep_merge_machine.HOPPY.get_client').return_value = mock_hoppy_async_client
+    mocker.patch('src.python_src.service.ep_merge_machine.HOPPY.get_client').side_effect = lambda name: get_hoppy_client(mock_hoppy_async_client, name)
 
 
 @pytest.fixture(autouse=True)
@@ -228,7 +250,9 @@ def assert_requests_and_metrics_for_success(
         call(machine.job.job_id, update_temporary_station_of_jurisdiction_req),
     ]
     if not merge_skipped:
-        create_pending_claim_req = create_contentions.Request(claim_id=PENDING_CLAIM_ID, create_contentions=merged_contentions).model_dump(by_alias=True)
+        create_pending_claim_req = add_bip_fields_to_request(
+            create_contentions.Request(claim_id=PENDING_CLAIM_ID, create_contentions=merged_contentions).model_dump(by_alias=True)
+        )
         requests.append(call(machine.job.job_id, create_pending_claim_req))
     requests.extend(
         [
