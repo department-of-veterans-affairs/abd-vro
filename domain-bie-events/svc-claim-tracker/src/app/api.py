@@ -86,6 +86,13 @@ def track_claim(request: Request, track_request: TrackClaimRequest, db: Session 
 
     tracked_claim = TrackedClaim.model_validate(track_request)
     tracked_claim_repo.add(db, tracked_claim)
+
+    logger.info(
+        f'event=requestAccepted '
+        f'claimId={sanitize(track_request.claim_id)} '
+        f'feature={sanitize(track_request.feature_name)} '
+        f'enabled={sanitize(track_request.feature_enabled)}'
+    )
     return tracked_claim
 
 
@@ -94,6 +101,12 @@ async def sqlalchemy_exception_handler(request: Request, err: SQLAlchemyError) -
     msg = str(err).replace('\n', ' ')
     logger.error(f"event=requestFailed method={request.method} url={request.url} resource={'Database'} error={msg}")
     return JSONResponse(status_code=500, content=jsonable_encoder({'method': request.method, 'url': str(request.url), 'errors': [CONNECT_TO_DATABASE_FAILURE]}))
+
+
+def sanitize(obj: Any) -> str:
+    if isinstance(obj, list):
+        return str([sanitize(item) for item in obj])
+    return str(obj).replace('\r\n', '').replace('\n', '')
 
 
 if __name__ == '__main__':

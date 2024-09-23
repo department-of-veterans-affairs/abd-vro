@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS "tracked_claims" (
     id uuid NOT NULL,
 	claim_id INT NOT NULL,
-	created_at TIMESTAMP WITHOUT TIME ZONE,
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
 	established_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
 	feature_name VARCHAR NOT NULL,
 	feature_enabled BOOLEAN NOT NULL,
