@@ -105,7 +105,7 @@ python3 src/python_src/pull_api_documentation.py
 
 Follow steps for
 [Platform Base](https://github.com/department-of-veterans-affairs/abd-vro/wiki/Docker-Compose#platform-base)
-then run the svc-claim-tracker with the following command from the `abd_vro directory`:
+then run the svc-claim-tracker with the following command from the `abd_vro` directory:
 
 ```
 COMPOSE_PROFILES="all" ./gradlew :domain-bie-events:dockerComposeUp

@@ -29,7 +29,7 @@ app = FastAPI(
     description='This API accepts requests to track a claim lifecycle by BIE Claim Events.',
     contact={},
     version='v0.1',
-    license={'name': 'CCO 1.0', 'url': 'https://github.com/department-of-veterans-affairs/abd-vro/blob/master/LICENSE.md'},
+    license={'name': 'CCO 1.0', 'url': 'https://github.com/department-of-veterans-affairs/abd-vro/blob/main/LICENSE.md'},
     lifespan=lifespan,
 )
 
