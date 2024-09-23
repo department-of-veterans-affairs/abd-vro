@@ -11,9 +11,10 @@ import gov.va.vro.services.bie.utils.BieRecordTransformer;
 import gov.va.vro.services.bie.utils.ContentionEventPayloadTransformer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.amqp.AmqpException;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.dao.DataAccessException;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -30,8 +31,6 @@ public class ContentionEventsListener {
   private final ContentionEventPayloadTransformer contentionEventPayloadTransformer;
   private static final String METRICS_PREFIX = "vro_bie_kafka";
 
-  final String[] metricTagsSendToQueue = new String[] {"type:sendRecordToMq", "source:svcBieKafka"};
-
   @KafkaListener(topics = "#{bieKafkaProperties.topicNames()}")
   public void consume(ConsumerRecord<String, Object> record) {
 
@@ -39,24 +38,55 @@ public class ContentionEventsListener {
     //  mocks are implemented for testing purposes.
     long transactionStartTime = System.nanoTime();
 
-    try {
-      String topicName = record.topic();
-      String[] metricTagsWithTopicName =
-          ArrayUtils.addAll(metricTagsSendToQueue, new String[] {"topic:" + topicName});
+    final String topicName = record.topic();
+    final String[] metricTags = {
+      "env:" + System.getenv("ENV"),
+      "team:va-abd-rrd",
+      "itportfolio:benefits-delivery",
+      "service:svcBieKafka",
+      "topic:" + topicName
+    };
 
-      ContentionEventPayload payload = bieRecordTransformer.toContentionEventPayload(record);
+    boolean saved = false;
+    boolean sent = false;
+    ContentionEventPayload payload = null;
+    try {
+      String exchange = ContentionEvent.rabbitMqExchangeName(topicName);
+      payload = bieRecordTransformer.toContentionEventPayload(record);
       ContentionEventEntity toSave =
           contentionEventPayloadTransformer.toContentionEventEntity(payload);
 
-      contentionEventsRepo.save(toSave);
+      try {
+        contentionEventsRepo.save(toSave);
+        saved = true;
+      } catch (DataAccessException e) {
+        log.error("Database error while saving message: {}", e.getMessage());
+        metricLogger.submitCount(
+            METRICS_PREFIX, MetricLoggerService.METRIC.RESPONSE_ERROR, metricTags);
+        return;
+      }
 
-      amqpMessageSender.send(ContentionEvent.rabbitMqExchangeName(topicName), topicName, payload);
+      try {
+        amqpMessageSender.send(exchange, topicName, payload);
+        sent = true;
+      } catch (AmqpException e) {
+        log.error("AMQP error while sending message: {}", e.getMessage());
+        metricLogger.submitCount(
+            METRICS_PREFIX, MetricLoggerService.METRIC.RESPONSE_ERROR, metricTags);
+      }
 
-      submitMetrics(metricTagsWithTopicName, transactionStartTime);
+      submitMetrics(metricTags, transactionStartTime);
     } catch (Exception e) {
-      log.error("Exception occurred while processing message: " + e.getMessage());
+      log.error("General error while processing message: {}", e.getMessage());
       metricLogger.submitCount(
-          METRICS_PREFIX, MetricLoggerService.METRIC.RESPONSE_ERROR, metricTagsSendToQueue);
+          METRICS_PREFIX, MetricLoggerService.METRIC.RESPONSE_ERROR, metricTags);
+    } finally {
+      log.info(
+          "event=receivedMessage topic={} saved={} sent={} payload={}",
+          topicName,
+          saved,
+          sent,
+          payload);
     }
   }
 
