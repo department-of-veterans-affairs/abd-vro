@@ -38,20 +38,20 @@ include ':shared:persistence-model'
 include ':shared:lib-bie-kafka'
 include ':shared:lib-metrics'
 include ':shared:lib-rabbitmq-connector'
+include ':shared:lib-metrics'
+include ':shared:lib-hoppy'
 include ':svc-bgs-api'
 include ':svc-bip-api'
 include ':svc-bie-kafka'
 
 include ':domain-xample:xample-api-controller'
 include ':domain-xample:xample-shared'
-include ':domain-xample:xample-workflows'
 include ':domain-xample:svc-xample-j'
 include ':domain-xample:svc-hoppy-usage'
 
 include ':domain-cc:cc-app'
 include ':domain-ee:ee-max-cfi-app'
 include ':domain-ee:ee-ep-merge-app'
-
 include ':domain-bie-events:svc-claim-tracker'
 
 include 'rabbitmq'

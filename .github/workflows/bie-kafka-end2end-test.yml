@@ -89,16 +89,6 @@ jobs:
             exit 5
           fi
 
-      - name: 'Wait for xample-workflow to be ready'
-        uses: nev7n/wait_for_response@v1
-        with:
-          url: 'http://localhost:10021/actuator/health/readiness'
-          responseCode: 200
-          # Retry every 2 seconds
-          interval: 2000
-          # Quit after 60 seconds
-          timeout: 60000
-
       - name: 'Wait for svc-bie-kafka to be ready'
         uses: nev7n/wait_for_response@v1
         with:

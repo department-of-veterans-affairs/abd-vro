@@ -32,6 +32,8 @@ from statemachine import State, StateMachine
 from util.contentions_util import ContentionsUtil
 from util.metric_logger import CountMetric, DistributionMetric, distribution, increment
 
+EP_MERGE_BIP_EXTERNAL_KEY = 'vetsApi526ClaimID-PostSubmitEpMerge'
+
 ERROR_STATES_TO_LOG_METRICS = [
     JobState.CANCEL_EP400_CLAIM,
     JobState.CANCEL_CLAIM_FAILED_REVERT_TEMP_STATION_OF_JURISDICTION,
@@ -495,6 +497,10 @@ class EpMergeMachine(StateMachine):  # type: ignore[misc]
     ) -> GeneralResponse:
         attempts = 0
         while True:
+            if hoppy_client.name is not ClientName.BGS_ADD_CLAIM_NOTE.value:
+                request_body['externalUserId'] = self.job.ep400_claim_id
+                request_body['externalKey'] = EP_MERGE_BIP_EXTERNAL_KEY
+
             response = await hoppy_client.make_request(request_id, request_body)
             model = response_type.model_validate(response)
             if model.status_code not in expected_statuses:

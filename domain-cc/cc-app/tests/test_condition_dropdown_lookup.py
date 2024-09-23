@@ -133,3 +133,41 @@ def test_whitespace_removal(client: TestClient):
     assert response.status_code == 200
     assert response.json()["classification_code"] == 1230
     assert response.json()["classification_name"] == "Cancer - Respiratory"
+
+
+def test_v5_v6_lookup_values(client: TestClient):
+    """
+    This tests new classification mappings in v5 of the condition dropdown list
+    and v6 of the diagnostic code lookup tables.
+    """
+    json_post_dict = {
+        "claim_id": 100,
+        "form526_submission_id": 500,
+        "contentions": [
+            {
+                "contention_text": "PTSD (post-traumatic stress disorder)",
+                "contention_type": "NEW",
+            },
+            {
+                "contention_text": "",
+                "contention_type": "INCREASE",
+                "diagnostic_code": 5012,
+            },
+        ],
+    }
+    response = client.post("/va-gov-claim-classifier", json=json_post_dict)
+    expected_classifications = [
+        {"classification_code": 8989, "classification_name": "Mental Disorders"},
+        {
+            "classification_code": 8940,
+            "classification_name": "Cancer - Musculoskeletal - Other",
+        },
+    ]
+    returned_classifications = [
+        {
+            "classification_code": c["classification_code"],
+            "classification_name": c["classification_name"],
+        }
+        for c in response.json()["contentions"]
+    ]
+    assert expected_classifications == returned_classifications

@@ -3,13 +3,13 @@ import os
 
 from .table_versions import (
     CONDITION_DROPDOWN_TABLE_VERSION,
-    DIAGNOSITC_CODE_TABLE_VERSION,
+    DIAGNOSTIC_CODE_TABLE_VERSION,
 )
 
 # https://docs.google.com/spreadsheets/d/18Mwnn9-cvJIRRupQyQ2zLYOBm3bd0pr4kKlsZtFiyc0/edit#gid=1711756762
 dc_table_name = (
-    f"Contention Classification Diagnostic Codes Lookup table master"
-    f" sheet - DC Lookup {DIAGNOSITC_CODE_TABLE_VERSION}.csv"
+    f"[Release notes] Diagnostic Code to Classification mapping release notes - "
+    f"DC Lookup {DIAGNOSTIC_CODE_TABLE_VERSION}.csv"
 )
 # https://docs.google.com/spreadsheets/d/1A5JuYwn39mHE5Mk1HazN-mxCL2TENPeyUPHHhH10g_I/edit#gid=819850041
 previous_condition_dropdown_table_name = (
@@ -46,11 +46,15 @@ class DiagnosticCodeLookupTable:
                 table_key = row[str(self.input_key)].strip().lower()
                 self.classification_code_mappings[table_key] = {
                     "classification_code": int(row[self.output_key]),
-                    "classification_name": row["CLASSIFICATION_TEXT"],  # note underscore different from contention LUT
+                    "classification_name": row[
+                        "CLASSIFICATION_TEXT"
+                    ],  # note underscore different from contention LUT
                 }
 
     def get(self, input_key: int, default_value=LUT_DEFAULT_VALUE):
-        classification = self.classification_code_mappings.get(str(input_key), default_value)
+        classification = self.classification_code_mappings.get(
+            str(input_key), default_value
+        )
         return classification
 
     def __len__(self):
@@ -101,6 +105,7 @@ class ContentionTextLookupTable:
     For mapping autosuggestion combobox values of the add disabilities page of the 526-ez form
       as well as free text entries to a classification (name and code)
     """
+
     CSV_FILEPATH = os.path.join(
         os.path.dirname(__file__),
         "data",
@@ -112,7 +117,6 @@ class ContentionTextLookupTable:
     classification_code_mappings = {}
 
     def __init__(self):
-
         with open(self.CSV_FILEPATH, "r") as fh:
             csv_reader = csv.DictReader(fh)
             for row in csv_reader:

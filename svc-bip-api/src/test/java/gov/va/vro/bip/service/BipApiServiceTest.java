@@ -17,12 +17,15 @@ import gov.va.vro.bip.model.BipMessage;
 import gov.va.vro.bip.model.BipPayloadResponse;
 import gov.va.vro.bip.model.cancel.CancelClaimRequest;
 import gov.va.vro.bip.model.cancel.CancelClaimResponse;
+import gov.va.vro.bip.model.claim.GetClaimRequest;
 import gov.va.vro.bip.model.claim.GetClaimResponse;
 import gov.va.vro.bip.model.contentions.Contention;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.CreateClaimContentionsResponse;
 import gov.va.vro.bip.model.contentions.ExistingContention;
+import gov.va.vro.bip.model.contentions.GetClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.GetClaimContentionsResponse;
+import gov.va.vro.bip.model.contentions.GetSpecialIssueTypesRequest;
 import gov.va.vro.bip.model.contentions.GetSpecialIssueTypesResponse;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsRequest;
 import gov.va.vro.bip.model.contentions.UpdateClaimContentionsResponse;
@@ -191,7 +194,8 @@ public class BipApiServiceTest {
       mock2xxResponse(
           HttpMethod.GET, CLAIM_DETAILS, HttpStatus.OK, GetClaimResponse.class, CLAIM_RESPONSE_200);
 
-      GetClaimResponse result = service.getClaimDetails(GOOD_CLAIM_ID);
+      GetClaimRequest request = GetClaimRequest.builder().claimId(GOOD_CLAIM_ID).build();
+      GetClaimResponse result = service.getClaimDetails(request);
       assertResponseIsSuccess(result, HttpStatus.OK);
       verifyMetricsAreLogged();
     }
@@ -205,8 +209,9 @@ public class BipApiServiceTest {
           HttpMethod.GET,
           GetClaimResponse.class);
 
+      GetClaimRequest request = GetClaimRequest.builder().claimId(test.claimId).build();
       Exception ex =
-          Assertions.assertThrows(test.ex.getClass(), () -> service.getClaimDetails(test.claimId));
+          Assertions.assertThrows(test.ex.getClass(), () -> service.getClaimDetails(request));
       assertResponseExceptionWithStatus(ex, test.status);
       verifyMetricIsLoggedForExceptions(test);
     }
@@ -223,7 +228,9 @@ public class BipApiServiceTest {
           GetClaimContentionsResponse.class,
           CONTENTION_RESPONSE_200);
 
-      GetClaimContentionsResponse result = service.getClaimContentions(GOOD_CLAIM_ID);
+      GetClaimContentionsRequest request =
+          GetClaimContentionsRequest.builder().claimId(GOOD_CLAIM_ID).build();
+      GetClaimContentionsResponse result = service.getClaimContentions(request);
       assertResponseIsSuccess(result, HttpStatus.OK);
       assertEquals(1, result.getContentions().size());
       verifyMetricsAreLogged();
@@ -238,7 +245,9 @@ public class BipApiServiceTest {
           GetClaimContentionsResponse.class,
           null);
 
-      GetClaimContentionsResponse result = service.getClaimContentions(GOOD_CLAIM_ID);
+      GetClaimContentionsRequest request =
+          GetClaimContentionsRequest.builder().claimId(GOOD_CLAIM_ID).build();
+      GetClaimContentionsResponse result = service.getClaimContentions(request);
       assertResponseIsSuccess(result, HttpStatus.NO_CONTENT);
       assertNull(result.getContentions());
       verifyMetricsAreLogged();
@@ -253,9 +262,10 @@ public class BipApiServiceTest {
           HttpMethod.GET,
           GetClaimContentionsResponse.class);
 
+      GetClaimContentionsRequest request =
+          GetClaimContentionsRequest.builder().claimId(test.claimId).build();
       Exception ex =
-          Assertions.assertThrows(
-              test.ex.getClass(), () -> service.getClaimContentions(test.claimId));
+          Assertions.assertThrows(test.ex.getClass(), () -> service.getClaimContentions(request));
       assertResponseExceptionWithStatus(ex, test.status);
       verifyMetricIsLoggedForExceptions(test);
     }
@@ -510,7 +520,8 @@ public class BipApiServiceTest {
           GetSpecialIssueTypesResponse.class,
           SPECIAL_ISSUE_TYPES_RESPONSE_200);
 
-      GetSpecialIssueTypesResponse result = service.getSpecialIssueTypes();
+      GetSpecialIssueTypesRequest request = GetSpecialIssueTypesRequest.builder().build();
+      GetSpecialIssueTypesResponse result = service.getSpecialIssueTypes(request);
       assertResponseIsSuccess(result, HttpStatus.OK);
       verifyMetricsAreLogged();
     }
@@ -526,8 +537,9 @@ public class BipApiServiceTest {
           HttpMethod.GET,
           GetSpecialIssueTypesResponse.class);
 
+      GetSpecialIssueTypesRequest request = GetSpecialIssueTypesRequest.builder().build();
       Exception ex =
-          Assertions.assertThrows(test.ex.getClass(), () -> service.getSpecialIssueTypes());
+          Assertions.assertThrows(test.ex.getClass(), () -> service.getSpecialIssueTypes(request));
       assertResponseExceptionWithStatus(ex, test.status);
       verifyMetricIsLoggedForExceptions(test);
     }

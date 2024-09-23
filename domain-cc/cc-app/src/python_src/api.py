@@ -231,10 +231,14 @@ def get_classification(claim: Claim) -> Optional[PredictedClassification]:
     )
     classification_code = None
     if claim.claim_type == "claim_for_increase":
-        classification_code = dc_lookup_table.get(claim.diagnostic_code)["classification_code"]
+        classification_code = dc_lookup_table.get(claim.diagnostic_code)[
+            "classification_code"
+        ]
 
     if claim.contention_text and not classification_code:
-        classification_code = dropdown_lookup_table.get(claim.contention_text)["classification_code"]
+        classification_code = dropdown_lookup_table.get(claim.contention_text)[
+            "classification_code"
+        ]
 
     if claim.claim_type == "new":
         log_lookup_table_match(classification_code, claim.contention_text)

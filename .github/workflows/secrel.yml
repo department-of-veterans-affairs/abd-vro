@@ -41,7 +41,6 @@ on:
         options:
           - all
           - cc-app
-          - xample-workflows
           - svc-bgs-api
           - svc-bie-kafka
           - svc-bip-api

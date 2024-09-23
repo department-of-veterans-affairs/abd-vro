@@ -4,19 +4,21 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.va.vro.bip.model.BipPayloadRequest;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
+import lombok.extern.jackson.Jacksonized;
 
 /**
  * Cancel claim model specification.
  *
  * @author nelsestu @Date 10/24/23
  */
-@Builder
 @Getter
+@Jacksonized
+@SuperBuilder(toBuilder = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CancelClaimRequest implements BipPayloadRequest {
+public class CancelClaimRequest extends BipPayloadRequest {
 
   @JsonProperty("claimId")
   public long claimId;
