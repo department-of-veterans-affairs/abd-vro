@@ -25,7 +25,7 @@ from datadog_api_client.v2.model.metric_series import MetricSeries
 
 APP_PREFIX = 'ep_merge'
 
-ENV_TAG = f'environment:{ENV}'
+ENV_TAG = f'env:{ENV}'
 SERVICE_TAG = 'service:vro-ee-ep-merge-app'
 TEAM_TAG = 'team:benefits'
 IT_PORTFOLIO_TAG = 'itportfolio:benefits-delivery'
