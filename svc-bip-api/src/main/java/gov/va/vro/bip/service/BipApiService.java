@@ -1,6 +1,7 @@
 package gov.va.vro.bip.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.vro.bip.model.BipMessage;
 import gov.va.vro.bip.model.BipPayloadResponse;
 import gov.va.vro.bip.model.cancel.CancelClaimRequest;
 import gov.va.vro.bip.model.cancel.CancelClaimResponse;
@@ -38,8 +39,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.crypto.spec.SecretKeySpec;
@@ -198,7 +200,8 @@ public class BipApiService implements IBipApiService {
     try {
 
       HttpEntity<Object> httpEntity = new HttpEntity<>(requestBody, headers);
-      log.info("event=requestSent url={} method={}", url, method);
+      log.info(
+          "event=requestSent url={} method={} auth={}", url, method, headers.get("Authorization"));
       metricLogger.submitCount(
           METRICS_PREFIX,
           IMetricLoggerService.METRIC.REQUEST_START,
@@ -249,12 +252,25 @@ public class BipApiService implements IBipApiService {
               .statusMessage(HttpStatus.valueOf(bipResponse.getStatusCode().value()).name())
               .build();
     } catch (HttpStatusCodeException e) {
+
+      String errors;
+      try {
+        T response = mapper.readValue(e.getResponseBodyAsString(), expectedResponse);
+        List<BipMessage> messages =
+            new ArrayList<>(
+                response.getMessages() != null ? response.getMessages() : new ArrayList<>());
+        errors = messages.toString();
+      } catch (Exception ex) {
+        errors = ex.getMessage();
+      }
+
       log.info(
-          "event=responseReceived url={} method={} status={} statusMessage={}",
+          "event=responseReceived url={} method={} status={} statusMessage={} errors={}",
           url,
           method,
           e.getStatusCode(),
-          ((HttpStatus) e.getStatusCode()).name());
+          ((HttpStatus) e.getStatusCode()).name(),
+          errors);
       throw e;
     } catch (Exception e) {
       log.error(
@@ -308,25 +324,16 @@ public class BipApiService implements IBipApiService {
     bipHttpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
     Claims claims = bipApiProps.toCommonJwtClaims(externalUserId, externalKey);
-    String issuer = bipApiProps.getClaimIssuer();
     String secret = bipApiProps.getClaimSecret();
 
     // Define the signing key
     byte[] signSecretBytes = secret.getBytes(StandardCharsets.UTF_8);
     Key signingKey = new SecretKeySpec(signSecretBytes, "HmacSHA256");
 
-    // Set the expiration as an example (e.g., 1 hour from now)
-    long currentTimeMillis = System.currentTimeMillis();
-    Date expiryDate = new Date(currentTimeMillis + 3600000);
-
     // Build the JWT
     String jwt =
         Jwts.builder()
             .claims(claims)
-            .issuer(issuer)
-            .subject("Claim")
-            .issuedAt(new Date(currentTimeMillis))
-            .expiration(expiryDate)
             .signWith(signingKey)
             .header()
             .add("alg", "HS256")
