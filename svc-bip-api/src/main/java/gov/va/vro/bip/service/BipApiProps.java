@@ -73,7 +73,7 @@ public class BipApiProps {
             .add("userID", claimClientId);
 
     if (Objects.nonNull(externalUserId)) {
-      claimsBuilder.add("externalUserID", externalUserId);
+      claimsBuilder.add("externalUserId", externalUserId);
     }
     if (Objects.nonNull(externalKey)) {
       claimsBuilder.add("externalKey", externalKey);
