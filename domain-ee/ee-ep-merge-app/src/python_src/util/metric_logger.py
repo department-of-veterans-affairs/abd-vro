@@ -25,9 +25,14 @@ from datadog_api_client.v2.model.metric_series import MetricSeries
 
 APP_PREFIX = 'ep_merge'
 
-ENV_TAG = f'environment:{ENV}'
+ENV_TAG = f'env:{ENV}'
 SERVICE_TAG = 'service:vro-ee-ep-merge-app'
-STANDARD_TAGS = [ENV_TAG, SERVICE_TAG]
+TEAM_TAG = 'team:benefits'
+IT_PORTFOLIO_TAG = 'itportfolio:benefits-delivery'
+DEPENDENCY_TAGS = ['dependency:svc-bip-api', 'dependency:svc-bgs-api']
+
+STANDARD_TAGS = [ENV_TAG, SERVICE_TAG, TEAM_TAG, IT_PORTFOLIO_TAG]
+STANDARD_TAGS.extend(DEPENDENCY_TAGS)
 
 
 configuration = Configuration(enable_retry=True)
