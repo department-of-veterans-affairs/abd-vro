@@ -2,14 +2,9 @@ require "bgs_client"
 
 describe BgsClient do
   let(:client) { BgsClient.new }
-  let(:metrics) { double("metrics") }
   let(:notes_service) { double("notes_service") }
 
   before do
-    allow(MetricLogger).to receive(:new).and_return(metrics)
-    allow(metrics).to receive(:submit_count_with_default_value).and_return(202)
-    allow(metrics).to receive(:submit_request_duration).and_return(202)
-
     allow(BGS::Services).to receive(:new).and_return(double("bgs_services", notes: notes_service))
     allow(client).to receive(:vro_participant_id).and_return("12345")
   end

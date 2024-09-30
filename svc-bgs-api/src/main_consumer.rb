@@ -38,15 +38,22 @@ def initialize_subscriber(bgs_client, metric_logger)
   # Note this information requires VA-network access
   subscriber.setup_queue(exchange_name: REQUESTS_EXCHANGE, exchange_properties: EXCHANGE_PROPERTIES, queue_name: ADD_NOTE_QUEUE, queue_properties: ADD_NOTE_QUEUE_PROPERTIES)
   subscriber.subscribe_to(REQUESTS_EXCHANGE, ADD_NOTE_QUEUE) do |json|
-    $logger.info "Subscriber received request #{json}"
+    $logger.info "event=requestReceived json=#{json}"
+
+    start_time = Time.now
+    custom_tags = [json.has_key?('claimNotes') ? 'bgsNoteType:claim' : 'bgsNoteType:veteran']
     begin
       bgs_client.handle_request(json)
+
+      metric_logger.submit_all_metrics(start_time, Time.now, custom_tags)
+
+      {
+        statusCode: 200,
+        statusMessage: "OK"
+      }
     rescue => e
-      begin
-        metric_logger.submit_count_with_default_value(METRIC[:RESPONSE_ERROR])
-      rescue => metric_e
-        $logger.error "Exception submitting metric RESPONSE_ERROR #{metric_e.message}"
-      end
+      time = Time.now
+      metric_logger.submit_error(custom_tags, time)
 
       status_code = e.is_a?(ArgumentError) ? 400 : 500
       status_str = e.is_a?(ArgumentError) ? "BAD_REQUEST" : "INTERNAL_SERVER_ERROR"
@@ -59,15 +66,10 @@ def initialize_subscriber(bgs_client, metric_logger)
             severity: "ERROR",
             status: status_code,
             text: "#{e.message}",
-            timestamp: Time.now.iso8601,
+            timestamp: time.iso8601,
             httpStatus: status_str
           }
         ]
-      }
-    else
-      {
-        statusCode: 200,
-        statusMessage: "OK"
       }
     end
   end
