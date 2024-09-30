@@ -7,4 +7,4 @@ until pg_isready -d $POSTGRES_DB -h $POSTGRES_URL -p 5432 -U $POSTGRES_FLYWAY_US
 done
 
 # Perform flyway migrations
-migrate -X
+repair && migrate -X
