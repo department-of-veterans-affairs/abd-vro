@@ -42,6 +42,12 @@ def initialize_subscriber(bgs_client, metric_logger)
     begin
       bgs_client.handle_request(json)
     rescue => e
+      begin
+        metric_logger.submit_count_with_default_value(METRIC[:RESPONSE_ERROR])
+      rescue => metric_e
+        $logger.error "Exception submitting metric RESPONSE_ERROR #{metric_e.message}"
+      end
+
       status_code = e.is_a?(ArgumentError) ? 400 : 500
       status_str = e.is_a?(ArgumentError) ? "BAD_REQUEST" : "INTERNAL_SERVER_ERROR"
       {
@@ -58,11 +64,6 @@ def initialize_subscriber(bgs_client, metric_logger)
           }
         ]
       }
-      begin
-        metric_logger.submit_count_with_default_value(METRIC[:RESPONSE_ERROR], nil)
-      rescue => metric_e
-        $logger.error "Exception submitting metric RESPONSE_ERROR #{e.message}"
-      end
     else
       {
         statusCode: 200,

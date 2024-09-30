@@ -80,9 +80,11 @@ class BgsClient
     start_time = Time.now
     metric_custom_tags = ['bgsNoteType:claim']
     @metrics.submit_count_with_default_value(METRIC[:REQUEST_START], metric_custom_tags)
-    bgs.notes.create_notes(note_hashes)
+    response = bgs.notes.create_notes(note_hashes)
     @metrics.submit_request_duration(start_time, Time.now, metric_custom_tags)
     @metrics.submit_count_with_default_value(METRIC[:RESPONSE_COMPLETE], metric_custom_tags)
+
+    response
   end
 
   def create_veteran_note(note:, claim_id: nil, participant_id: nil)
@@ -91,8 +93,10 @@ class BgsClient
     start_time = Time.now
     metric_custom_tags = ['bgsNoteType:veteran']
     @metrics.submit_count_with_default_value(METRIC[:REQUEST_START], metric_custom_tags)
-    bgs.notes.create_note(participant_id:, txt: note, user_id: vro_participant_id)
+    response = bgs.notes.create_note(participant_id:, txt: note, user_id: vro_participant_id)
     @metrics.submit_request_duration(start_time, Time.now, metric_custom_tags)
     @metrics.submit_count_with_default_value(METRIC[:RESPONSE_COMPLETE], metric_custom_tags)
+
+    response
   end
 end
