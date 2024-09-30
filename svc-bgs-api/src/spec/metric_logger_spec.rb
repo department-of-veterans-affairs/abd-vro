@@ -2,6 +2,16 @@ require 'metric_logger'
 
 describe MetricLogger do
   let(:client) { MetricLogger.new }
+  let(:api_instance) { double("api_instance") }
+  let(:metrics) { double("metrics") }
+  let(:distributions) { double("distributions") }
+
+  before do
+    allow(DatadogAPIClient::V1::AuthenticationAPI).to receive(:new).and_return(api_instance)
+    allow(api_instance).to receive(:validate).and_return(true)
+    allow(DatadogAPIClient::V1::MetricsAPI).to receive(:new).and_return(metrics)
+    allow(DatadogAPIClient::V2::MetricsAPI).to receive(:new).and_return(distributions)
+  end
 
   it 'generates standard tags when no custom tags are specified' do
     tags = client.generate_tags
