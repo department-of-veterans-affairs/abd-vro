@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
@@ -63,24 +62,24 @@ public class BipApiProps {
    * @return Claims
    */
   public Claims toCommonJwtClaims(final String externalUserId, final String externalKey) {
-    Calendar cal = Calendar.getInstance();
-    cal.add(Calendar.MINUTE, 30);
-    Date expired = cal.getTime();
+    long currentTimeMillis = System.currentTimeMillis();
+
     ClaimsBuilder claimsBuilder =
         Jwts.claims()
             .add("applicationID", applicationId)
             .add("stationID", stationId)
-            .add("userID", claimClientId);
+            .add("userID", claimClientId)
+            .issuer(claimIssuer)
+            .subject("Claim")
+            .issuedAt(new Date(currentTimeMillis))
+            .expiration(new Date(currentTimeMillis + 3600000));
 
     if (Objects.nonNull(externalUserId)) {
-      claimsBuilder.add("externalUserID", externalUserId);
+      claimsBuilder.add("externalUserId", externalUserId);
     }
     if (Objects.nonNull(externalKey)) {
       claimsBuilder.add("externalKey", externalKey);
     }
-
-    Date now = cal.getTime();
-    claimsBuilder.add("iat", now.getTime()).add("expires", expired.getTime());
 
     return claimsBuilder.build();
   }

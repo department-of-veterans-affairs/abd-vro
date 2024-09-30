@@ -30,7 +30,6 @@ class MetricLogger
     begin
       api_instance = DatadogAPIClient::V1::AuthenticationAPI.new
       api_instance.validate
-      $logger.info('Succeeded Datadog authentication check')
     rescue Exception => e
       $logger.warn("Failed Datadog authentication check: #{e.message}")
     end
@@ -81,9 +80,11 @@ class MetricLogger
     rescue Exception => e
       $logger.warn("Error logging metric: #{metric} (count). Error: #{e.class}, Message: #{e.message}")
     end
+
+    nil
   end
 
-  def submit_count_with_default_value(metric, custom_tags)
+  def submit_count_with_default_value(metric, custom_tags = nil)
     submit_count(metric, 1, custom_tags)
   end
 
@@ -100,15 +101,15 @@ class MetricLogger
       opts = {
         content_encoding: DatadogAPIClient::V1::DistributionPointsContentEncoding::DEFLATE
       }
-      payload_result = @distribution_metrics_api.submit_distribution_points(payload, opts)
-      $logger.info(
-        "submitted #{payload.series.first.metric}  #{payload_result.status}"
-      )
+      @distribution_metrics_api.submit_distribution_points(payload, opts)
+      $logger.info("submitted #{payload.series.first.metric}")
     rescue Exception => e
       $logger.warn(
         "exception submitting request duration  #{e.message}"
       )
     end
+
+    nil
   end
 
   def generate_distribution_metric(metric, value, custom_tags = nil)

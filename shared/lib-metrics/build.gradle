@@ -13,7 +13,7 @@ ext {
 dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-amqp'
   implementation "jakarta.validation:jakarta.validation-api"
-  implementation 'net.datafaker:datafaker:2.3.1'
+  implementation 'net.datafaker:datafaker:2.4.0'
   implementation "com.google.guava:guava"
   implementation 'org.apache.commons:commons-lang3:3.17.0'
 
