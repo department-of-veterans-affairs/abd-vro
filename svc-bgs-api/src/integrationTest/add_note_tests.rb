@@ -11,7 +11,6 @@ CORRELATION_ID = "1234"
 
 
 def test_successful_add_note_via_veteran(ch)
-    puts "test_successful_add_note_via_veteran"
     x = ch.direct(REQUESTS_EXCHANGE, EXCHANGE_PROPERTIES)
     r = ch.queue(ADD_NOTE_REPLY_QUEUE, { durable: true, auto_delete: true }).bind(x, :routing_key => ADD_NOTE_REPLY_QUEUE)
 
@@ -32,12 +31,11 @@ def test_successful_add_note_via_veteran(ch)
     raise "Unexpected correlation_id: Expected #{CORRELATION_ID}. Found #{response_correlation_id} " if response_correlation_id != CORRELATION_ID
 
     payload = JSON.parse(payload)
-    raise "Unexpected response: Expected statusCode 200. Found #{payload['statusCode']}" if payload['statusCode'] != 200
+    raise "Unexpected response: Expected statusCode 200. Response #{payload}" if payload['statusCode'] != 200
 
 end
 
 def test_successful_add_note_via_claim(ch)
-    puts "test_successful_add_note_via_claim"
     x = ch.direct(REQUESTS_EXCHANGE, EXCHANGE_PROPERTIES)
     r = ch.queue(ADD_NOTE_REPLY_QUEUE, { durable: true, auto_delete: true }).bind(x, :routing_key => ADD_NOTE_REPLY_QUEUE)
 
@@ -57,5 +55,5 @@ def test_successful_add_note_via_claim(ch)
     raise "Unexpected correlation_id: Expected #{CORRELATION_ID}. Found #{response_correlation_id} " if response_correlation_id != CORRELATION_ID
 
     payload = JSON.parse(payload)
-    raise "Unexpected response: Expected statusCode 200. Found #{payload['statusCode']}" if payload['statusCode'] != 200
+    raise "Unexpected response: Expected statusCode 200. Response #{payload}" if payload['statusCode'] != 200
 end
