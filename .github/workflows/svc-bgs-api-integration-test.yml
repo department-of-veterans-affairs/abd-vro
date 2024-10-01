@@ -41,6 +41,8 @@ jobs:
           export -p | sed 's/declare -x //'
 
           ./gradlew :dockerComposeUp
+          ./gradlew -p mocks docker
+          ./gradlew -p mocks :dockerComposeUp
 
       - name: 'Wait for containers to start'
         run: sleep 60s
@@ -68,6 +70,20 @@ jobs:
         run: |
           ./gradlew :svc-bgs-api:bundleInstall
           ./gradlew :svc-bgs-api:integrationTest
+
+      - name: "Collect docker logs"
+        if: always()
+        uses: jwalton/gh-docker-logs@v2
+        with:
+          dest: './svc-bgs-api-container-logs'
+
+      - name: "Upload artifact"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: svc-bgs-api-container-logs
+          path: ./svc-bgs-api-container-logs/**
+          retention-days: 14
 
       - name: 'Clean shutdown of all containers'
         if: always()
