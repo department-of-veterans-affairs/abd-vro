@@ -29,8 +29,11 @@ def test_successful_add_note_via_veteran(ch)
 
     # Validate response from the add-note message processing
     response_correlation_id = properties.correlation_id
-
     raise "Unexpected correlation_id: Expected #{CORRELATION_ID}. Found #{response_correlation_id} " if response_correlation_id != CORRELATION_ID
+
+    payload = JSON.parse(payload)
+    raise "Unexpected response: Expected statusCode 200. Found #{payload['statusCode']}" if payload['statusCode'] != 200
+
 end
 
 def test_successful_add_note_via_claim(ch)
@@ -39,7 +42,7 @@ def test_successful_add_note_via_claim(ch)
     r = ch.queue(ADD_NOTE_REPLY_QUEUE, { durable: true, auto_delete: true }).bind(x, :routing_key => ADD_NOTE_REPLY_QUEUE)
 
     q = ch.queue(ADD_NOTE_QUEUE, ADD_NOTE_QUEUE_PROPERTIES)
-    q.publish("{\"vbms_claim_id\":1234,\"claim_notes\":[\"testNote\"]}",
+    q.publish("{\"vbmsClaimId\":1234,\"claimNotes\":[\"testNote\"]}",
               :reply_to => ADD_NOTE_REPLY_QUEUE,
               :delivery_mode => 1,
               :correlation_id => CORRELATION_ID,
@@ -51,6 +54,8 @@ def test_successful_add_note_via_claim(ch)
 
     # Validate response from the add-note message processing
     response_correlation_id = properties.correlation_id
-
     raise "Unexpected correlation_id: Expected #{CORRELATION_ID}. Found #{response_correlation_id} " if response_correlation_id != CORRELATION_ID
+
+    payload = JSON.parse(payload)
+    raise "Unexpected response: Expected statusCode 200. Found #{payload['statusCode']}" if payload['statusCode'] != 200
 end
