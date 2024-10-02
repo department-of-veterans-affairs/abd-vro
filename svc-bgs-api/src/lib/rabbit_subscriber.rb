@@ -5,11 +5,12 @@ require 'logger'
 
 class RabbitSubscriber
 
-  def initialize(bunny_args)
+  def initialize(metric_logger, bunny_args)
     @connection = Bunny.new(bunny_args)
     connect(@connection)
     @exchanges = {}
     @queues = {}
+    @metric_logger = metric_logger
   end
 
   def connect(connection)
@@ -52,7 +53,7 @@ class RabbitSubscriber
     end
   end
 
-  def subscribe_to(exchange_name, queue_name)
+  def subscribe_to(exchange_name, queue_name, log_metrics = true)
     begin
       queue = @queues[queue_name]
       $logger.info " [*] Waiting for messages for queue #{queue_name}. To exit press CTRL+C"
@@ -64,8 +65,15 @@ class RabbitSubscriber
         $logger.debug "delivery_info: #{delivery_info}"
         # delivery_info.routing_key is the same as queue_name in this case
 
+        custom_tags = ["queue:#{queue_name}", "app_id:#{properties.app_id || 'unknown'}"]
+        start_time = Time.now
         json = JSON.parse(body)
         response = yield(json)
+        if json.has_key?('claimNotes')
+          custom_tags.append('bgsNoteType:claim')
+        elsif json.has_key?('veteranNote')
+          custom_tags.append('bgsNoteType:veteran')
+        end
       rescue JSON::ParserError => e
         $logger.error e.backtrace
         response = {
@@ -107,6 +115,14 @@ class RabbitSubscriber
           routing_key: properties.reply_to,
           correlation_id: properties.correlation_id
         )
+
+        if log_metrics
+          if response[:statusCode] == 200
+            @metric_logger.submit_all_metrics(start_time, Time.now, custom_tags)
+          else
+            @metric_logger.submit_error_metrics(start_time, Time.now, custom_tags)
+          end
+        end
       end
     rescue Interrupt => _
       @connection.close
