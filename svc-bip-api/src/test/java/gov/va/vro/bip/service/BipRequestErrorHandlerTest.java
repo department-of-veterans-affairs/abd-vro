@@ -29,7 +29,8 @@ import java.util.Objects;
 class BipRequestErrorHandlerTest {
   private static final String CLAIM_RESPONSE_404 = "bip-test-data/claim_response_404.json";
 
-  private final MetricLoggerService metricLoggerService = new MetricLoggerService(new MetricsApi());
+  private final MetricLoggerService metricLoggerService =
+      new MetricLoggerService(new MetricsApi(), "", "", "", "", "");
 
   enum HttpStatusCodeTestCase {
     NOT_FOUND(new HttpClientErrorException(HttpStatus.NOT_FOUND)),

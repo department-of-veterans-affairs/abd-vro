@@ -59,3 +59,9 @@ management:
 truststore: ${BIP_TRUSTSTORE}
 keystore: ${BIP_KEYSTORE}
 truststore_password: ${BIP_PASSWORD}
+
+vro:
+  env: ${ENV}
+  app:
+    name: vro-svc-bip-api
+    dependency: bip

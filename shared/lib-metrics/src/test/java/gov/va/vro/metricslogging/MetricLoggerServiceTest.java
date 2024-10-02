@@ -17,13 +17,13 @@ import java.util.Objects;
 
 public class MetricLoggerServiceTest {
 
-  private MetricLoggerService mls = new MetricLoggerService(new MetricsApi());
+  private MetricLoggerService mls = new MetricLoggerService(new MetricsApi(), "", "", "", "", "");
   private static final String METRICS_PREFIX = "vro_short_app_name";
 
   @Test
   void testConstructors() {
     try {
-      new MetricLoggerService(new MetricsApi());
+      new MetricLoggerService(new MetricsApi(), "", "", "", "", "");
     } catch (Exception e) {
       fail("Constructor failed", e);
     }
@@ -63,13 +63,13 @@ public class MetricLoggerServiceTest {
         mls.getTagsForSubmission(new String[] {"source:integration-test", "version:2.1"});
     assertTrue(tags.contains("source:integration-test"));
     assertTrue(tags.contains("version:2.1"));
-    assertEquals(tags.size(), 2);
+    assertEquals(tags.size(), 6);
   }
 
   @Test
   void getTagsForSubmissionNoCustomTags() {
     List<String> tags = mls.getTagsForSubmission(null);
-    assertEquals(0, tags.size());
+    assertEquals(4, tags.size());
   }
 
   @Test
@@ -128,7 +128,7 @@ public class MetricLoggerServiceTest {
   @Test
   void testSubmitCountCallsApiWithPayload() {
     MetricsApi metricsApi = mock(MetricsApi.class);
-    MetricLoggerService mls = new MetricLoggerService(metricsApi);
+    MetricLoggerService mls = new MetricLoggerService(metricsApi, "", "", "", "", "");
     mls.submitCount(METRICS_PREFIX, IMetricLoggerService.METRIC.RESPONSE_COMPLETE, null);
     mls.submitCount(METRICS_PREFIX, IMetricLoggerService.METRIC.RESPONSE_COMPLETE, 3.0, null);
     try {
@@ -141,7 +141,7 @@ public class MetricLoggerServiceTest {
   @Test
   void testSubmitRequestDurationCallsApiWithPayload() {
     MetricsApi metricsApi = mock(MetricsApi.class);
-    MetricLoggerService mls = new MetricLoggerService(metricsApi);
+    MetricLoggerService mls = new MetricLoggerService(metricsApi, "", "", "", "", "");
     mls.submitRequestDuration("app_name_placeholder", 100, 200, null);
     try {
       verify(metricsApi, times(1))

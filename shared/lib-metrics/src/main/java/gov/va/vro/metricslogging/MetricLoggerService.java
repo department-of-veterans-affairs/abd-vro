@@ -5,6 +5,7 @@ import com.datadog.api.client.v1.model.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,21 @@ import java.util.*;
 public class MetricLoggerService implements IMetricLoggerService {
 
   private final MetricsApi metricsApi;
+
+  @Value("${vro.env}")
+  public final String env;
+
+  @Value("${vro.it-portfolio:benefits-delivery}")
+  public final String itPortfolio;
+
+  @Value("${vro.team:va-abd-rrd}")
+  public final String team;
+
+  @Value("${vro.app.name}")
+  public final String service;
+
+  @Value("${vro.app.dependency:")
+  public final String dependency;
 
   public static double getTimestamp() {
     return Long.valueOf(OffsetDateTime.now().toInstant().getEpochSecond()).doubleValue();
@@ -43,6 +59,15 @@ public class MetricLoggerService implements IMetricLoggerService {
     if (customTags != null) {
       tags.addAll(Arrays.asList(customTags));
     }
+
+    tags.add("env:" + env);
+    tags.add("itportfolio:" + itPortfolio);
+    tags.add("team:" + team);
+    tags.add("service:" + service);
+    if (dependency != null && !dependency.isEmpty()) {
+      tags.add("dependency:" + dependency);
+    }
+
     return tags;
   }
 

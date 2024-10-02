@@ -16,7 +16,8 @@ import java.util.HashMap;
 
 class RabbitMqApiConfigTest {
 
-  private final MetricLoggerService metricLoggerService = new MetricLoggerService(new MetricsApi());
+  private final MetricLoggerService metricLoggerService =
+      new MetricLoggerService(new MetricsApi(), "", "", "", "", "");
 
   @Test
   @SuppressWarnings({"unchecked", "rawtypes"})
