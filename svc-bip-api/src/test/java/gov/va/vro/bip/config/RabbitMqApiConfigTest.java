@@ -12,11 +12,14 @@ import org.springframework.amqp.rabbit.listener.api.RabbitListenerErrorHandler;
 import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
 import org.springframework.messaging.support.GenericMessage;
 
+import java.util.Collections;
 import java.util.HashMap;
 
 class RabbitMqApiConfigTest {
 
-  private final MetricLoggerService metricLoggerService = new MetricLoggerService(new MetricsApi());
+  private final MetricLoggerService metricLoggerService =
+      new MetricLoggerService(
+          new MetricsApi(), "", "", "", "", Collections.emptySet(), "metric_prefix");
 
   @Test
   @SuppressWarnings({"unchecked", "rawtypes"})

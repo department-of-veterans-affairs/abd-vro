@@ -29,7 +29,6 @@ public class ContentionEventsListener {
   private final IMetricLoggerService metricLogger;
   private final BieRecordTransformer bieRecordTransformer;
   private final ContentionEventPayloadTransformer contentionEventPayloadTransformer;
-  private static final String METRICS_PREFIX = "vro_bie_kafka";
 
   @KafkaListener(topics = "#{bieKafkaProperties.topicNames()}")
   public void consume(ConsumerRecord<String, Object> record) {
@@ -39,13 +38,7 @@ public class ContentionEventsListener {
     long transactionStartTime = System.nanoTime();
 
     final String topicName = record.topic();
-    final String[] metricTags = {
-      "env:" + System.getenv("ENV"),
-      "team:va-abd-rrd",
-      "itportfolio:benefits-delivery",
-      "service:svcBieKafka",
-      "topic:" + topicName
-    };
+    final String[] metricTags = {"topic:" + topicName};
 
     boolean saved = false;
     boolean sent = false;
@@ -61,8 +54,7 @@ public class ContentionEventsListener {
         saved = true;
       } catch (DataAccessException e) {
         log.error("Database error while saving message: {}", e.getMessage());
-        metricLogger.submitCount(
-            METRICS_PREFIX, MetricLoggerService.METRIC.RESPONSE_ERROR, metricTags);
+        metricLogger.submitCount(MetricLoggerService.METRIC.RESPONSE_ERROR, metricTags);
         return;
       }
 
@@ -71,15 +63,13 @@ public class ContentionEventsListener {
         sent = true;
       } catch (AmqpException e) {
         log.error("AMQP error while sending message: {}", e.getMessage());
-        metricLogger.submitCount(
-            METRICS_PREFIX, MetricLoggerService.METRIC.RESPONSE_ERROR, metricTags);
+        metricLogger.submitCount(MetricLoggerService.METRIC.RESPONSE_ERROR, metricTags);
       }
 
       submitMetrics(metricTags, transactionStartTime);
     } catch (Exception e) {
       log.error("General error while processing message: {}", e.getMessage());
-      metricLogger.submitCount(
-          METRICS_PREFIX, MetricLoggerService.METRIC.RESPONSE_ERROR, metricTags);
+      metricLogger.submitCount(MetricLoggerService.METRIC.RESPONSE_ERROR, metricTags);
     } finally {
       log.info(
           "event=receivedMessage topic={} saved={} sent={} payload={}",
@@ -91,11 +81,9 @@ public class ContentionEventsListener {
   }
 
   private void submitMetrics(String[] metricTagsWithTopicName, long transactionStartTime) {
-    metricLogger.submitCount(
-        METRICS_PREFIX, MetricLoggerService.METRIC.REQUEST_START, metricTagsWithTopicName);
+    metricLogger.submitCount(MetricLoggerService.METRIC.REQUEST_START, metricTagsWithTopicName);
     metricLogger.submitRequestDuration(
-        METRICS_PREFIX, transactionStartTime, System.nanoTime(), metricTagsWithTopicName);
-    metricLogger.submitCount(
-        METRICS_PREFIX, MetricLoggerService.METRIC.RESPONSE_COMPLETE, metricTagsWithTopicName);
+        transactionStartTime, System.nanoTime(), metricTagsWithTopicName);
+    metricLogger.submitCount(MetricLoggerService.METRIC.RESPONSE_COMPLETE, metricTagsWithTopicName);
   }
 }

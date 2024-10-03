@@ -65,7 +65,6 @@ public class BipApiService implements IBipApiService {
   final ObjectMapper mapper;
 
   final IMetricLoggerService metricLogger;
-  public static final String METRICS_PREFIX = "vro_bip";
 
   static final String CLAIM_DETAILS = "/claims/%s";
   static final String CANCEL_CLAIM = "/claims/%s/cancel";
@@ -203,7 +202,6 @@ public class BipApiService implements IBipApiService {
       log.info(
           "event=requestSent url={} method={} auth={}", url, method, headers.get("Authorization"));
       metricLogger.submitCount(
-          METRICS_PREFIX,
           IMetricLoggerService.METRIC.REQUEST_START,
           new String[] {
             String.format("expectedResponse:%s", expectedResponse.getSimpleName()),
@@ -221,7 +219,6 @@ public class BipApiService implements IBipApiService {
           method,
           bipResponse.getStatusCode().value());
       metricLogger.submitRequestDuration(
-          METRICS_PREFIX,
           requestStartTime,
           System.nanoTime(),
           new String[] {
@@ -238,7 +235,6 @@ public class BipApiService implements IBipApiService {
       }
 
       metricLogger.submitCount(
-          METRICS_PREFIX,
           IMetricLoggerService.METRIC.RESPONSE_COMPLETE,
           new String[] {
             String.format("expectedResponse:%s", expectedResponse.getSimpleName()),
@@ -281,7 +277,6 @@ public class BipApiService implements IBipApiService {
           e.getMessage());
 
       metricLogger.submitCount(
-          METRICS_PREFIX,
           IMetricLoggerService.METRIC.RESPONSE_ERROR,
           new String[] {
             String.format("expectedResponse:%s", expectedResponse.getSimpleName()),

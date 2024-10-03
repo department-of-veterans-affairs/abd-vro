@@ -10,26 +10,17 @@ public interface IMetricLoggerService {
 
   ArrayList<String> getTagsForSubmission(String[] customTags);
 
-  MetricsPayload createMetricsPayload(
-      @NotNull String metricPrefix, @NotNull METRIC metric, double value, String[] tags);
+  MetricsPayload createMetricsPayload(@NotNull METRIC metric, double value, String[] tags);
 
-  void submitCount(@NotNull String metricPrefix, @NotNull METRIC metric, String[] tags);
+  void submitCount(@NotNull METRIC metric, String[] tags);
 
-  void submitCount(
-      @NotNull String metricPrefix, @NotNull METRIC metric, double value, String[] tags);
+  void submitCount(@NotNull METRIC metric, double value, String[] tags);
 
   DistributionPointsPayload createDistributionPointsPayload(
-      @NotNull String metricPrefix,
-      @NotNull METRIC metric,
-      double timestamp,
-      double value,
-      String[] tags);
+      @NotNull METRIC metric, double timestamp, double value, String[] tags);
 
   void submitRequestDuration(
-      @NotNull String metricPrefix,
-      long requestStartNanoseconds,
-      long requestEndNanoseconds,
-      String[] tags);
+      long requestStartNanoseconds, long requestEndNanoseconds, String[] tags);
 
   enum METRIC {
     REQUEST_START,
