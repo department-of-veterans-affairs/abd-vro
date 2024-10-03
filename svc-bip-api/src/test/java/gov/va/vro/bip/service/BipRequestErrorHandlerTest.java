@@ -24,13 +24,14 @@ import org.springframework.web.client.HttpStatusCodeException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.Objects;
 
 class BipRequestErrorHandlerTest {
   private static final String CLAIM_RESPONSE_404 = "bip-test-data/claim_response_404.json";
 
   private final MetricLoggerService metricLoggerService =
-      new MetricLoggerService(new MetricsApi(), "", "", "", "", "");
+      new MetricLoggerService(new MetricsApi(), "", "", "", "", Collections.emptySet(), "vro_bip");
 
   enum HttpStatusCodeTestCase {
     NOT_FOUND(new HttpClientErrorException(HttpStatus.NOT_FOUND)),

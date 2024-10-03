@@ -63,5 +63,7 @@ truststore_password: ${BIP_PASSWORD}
 vro:
   env: ${ENV}
   app:
-    name: vro-svc-bip-api
-    dependency: bip
+    service: vro-svc-bip-api
+    dependencies: bip-claims-api
+  metrics:
+    prefix: vro_bip

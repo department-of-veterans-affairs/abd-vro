@@ -73,5 +73,7 @@ management:
 vro:
   env: ${ENV}
   app:
-    name: vro-svc-bie-kafka
-    dependency: bie
+    service: vro-svc-bie-kafka
+    dependencies: bie
+  metrics:
+    prefix: vro_bie_kafka
