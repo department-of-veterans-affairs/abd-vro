@@ -36,8 +36,10 @@ class MetricLogger
     begin
       api_instance = DatadogAPIClient::V1::AuthenticationAPI.new
       api_instance.validate
+    rescue DatadogAPIClient::APIError => e
+      $logger.warn("event=failedDatadogAuthentication error=#{e.class} status=#{e.code} body=#{e.response_body}")
     rescue Exception => e
-      $logger.warn("event=failedDatadogAuthentication error=#{e.message}")
+      $logger.warn("event=failedDatadogAuthentication error=#{e.class}  error=#{e.message}")
     end
   end
 
@@ -81,15 +83,13 @@ class MetricLogger
     metric_name = get_full_metric_name(metric)
     payload = get_metric_payload(metric_name, value, timestamp, custom_tags)
 
-    Async do |task|
-      task.async do
-        begin
-          @metrics_api.submit_metrics(payload)
-          $logger.debug("event=countMetricSubmitted metric=#{metric_name} type=COUNT")
-        rescue Exception => e
-          $logger.warn("event=countMetricFailed metric=#{metric_name} type=COUNT error=#{e.class} message='#{e.message}'")
-        end
-      end
+    begin
+      @metrics_api.submit_metrics(payload)
+      $logger.debug("event=countMetricSubmitted metric=#{metric_name} type=COUNT custom_tags=#{custom_tags}")
+    rescue DatadogAPIClient::APIError => e
+      $logger.warn("event=countMetricSubmitted metric=#{metric_name} type=COUNT error=#{e.class} status=#{e.code} body=#{e.response_body}")
+    rescue Exception => e
+      $logger.warn("event=countMetricFailed metric=#{metric_name} type=COUNT error=#{e.class} message='#{e.message}'")
     end
 
     nil
@@ -105,18 +105,16 @@ class MetricLogger
       custom_tags
     )
 
-    Async do |task|
-      task.async do
-        begin
-          opts = {
-            content_encoding: DatadogAPIClient::V1::DistributionPointsContentEncoding::DEFLATE
-          }
-          @distribution_metrics_api.submit_distribution_points(payload, opts)
-          $logger.debug("event=durationMetricSubmitted metric=#{metric_name} type=DISTRIBUTION duration=#{duration}")
-        rescue Exception => e
-          $logger.warn("event=durationMetricFailed metric=#{metric_name} type=DISTRIBUTION duration=#{duration} error=#{e.class} message='#{e.message}'")
-        end
-      end
+    begin
+      opts = {
+        content_encoding: DatadogAPIClient::V1::DistributionPointsContentEncoding::DEFLATE
+      }
+      @distribution_metrics_api.submit_distribution_points(payload, opts)
+      $logger.debug("event=durationMetricSubmitted metric=#{metric_name} type=DISTRIBUTION duration=#{duration} custom_tags=#{custom_tags}")
+    rescue DatadogAPIClient::APIError => e
+      $logger.warn("event=durationMetricFailed metric=#{metric_name} type=DISTRIBUTION duration=#{duration} error=#{e.class} status=#{e.code} body=#{e.response_body}")
+    rescue Exception => e
+      $logger.warn("event=durationMetricFailed metric=#{metric_name} type=DISTRIBUTION duration=#{duration} error=#{e.class} message='#{e.message}'")
     end
 
     nil
@@ -141,15 +139,19 @@ class MetricLogger
     })
   end
 
-  def submit_error(start_time, end_time, custom_tags)
-    submit_count(METRIC[:REQUEST_START], 1, start_time, custom_tags)
-    submit_count(METRIC[:RESPONSE_ERROR], 1, end_time, custom_tags)
-    submit_request_duration(METRIC[:ERROR_DURATION], start_time, end_time, custom_tags)
+  def submit_error_metrics(start_time, end_time, custom_tags)
+    Async do
+      Async { submit_count(METRIC[:REQUEST_START], 1, start_time, custom_tags) }
+      Async { submit_count(METRIC[:RESPONSE_ERROR], 1, end_time, custom_tags) }
+      Async { submit_request_duration(METRIC[:ERROR_DURATION], start_time, end_time, custom_tags) }
+    end
   end
 
   def submit_all_metrics(start_time, end_time, custom_tags)
-    submit_count(METRIC[:REQUEST_START], 1, start_time, custom_tags)
-    submit_count(METRIC[:RESPONSE_COMPLETE], 1, end_time, custom_tags)
-    submit_request_duration(METRIC[:REQUEST_DURATION], start_time, end_time, custom_tags)
+    Async do
+      Async { submit_count(METRIC[:REQUEST_START], 1, start_time, custom_tags) }
+      Async { submit_count(METRIC[:RESPONSE_COMPLETE], 1, end_time, custom_tags) }
+      Async { submit_request_duration(METRIC[:REQUEST_DURATION], start_time, end_time, custom_tags) }
+    end
   end
 end

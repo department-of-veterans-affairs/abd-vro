@@ -1,8 +1,9 @@
 # This script is used by the K8S Readiness probe to check the availability of the BIS-api service. Specifically, it checks
-# both RabbitMQ connectivity and fetches specific data (vro_participant_id) to confirm the BIS-Api service is ready to perform its basic functions. 
+# both RabbitMQ connectivity and fetches specific data (vro_participant_id) to confirm the BIS-Api service is ready to
+# perform its basic functions.
 
 require 'logger'
-require_relative '../lib/rabbit_subscriber'
+require 'bunny'
 require_relative '../lib/bgs_client'
 require_relative '../config/constants'
 require_relative '../config/setup'
@@ -18,13 +19,16 @@ end
 
 def rabbitmq_connection_active?
   begin
-    subscriber = RabbitSubscriber.new(BUNNY_ARGS)
-    connected = subscriber.rabbitmq_connected?
-    log("RabbitMQ connectivity check: #{connected ? 'Success' : 'Failure'}")
+    connection = Bunny.new(BUNNY_ARGS)
+    connection.start
+    connected = connection&.open?
+    log "RabbitMQ connectivity check: #{connected ? 'Success' : 'Failure'}"
     connected
   rescue => e
-    log("RabbitMQ check failed: #{e.message}")    
+    log "RabbitMQ check failed: #{e.message}"
     false
+  ensure
+    connection&.close
   end
 end
 

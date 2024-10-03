@@ -12,13 +12,13 @@ require 'bgs_client'
 $stdout.sync = true
 
 def initialize_subscriber(bgs_client, metric_logger)
-  subscriber = RabbitSubscriber.new(BUNNY_ARGS)
+  subscriber = RabbitSubscriber.new(metric_logger, BUNNY_ARGS)
 
   # Setup queue/subscription for healthcheck
   # Expects to receive a valid json-encoded message of any structure
   # Returns a json-encoded message with field "statusCode" set to 200
   subscriber.setup_queue(exchange_name: HEALTHCHECK_EXCHANGE, exchange_properties: HEALTHCHECK_EXCHANGE_PROPERTIES, queue_name: HEALTHCHECK_QUEUE, queue_properties: HEALTHCHECK_QUEUE_PROPERTIES)
-  subscriber.subscribe_to(HEALTHCHECK_EXCHANGE, HEALTHCHECK_QUEUE) do |json|
+  subscriber.subscribe_to(HEALTHCHECK_EXCHANGE, HEALTHCHECK_QUEUE, false) do |json|
     $logger.info "Subscriber received healthcheck request #{json}"
     { statusCode: 200 }
   end
@@ -40,21 +40,14 @@ def initialize_subscriber(bgs_client, metric_logger)
   subscriber.subscribe_to(REQUESTS_EXCHANGE, ADD_NOTE_QUEUE) do |json|
     $logger.info "event=requestReceived json=#{json}"
 
-    start_time = Time.now
-    custom_tags = [json.has_key?('claimNotes') ? 'bgsNoteType:claim' : 'bgsNoteType:veteran']
     begin
       bgs_client.handle_request(json)
-
-      metric_logger.submit_all_metrics(start_time, Time.now, custom_tags)
 
       {
         statusCode: 200,
         statusMessage: "OK"
       }
     rescue => e
-      time = Time.now
-      metric_logger.submit_error(custom_tags, time)
-
       status_code = e.is_a?(ArgumentError) ? 400 : 500
       status_str = e.is_a?(ArgumentError) ? "BAD_REQUEST" : "INTERNAL_SERVER_ERROR"
       {
@@ -66,7 +59,7 @@ def initialize_subscriber(bgs_client, metric_logger)
             severity: "ERROR",
             status: status_code,
             text: "#{e.message}",
-            timestamp: time.iso8601,
+            timestamp: Time.now.iso8601,
             httpStatus: status_str
           }
         ]
