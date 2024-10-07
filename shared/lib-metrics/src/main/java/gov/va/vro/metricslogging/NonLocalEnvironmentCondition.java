@@ -15,7 +15,7 @@ public class NonLocalEnvironmentCondition implements Condition {
     boolean isMatch = !localEnvironmentCondition.matches(context, metadata);
 
     if (isMatch) {
-      log.info("match for NonLocalEnvironmentCondition");
+      log.debug("match for NonLocalEnvironmentCondition");
     }
 
     return isMatch;
