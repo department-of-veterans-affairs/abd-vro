@@ -22,7 +22,7 @@ public class LocalEnvironmentCondition implements Condition {
             || Stream.of(LOCAL_ENVS).anyMatch(e -> StringUtils.equals(e, env));
 
     if (isMatch) {
-      log.info("match for LocalEnvironmentCondition", env);
+      log.info("match for LocalEnvironmentCondition " + env);
     }
 
     return isMatch;
