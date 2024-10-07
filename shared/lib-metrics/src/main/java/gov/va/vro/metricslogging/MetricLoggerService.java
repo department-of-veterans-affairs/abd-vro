@@ -3,9 +3,9 @@ package gov.va.vro.metricslogging;
 import com.datadog.api.client.v1.api.MetricsApi;
 import com.datadog.api.client.v1.model.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Service;
@@ -15,29 +15,35 @@ import java.util.*;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 @Conditional(NonLocalEnvironmentCondition.class)
 public class MetricLoggerService implements IMetricLoggerService {
 
   private final MetricsApi metricsApi;
 
-  @Value("${vro.env}")
   public final String env;
-
-  @Value("${vro.it-portfolio:benefits-delivery}")
   public final String itPortfolio;
-
-  @Value("${vro.team:va-abd-rrd}")
   public final String team;
-
-  @Value("${vro.app.service}")
   public final String service;
-
-  @Value("${vro.app.dependencies:}")
   public final Set<String> dependencies;
-
-  @Value("${vro.metric.prefix}")
   public final String metricPrefix;
+
+  @Autowired
+  public MetricLoggerService(
+      MetricsApi metricsApi,
+      @Value("${vro.env}") String env,
+      @Value("${vro.it-portfolio:benefits-delivery}") String itPortfolio,
+      @Value("${vro.team:va-abd-rrd}") String team,
+      @Value("${vro.app.service}") String service,
+      @Value("${vro.app.dependencies:}") Set<String> dependencies,
+      @Value("${vro.metrics.prefix}") String metricPrefix) {
+    this.metricsApi = metricsApi;
+    this.env = env;
+    this.itPortfolio = itPortfolio;
+    this.team = team;
+    this.service = service;
+    this.dependencies = dependencies;
+    this.metricPrefix = metricPrefix;
+  }
 
   public static double getTimestamp() {
     return Long.valueOf(OffsetDateTime.now().toInstant().getEpochSecond()).doubleValue();
