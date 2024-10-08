@@ -12,13 +12,13 @@ require 'bgs_client'
 $stdout.sync = true
 
 def initialize_subscriber(bgs_client, metric_logger)
-  subscriber = RabbitSubscriber.new(BUNNY_ARGS)
+  subscriber = RabbitSubscriber.new(metric_logger, BUNNY_ARGS)
 
   # Setup queue/subscription for healthcheck
   # Expects to receive a valid json-encoded message of any structure
   # Returns a json-encoded message with field "statusCode" set to 200
   subscriber.setup_queue(exchange_name: HEALTHCHECK_EXCHANGE, exchange_properties: HEALTHCHECK_EXCHANGE_PROPERTIES, queue_name: HEALTHCHECK_QUEUE, queue_properties: HEALTHCHECK_QUEUE_PROPERTIES)
-  subscriber.subscribe_to(HEALTHCHECK_EXCHANGE, HEALTHCHECK_QUEUE) do |json|
+  subscriber.subscribe_to(HEALTHCHECK_EXCHANGE, HEALTHCHECK_QUEUE, false) do |json|
     $logger.info "Subscriber received healthcheck request #{json}"
     { statusCode: 200 }
   end
@@ -38,9 +38,15 @@ def initialize_subscriber(bgs_client, metric_logger)
   # Note this information requires VA-network access
   subscriber.setup_queue(exchange_name: REQUESTS_EXCHANGE, exchange_properties: EXCHANGE_PROPERTIES, queue_name: ADD_NOTE_QUEUE, queue_properties: ADD_NOTE_QUEUE_PROPERTIES)
   subscriber.subscribe_to(REQUESTS_EXCHANGE, ADD_NOTE_QUEUE) do |json|
-    $logger.info "Subscriber received request #{json}"
+    $logger.info "event=requestReceived json=#{json}"
+
     begin
       bgs_client.handle_request(json)
+
+      {
+        statusCode: 200,
+        statusMessage: "OK"
+      }
     rescue => e
       status_code = e.is_a?(ArgumentError) ? 400 : 500
       status_str = e.is_a?(ArgumentError) ? "BAD_REQUEST" : "INTERNAL_SERVER_ERROR"
@@ -57,16 +63,6 @@ def initialize_subscriber(bgs_client, metric_logger)
             httpStatus: status_str
           }
         ]
-      }
-      begin
-        metric_logger.submit_count_with_default_value(METRIC[:RESPONSE_ERROR], nil)
-      rescue => metric_e
-        $logger.error "Exception submitting metric RESPONSE_ERROR #{e.message}"
-      end
-    else
-      {
-        statusCode: 200,
-        statusMessage: "OK"
       }
     end
   end

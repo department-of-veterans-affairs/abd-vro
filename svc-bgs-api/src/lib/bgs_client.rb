@@ -37,11 +37,10 @@ BGS::DevelopmentNotesService.class_eval do
 end
 
 class BgsClient
-  attr_reader :bgs, :metrics
+  attr_reader :bgs
 
   def initialize
     @bgs = BGS::Services.new(external_uid: nil, external_key: nil)
-    @metrics = MetricLogger.new
   end
 
   def handle_request(req)
@@ -77,22 +76,11 @@ class BgsClient
     note_hashes = notes.map do |note|
       { claim_id:, txt: note, user_id: vro_participant_id }
     end
-    start_time = Time.now
-    metric_custom_tags = ['bgsNoteType:claim']
-    @metrics.submit_count_with_default_value(METRIC[:REQUEST_START], metric_custom_tags)
     bgs.notes.create_notes(note_hashes)
-    @metrics.submit_request_duration(start_time, Time.now, metric_custom_tags)
-    @metrics.submit_count_with_default_value(METRIC[:RESPONSE_COMPLETE], metric_custom_tags)
   end
 
   def create_veteran_note(note:, claim_id: nil, participant_id: nil)
     participant_id ||= bgs.benefit_claims.find_bnft_claim(claim_id:)[:bnft_claim_dto][:ptcpnt_vet_id]
-
-    start_time = Time.now
-    metric_custom_tags = ['bgsNoteType:veteran']
-    @metrics.submit_count_with_default_value(METRIC[:REQUEST_START], metric_custom_tags)
     bgs.notes.create_note(participant_id:, txt: note, user_id: vro_participant_id)
-    @metrics.submit_request_duration(start_time, Time.now, metric_custom_tags)
-    @metrics.submit_count_with_default_value(METRIC[:RESPONSE_COMPLETE], metric_custom_tags)
   end
 end

@@ -12,18 +12,29 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 
 import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class MetricLoggerServiceTest {
 
-  private MetricLoggerService mls = new MetricLoggerService(new MetricsApi());
+  private MetricLoggerService mls =
+      new MetricLoggerService(
+          new MetricsApi(),
+          "env",
+          "benefits-delivery",
+          "va-abd-rrd",
+          "the-service",
+          Set.of("dep_1", "dep_2"),
+          METRICS_PREFIX);
   private static final String METRICS_PREFIX = "vro_short_app_name";
 
   @Test
   void testConstructors() {
     try {
-      new MetricLoggerService(new MetricsApi());
+      new MetricLoggerService(
+          new MetricsApi(), "", "", "", "", Collections.emptySet(), METRICS_PREFIX);
     } catch (Exception e) {
       fail("Constructor failed", e);
     }
@@ -63,23 +74,46 @@ public class MetricLoggerServiceTest {
         mls.getTagsForSubmission(new String[] {"source:integration-test", "version:2.1"});
     assertTrue(tags.contains("source:integration-test"));
     assertTrue(tags.contains("version:2.1"));
-    assertEquals(tags.size(), 2);
+
+    // two tags above; 4 required tags + 2 dependency tags
+    assertEquals(tags.size(), 8);
+
+    List<String> requiredTags = List.of("env:", "team:", "itportfolio:", "service:", "dependency:");
+    for (String requiredTag : requiredTags) {
+      if (tags.stream().noneMatch(t -> t.startsWith(requiredTag))) {
+        fail("Required tag " + requiredTag + " not found in tags: " + tags);
+      }
+    }
   }
 
   @Test
   void getTagsForSubmissionNoCustomTags() {
     List<String> tags = mls.getTagsForSubmission(null);
-    assertEquals(0, tags.size());
+
+    // 4 required tags + 2 dependency tags
+    assertEquals(tags.size(), 6);
+
+    // check that all required tags are present
+    List<String> requiredTags = List.of("env:", "team:", "itportfolio:", "service:", "dependency:");
+    for (String requiredTag : requiredTags) {
+      if (tags.stream().noneMatch(t -> t.startsWith(requiredTag))) {
+        fail("Required tag " + requiredTag + " not found in tags: " + tags);
+      }
+    }
+
+    // check that no extra tags were added since we passed null above
+    for (String tag : tags) {
+      if (requiredTags.stream().noneMatch(t -> t.startsWith(tag.substring(0, t.indexOf(":"))))) {
+        fail("Unexpected tag: " + tag);
+      }
+    }
   }
 
   @Test
   void testCreateMetricsPayload() {
     MetricsPayload mp =
         mls.createMetricsPayload(
-            METRICS_PREFIX,
-            MetricLoggerService.METRIC.RESPONSE_COMPLETE,
-            14.0,
-            new String[] {"zone:purple"});
+            MetricLoggerService.METRIC.RESPONSE_COMPLETE, 14.0, new String[] {"zone:purple"});
     Assertions.assertEquals("count", mp.getSeries().get(0).getType());
     Assertions.assertEquals(1, mp.getSeries().size());
     Assertions.assertEquals(
@@ -108,7 +142,6 @@ public class MetricLoggerServiceTest {
 
     DistributionPointsPayload dpl =
         mls.createDistributionPointsPayload(
-            METRICS_PREFIX,
             MetricLoggerService.METRIC.REQUEST_DURATION,
             timestamp,
             1523,
@@ -128,9 +161,10 @@ public class MetricLoggerServiceTest {
   @Test
   void testSubmitCountCallsApiWithPayload() {
     MetricsApi metricsApi = mock(MetricsApi.class);
-    MetricLoggerService mls = new MetricLoggerService(metricsApi);
-    mls.submitCount(METRICS_PREFIX, IMetricLoggerService.METRIC.RESPONSE_COMPLETE, null);
-    mls.submitCount(METRICS_PREFIX, IMetricLoggerService.METRIC.RESPONSE_COMPLETE, 3.0, null);
+    MetricLoggerService mls =
+        new MetricLoggerService(metricsApi, "", "", "", "", Collections.emptySet(), METRICS_PREFIX);
+    mls.submitCount(IMetricLoggerService.METRIC.RESPONSE_COMPLETE, null);
+    mls.submitCount(IMetricLoggerService.METRIC.RESPONSE_COMPLETE, 3.0, null);
     try {
       verify(metricsApi, times(2)).submitMetricsAsync(ArgumentMatchers.any(MetricsPayload.class));
     } catch (Exception e) {
@@ -141,8 +175,9 @@ public class MetricLoggerServiceTest {
   @Test
   void testSubmitRequestDurationCallsApiWithPayload() {
     MetricsApi metricsApi = mock(MetricsApi.class);
-    MetricLoggerService mls = new MetricLoggerService(metricsApi);
-    mls.submitRequestDuration("app_name_placeholder", 100, 200, null);
+    MetricLoggerService mls =
+        new MetricLoggerService(metricsApi, "", "", "", "", Collections.emptySet(), METRICS_PREFIX);
+    mls.submitRequestDuration(100, 200, null);
     try {
       verify(metricsApi, times(1))
           .submitDistributionPointsAsync(ArgumentMatchers.any(DistributionPointsPayload.class));

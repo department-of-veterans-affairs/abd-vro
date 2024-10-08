@@ -597,7 +597,6 @@ public class BipApiServiceTest {
     assertResponseIsSuccess(result, HttpStatus.OK);
     verify(metricLoggerService, times(1))
         .submitCount(
-            "vro_bip",
             IMetricLoggerService.METRIC.REQUEST_START,
             new String[] {
               "expectedResponse:PutTempStationOfJurisdictionResponse",
@@ -606,13 +605,9 @@ public class BipApiServiceTest {
             });
     verify(metricLoggerService, times(1))
         .submitRequestDuration(
-            ArgumentMatchers.anyString(),
-            ArgumentMatchers.anyLong(),
-            ArgumentMatchers.anyLong(),
-            ArgumentMatchers.any());
+            ArgumentMatchers.anyLong(), ArgumentMatchers.anyLong(), ArgumentMatchers.any());
     verify(metricLoggerService, times(1))
         .submitCount(
-            "vro_bip",
             IMetricLoggerService.METRIC.RESPONSE_COMPLETE,
             new String[] {
               "expectedResponse:PutTempStationOfJurisdictionResponse",
@@ -630,13 +625,9 @@ public class BipApiServiceTest {
 
   private void verifyMetricsAreLogged() {
     verify(metricLoggerService, times(2))
-        .submitCount(
-            ArgumentMatchers.anyString(),
-            ArgumentMatchers.any(),
-            ArgumentMatchers.any(String[].class));
+        .submitCount(ArgumentMatchers.any(), ArgumentMatchers.any(String[].class));
     verify(metricLoggerService, times(1))
         .submitRequestDuration(
-            ArgumentMatchers.anyString(),
             ArgumentMatchers.anyLong(),
             ArgumentMatchers.anyLong(),
             ArgumentMatchers.any(String[].class));
@@ -644,10 +635,7 @@ public class BipApiServiceTest {
 
   private void verifyMetricIsLoggedForExceptions(TestCase testCase) {
     verify(metricLoggerService, times(testCase == TestCase.BIP_INTERNAL ? 2 : 1))
-        .submitCount(
-            ArgumentMatchers.anyString(),
-            ArgumentMatchers.any(),
-            ArgumentMatchers.any(String[].class));
+        .submitCount(ArgumentMatchers.any(), ArgumentMatchers.any(String[].class));
   }
 
   private void assertResponseExceptionWithStatus(Exception ex, HttpStatus expected)

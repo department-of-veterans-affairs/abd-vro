@@ -69,3 +69,11 @@ management:
       group:
         liveness.include: livenessState
         readiness.include: readinessState
+
+vro:
+  env: ${ENV}
+  app:
+    service: vro-svc-bie-kafka
+    dependencies: bie
+  metrics:
+    prefix: vro_bie_kafka

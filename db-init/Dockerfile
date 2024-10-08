@@ -1,4 +1,4 @@
-FROM flyway/flyway:10.18-alpine
+FROM flyway/flyway:10.19-alpine
 
 # hadolint ignore=DL3018
 RUN <<EOR
@@ -15,6 +15,6 @@ COPY flyway.conf /flyway/conf
 
 RUN adduser --no-create-home --disabled-password tron
 USER tron
-CMD ["migrate", "-X" ]
+CMD ["repair", "migrate", "-X" ]
 
 HEALTHCHECK NONE
