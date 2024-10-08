@@ -1,0 +1,55 @@
+version: '3.9'
+
+networks:
+  # Put these services on the same `vro_intranet` network as VRO
+  vro_intranet:
+    # https://docs.docker.com/compose/networking/#use-a-pre-existing-network
+    # Change this to true if running with app/src/docker/docker-compose.yml
+    external: true
+
+# Reusable blocks
+# https://medium.com/@kinghuang/docker-compose-anchors-aliases-extensions-a1e4105d70bd
+# Also note https://yaml.org/type/merge.html
+
+x-common-vars: &common-vars
+  # ENV determines which configuration settings to use.
+  ENV: ${ENV:-local}
+
+x-common-security-opt: &common-security-opt
+  security_opt:
+    - no-new-privileges:true
+
+x-common-sde-security: &common-sde-security
+  ulimits:
+    nproc: 65535
+
+x-rabbitmq-placeholder-vars: &rabbitmq-placeholder-vars
+  RABBITMQ_PLACEHOLDERS_HOST: rabbitmq-database
+  RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+  RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+
+x-postgres-vars: &postgres-vars
+  POSTGRES_URL: postgresql://postgres-service:5432/vro
+  POSTGRES_HOST: postgres-service
+  POSTGRES_PORT: 5432
+  POSTGRES_DB: ${POSTGRES_DB}
+  POSTGRES_USER: ${POSTGRES_USER}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  POSTGRES_SCHEMA: ${POSTGRES_SCHEMA}
+
+x-datadog-vars: &datadog-vars
+  DD_SITE: ${DD_SITE}
+  DD_API_KEY: ${DD_API_KEY}
+
+services:
+
+  svc-claim-tracker:
+    profiles: ["all", "bie-events"]
+    image: va/abd_vro-svc-claim-tracker:latest
+    <<: [*common-sde-security, *common-security-opt]
+    environment:
+      <<: [ *rabbitmq-placeholder-vars, *postgres-vars, *datadog-vars, *common-vars ]
+    ports:
+      - "8150:8150"
+    networks:
+      - vro_intranet
