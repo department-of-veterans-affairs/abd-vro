@@ -64,7 +64,7 @@ jobs:
   secrel:
     name: SecRel Pipeline
     needs: publish-image
-    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v4
+    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v6
     with:
       config-file: .github/secrel/config.yml
       images: ${{ needs.publish-image.outputs.published-images }}

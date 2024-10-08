@@ -230,7 +230,7 @@ jobs:
     needs: [secrel-inputs, gate-check]
     if: ${{always() && needs.gate-check.outputs.run-secrel == 'true'}}
     secrets: inherit
-    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v5
+    uses: department-of-veterans-affairs/lighthouse-tornado-secrel-pipeline/.github/workflows/pipeline.yml@v6
     with:
       config-file: .github/secrel/config.yml
       images: ${{ needs.secrel-inputs.outputs.vro-images }}
