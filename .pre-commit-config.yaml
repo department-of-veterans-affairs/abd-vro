@@ -38,9 +38,7 @@ repos:
     rev: 5.13.2
     hooks:
       - id: isort
-        args: [--profile, black]
-        # Exclude domain-cc files
-        exclude: '^(domain-cc/.*)$'
+        args: ["--profile", "black"]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
@@ -48,34 +46,5 @@ repos:
     hooks:
       # Run the linter.
       - id: ruff
-        # Exclude domain-cc files
-        exclude: '^(domain-cc/.*)$'
       # Run the formatter.
       - id: ruff-format
-        # Exclude domain-cc files
-        exclude: '^(domain-cc/.*)$'
-
-# Conditions Team (previously Contentions Classification Team) specific pre-commit hooks:
-  - repo: https://github.com/psf/black
-    rev: 24.10.0
-    hooks:
-      - id: black
-        name: cc-black
-        files: ^domain-cc/
-        args: []
-
-  # https://flake8.pycqa.org/en/latest/user/using-hooks.html#usage-with-the-pre-commit-git-hooks-framework
-  - repo: https://github.com/PyCQA/flake8
-    rev: 7.1.1
-    hooks:
-      - id: flake8
-        name: cc-flake8
-        files: ^domain-cc/
-        args: [--max-line-length=255]
-
-  - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
-    hooks:
-      - id: isort
-        name: cc-isort
-        files: ^domain-cc/
