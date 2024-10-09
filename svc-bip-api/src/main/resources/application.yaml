@@ -14,7 +14,7 @@ bip:
   claimSecret: ${BIP_CLAIM_SECRET:7zEJ+xepTPakl7KfX58bVR+t0zQGpsElg9bDdKmoVJM=}
   evidenceClientId: ${BIP_EVIDENCE_USERID:VRO_USER}
   evidenceSecret: ${BIP_EVIDENCE_SECRET:daSecret}
-  applicationId: ${BIP_APPLICATION_ID:VRO}
+  applicationId: ${BIP_APPLICATION_ID:virtual_regional_office}
   stationId: ${BIP_STATION_ID:456}
   env: local
 
