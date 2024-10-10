@@ -13,12 +13,12 @@ repos:
       - id: check-useless-excludes
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.3.0
+    rev: v5.0.0
     hooks: # https://github.com/pre-commit/pre-commit-hooks#hooks-available
       - id: check-merge-conflict
       - id: check-executables-have-shebangs
       - id: check-shebang-scripts-are-executable
-        exclude: ^scripts/.*\.src$
+        exclude: ^(scripts/.*\.src)|(.*/entrypoint.sh)$
       - id: check-yaml
       - id: destroyed-symlinks
       - id: detect-private-key
@@ -28,27 +28,23 @@ repos:
       - id: requirements-txt-fixer
       - id: trailing-whitespace
 
-  # https://flake8.pycqa.org/en/latest/user/using-hooks.html#usage-with-the-pre-commit-git-hooks-framework
-  - repo: https://github.com/PyCQA/flake8
-    rev: 5.0.4
-    hooks:
-      - id: flake8
-        args: [--max-line-length=255]
-
-  - repo: https://github.com/pycqa/isort
-    rev: 5.12.0
-    hooks:
-      - id: isort
-
   - repo: https://github.com/zricethezav/gitleaks
-    rev: v8.15.0
+    rev: v8.20.1
     hooks:
       - id: gitleaks
 
-#  - repo: local
-#    hooks:
-#      - id: commit-message
-#        name: commit-message
-#        entry: scripts/commit-message.sh
-#        language: script
-#        stages: [commit-msg]
+# Python project specific hooks
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: ["--profile", "black"]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.6.9
+    hooks:
+      # Run the linter.
+      - id: ruff
+      # Run the formatter.
+      - id: ruff-format
