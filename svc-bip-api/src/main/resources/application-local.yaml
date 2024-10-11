@@ -13,9 +13,3 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: INFO
 bip:
   claimBaseUrl: "localhost:20310"
-  claimClientId: "${BIP_CLAIM_USERID:VRO_USER}"
-  claimSecret: "${BIP_CLAIM_SECRET:7zEJ+xepTPakl7KfX58bVR+t0zQGpsElg9bDdKmoVJM=}"
-  evidenceClientId: "${BIP_EVIDENCE_USERID:VRO_USER}"
-  evidenceSecret: "${BIP_EVIDENCE_SECRET:daSecret}"
-  applicationId: "${BIP_APPLICATION_ID:VRO}"
-  stationId: "${BIP_STATION_ID:456}"

@@ -199,7 +199,8 @@ public class BipApiService implements IBipApiService {
     try {
 
       HttpEntity<Object> httpEntity = new HttpEntity<>(requestBody, headers);
-      log.info("event=requestSent url={} method={}", url, method);
+      log.info(
+          "event=requestSent url={} method={} auth={}", url, method, headers.get("Authorization"));
       metricLogger.submitCount(
           IMetricLoggerService.METRIC.REQUEST_START,
           new String[] {
