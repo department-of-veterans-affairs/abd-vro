@@ -36,6 +36,7 @@ COPY set-env-secrets.src entrypoint-wrapper.sh docker-entry*.sh ./
 # Copy application code, which changes more often,
 # along with files specified in local.python.container-service-convention
 COPY . ./
+RUN pip install .
 
 RUN adduser --disabled-password tron
 RUN chmod +x ./*.sh && chown -R tron /app
