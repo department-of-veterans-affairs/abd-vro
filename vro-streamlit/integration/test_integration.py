@@ -1,7 +1,6 @@
-from app.app import main
-
+from streamlit.testing.v1 import AppTest
 
 def test_main() -> None:
-    env, debug_flag = main()
-    assert env == 'local'
-    assert debug_flag  # from pyproject DEBUG env block.
+    app = AppTest.from_file('src/app/main.py')
+    app.run()
+    assert not app.exception

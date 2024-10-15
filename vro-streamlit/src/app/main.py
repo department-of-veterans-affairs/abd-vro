@@ -1,9 +1,7 @@
 import streamlit as st
 
-from .config import DEBUG, ENV
 
-
-def main() -> tuple[str, bool]:
+def main() -> None:
     # sidebar config
     st.sidebar.image('static/streamlit-logo.png')
     st.sidebar.button('Rerun')
@@ -15,9 +13,3 @@ def main() -> tuple[str, bool]:
     st.session_state.color = st.sidebar.color_picker('Color', st.session_state.color)
 
     st.header('Hello world!')
-
-    return DEBUG, ENV
-
-
-if __name__ == '__main__':
-    main()

@@ -3,6 +3,7 @@ import time
 import numpy as np
 import pandas as pd
 import streamlit as st
+from numpy._typing import NDArray
 
 # sidebar config
 st.sidebar.image('static/streamlit-logo.png')
@@ -32,13 +33,13 @@ st.write(df)
 
 
 @st.cache_data
-def rand_5_8():
+def rand_5_8() -> NDArray[np.float64]:
     return np.random.randn(5, 8)
 
 
 'Dataframe example'
-dataframe = rand_5_8()
-st.dataframe(dataframe)
+npDataframe = rand_5_8()
+st.dataframe(npDataframe)
 
 'Stylized dataframe with cache'
 dataframe = pd.DataFrame(rand_5_8(), columns=('col %d' % i for i in range(8)))
@@ -56,7 +57,7 @@ map_data = pd.DataFrame(np.random.randn(100, 2) / [50, 50] + [38.66, -78.48], co
 st.map(map_data, color=st.session_state.color)
 
 'Selection boxes'
-option = st.selectbox('Which number do you like best?', df['first column'])
+option: int = st.selectbox('Which number do you like best?', df['first column'])
 
 'You selected: ', option
 

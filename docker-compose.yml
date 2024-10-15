@@ -176,3 +176,14 @@ services:
       - intranet
     depends_on:
       <<: [ *svc-depends-on ]
+
+  vro-streamlit:
+    profiles: ["all", "streamlit"]
+    image: va/abd_vro-vro-streamlit:latest
+    ports:
+      - "8501:8501"
+    environment:
+      <<: [*common-vars]
+      STREAMLIT_SERVER_PORT: 8501
+    networks:
+      - intranet

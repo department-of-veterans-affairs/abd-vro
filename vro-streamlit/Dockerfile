@@ -1,0 +1,49 @@
+# This file is referenced from local.python.container-service-convention.
+# It acts as the default Dockerfile for Python-based containers, i.e., those created by build.gradle
+# that use the local.python.container-service-convention plugin.
+# This file overrides the default Dockerfile in the plugin.
+ARG BASE_IMAGE="python:3.10-slim"
+FROM ${BASE_IMAGE}
+
+# hadolint ignore=DL3018
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --upgrade pip
+
+WORKDIR /app
+
+# Used to specify the service folder you want to build if running locally
+# No longer write *.pyc files to disk
+ENV PYTHONDONTWRITEBYTECODE 1
+# Send logs directly to container
+ENV PYTHONUNBUFFERED 1
+
+# Copy and install requirements first (without application code)
+# b/c this is a big image layer that doesn't change often
+# See https://vsupalov.com/5-tips-to-speed-up-docker-build/
+COPY requirements.txt ./
+# Install python packages using a long timeout so that builds won't fail when pypi.org is slow4
+RUN pip install --default-timeout=100 --no-cache-dir -r requirements.txt
+
+# https://stackoverflow.com/a/46801962
+# Copy script that runs docker-entrypoint.sh if it exists
+COPY set-env-secrets.src entrypoint-wrapper.sh docker-entry*.sh ./
+
+# Copy application code, which changes more often,
+# along with files specified in local.python.container-service-convention
+COPY . ./
+
+RUN adduser --disabled-password tron
+RUN chmod +x ./*.sh && chown -R tron /app
+USER tron
+ENTRYPOINT ["/app/entrypoint-wrapper.sh"]
+
+ARG HEALTHCHECK_PORT_ARG
+ENV HEALTHCHECK_PORT=${HEALTHCHECK_PORT_ARG}
+ARG HEALTHCHECK_CMD_ARG="curl --fail http://localhost:${HEALTHCHECK_PORT}/health || exit 1"
+ENV HEALTHCHECK_CMD=${HEALTHCHECK_CMD_ARG}
+HEALTHCHECK CMD eval $HEALTHCHECK_CMD
