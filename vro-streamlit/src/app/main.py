@@ -1,5 +1,7 @@
 import streamlit as st
+
 import app.config as config
+
 
 def main() -> None:
     # sidebar config
@@ -14,6 +16,7 @@ def main() -> None:
 
     st.header('Hello world!')
     st.subheader(f'Environment: {config.ENV}')
+
 
 if __name__ == '__main__':
     main()
