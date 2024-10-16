@@ -40,7 +40,7 @@ prod-test:
     client_station_id: 281
     client_username: VROSYSACCT
     log: true
-    base_url: https://bepprodtest.vba.va.gov
+    base_url: https://bepprep.vba.va.gov
     ssl_cert_file: /app/certs/tls_bip.crt
     ssl_cert_key_file: /app/certs/tls.key
     ssl_ca_cert_file: /app/certs/va_all.crt
