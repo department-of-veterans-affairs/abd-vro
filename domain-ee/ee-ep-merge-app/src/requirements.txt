@@ -11,5 +11,5 @@ pytest-mock==3.11.1
 python-statemachine==2.1.*
 setuptools>=70.0.0
 SQLAlchemy==2.0.*
-starlette>=0.27.0
+starlette>=0.40.0
 uvicorn[standard]==0.20.*
