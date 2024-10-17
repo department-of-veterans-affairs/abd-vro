@@ -1,4 +1,4 @@
 
 bip:
-  claimBaseUrl: "https://claims-preprod.prod.bip.va.gov/api/v1"
+  claimBaseUrl: "https://claims-int.dev.bip.va.gov/api/v1"
   env: qa
