@@ -43,6 +43,7 @@ include ':shared:lib-hoppy'
 include ':svc-bgs-api'
 include ':svc-bip-api'
 include ':svc-bie-kafka'
+include ':vro-streamlit'
 
 include ':domain-xample:xample-api-controller'
 include ':domain-xample:xample-shared'
