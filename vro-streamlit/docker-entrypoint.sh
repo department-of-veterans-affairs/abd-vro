@@ -1,4 +1,4 @@
 #!/bin/sh
 cd app || exit
 
-python -m streamlit run main.py --server.headless true --server.enableCORS=false
+python -m streamlit run main.py --server.headless true
