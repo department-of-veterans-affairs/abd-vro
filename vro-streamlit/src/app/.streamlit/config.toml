@@ -1,5 +1,9 @@
 [server]
+headless = true
 enableStaticServing = true
+enableWebsocketCompression = true
+enableXsrfProtection = false
+enableCORS = false
 
 [browser]
 gatherUsageStats = false
