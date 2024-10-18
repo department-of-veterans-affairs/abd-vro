@@ -12,7 +12,7 @@ ext {
     spring_framework_version="6.1.14"
     snakeyaml_version="2.2"
     jackson_databind_version="2.16"
-    spring_core_version="6.1.12"
+    spring_core_version="6.1.14"
 }
 
 afterEvaluate {
