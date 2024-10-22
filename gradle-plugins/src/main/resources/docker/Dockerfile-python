@@ -27,7 +27,7 @@ RUN pip install --default-timeout=100 --no-cache-dir -r requirements.txt
 
 # https://stackoverflow.com/a/46801962
 # Copy script that runs docker-entrypoint.sh if it exists
-COPY set-env-secrets.src entrypoint-wrapper.sh docker-entry*.sh ./
+COPY entrypoint-wrapper.sh docker-entry*.sh ./
 
 # Copy application code, which changes more often,
 # along with files specified in local.python.container-service-convention
