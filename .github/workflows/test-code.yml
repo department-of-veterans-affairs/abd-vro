@@ -182,3 +182,8 @@ jobs:
         if: inputs.run_all_tests || steps.ee-changed-files-specific.outputs.any_changed  == 'true'
         run: |
           ./gradlew :domain-ee:test
+
+      - name: "Run VRO Streamlit tests"
+        if: inputs.run_all_tests || steps.vro-streamlit-changed-files-specific.outputs.any_changed  == 'true'
+        run: |
+          ./gradlew :vro-streamlit:test
