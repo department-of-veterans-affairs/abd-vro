@@ -33,12 +33,20 @@ jobs:
           configuration: --profile black
           requirementsFiles: "**/requirements.txt \
                               **/dev-requirements.txt"
-                              
+
       - name: "Run tests and checks"
         # `check` runs all checks, including spectralLint, hadolint, and shellcheck
         run: |
-          echo "::group::Gradle test check"
-          ./gradlew test check
+          echo "::group::Gradle check including test"
+          ./gradlew :svc-bie-kafka:check
+          ./gradlew :svc-bip-api:check
+          ./gradlew :domain-xample:xample-shared:check
+          ./gradlew :domain-xample:xample-api-controller:check
+          ./gradlew :domain-xample:svc-xample-j:check
+          ./gradlew :shared:lib-bie-kafka:check
+          ./gradlew :shared:persistence-model:check
+          ./gradlew :shared:lib-rabbitmq-connector:check
+          ./gradlew :shared:lib-metrics:check
           echo "::endgroup::"
 
           echo "::group::Gradle test check - mocks"
