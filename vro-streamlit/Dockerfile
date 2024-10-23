@@ -3,15 +3,17 @@
 # that use the local.python.container-service-convention plugin.
 # This file overrides the default Dockerfile in the plugin.
 ARG BASE_IMAGE="python:3.10-slim"
+# hadolint ignore=DL3006
 FROM ${BASE_IMAGE}
 
-# hadolint ignore=DL3018
-RUN apt-get update && apt-get install -y \
+# hadolint ignore=DL3018,DL3008
+RUN apt-get update && apt-get install --no-install-recommends -y \
     build-essential \
     curl \
     git \
     && rm -rf /var/lib/apt/lists/*
 
+# hadolint ignore=DL3013,DL3042
 RUN pip install --upgrade pip
 
 WORKDIR /app
@@ -36,10 +38,10 @@ COPY set-env-secrets.src entrypoint-wrapper.sh docker-entry*.sh ./
 # Copy application code, which changes more often,
 # along with files specified in local.python.container-service-convention
 COPY . ./
-RUN pip install .
+RUN pip install --no-cache-dir .
 
-RUN adduser --disabled-password tron
-RUN chmod +x ./*.sh && chown -R tron /app
+RUN adduser --disabled-password tron && \
+    chmod +x ./*.sh && chown -R tron /app
 USER tron
 ENTRYPOINT ["/app/entrypoint-wrapper.sh"]
 

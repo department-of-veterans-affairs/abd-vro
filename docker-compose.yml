@@ -18,6 +18,7 @@ volumes:
 x-common-vars: &common-vars
   # ENV determines which configuration settings to use.
   ENV: ${ENV:-local}
+  DEBUG: ${DEBUG:-false}
 
 x-rabbitmq-placeholder-vars: &rabbitmq-placeholder-vars
   RABBITMQ_PLACEHOLDERS_HOST: rabbitmq-service
