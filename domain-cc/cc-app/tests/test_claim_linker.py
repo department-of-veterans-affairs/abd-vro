@@ -1,3 +1,5 @@
+import logging
+
 from fastapi.testclient import TestClient
 
 
@@ -6,7 +8,11 @@ def test_claim_ids_logged(client: TestClient, caplog):
         "va_gov_claim_id": 100,
         "vbms_claim_id": 200,
     }
-    client.post("/claim-linker", json=json_post_dict)
+
+    with caplog.at_level(logging.INFO):
+        client.post("/claim-linker", json=json_post_dict)
+
+    print(caplog.records)
     expected_claim_link_json = {
         "level": "info",
         "message": "linking claims",
