@@ -1,4 +1,4 @@
-fastapi==0.111.*
+fastapi==0.115.*
 httpx==0.24.*
 pytest==7.3.1
 pytest-cov==5.0.0
