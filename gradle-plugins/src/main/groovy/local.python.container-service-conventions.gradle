@@ -11,6 +11,12 @@ docker {
     dockerfile findDockerfile(['Dockerfile', '/docker/Dockerfile-python'])
 
     // Copy files into build/docker/ folder, where the container image will be built
+    if (project.hasProperty('build_from_src') && project.property('build_from_src')) {
+        copySpec.into("..").from("."){
+            include('pyproject.toml')
+        }
+    }
+
     copySpec.into(".").from("src"){
         exclude('docker')
     }
