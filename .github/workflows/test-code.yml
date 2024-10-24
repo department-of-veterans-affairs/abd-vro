@@ -186,5 +186,5 @@ jobs:
       - name: "Run VRO Streamlit tests"
         if: inputs.run_all_tests || steps.vro-streamlit-changed-files-specific.outputs.any_changed  == 'true'
         run: |
-          # ./gradlew :vro-streamlit:test
-          echo "skipping tests for now..."
+           ./gradlew :vro-streamlit:check
+#          echo "skipping tests for now..."
