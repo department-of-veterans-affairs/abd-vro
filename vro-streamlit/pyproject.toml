@@ -1,0 +1,54 @@
+# pyproject.toml
+[project]
+name = 'app'
+version = '0.1'
+requires-python = '>=3.10'
+
+[tool.setuptools.package-data]
+app = [".streamlit/*", "static/*"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+
+# Additional Options
+# Comment line below, and uncomment the line below that to be able to debug pytests
+addopts = "-ra --import-mode=importlib --cov=./src --cov-fail-under=80 --no-cov-on-fail --cov-report=term:skip-covered --cov-report=html:build/reports/coverage --cov-branch"
+# addopts = "-ra --no-cov"
+
+# Path to tests run by the command pytest. Tests in the folders `end_to_end` and `integration` typically require other applications to be running and are excluded
+testpaths = [
+    "test"
+]
+
+# Environment variables to use in pytests
+env = [
+    "ENV=test-environment",
+    "DEBUG=True"
+]
+
+[tool.coverage.run]
+# The following files are for development purposes and are not part of the coverage report
+omit = []
+
+[tool.isort]
+profile = "black"
+
+[tool.ruff]
+line-length = 160
+
+[tool.ruff.lint]
+# Ruff enables Flake8's F rules, along with a subset of the E rules, omitting any stylistic rules that overlap with the use of Ruff formatter
+extend-select = [
+    # Add the `line-too-long` rule to the enforced rule set.
+    "E501"
+]
+
+[tool.ruff.format]
+quote-style = "single"
+# Use `\n` line endings for all files
+line-ending = "lf"
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+ignore_missing_imports = true

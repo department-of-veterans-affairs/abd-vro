@@ -1,0 +1,13 @@
+[logger]
+level = "debug"
+
+[server]
+headless = true
+enableStaticServing = true
+enableWebsocketCompression = true
+enableXsrfProtection = false
+enableCORS = false
+address = "0.0.0.0"
+
+[browser]
+gatherUsageStats = false
