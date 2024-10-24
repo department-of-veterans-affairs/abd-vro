@@ -37,7 +37,7 @@ def create_navigation() -> None:
         st.Page('directory/examples/dataframes.py', title='Dataframes'),
         st.Page('directory/examples/water_quality.py', title='Water Quality'),
     ]
-    nav = st.navigation({'Home': [home_page], 'BIE Events': bie_events, 'Examples': examples})
+    nav = st.navigation({'Main': [home_page], 'BIE Events': bie_events, 'Examples': examples})
     nav.run()
 
 
