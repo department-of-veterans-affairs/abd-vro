@@ -1,11 +1,11 @@
 # pyproject.toml
 [project]
-name = 'app'
+name = 'vro-streamlit'
 version = '0.1'
 requires-python = '>=3.10'
 
 [tool.setuptools.package-data]
-app = [".streamlit/*", "static/*"]
+vro_streamlit = [".streamlit/*", "static/*"]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -28,7 +28,10 @@ env = [
 
 [tool.coverage.run]
 # The following files are for development purposes and are not part of the coverage report
-omit = []
+omit = [
+    "**/bie_events/**",
+    "**/examples/**",
+]
 
 [tool.isort]
 profile = "black"

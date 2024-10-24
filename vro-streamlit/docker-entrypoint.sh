@@ -1,4 +1,4 @@
 #!/bin/sh
-cd app || exit
+cd vro_streamlit || exit
 
 python -m streamlit run main.py

@@ -1,3 +1,5 @@
+# mypy: ignore-errors
+
 import time
 
 import numpy as np
@@ -5,19 +7,9 @@ import pandas as pd
 import streamlit as st
 from numpy._typing import NDArray
 
-# sidebar config
-st.sidebar.image('static/streamlit-logo.png')
-st.sidebar.button('Rerun')
-
-if 'color' not in st.session_state:
-    st.session_state.color = '#FF0000'
-
-st.sidebar.write('Choose a datapoint color')
-st.session_state.color = st.sidebar.color_picker('Color', st.session_state.color)
-
 'Random line chart'
 last_rows = np.random.randn(1, 1)
-chart = st.line_chart(last_rows, color=st.session_state.color)
+chart = st.line_chart(last_rows)
 progress = st.progress(0)
 
 for i in range(1, 101):
@@ -54,7 +46,7 @@ st.line_chart(chart_data)
 'Map'
 map_data = pd.DataFrame(np.random.randn(100, 2) / [50, 50] + [38.66, -78.48], columns=['lat', 'lon'])
 
-st.map(map_data, color=st.session_state.color)
+st.map(map_data)
 
 'Selection boxes'
 option: int = st.selectbox('Which number do you like best?', df['first column'])
@@ -66,4 +58,4 @@ if 'df' not in st.session_state:
     st.session_state.df = pd.DataFrame(np.random.randn(20, 2), columns=['x', 'y'])
 
 st.divider()
-st.scatter_chart(st.session_state.df, x='x', y='y', color=st.session_state.color)
+st.scatter_chart(st.session_state.df, x='x', y='y')

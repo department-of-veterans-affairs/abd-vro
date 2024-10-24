@@ -37,7 +37,7 @@ tasks.getByPath('pytest').configure {
 tasks.register('integrationPytest', PythonTask) {
   dependsOn 'appinstall'
   module = 'pytest'
-  command = './integration'
+  command = './integration --no-cov'
 }
 
 tasks.register('integrationTest', Test) {
@@ -49,7 +49,7 @@ tasks.register('integrationTest', Test) {
 tasks.register('endToEndPytest', PythonTask) {
   dependsOn 'appinstall'
   module = 'pytest'
-  command = './end_to_end'
+  command = './end_to_end --no-cov'
 }
 
 tasks.register('endToEndTest', Test) {
