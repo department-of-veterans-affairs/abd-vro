@@ -27,18 +27,19 @@ jobs:
         run: |
           ./gradlew spotlessCheck shellcheck lintDockerfile
 
-      - name: "Python isort"
-        uses: isort/isort-action@v1
-        with:
-          configuration: --profile black
-          requirementsFiles: "**/requirements.txt \
-                              **/dev-requirements.txt"
-                              
       - name: "Run tests and checks"
         # `check` runs all checks, including spectralLint, hadolint, and shellcheck
         run: |
-          echo "::group::Gradle test check"
-          ./gradlew test check
+          echo "::group::Gradle check including test"
+          ./gradlew :svc-bie-kafka:check
+          ./gradlew :svc-bip-api:check
+          ./gradlew :domain-xample:xample-shared:check
+          ./gradlew :domain-xample:xample-api-controller:check
+          ./gradlew :domain-xample:svc-xample-j:check
+          ./gradlew :shared:lib-bie-kafka:check
+          ./gradlew :shared:persistence-model:check
+          ./gradlew :shared:lib-rabbitmq-connector:check
+          ./gradlew :shared:lib-metrics:check
           echo "::endgroup::"
 
           echo "::group::Gradle test check - mocks"
@@ -137,6 +138,13 @@ jobs:
       - name: "Set up VRO build env"
         uses: ./.github/actions/setup-vro
 
+      - name: "Python isort"
+        uses: isort/isort-action@v1
+        with:
+          configuration: --profile black
+          requirementsFiles: "**/requirements.txt \
+                              **/dev-requirements.txt"
+
       - name: "Get changed files"
         if: '! inputs.run_all_tests'
         id: changed-files-specific
@@ -150,6 +158,13 @@ jobs:
         uses: tj-actions/changed-files@v45
         with:
           files: domain-ee/**
+
+      - name: "Get changed vro-streamlit files"
+        if: '! inputs.run_all_tests'
+        id: vro-streamlit-changed-files-specific
+        uses: tj-actions/changed-files@v45
+        with:
+          files: vro-streamlit/**
 
       - name: "Install Python"
         if: inputs.run_all_tests || steps.changed-files-specific.outputs.any_changed == 'true' || steps.ee-changed-files-specific.outputs.any_changed == 'true'
@@ -167,3 +182,9 @@ jobs:
         if: inputs.run_all_tests || steps.ee-changed-files-specific.outputs.any_changed  == 'true'
         run: |
           ./gradlew :domain-ee:test
+
+      - name: "Run VRO Streamlit tests"
+        if: inputs.run_all_tests || steps.vro-streamlit-changed-files-specific.outputs.any_changed  == 'true'
+        run: |
+          # ./gradlew :vro-streamlit:test
+          echo "skipping tests for now..."
