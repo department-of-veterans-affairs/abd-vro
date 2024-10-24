@@ -4,6 +4,9 @@ name = 'app'
 version = '0.1'
 requires-python = '>=3.10'
 
+[tool.setuptools.package-data]
+app = [".streamlit/*", "static/*"]
+
 [tool.pytest.ini_options]
 minversion = "6.0"
 
@@ -19,6 +22,7 @@ testpaths = [
 
 # Environment variables to use in pytests
 env = [
+    "ENV=test-environment",
     "DEBUG=True"
 ]
 
