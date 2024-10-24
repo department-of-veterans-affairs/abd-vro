@@ -1,7 +1,7 @@
 ---
 name: Employee Experience Team - Research File Clean-up
 about: Tasks for cleaning up files after research synthesis
-title: "Research Project Name - File Clean-up"
+title: Research Project Name - File Clean-up
 labels: Design research
 assignees: ''
 
