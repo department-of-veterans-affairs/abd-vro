@@ -4,9 +4,6 @@
 # and local.python.container-service-convention.
 # To run your own script, create docker-entrypoint.sh in your Gradle module.
 
-# Sets environment variable secrets
-[ -e set-env-secrets.src ] && . ./set-env-secrets.src
-
 if [ -e /app/docker-entryprep.sh ]; then
   . /app/docker-entryprep.sh "$@"
 fi
