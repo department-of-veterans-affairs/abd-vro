@@ -1,6 +1,6 @@
 # pyproject.toml
 [project]
-name = 'vro-streamlit'
+name = 'app'
 version = '0.1'
 requires-python = '>=3.10'
 
