@@ -13,7 +13,7 @@ Welcome to the Virtual Regional Office (VRO) team! We are excited to have you on
 
 This document will streamline your onboarding process and reduce the startup time needed to ramp up on VRO.
 
-*NOTE*: This issue template can be edited here. As you go through onboarding, you can add other pages or resources to this checklist if you find them helpful. If you encounter broken links or outdated information, please make any necessary updates or ask for help fixing them!
+*NOTE*: This issue template can be edited [here](https://github.com/department-of-veterans-affairs/abd-vro/issues/templates/edit). As you go through onboarding, you can add other pages or resources to this checklist if you find them helpful. If you encounter broken links or outdated information, please make any necessary updates or ask for help fixing them!
 
 ## Team Integration
 
