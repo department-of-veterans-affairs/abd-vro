@@ -7,11 +7,28 @@ assignees: ''
 
 ---
 
-## Engineer Onboarding Checklist
+# Engineer Onboarding Checklist
 
-Below are actions you should take and resources to review. As you go through onboarding, feel free to add other pages to this list if you think they'd be helpful.
+Welcome to the Virtual Regional Office (VRO) team! We are excited to have you onboard.
 
-### Getting Started
+This document will streamline your onboarding process and reduce the startup time needed to ramp up on VRO.
+
+*NOTE*: This issue template can be edited here. As you go through onboarding, you can add other pages or resources to this checklist if you find them helpful. If you encounter broken links or outdated information, please make any necessary updates or ask for help fixing them!
+
+## Team Integration
+
+### Onboarding Buddy and Collaboration
+
+- [ ]  **Get added to the `#benefits-onboarding` Slack channel**.
+    - [ ]  Complete onboarding procedures in the Slack Canvas.
+    - [ ]  Provide your role, email, and team for onboarding buddies.
+- [ ]  **Go through Benefits Portfolio onboarding materials and buddy meetings**.
+
+### Pair Programming and Code Walkthroughs
+
+- [ ]  **Set up code walkthrough meetings with engineering team members**.
+    - [ ]  Ask during scrum ceremonies or on Slack.
+- [ ]  **Ask to pair with other engineers** during daily scrum meetings.
 
 ### Meetings and Communication
 
@@ -19,26 +36,34 @@ Below are actions you should take and resources to review. As you go through onb
     - [ ]  Weekly VBA Stakeholder Sync.
     - [ ]  Daily VRO Team Sprint Standups.
     - [ ]  Biweekly VRO Sprint Planning / Review / Retrospective.
-- [ ]  Get the VRO Delivery Manager to the tool LHDI uses for the management of our cATO (TODO: Confirm what this is)
-- [ ]  **Team Roster Addition:** Ensure you’ve been added to the VRO team roster [here](https://github.com/department-of-veterans-affairs/abd-vro/wiki/Virtual-Regional-Office-Overview)
+- [ ]  **cATO Tool:** Get the VRO Delivery Manager to grant you access to the tool LHDI uses for the management of VRO’s cATO (TODO: Confirm what this is)
+- [ ]  **Add yourself to the VRO team roster**: Ensure you’ve been added to the VRO team roster [here](https://github.com/department-of-veterans-affairs/abd-vro/wiki/Virtual-Regional-Office-Overview)
 - [ ]  **Set up team 1:1s**: See the [VRO team roster](https://github.com/department-of-veterans-affairs/abd-vro/wiki/Virtual-Regional-Office-Overview#-who-is-the-vro-team) for who to set up meetings with (reference team members' Slack profiles for calendar URLs to find available times).
 - [ ]  **Ask in the daily scrum meeting** where you can pair with other engineers.
 
 ### Slack Channels
 
 - [ ]  **Join relevant Slack channels**:
-    - **Most relevant channels**:
-        - [ ]  `#benefits-vro`: Team coordination.
-        - [ ]  `#benefits-vro-engineering`: Engineering collaboration.
-        - [ ]  `#benefits-vro-support`: Collaboration with partner teams.
-        - [ ]  `#benefits-cft`: Cross-team collaboration.
-    - **On-Call channels**
-        - [ ]  `#benefits-vro-on-call`:
-        - [ ]  TODO: add others
-        - [ ]  [`#bep-integration-support2077`](https://dsva.slack.com/archives/C05DUAWDVRQ): private channel, you’ll need to be added.
-    - **Additional channels**:
-        - [ ]  Review the [Slack Channels Spreadsheet](https://docs.google.com/spreadsheets/d/1c3e6SVuhVz3q4bh1qf5jj25EmusCd3NVXhDjSIpr9yk/edit#gid=1020923043).
-        - *Note*: You don't have to join all channels; start with `#benefits-vro-*` and `#benefits-cft-*` channels.
+    - **Team Coordination**:
+        - [#benefits-vro](https://dsva.slack.com/archives/C04PKJ7FQCE)
+        - [#benefits-vro-engineering](https://dsva.slack.com/archives/C04QLHM9LR0)
+    - **Partner Team Channels**:
+        - [#benefits-contention-classification](https://dsva.slack.com/archives/C04AZ8T7XN1)
+        - [#benefits-employee-exp](https://dsva.slack.com/archives/C01BVF2A3V0)
+    - **On-Call and Support Channels**
+        - [#benefits-vro-on-call](https://dsva.slack.com/archives/C0752RWD9T3)
+        - [#benefits-vro-support](https://dsva.slack.com/archives/C01Q7979Z7D)
+        - [#team-abd-vro](https://dsva.slack.com/archives/C03UBMAP5JQ)
+        - [#benefits-vro-alerts](https://dsva.slack.com/archives/C044ZL0PKLL)
+        - [#benefits-slack-alerts-cc](https://dsva.slack.com/archives/C07M0KK4725)
+        - [#benefits-slack-alerts-ee](https://dsva.slack.com/archives/C07M0KMK18R)
+        - [#benefits-slack-alerts-platform](https://dsva.slack.com/archives/C07LUFSL9R6)
+        - [#benefits-vro-nonprod](https://dsva.slack.com/archives/C04CEKC9SAD)
+        - [#benefits-vro-devops](https://dsva.slack.com/archives/C04CA47HV96)
+        - [#benefits-vro-vagov-526s-to-mas](https://dsva.slack.com/archives/C0519PXPUCR)
+        - [`#bep-integration-support2077`](https://dsva.slack.com/archives/C05DUAWDVRQ): private channel, you’ll need to be added.
+    - **Additional channels**
+        - [ ]  Review the [Slack Channels Spreadsheet](https://docs.google.com/spreadsheets/d/1c3e6SVuhVz3q4bh1qf5jj25EmusCd3NVXhDjSIpr9yk/edit#gid=1020923043). Most of these channels are deprecated, and this should be cleaned up. *Note*: You don't have to join all channels; start with `#benefits-vro-*`
 
 ### Microsoft Teams Channels
 
@@ -59,7 +84,9 @@ Below are actions you should take and resources to review. As you go through onb
 - [ ]  **Set up GitHub permissions**:
     - [ ]  Ensure you have the GH permissions to bypass PR requirements and allow force pushes to the `main` branch of `abd-vro`.
 
-### Local Environment Setup
+---
+
+## Local Environment Setup
 
 - [ ]  **Set up your [local environment](https://github.com/department-of-veterans-affairs/abd-vro/wiki/Local-Setup)** and test services.
     - [ ]  Note any issues and update the Local Setup page.
@@ -67,7 +94,9 @@ Below are actions you should take and resources to review. As you go through onb
 
 ---
 
-### Resources to Review
+## Resources to Review
+
+### VRO Wiki
 
 - [ ]  **Explore the [VRO Wiki](https://github.com/department-of-veterans-affairs/abd-vro/wiki)**, especially:
     - [ ]  **Introduction**:
@@ -103,24 +132,7 @@ Below are actions you should take and resources to review. As you go through onb
 
 ---
 
-### Team Integration
-
-### Onboarding Buddy and Collaboration
-
-- [ ]  **Get added to the `#benefits-onboarding` Slack channel**.
-    - [ ]  Complete onboarding procedures in the Slack Canvas.
-    - [ ]  Provide your role, email, and team for onboarding buddies.
-- [ ]  **Go through Benefits Portfolio onboarding materials and buddy meetings**.
-
-### Pair Programming and Code Walkthroughs
-
-- [ ]  **Set up code walkthrough meetings with engineering team members**.
-    - [ ]  Ask during scrum ceremonies or on Slack.
-- [ ]  **Ask to pair with other engineers** during daily scrum meetings.
-
----
-
-### Additional Steps
+## Additional Steps
 
 ### VA Email and Tools
 
@@ -155,7 +167,7 @@ Below are actions you should take and resources to review. As you go through onb
 
 - [ ]  **For background and context**, read:
     - [ ]  **Teams and Vision**: [ABD Vision Snapshot](https://dvagov.sharepoint.com/:p:/r/sites/HypertensionRapidDecisionPilot/_layouts/15/Doc.aspx?sourcedoc=%7B4A6FD69B-D04E-4CD8-879A-AE2C547B7A66%7D&file=ABD%20Vision%20Snapshot%20_%20May%202022.pptx&action=edit&mobileredirect=true).
-- [ ]  **If working in [VA.gov](http://va.gov/)'s codebase (RRD)**, review: TODO: is this needed?
+- [ ]  **TODO: Confirm if this is needed! If working in [VA.gov](http://va.gov/)'s codebase (RRD)**, review:
     - [ ]  [Technical Onboarding](https://dvagov.sharepoint.com/:b:/s/vaabdvro/ERtVkVHH1ShAimZQXPUOLrUB7MQvGRyFxXEuSBKO-mtZjw?e=OTccFK).
     - [ ]  [RRD Technical Overview](https://dvagov.sharepoint.com/:b:/s/vaabdvro/ERtVkVHH1ShAimZQXPUOLrUB7MQvGRyFxXEuSBKO-mtZjw?e=OTccFK).
     - [ ]  [VA DevOps Release Process](https://dvagov.sharepoint.com/:w:/s/vaabdvro/ES5f3QVSvsVJgPKRgz9_kfQBEYyQLif_ugcKs1FCDgF7nQ?e=cKFNOq) *(may need to be updated)*.
@@ -164,6 +176,6 @@ Below are actions you should take and resources to review. As you go through onb
 
 ## Conclusion
 
-As you go through the onboarding process, don't hesitate to contact your team members for assistance. If any items are blocking you, please notify your Delivery Manager or mention it in the `#benefits-vro-engineering` Slack channel.
+As you go through the onboarding process, please don't hesitate to contact your team members for help. If any items are blocking you, please notify your Delivery Manager or mention it in the `#benefits-vro-engineering` Slack channel.
 
 We're excited to have you on the team and look forward to collaborating with you!
